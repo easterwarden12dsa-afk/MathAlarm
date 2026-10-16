@@ -68,6 +68,10 @@ public struct Cursor: Codable, Hashable, Sendable {
     public struct Step: Codable, Hashable, Sendable {
         public var atom: Int
         public var child: Int
+        public init(atom: Int, child: Int) {
+            self.atom = atom
+            self.child = child
+        }
     }
     public var path: [Step] = []
     public var index: Int = 0

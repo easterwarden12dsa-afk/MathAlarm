@@ -105,9 +105,16 @@ enum DerivativeGenerator {
         case 2: return .exp(u)
         case 3: return .ln(.sum([.p(u, 2), .n(r.int(1...3))]))   // ln(u² + c): always defined
         case 4: return .sqrt(.sum([.p(u, 2), .n(r.int(1...4))]))  // √(u² + c)
-        case 5: return .p(u, r.int(2...4))
+        case 5:
+            // (x²)ⁿ or (eˣ)ⁿ are just xᵐ / e^(nx): use a different layer.
+            if case .pow = u { return .cos(u) }
+            if case .fn(.exp, _) = u { return .cos(u) }
+            return .p(u, r.int(2...4))
         case 6: return .atan(u)
-        default: return u.isAlwaysPositive ? .ln(u) : .sin(u)
+        default:
+            // ln(e^u) would cancel, so ln only goes on positive polynomials.
+            if u.isAlwaysPositive, !u.isExp { return .ln(u) }
+            return .sin(u)
         }
     }
 
@@ -146,6 +153,11 @@ extension Expr {
         case .add(let a, let b), .sub(let a, let b), .mul(let a, let b),
              .div(let a, let b), .pow(let a, let b): return a.usesTan || b.usesTan
         }
+    }
+
+    var isExp: Bool {
+        if case .fn(.exp, _) = self { return true }
+        return false
     }
 
     /// Conservative structural check for positivity (used for ln(u)).
