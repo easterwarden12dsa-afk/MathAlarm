@@ -167,3 +167,24 @@ public extension Expr {
         return v.isFinite ? v : nil
     }
 }
+
+// MARK: - Plain-text form (for logs and tests)
+
+extension Expr: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .num(let v): return v == v.rounded() && Swift.abs(v) < 1e15 ? String(Int(v)) : String(v)
+        case .x: return "x"
+        case .pi: return "π"
+        case .e: return "e"
+        case .constC: return "C"
+        case .neg(let a): return "-(\(a))"
+        case .add(let a, let b): return "(\(a) + \(b))"
+        case .sub(let a, let b): return "(\(a) - \(b))"
+        case .mul(let a, let b): return "\(a)*\(b)"
+        case .div(let a, let b): return "(\(a))/(\(b))"
+        case .pow(let a, let b): return "(\(a))^(\(b))"
+        case .fn(let f, let a): return "\(f.displayName)(\(a))"
+        }
+    }
+}

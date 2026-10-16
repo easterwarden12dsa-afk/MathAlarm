@@ -59,3 +59,17 @@ final class GeneratorTests: XCTestCase {
         XCTAssertGreaterThan(averageSize(.hard), averageSize(.easy))
     }
 }
+
+final class SampleOutputTests: XCTestCase {
+    /// Prints a few problems per kind and level so the CI log can be eyeballed.
+    func testPrintSamples() {
+        for kind in ProblemKind.allCases {
+            for level in Level.allCases {
+                for seed in UInt64(1)...UInt64(4) {
+                    let p = ProblemFactory.make(kind, level: level, seed: seed * 104_729)
+                    print("SAMPLE \(kind) \(level) [\(p.technique)] f = \(p.display)   ref = \(p.reference)")
+                }
+            }
+        }
+    }
+}

@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import UIKit
 import AlarmKit
+import MathEngine
 
 /// Owns the "ring session": the alarm that is ringing and not yet solved or
 /// surrendered.
@@ -34,6 +35,7 @@ final class RingCoordinator: ObservableObject {
 
     @Published private(set) var session: RingSession?
     @Published var lastTestScheduledFor: Date?
+    @Published var toast: Toast?
 
     let sound = AlarmSoundPlayer()
 
@@ -168,6 +170,11 @@ final class RingCoordinator: ObservableObject {
     private func engageInApp() {
         guard var s = session else { return }
         inAppEngaged = true
+        if s.problem == nil {
+            // Session saved by an older version: give it a problem now.
+            s.problem = ProblemFactory.make(s.challenge.problemKind, level: s.difficulty.level, seed: ProblemFactory.randomSeed())
+            s.editor = MathEditor()
+        }
         if let r = s.reRingID {
             AlarmScheduler.cancel(r)
             s.reRingID = nil
@@ -261,7 +268,16 @@ final class RingCoordinator: ObservableObject {
         session = s
         saveSession()
         sound.stop()
+        Haptics.press()
+        toast = Toast(message: "Muted — sound returns in 1:30", symbol: "speaker.slash.fill")
         Task { await refreshWatchdog() }
+    }
+
+    /// Saves what has been typed so far (restored after a relaunch).
+    func updateEditor(_ editor: MathEditor) {
+        guard session != nil, session?.editor != editor else { return }
+        session?.editor = editor
+        saveSession()
     }
 
     enum Outcome { case solved, surrendered }
@@ -276,6 +292,13 @@ final class RingCoordinator: ObservableObject {
         stopTicker()
         sound.stop()
         UIApplication.shared.isIdleTimerDisabled = false
+        switch outcome {
+        case .solved:
+            toast = Toast(message: "Solved — alarm off", symbol: "checkmark.circle.fill", style: .success)
+        case .surrendered:
+            Haptics.press()
+            toast = Toast(message: "Surrendered — alarm off", symbol: "flag.fill", style: .warning)
+        }
 
         // Cancel every re-ring / watchdog / test alarm, and silence anything of ours still ringing.
         for id in AlarmRegistry.shared.ids(withPurpose: [.reRing, .watchdog, .test]) {

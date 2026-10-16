@@ -123,7 +123,7 @@ enum AlarmScheduler {
             attributes: attributes,
             stopIntent: StopAlarmIntent(alarmID: id.uuidString),
             secondaryIntent: SolveAlarmIntent(alarmID: id.uuidString),
-            sound: .named(context.sound.fileName))
+            sound: context.sound.isSystemDefault ? .default : .named(context.sound.resolved.fileName))
 
         AlarmRegistry.shared.register(id, context)
         do {

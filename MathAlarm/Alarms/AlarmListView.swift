@@ -24,7 +24,14 @@ struct AlarmListView: View {
                 }
 
                 Section {
+                    NavigationLink {
+                        PracticeView()
+                    } label: {
+                        Label("Practice challenges", systemImage: "function")
+                            .font(.headline)
+                    }
                     Button {
+                        Haptics.tap()
                         Task {
                             let ok = await ring.scheduleTestRing()
                             testMessage = ok
@@ -35,6 +42,7 @@ struct AlarmListView: View {
                         Label("Ring in 10 seconds", systemImage: "timer")
                             .font(.headline)
                     }
+                    .buttonStyle(PressableStyle(scale: 0.96))
                     if let testMessage {
                         Text(testMessage).font(.footnote).foregroundStyle(.secondary)
                     }
@@ -59,6 +67,7 @@ struct AlarmListView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
+                        Haptics.tap()
                         editing = EditorTarget(item: AlarmItem(), isNew: true)
                     } label: {
                         Image(systemName: "plus")

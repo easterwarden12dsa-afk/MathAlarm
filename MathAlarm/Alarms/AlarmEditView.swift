@@ -65,16 +65,24 @@ struct AlarmEditView: View {
                 }
 
                 Section("Sound") {
-                    Picker("Sound", selection: $draft.sound) {
-                        ForEach(AlarmSound.allCases) { sound in
-                            Text(sound.title).tag(sound)
+                    NavigationLink {
+                        SoundPickerView(selection: $draft.sound)
+                            .environmentObject(ring)
+                    } label: {
+                        HStack {
+                            Label("Sound", systemImage: "speaker.wave.3.fill")
+                            Spacer()
+                            Text(draft.sound.title).foregroundStyle(.secondary)
                         }
                     }
                     Button {
+                        Haptics.tap()
                         ring.sound.preview(draft.sound)
                     } label: {
-                        Label("Preview (3 s)", systemImage: "play.circle")
+                        Label("Play preview", systemImage: "play.circle.fill")
+                            .font(.headline)
                     }
+                    .buttonStyle(PressableStyle(scale: 0.96))
                 }
 
                 if let message = draft.validationMessage {

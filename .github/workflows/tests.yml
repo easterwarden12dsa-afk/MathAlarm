@@ -26,7 +26,7 @@ jobs:
         if: always()
         run: |
           touch test.log
-          grep -nE "error:|failed|passed|Executed|XCTAssert" test.log | head -400 > test-summary.txt || true
+          grep -nE "error:|failed|passed|Executed|XCTAssert|SAMPLE" test.log | head -400 > test-summary.txt || true
           mkdir -p /tmp/tlogs && cp test.log test-summary.txt /tmp/tlogs/
           echo "${{ github.sha }} ${{ job.status }}" > /tmp/tlogs/status.txt
           git config user.name "ci"

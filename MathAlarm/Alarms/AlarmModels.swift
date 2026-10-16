@@ -1,4 +1,5 @@
 import Foundation
+import MathEngine
 
 enum ChallengeKind: String, Codable, CaseIterable, Identifiable {
     case integral, derivative, sketch, random
@@ -14,11 +15,22 @@ enum ChallengeKind: String, Codable, CaseIterable, Identifiable {
         }
     }
 
-    static let concreteKinds: [ChallengeKind] = [.integral, .derivative, .sketch]
+    /// Challenges that exist in this build (Graph Sketch arrives in M3).
+    static let concreteKinds: [ChallengeKind] = [.integral, .derivative]
 
     /// Picks a concrete challenge for `.random`; other kinds return themselves.
     func resolved() -> ChallengeKind {
         self == .random ? (Self.concreteKinds.randomElement() ?? .integral) : self
+    }
+
+    /// Which math-engine problem to generate. Graph Sketch temporarily uses
+    /// a derivative until milestone 3.
+    var problemKind: ProblemKind {
+        switch self {
+        case .integral: .integral
+        case .derivative, .sketch: .derivative
+        case .random: Bool.random() ? .integral : .derivative
+        }
     }
 }
 
@@ -27,24 +39,75 @@ enum Difficulty: String, Codable, CaseIterable, Identifiable {
 
     var id: String { rawValue }
     var title: String { rawValue.capitalized }
+
+    var level: Level {
+        switch self {
+        case .easy: .easy
+        case .medium: .medium
+        case .hard: .hard
+        }
+    }
 }
 
-enum AlarmSound: String, Codable, CaseIterable, Identifiable {
-    case classic, rising, pulse
+/// An alarm sound: one of the built-in tones, the iPhone's default alarm
+/// sound, or a file the user imported. Stored as a single string ID so
+/// alarms saved by older versions ("classic") still load.
+struct AlarmSound: Codable, Hashable, Identifiable {
+    let id: String
 
-    var id: String { rawValue }
+    init(id: String) { self.id = id }
+
+    init(from decoder: Decoder) throws {
+        let value = try decoder.singleValueContainer().decode(String.self)
+        id = AlarmSound.legacyRenames[value] ?? value
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.singleValueContainer()
+        try c.encode(id)
+    }
+
+    static let classic = AlarmSound(id: "classic")
+    static let systemDefault = AlarmSound(id: "system")
+
+    static let builtIns: [AlarmSound] = ["classic", "siren", "klaxon", "bell", "rising", "pulse"].map(AlarmSound.init(id:))
+    private static let legacyRenames: [String: String] = [:]
+
+    var isSystemDefault: Bool { id == Self.systemDefault.id }
+    var isCustom: Bool { id.hasPrefix("custom-") }
 
     var title: String {
-        switch self {
-        case .classic: "Classic beeps"
-        case .rising: "Rising sweep"
-        case .pulse: "Two-tone pulse"
+        switch id {
+        case "classic": return "Digital beeps"
+        case "siren": return "Siren"
+        case "klaxon": return "Klaxon buzzer"
+        case "bell": return "Ringing bell"
+        case "rising": return "Speeding-up beeps"
+        case "pulse": return "Two-tone alert"
+        case "system": return "iPhone alarm sound"
+        default: return CustomSoundLibrary.shared.title(for: self) ?? "Imported sound"
         }
     }
 
-    var fileName: String { "\(rawValue).wav" }
+    /// File name AlarmKit looks up (app bundle for built-ins, Library/Sounds for imports).
+    var fileName: String {
+        if isCustom { return "\(id).caf" }
+        return "\(id).wav"
+    }
 
-    var url: URL? { Bundle.main.url(forResource: rawValue, withExtension: "wav") }
+    /// File the in-app player uses. The iPhone default sound isn't available
+    /// to apps, so inside the app it falls back to the digital beeps.
+    var playbackURL: URL? {
+        if isSystemDefault { return Self.classic.playbackURL }
+        if isCustom { return CustomSoundLibrary.soundsDirectory.appendingPathComponent(fileName) }
+        return Bundle.main.url(forResource: id, withExtension: "wav")
+    }
+
+    /// Falls back to the default tone if an imported file was deleted.
+    var resolved: AlarmSound {
+        if isCustom, let url = playbackURL, !FileManager.default.fileExists(atPath: url.path) { return .classic }
+        return self
+    }
 }
 
 enum RepeatMode: String, Codable, CaseIterable, Identifiable {
@@ -294,6 +357,10 @@ struct RingSession: Codable, Identifiable {
     var muteUntil: Date?
     var reRingID: UUID?
     var watchdogID: UUID?
+    /// The math problem for this ring and what has been typed so far, so a
+    /// relaunch returns to exactly the same challenge.
+    var problem: CalculusProblem?
+    var editor: MathEditor?
 
     init(context: RingContext) {
         label = context.label
@@ -301,6 +368,13 @@ struct RingSession: Codable, Identifiable {
         difficulty = context.difficulty
         sound = context.sound
         itemIDs = context.itemID.map { [$0] } ?? []
+        problem = ProblemFactory.make(challenge.problemKind, level: difficulty.level, seed: ProblemFactory.randomSeed())
+        editor = MathEditor()
+    }
+
+    /// Shown above the problem when the chosen challenge isn't built yet.
+    var challengeNote: String? {
+        challenge == .sketch ? "Graph Sketch arrives in the next update — solve this derivative instead." : nil
     }
 
     func context(purpose: AlarmPurpose) -> RingContext {

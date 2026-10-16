@@ -13,6 +13,7 @@ struct RootView: View {
                 OnboardingView { didFinishOnboarding = true }
             }
         }
+        .toast($ring.toast)
         // The ringing screen can only be closed by resolving the ring.
         .fullScreenCover(isPresented: Binding(get: { ring.session != nil }, set: { _ in })) {
             RingingView()

@@ -7,6 +7,10 @@ options:
   deploymentTarget:
     iOS: "26.1"
 
+packages:
+  MathEngine:
+    path: Packages/MathEngine
+
 settings:
   base:
     SWIFT_VERSION: "5.0"
@@ -44,6 +48,7 @@ targets:
     dependencies:
       - target: MathAlarmWidget
         embed: true
+      - package: MathEngine
 
   MathAlarmWidget:
     type: app-extension

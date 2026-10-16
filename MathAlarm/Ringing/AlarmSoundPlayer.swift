@@ -34,10 +34,13 @@ final class AlarmSoundPlayer {
 
     func play(_ sound: AlarmSound) {
         previewStopTask?.cancel()
+        previewStopTask = nil
         shouldPlay = true
         activateSession()
+        let sound = sound.resolved
         if loadedSound != sound || player == nil {
-            guard let url = sound.url, let newPlayer = try? AVAudioPlayer(contentsOf: url) else { return }
+            guard let url = sound.playbackURL ?? AlarmSound.classic.playbackURL,
+                  let newPlayer = try? AVAudioPlayer(contentsOf: url) else { return }
             newPlayer.numberOfLoops = -1
             newPlayer.volume = 1.0
             newPlayer.prepareToPlay()
@@ -57,12 +60,22 @@ final class AlarmSoundPlayer {
 
     /// Plays a few seconds of a sound in the alarm editor.
     func preview(_ sound: AlarmSound) {
+        player?.stop()
+        player?.currentTime = 0
         play(sound)
         previewStopTask = Task { [weak self] in
             try? await Task.sleep(nanoseconds: 3_000_000_000)
             guard !Task.isCancelled else { return }
             self?.stop()
         }
+    }
+
+    /// Ends a preview started from the sound picker (does nothing during a ring).
+    func stopPreview() {
+        guard previewStopTask != nil else { return }
+        previewStopTask?.cancel()
+        previewStopTask = nil
+        stop()
     }
 
     func vibrate() {

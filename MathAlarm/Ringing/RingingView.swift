@@ -1,68 +1,76 @@
 import SwiftUI
+import MathEngine
 
 /// Full-screen ringing screen, designed for someone half asleep:
-/// black background, huge high-contrast buttons, screen kept awake.
+/// black background, big high-contrast controls, screen kept awake.
+/// Top bar: Mute (left) and Surrender (right) are always visible.
 struct RingingView: View {
     @EnvironmentObject private var ring: RingCoordinator
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1)) { timeline in
             let now = timeline.date
-            VStack(spacing: 0) {
+            VStack(spacing: 8) {
                 topBar(now: now)
-                    .padding(.horizontal, 16)
-                    .padding(.top, 8)
 
-                if ring.sound.outputVolume < 0.4, !(ring.session?.isMuted(at: now) ?? false) {
-                    Label("Volume is low — press volume up", systemImage: "speaker.wave.1.fill")
-                        .font(.headline)
+                if ring.sound.outputVolume < 0.5, !(ring.session?.isMuted(at: now) ?? false) {
+                    Label("Volume is low — press the volume-up button", systemImage: "speaker.wave.1.fill")
+                        .font(.subheadline.weight(.bold))
                         .foregroundStyle(.black)
-                        .padding(10)
+                        .padding(.vertical, 8)
                         .frame(maxWidth: .infinity)
-                        .background(Color.yellow)
-                        .padding(.top, 8)
+                        .background(Color.yellow, in: RoundedRectangle(cornerRadius: 10))
                 }
 
-                Spacer(minLength: 16)
-
-                VStack(spacing: 8) {
-                    Text(now.formatted(date: .omitted, time: .shortened))
-                        .font(.system(size: 72, weight: .bold, design: .rounded))
-                        .monospacedDigit()
-                        .foregroundStyle(.white)
-                    Text(ring.session?.label ?? "Alarm")
-                        .font(.title2.weight(.semibold))
-                        .foregroundStyle(.white.opacity(0.8))
+                if let session = ring.session, let problem = session.problem {
+                    ChallengeView(
+                        problem: problem,
+                        editor: Binding(get: { ring.session?.editor ?? MathEditor() },
+                                        set: { ring.updateEditor($0) }),
+                        note: session.challengeNote,
+                        onSolved: { ring.resolve(.solved) })
+                    .id(problem.seed)
+                } else {
+                    Spacer()
+                    ProgressView().tint(.white)
+                    Spacer()
                 }
-
-                Spacer(minLength: 16)
-
-                challengeArea
-                    .padding(.horizontal, 16)
-
-                Spacer(minLength: 16)
             }
+            .padding(.horizontal, 12)
+            .padding(.top, 4)
         }
         .background(Color.black.ignoresSafeArea())
+        .toast($ring.toast)
         .interactiveDismissDisabled()
-        .statusBarHidden(false)
     }
 
-    // MARK: Top bar: Mute (left), Surrender (right)
+    // MARK: Top bar
 
     private func topBar(now: Date) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 10) {
             muteButton(now: now)
-            Spacer(minLength: 8)
+            Spacer(minLength: 4)
+            VStack(spacing: 0) {
+                Text(now.formatted(date: .omitted, time: .shortened))
+                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                Text(ring.session?.label ?? "Alarm")
+                    .font(.caption)
+                    .lineLimit(1)
+                    .foregroundStyle(.white.opacity(0.7))
+            }
+            .foregroundStyle(.white)
+            Spacer(minLength: 4)
             Button {
                 ring.resolve(.surrendered)
             } label: {
-                Text("Surrender")
-                    .font(.title3.bold())
+                Label("Surrender", systemImage: "flag.fill")
+                    .font(.headline.bold())
                     .foregroundStyle(.white)
-                    .frame(minWidth: 140, minHeight: 60)
-                    .background(Color.red, in: RoundedRectangle(cornerRadius: 16))
+                    .frame(minWidth: 120, minHeight: 54)
+                    .background(Color.red, in: RoundedRectangle(cornerRadius: 14))
             }
+            .buttonStyle(PressableStyle())
             .accessibilityHint("Turns the alarm off immediately")
         }
     }
@@ -73,17 +81,17 @@ struct RingingView: View {
         return Button {
             ring.mute()
         } label: {
-            HStack(spacing: 8) {
-                Image(systemName: muted ? "speaker.slash.fill" : "speaker.slash")
-                Text(muted ? countdown(remaining) : "Mute")
-                    .monospacedDigit()
-            }
-            .font(.title3.bold())
-            .foregroundStyle(muted ? Color.black : Color.white)
-            .frame(minWidth: 140, minHeight: 60)
-            .background(muted ? Color.orange : Color.white.opacity(0.18),
-                        in: RoundedRectangle(cornerRadius: 16))
+            Label(muted ? countdown(remaining) : "Mute",
+                  systemImage: muted ? "speaker.slash.fill" : "speaker.slash")
+                .font(.headline.bold())
+                .monospacedDigit()
+                .foregroundStyle(muted ? Color.black : Color.white)
+                .frame(minWidth: 120, minHeight: 54)
+                .background(muted ? Color.orange : Color.white.opacity(0.2),
+                            in: RoundedRectangle(cornerRadius: 14))
+                .animation(.easeInOut(duration: 0.2), value: muted)
         }
+        .buttonStyle(PressableStyle())
         .disabled(muted)
         .accessibilityLabel(muted ? "Muted, \(Int(remaining)) seconds left" : "Mute for 90 seconds")
     }
@@ -91,37 +99,5 @@ struct RingingView: View {
     private func countdown(_ seconds: TimeInterval) -> String {
         let s = Int(seconds.rounded(.up))
         return String(format: "%d:%02d", s / 60, s % 60)
-    }
-
-    // MARK: Challenge (placeholder until M2 adds the math)
-
-    private var challengeArea: some View {
-        VStack(spacing: 20) {
-            VStack(spacing: 6) {
-                Text(ring.session?.challenge.title ?? "")
-                    .font(.title.bold())
-                    .foregroundStyle(.orange)
-                Text("\(ring.session?.difficulty.title ?? "") difficulty")
-                    .font(.headline)
-                    .foregroundStyle(.white.opacity(0.7))
-                Text("The math challenge arrives in milestone 2. For now, use Dismiss.")
-                    .font(.subheadline)
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(.white.opacity(0.6))
-            }
-            .padding(20)
-            .frame(maxWidth: .infinity)
-            .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 20))
-
-            Button {
-                ring.resolve(.solved)
-            } label: {
-                Text("Dismiss (temporary)")
-                    .font(.title2.bold())
-                    .foregroundStyle(.black)
-                    .frame(maxWidth: .infinity, minHeight: 72)
-                    .background(Color.green, in: RoundedRectangle(cornerRadius: 20))
-            }
-        }
     }
 }
