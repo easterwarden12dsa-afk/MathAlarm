@@ -5,7 +5,7 @@ name: MathAlarm
 options:
   bundleIdPrefix: com.mathalarm
   deploymentTarget:
-    iOS: "26.0"
+    iOS: "26.1"
 
 settings:
   base:

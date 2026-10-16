@@ -26,8 +26,8 @@ final class AlarmStore: ObservableObject {
         for name in [UIApplication.significantTimeChangeNotification,
                      Notification.Name.NSSystemTimeZoneDidChange] {
             observers.append(center.addObserver(forName: name, object: nil, queue: .main) { _ in
-                MainActor.assumeIsolated {
-                    Task { await AlarmStore.shared.resync() }
+                Task { @MainActor in
+                    await AlarmStore.shared.resync()
                 }
             })
         }
