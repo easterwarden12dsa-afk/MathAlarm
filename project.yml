@@ -1,0 +1,73 @@
+# XcodeGen project definition. The cloud Mac turns this file into
+# MathAlarm.xcodeproj, so nobody has to edit an Xcode project by hand.
+name: MathAlarm
+
+options:
+  bundleIdPrefix: com.mathalarm
+  deploymentTarget:
+    iOS: "26.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    TARGETED_DEVICE_FAMILY: "1"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    ENABLE_USER_SCRIPT_SANDBOXING: "YES"
+
+targets:
+  MathAlarm:
+    type: application
+    platform: iOS
+    sources:
+      - path: MathAlarm
+      - path: Shared
+    info:
+      path: Config/MathAlarm-Info.plist
+      properties:
+        CFBundleDisplayName: Math Alarm
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen:
+          UIColorName: ""
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIRequiresFullScreen: true
+        UIUserInterfaceStyle: Dark
+        UIBackgroundModes:
+          - audio
+        NSSupportsLiveActivities: true
+        NSAlarmKitUsageDescription: "Math Alarm schedules the alarms you create so they ring even when your phone is locked, silenced or in Focus."
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mathalarm.app
+        PRODUCT_NAME: MathAlarm
+    dependencies:
+      - target: MathAlarmWidget
+        embed: true
+
+  MathAlarmWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: MathAlarmWidget
+      - path: Shared
+    info:
+      path: Config/MathAlarmWidget-Info.plist
+      properties:
+        CFBundleDisplayName: Math Alarm
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mathalarm.app.widget
+        PRODUCT_NAME: MathAlarmWidget
+
+schemes:
+  MathAlarm:
+    build:
+      targets:
+        MathAlarm: all
+        MathAlarmWidget: all
