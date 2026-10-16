@@ -32,7 +32,6 @@ targets:
           UIColorName: ""
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
-        UIRequiresFullScreen: true
         UIUserInterfaceStyle: Dark
         UIBackgroundModes:
           - audio
