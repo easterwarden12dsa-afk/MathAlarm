@@ -2,7 +2,7 @@ name: Build iPhone app
 
 on:
   push:
-    branches: ["**"]
+    branches-ignore: ["ci-logs"]
   workflow_dispatch: {}
 
 permissions:
