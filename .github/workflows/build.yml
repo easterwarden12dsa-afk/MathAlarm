@@ -5,6 +5,9 @@ on:
     branches: ["**"]
   workflow_dispatch: {}
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: macos-26
@@ -34,7 +37,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            build | tee build.log | grep -E "error:|warning: .*(deprecated|unavailable)|BUILD (SUCCEEDED|FAILED)" || true
+            build 2>&1 | tee build.log | grep -E "error:|warning: .*(deprecated|unavailable)|BUILD (SUCCEEDED|FAILED)" || true
           grep -q "BUILD SUCCEEDED" build.log
 
       - name: Package .ipa
@@ -57,3 +60,21 @@ jobs:
         with:
           name: build-log
           path: build.log
+
+      # Also publish the log to the ci-logs branch so it can be read with plain git.
+      - name: Publish build log to ci-logs branch
+        if: always()
+        run: |
+          touch build.log
+          grep -nE "error:|warning:|BUILD (SUCCEEDED|FAILED)|\*\* " build.log | head -300 > summary.txt || true
+          tail -150 build.log > tail.txt
+          mkdir -p /tmp/logs && cp build.log summary.txt tail.txt /tmp/logs/
+          echo "${{ github.sha }} ${{ job.status }}" > /tmp/logs/status.txt
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          git checkout --orphan ci-logs
+          git rm -rfq . || true
+          cp /tmp/logs/* .
+          git add build.log summary.txt tail.txt status.txt
+          git commit -qm "Build log for ${{ github.sha }}"
+          git push -f origin ci-logs
