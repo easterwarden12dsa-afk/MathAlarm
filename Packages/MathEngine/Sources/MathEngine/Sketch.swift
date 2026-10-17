@@ -390,7 +390,11 @@ public enum SketchChecker {
         // the same smoothing so a perfect sketch compares as perfect.
         var user = smoothed(fillGaps(sampled), radius: 2)
         var truth = smoothed(rawTruth, radius: 2)
-        var range = rawRange
+        // Errors are measured against at least half the box, so a graph that
+        // only fills a small part of it (Change: f and g share the box) doesn't
+        // turn normal hand wobble into "wrong".
+        let boxFloor = 0.5 * (problem.yMax - problem.yMin)
+        var range = Swift.max(rawRange, boxFloor)
 
         // 2. Normalise for the relative modes.
         switch t.normalization {
@@ -410,8 +414,9 @@ public enum SketchChecker {
         case .minMax:
             let uMin = user.min() ?? 0, uMax = user.max() ?? 0
             guard uMax - uMin > 1e-9 else { return whole("Your sketch is flat — show where the graph rises and falls.") }
-            user = user.map { ($0 - uMin) / (uMax - uMin) }
-            truth = truth.map { ($0 - fMin) / rawRange }
+            let k = rawRange / Swift.max(rawRange, boxFloor)
+            user = user.map { k * ($0 - uMin) / (uMax - uMin) }
+            truth = truth.map { k * ($0 - fMin) / rawRange }
             range = 1
         }
 
@@ -424,8 +429,12 @@ public enum SketchChecker {
             for j in 0..<n where visible[j] {
                 for k in [j - 1, j + 1] where k >= 0 && k < n && !visible[k] {
                     let off = exact[k]
-                    guard !off.isNaN, let u = sampled[j], uMax - uMin > 1e-9 else { continue }
+                    guard !off.isNaN, sampled[j] != nil, uMax - uMin > 1e-9 else { continue }
                     let up = off > problem.yMax
+                    // The last few columns before the edge count (a steep climb drawn a hair early is fine).
+                    let side = k > j ? -1 : 1
+                    let nearby = (0...3).map { j + side * $0 }.filter { $0 >= 0 && $0 < n && visible[$0] }.compactMap { sampled[$0] }
+                    let u = up ? (nearby.max() ?? 0) : (nearby.min() ?? 0)
                     let level = (u - uMin) / (uMax - uMin)
                     if up ? level < 0.65 : level > 0.35 {
                         let edge = (xs[j] + xs[k]) / 2
@@ -521,7 +530,11 @@ public enum SketchChecker {
                 // Compared with the (equally smoothed) true graph, not with 0:
                 // at the edge of the box smoothing shifts both the same way.
                 let t0 = interpolate(truth, xs: xs, at: x0)
-                if Swift.abs(u0 - t0) / range > t.zeroError {
+                // Close to the zero is enough (steep graphs: a tiny sideways shift is a big height error).
+                let c0 = column(x0)
+                let nearest = (Swift.max(0, c0 - 2)...Swift.min(n - 1, c0 + 2)).filter { visible[$0] }
+                    .map { Swift.abs(user[$0] - t0) }.min() ?? Swift.abs(u0 - t0)
+                if Swift.min(Swift.abs(u0 - t0), nearest) / range > t.zeroError {
                     features.append(SketchRegion(lo: x0 - shift * 0.7, hi: x0 + shift * 0.7, issue: .missingFeature,
                                                  hint: "The graph should reach y = 0 at x = \(lbl(x0)) (yours is \(u0 > t0 ? "above" : "below") it)."))
                 }
@@ -567,7 +580,8 @@ public enum SketchChecker {
                 let x = isLeft ? a : b
                 let lo = isLeft ? a : b - endWidth, hi = isLeft ? a + endWidth : b
                 let covered = (features + trends + values).contains { $0.lo < hi && $0.hi > lo } || !visible[i] || nearOff(i, 2)
-                if !covered, Swift.abs(user[i] - truth[i]) / range > t.endpointError {
+                let near = (Swift.max(0, i - 2)...Swift.min(n - 1, i + 2)).map { Swift.abs(user[i] - truth[$0]) }.min() ?? 0
+                if !covered, near / range > t.endpointError {
                     let high = user[i] > truth[i]
                     let hint = absolute
                         ? "At x = \(lbl(x)) the graph should \(isLeft ? "start" : "end") near y = \(SketchFormat.number(problem.value(at: x)))."
