@@ -260,7 +260,10 @@ public enum SketchChecker {
         // 3. Peaks and dips: present, at about the right place (and height).
         let trueExtrema = extrema(xs: xs, ys: truth, range: range, minProminence: t.prominence)
         for e in trueExtrema {
-            let window = xs.indices.filter { Swift.abs(xs[$0] - e.x) <= 2 * shift }
+            // Search window: wide, but never reaching the neighbouring peak/dip.
+            let neighbour = trueExtrema.filter { $0.x != e.x }.map { Swift.abs($0.x - e.x) }.min() ?? .infinity
+            let radius = Swift.max(Swift.min(2 * shift, 0.9 * neighbour), 3 * width / Double(n))
+            let window = xs.indices.filter { Swift.abs(xs[$0] - e.x) <= radius }
             guard window.count >= 5 else { continue }
             let tv = window.map { truth[$0] }, uv = window.map { user[$0] }
             func drop(_ v: [Double], _ isMax: Bool) -> Double {
@@ -269,7 +272,7 @@ public enum SketchChecker {
                              : Swift.min(v.first! - extreme, v.last! - extreme)
             }
             let trueDrop = drop(tv, e.isMax)
-            let nearEnd = e.x - a < 2 * shift || b - e.x < 2 * shift
+            let nearEnd = e.x - a < radius || b - e.x < radius
             guard trueDrop > 0.05 * range || nearEnd else { continue }
             let userDrop = drop(uv, e.isMax)
             let extreme = e.isMax ? uv.max()! : uv.min()!
@@ -576,16 +579,19 @@ public enum SketchFormat {
 public enum SketchFactory {
     public static func make(level: Level, seed: UInt64, avoiding: Set<String> = []) -> SketchProblem {
         var s = seed
-        for _ in 0..<60 {
+        var anyValid: SketchProblem?
+        for _ in 0..<80 {
             var rng = SeededRandom(seed: s)
             for _ in 0..<50 {
-                if let p = candidate(level: level, rng: &rng, seed: s), valid(p), !avoiding.contains(p.signature) {
-                    return p
+                if let p = candidate(level: level, rng: &rng, seed: s), valid(p) {
+                    if !avoiding.contains(p.signature) { return p }
+                    if anyValid == nil { anyValid = p }
                 }
             }
             s = s &* 6_364_136_223_846_793_005 &+ 1_442_695_040_888_963_407
         }
-        return testCase(seed: seed)
+        // Everything was seen recently: repeat a random one rather than always the same.
+        return anyValid ?? testCase(seed: seed)
     }
 
     /// The reference example: sin²(x)·cos(2x) on [−π/4, π/4].
@@ -599,8 +605,10 @@ public enum SketchFactory {
         let x = Expr.x
         let pi = Double.pi
         func lin(_ k: Int) -> Expr { .scaled(k, 1, x) }
+        // Hard levels also get a random vertical factor, so values differ too.
+        let factor = (level == .hard || level == .bagrut) ? r.pick([1, 1, 2, 3, -1, -2]) : 1
         func done(_ f: Expr, _ a: Double, _ b: Double, pi isPi: Bool = false) -> SketchProblem? {
-            finish(f, a, b, piBased: isPi, level: level, seed: seed)
+            finish(factor == 1 ? f : .scaled(factor, 1, f), a, b, piBased: isPi, level: level, seed: seed)
         }
         switch level {
         case .easy:
@@ -658,7 +666,13 @@ public enum SketchFactory {
                 return done(.sum([.div(.n(c), .sum([.p(x, 2), 1])), .n(k)]), -3, 3)
             }
         case .hard:
-            switch r.int(0...6) {
+            switch r.int(0...8) {
+            case 7: // sin(x) + sin(kx)/k
+                let k = r.int(2...3)
+                return done(.sum([.sin(x), .div(.sin(lin(k)), .n(k))]), -pi, pi, pi: true)
+            case 8: // (x² − a)·e^(−x²/2)
+                let a = r.int(1...3)
+                return done(.mul(.sum([.p(x, 2), .n(-a)]), .exp(.neg(.div(.p(x, 2), 2)))), -3.5, 3.5)
             case 0: return testCase(seed: seed)
             case 1: // sin²(x)·cos(kx)
                 let k = r.int(2...3)
@@ -681,7 +695,19 @@ public enum SketchFactory {
                 return done(.mul(x, .sin(x)), -2 * pi, 2 * pi, pi: true)
             }
         case .bagrut:
-            switch r.int(0...6) {
+            switch r.int(0...10) {
+            case 7: // x² − a·ln x
+                let a = r.int(1...4)
+                return done(.sub(.p(x, 2), .scaled(a, 1, .ln(x))), 0.2, 2.5 + Double(a) * 0.2)
+            case 8: // ln(x² + a)
+                let a = r.int(1...4), w = Double(r.int(2...4))
+                return done(.ln(.sum([.p(x, 2), .n(a)])), -w, w)
+            case 9: // x + a/x
+                let a = r.int(1...4)
+                return done(.sum([x, .div(.n(a), x)]), 0.3, 2.5 * Double(a).squareRoot() + 0.5)
+            case 10: // eˣ − a·x
+                let a = r.int(1...4)
+                return done(.sub(.exp(x), .scaled(a, 1, x)), -2, log(Double(a)) + 1.8)
             case 0: // xⁿ·ln x
                 let n = r.int(1...2)
                 return done(.mul(n == 1 ? x : .p(x, 2), .ln(x)), 0.1, n == 1 ? 3 : 2)

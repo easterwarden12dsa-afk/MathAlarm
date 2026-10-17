@@ -241,7 +241,7 @@ final class GraphStepsTests: XCTestCase {
         // Fresh problems should rarely repeat.
         for level in Level.allCases {
             let sigs = (1...40).map { SketchFactory.make(level: level, seed: UInt64($0) &* 2_654_435_761).signature }
-            XCTAssertGreaterThan(Set(sigs).count, 20, "too many repeats at \(level)")
+            XCTAssertGreaterThan(Set(sigs).count, 24, "too many repeats at \(level)")
         }
     }
 }

@@ -177,9 +177,14 @@ public enum GraphSteps {
             let isExt = (Swift.abs(ys[i]) <= Swift.abs(ys[i - 1])) && (Swift.abs(ys[i]) <= Swift.abs(ys[i + 1]))
             if isExt, !out.contains(where: { Swift.abs($0 - xs[i]) < 3 * (b - a) / Double(n) }) { out.append(xs[i]) }
         }
-        // Drop roots sitting exactly on the interval ends (reported as end points).
+        // Merge duplicates, and drop roots on the interval ends (reported as end points).
         let eps = 1e-6 * (b - a)
-        return out.sorted().filter { $0 > a + eps && $0 < b - eps }
+        var merged: [Double] = []
+        for x in out.sorted() where x > a + eps && x < b - eps {
+            if let last = merged.last, x - last < 2.5 * (b - a) / Double(n) { continue }
+            merged.append(x)
+        }
+        return merged
     }
 
     static func monotonicity(_ d1: Expr, cuts: [Double], a: Double, b: Double, X: (Double) -> String, name: String) -> String {
