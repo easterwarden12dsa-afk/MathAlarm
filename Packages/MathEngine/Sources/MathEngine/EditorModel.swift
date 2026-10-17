@@ -122,6 +122,21 @@ public struct MathEditor: Codable, Hashable, Sendable {
         insertAtom(.token(token))
     }
 
+    /// Pastes a ready-made piece (copied from the problem) at the cursor.
+    /// A sum goes in brackets unless the box is empty, so (x² + 1) stays one
+    /// factor when it's pasted next to something else.
+    public mutating func paste(_ piece: Row) {
+        let isSum = piece.atoms.contains {
+            if case .token(let t) = $0 { return t == .plus || t == .minus }
+            return false
+        }
+        if isSum && !currentRow.isEmpty {
+            insertAtom(.paren(piece))
+        } else {
+            for atom in piece.atoms { insertAtom(atom) }
+        }
+    }
+
     /// Inserts a structure and puts the cursor in its first box.
     public mutating func insertFunction(_ f: Fn) {
         switch f {

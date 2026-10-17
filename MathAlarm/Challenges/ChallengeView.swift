@@ -54,6 +54,35 @@ struct ChallengeView: View {
         }
     }
 
+    /// Pieces of the problem to paste into the answer (chain rule: the inner
+    /// function again and again).
+    private var copyStrip: some View {
+        let pieces = ExprPieces.pieces(of: problem.display)
+        return ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 6) {
+                Image(systemName: "doc.on.doc")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
+                ForEach(Array(pieces.enumerated()), id: \.offset) { _, piece in
+                    Button {
+                        Haptics.tap()
+                        editor.paste(ExprDisplay.row(piece))
+                    } label: {
+                        MathRowView(row: ExprDisplay.row(piece), size: 15, mergeFunctionPowers: true)
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 4)
+                            .frame(minHeight: 26)
+                    }
+                    .buttonStyle(.glass)
+                    .accessibilityLabel("Paste \(piece.description)")
+                }
+            }
+            .padding(.horizontal, 2)
+        }
+        .frame(height: 44)
+    }
+
     var body: some View {
         VStack(spacing: 8) {
             if let note {
@@ -69,6 +98,8 @@ struct ChallengeView: View {
                 .modifier(Shake(animatableData: shakes))
 
             feedbackLine
+
+            copyStrip
 
             MathKeypad(editor: $editor, allowConstantC: problem.kind == .integral, keyHeight: 44)
 
