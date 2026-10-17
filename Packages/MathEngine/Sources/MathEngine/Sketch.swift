@@ -879,11 +879,15 @@ public struct SketchFamily: Codable, Hashable, Sendable {
         case x2Ln, lnQuad, xPlusInv, expLin, powLn, lnOverPow, sqrtLin, expOverQuad, cubicK, xGauss
         // With vertical asymptotes.
         case hyperbola, ratOblique, recipQuad, xOverQuad, tanX
+        // Bagrut 5U.
+        case sinSqCos, xPlusTrig, sinOverCos, twoSinSin2, expSin, lnCos, cosOverSin, sinCos2
+        case expQuadE, ln2, xLn2, expOverLin, lnQuadratic, ratTwoPoles, logistic
 
         /// Not periodic, so "draw the whole graph" makes sense.
         public var allowsWholeDomain: Bool {
             switch self {
-            case .trigSin, .trigCos, .shiftSin, .sinCos, .sinSin, .sin2cos, .sinExpDecay, .xSin, .tanX, .xPlusInv: false
+            case .trigSin, .trigCos, .shiftSin, .sinCos, .sinSin, .sin2cos, .sinExpDecay, .xSin, .tanX, .xPlusInv,
+                 .sinSqCos, .xPlusTrig, .sinOverCos, .twoSinSin2, .expSin, .lnCos, .cosOverSin, .sinCos2: false
             default: true
             }
         }
@@ -891,7 +895,7 @@ public struct SketchFamily: Codable, Hashable, Sendable {
         /// Whole-graph problems that only exist for x > 0.
         public var positiveDomain: Bool {
             switch self {
-            case .x2Ln, .powLn, .lnOverPow, .sqrtLin: true
+            case .x2Ln, .powLn, .lnOverPow, .sqrtLin, .ln2, .xLn2: true
             default: false
             }
         }
@@ -1069,49 +1073,78 @@ public enum SketchFactory {
                 return done(.mul(x, .sin(x)), -2 * pi, 2 * pi, pi: true, .xSin, [])
             }
         case .bagrut:
-            switch r.int(0...13) {
-            case 11, 12: // (x² + a)/(x − p): vertical and oblique asymptote
+            // Bagrut 5U (571/572 style): trig investigations on [0, 2π], ln and
+            // eˣ compositions, rational functions with two kinds of asymptote.
+            let twoPi = 2 * pi
+            switch r.int(0...23) {
+            case 0, 1: // sin²x + m·cos x
+                let m = r.pick([1, -1])
+                return done(.sum([.p(.sin(x), 2), .scaled(m, 1, .cos(x))]), 0, twoPi, pi: true, .sinSqCos, [m])
+            case 2: // x + 2cos x  or  x − 2sin x
+                let v = r.int(0...1)
+                return done(v == 0 ? .sum([x, .scaled(2, 1, .cos(x))]) : .sub(x, .scaled(2, 1, .sin(x))), 0, twoPi, pi: true, .xPlusTrig, [v])
+            case 3, 4: // sin x/(c + cos x)
+                let c = r.int(2...3)
+                return done(.div(.sin(x), .sum([.n(c), .cos(x)])), 0, twoPi, pi: true, .sinOverCos, [c])
+            case 5: // 2sin x − sin 2x
+                return done(.sub(.scaled(2, 1, .sin(x)), .sin(.mul(2, x))), 0, twoPi, pi: true, .twoSinSin2, [])
+            case 6: // e^(sin x)
+                return done(.exp(.sin(x)), 0, twoPi, pi: true, .expSin, [])
+            case 7: // ln(c + cos x)
+                let c = r.int(2...3)
+                return done(.ln(.sum([.n(c), .cos(x)])), 0, twoPi, pi: true, .lnCos, [c])
+            case 8: // cos x/(1 + sin x): asymptote at 3π/2
+                return poled(.div(.cos(x), .sum([1, .sin(x)])), 0, twoPi, [3 * pi / 2], pi: true, .cosOverSin, [])
+            case 9: // sin x·cos²x
+                return done(.mul(.sin(x), .p(.cos(x), 2)), 0, twoPi, pi: true, .sinCos2, [])
+            case 10, 11: // e^(2x) − a·eˣ
+                let a = r.pick([2, 4, 6])
+                let la = log(Double(a))
+                return done(.sub(.exp(.mul(2, x)), .scaled(a, 1, .exp(x))), la - log(4) - 2.5, la + 0.6, .expQuadE, [a])
+            case 12: // ln²x − 2k·ln x
+                let k = r.pick([1, -1])
+                return done(.sum([.p(.ln(x), 2), .scaled(-2 * k, 1, .ln(x))]), k == 1 ? 0.15 : 0.05, k == 1 ? 9 : 4, .ln2, [k])
+            case 13: // x·ln²x
+                return done(.mul(x, .p(.ln(x), 2)), 0.02, 3, .xLn2, [])
+            case 14, 15: // eˣ/(x − a)
+                let a = r.int(-1...2)
+                return poled(.div(.exp(x), .sum([x, .n(-a)])), Double(a) - 4, Double(a) + 2.5, [Double(a)], .expOverLin, [a])
+            case 16: // ln(x² − 2px + p² + d)
+                let p = r.int(-1...2), d = r.pick([1, 4])
+                let w = 3 * Double(d).squareRoot() + 1
+                return done(.ln(Solver.polyExpr([1, -2 * p, p * p + d])), Double(p) - w, Double(p) + w, .lnQuadratic, [p, d])
+            case 17, 18: // (x² + c)/(x² − a²): two vertical asymptotes, y = 1
+                let a = r.int(1...2)
+                let c = r.pick([1, 4, a == 1 ? -4 : -1])
+                return poled(.div(.sum([.p(x, 2), .n(c)]), .sum([.p(x, 2), .n(-a * a)])), -Double(a) - 3, Double(a) + 3,
+                             [-Double(a), Double(a)], .ratTwoPoles, [a, c])
+            case 19: // eˣ/(eˣ + c): two horizontal asymptotes
+                let c = r.pick([1, 2, 4])
+                let lc = log(Double(c))
+                return done(.div(.exp(x), .sum([.exp(x), .n(c)])), lc - 5, lc + 5, .logistic, [c])
+            case 20: // (x² + a)/(x − p): vertical and oblique asymptote
                 let p = r.int(-2...2)
-                var a = r.pick([-3, -1, 0, 1, 3, 5])
-                if p * p + a == 0 { a += 1 }
+                var a = r.pick([-3, -1, 1, 3, 5])
+                if p * p + a == 0 { a += 2 }
                 return poled(.div(.sum([.p(x, 2), .n(a)]), .sum([x, .n(-p)])), Double(p) - 6, Double(p) + 6, [Double(p)], .ratOblique, [a, p])
-            case 13: // x/(x² − a²)
+            case 21: // x/(x² − a²)
                 let a = r.int(1...3)
                 return poled(.div(x, .sum([.p(x, 2), .n(-a * a)])), -Double(a) - 3, Double(a) + 3, [-Double(a), Double(a)], .xOverQuad, [a])
-            case 7: // x² − a·ln x
+            case 22: // ln(x)/xⁿ  or  x² − a·ln x
+                if r.bool() {
+                    let n = r.int(1...2)
+                    return done(.div(.ln(x), n == 1 ? x : .p(x, 2)), 0.5, n == 1 ? 8 : 5, .lnOverPow, [n])
+                }
                 let a = r.int(1...4)
                 return done(.sub(.p(x, 2), .scaled(a, 1, .ln(x))), 0.2, 2.5 + Double(a) * 0.2, .x2Ln, [a])
-            case 8: // ln(x² + a)
-                let a = r.int(1...4), w = Double(r.int(2...4))
-                return done(.ln(.sum([.p(x, 2), .n(a)])), -w, w, .lnQuad, [a])
-            case 9: // x + a/x
-                let a = r.int(1...4)
-                return done(.sum([x, .div(.n(a), x)]), 0.3, 2.5 * Double(a).squareRoot() + 0.5, .xPlusInv, [a])
-            case 10: // eˣ − a·x
-                let a = r.int(1...4)
-                return done(.sub(.exp(x), .scaled(a, 1, x)), -2, log(Double(a)) + 1.8, .expLin, [a])
-            case 0: // xⁿ·ln x
-                let n = r.int(1...2)
-                return done(.mul(n == 1 ? x : .p(x, 2), .ln(x)), 0.1, n == 1 ? 3 : 2, .powLn, [n])
-            case 1: // ln(x)/xⁿ
-                let n = r.int(1...2)
-                return done(.div(.ln(x), n == 1 ? x : .p(x, 2)), 0.5, n == 1 ? 8 : 5, .lnOverPow, [n])
-            case 2: // √x·(x − a)
-                let a = r.int(2...5)
-                return done(.mul(.sqrt(x), .sum([x, .n(-a)])), 0, Double(a) + 1.5, .sqrtLin, [a])
-            case 3: // eˣ/(x² + c)
+            default: // x·e^(−x²/c)  or  eˣ/(x² + c)
+                if r.bool() {
+                    let c = r.int(1...3)
+                    let w = 2.5 * Double(c).squareRoot()
+                    return done(.mul(x, .exp(.neg(.div(.p(x, 2), .n(c))))), -w, w, .xGauss, [c])
+                }
                 let c = r.int(1...3)
                 return done(.div(.exp(x), .sum([.p(x, 2), .n(c)])), -3, 2.5, .expOverQuad, [c])
-            case 4: // x³ − 3k²x
-                let k = r.int(1...3)
-                return done(.sub(.p(x, 3), .mul(.n(3 * k * k), x)), -2.2 * Double(k), 2.2 * Double(k), .cubicK, [k])
-            case 5: // x·e^(−x²/c)
-                let c = r.int(1...3)
-                let w = 2.5 * Double(c).squareRoot()
-                return done(.mul(x, .exp(.neg(.div(.p(x, 2), .n(c))))), -w, w, .xGauss, [c])
-            default: // (x² − a)/(x² + 1) — rational without asymptotes
-                let a = r.int(1...4)
-                return done(.div(.sum([.p(x, 2), .n(-a)]), .sum([.p(x, 2), 1])), -4, 4, .ratQuad, [a, 1])
             }
         }
     }

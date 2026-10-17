@@ -52,7 +52,8 @@ final class GraphAlgebraTests: XCTestCase {
                 guard let solved else { continue }
                 checked += 1
                 var inside: [Double] = []
-                for r in solved.roots where S.inside(r.x) && !inside.contains(where: { Swift.abs($0 - r.x) < 1e-7 * (w + 1) }) {
+                for r in solved.roots where S.inside(r.x) && !p.poles.contains(where: { Swift.abs($0 - r.x) < 1e-7 * (w + 1) })
+                    && !inside.contains(where: { Swift.abs($0 - r.x) < 1e-7 * (w + 1) }) {
                     inside.append(r.x)
                 }
                 inside.sort()

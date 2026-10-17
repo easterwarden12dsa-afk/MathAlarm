@@ -48,7 +48,8 @@ public enum GraphSteps {
             let numeric = roots(of: e, in: a...b)
             if let solved {
                 var inside: [AlgebraRoot] = []
-                for r in solved.roots where solver.inside(r.x) && !inside.contains(where: { Swift.abs($0.x - r.x) < 1e-7 * (width + 1) }) {
+                for r in solved.roots where solver.inside(r.x) && !poles.contains(where: { Swift.abs($0 - r.x) < 1e-7 * (width + 1) })
+                    && !inside.contains(where: { Swift.abs($0.x - r.x) < 1e-7 * (width + 1) }) {
                     inside.append(r)
                 }
                 inside.sort { $0.x < $1.x }
