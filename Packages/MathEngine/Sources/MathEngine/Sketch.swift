@@ -188,7 +188,7 @@ public enum SketchChecker {
             let u0 = interpolate(user, xs: xs, at: x0)
             if Swift.abs(u0) / range > t.zeroError {
                 features.append(SketchRegion(lo: x0 - shift * 0.7, hi: x0 + shift * 0.7, issue: .missingFeature,
-                                             hint: "The graph should reach y = 0 at x ≈ \(lbl(x0)) (yours is \(u0 > 0 ? "above" : "below") it)."))
+                                             hint: "The graph should reach y = 0 at x = \(lbl(x0)) (yours is \(u0 > 0 ? "above" : "below") it)."))
             }
         }
 
