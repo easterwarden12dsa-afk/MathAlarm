@@ -8,7 +8,16 @@ struct RootView: View {
     var body: some View {
         Group {
             if didFinishOnboarding {
-                AlarmListView()
+                TabView {
+                    AlarmListView()
+                        .tabItem { Label("Alarms", systemImage: "alarm.fill") }
+                    TimerView()
+                        .tabItem { Label("Timer", systemImage: "timer") }
+                    PracticeView()
+                        .tabItem { Label("Practice", systemImage: "function") }
+                    SettingsView()
+                        .tabItem { Label("Settings", systemImage: "gearshape.fill") }
+                }
             } else {
                 OnboardingView { didFinishOnboarding = true }
             }

@@ -134,6 +134,43 @@ enum AlarmScheduler {
         }
     }
 
+    /// Starts a countdown timer that rings like an alarm when it reaches zero.
+    /// Shows a live countdown (with Pause/Resume) on the Lock Screen.
+    static func scheduleTimer(id: UUID, duration: TimeInterval, context: RingContext) async throws {
+        let label = LocalizedStringResource(stringLiteral: context.label)
+        let solveButton = AlarmButton(text: "Solve", textColor: .white, systemImageName: "function")
+        let alert = AlarmPresentation.Alert(title: label, secondaryButton: solveButton, secondaryButtonBehavior: .custom)
+        let countdown = AlarmPresentation.Countdown(
+            title: label,
+            pauseButton: AlarmButton(text: "Pause", textColor: .orange, systemImageName: "pause.fill"))
+        let paused = AlarmPresentation.Paused(
+            title: "Paused",
+            resumeButton: AlarmButton(text: "Resume", textColor: .orange, systemImageName: "play.fill"))
+        let metadata = MathAlarmMetadata(label: context.label, challenge: context.challenge.title,
+                                         purpose: context.purpose.rawValue)
+        let attributes = AlarmAttributes<MathAlarmMetadata>(
+            presentation: AlarmPresentation(alert: alert, countdown: countdown, paused: paused),
+            metadata: metadata,
+            tintColor: .orange)
+        let configuration = AlarmManager.AlarmConfiguration<MathAlarmMetadata>.timer(
+            duration: duration,
+            attributes: attributes,
+            stopIntent: StopAlarmIntent(alarmID: id.uuidString),
+            secondaryIntent: SolveAlarmIntent(alarmID: id.uuidString),
+            sound: context.sound.isSystemDefault ? .default : .named(context.sound.resolved.fileName))
+
+        AlarmRegistry.shared.register(id, context)
+        do {
+            _ = try await manager.schedule(id: id, configuration: configuration)
+        } catch {
+            AlarmRegistry.shared.remove(id)
+            throw error
+        }
+    }
+
+    static func pause(_ id: UUID) { try? manager.pause(id: id) }
+    static func resume(_ id: UUID) { try? manager.resume(id: id) }
+
     /// Schedules a one-shot alarm at an absolute instant and returns its ID.
     @discardableResult
     static func scheduleFixed(at date: Date, context: RingContext) async throws -> UUID {

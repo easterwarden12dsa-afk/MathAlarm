@@ -22,14 +22,21 @@ struct RingingView: View {
                         .background(Color.yellow, in: RoundedRectangle(cornerRadius: 10))
                 }
 
-                if let session = ring.session, let problem = session.problem {
+                if let session = ring.session, let sketch = session.sketch {
+                    SketchChallengeView(
+                        problem: sketch,
+                        strokes: Binding(get: { ring.session?.strokes ?? [] },
+                                         set: { ring.updateStrokes($0) }),
+                        tolerance: AppSettings.shared.sketchStrictness.tolerance,
+                        onSolved: { ring.solvedOne() })
+                    .id(sketch.signature + "\(session.solvesDone ?? 0)")
+                } else if let session = ring.session, let problem = session.problem {
                     ChallengeView(
                         problem: problem,
                         editor: Binding(get: { ring.session?.editor ?? MathEditor() },
                                         set: { ring.updateEditor($0) }),
-                        note: session.challengeNote,
                         onSolutionViewed: { ring.replaceProblem() },
-                        onSolved: { ring.resolve(.solved) })
+                        onSolved: { ring.solvedOne() })
                     .id(problem.seed)
                 } else {
                     Spacer()
@@ -55,7 +62,7 @@ struct RingingView: View {
                 Text(now.formatted(date: .omitted, time: .shortened))
                     .font(.system(size: 22, weight: .bold, design: .rounded))
                     .monospacedDigit()
-                Text(ring.session?.label ?? "Alarm")
+                Text(ring.session?.progressText ?? ring.session?.label ?? "Alarm")
                     .font(.caption)
                     .lineLimit(1)
                     .foregroundStyle(.white.opacity(0.7))

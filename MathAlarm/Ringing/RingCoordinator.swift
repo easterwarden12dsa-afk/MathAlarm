@@ -130,7 +130,7 @@ final class RingCoordinator: ObservableObject {
                 saveSession()
             }
         } else {
-            session = RingSession(context: context)
+            session = RingSession(context: context, solvesNeeded: AppSettings.shared.problemsPerRing)
             saveSession()
         }
     }
@@ -170,10 +170,9 @@ final class RingCoordinator: ObservableObject {
     private func engageInApp() {
         guard var s = session else { return }
         inAppEngaged = true
-        if s.problem == nil {
+        if !s.hasChallenge {
             // Session saved by an older version: give it a problem now.
-            s.problem = ProblemHistory.shared.fresh(s.challenge.problemKind, level: s.difficulty.level)
-            s.editor = MathEditor()
+            s.newChallenge()
         }
         if let r = s.reRingID {
             AlarmScheduler.cancel(r)
@@ -283,6 +282,30 @@ final class RingCoordinator: ObservableObject {
         toast = Toast(message: "New problem — you've got this", symbol: "arrow.triangle.2.circlepath")
     }
 
+    /// One problem solved. With "problems per ring" > 1, the next one appears;
+    /// otherwise the alarm stops.
+    func solvedOne() {
+        guard var s = session else { return }
+        let done = (s.solvesDone ?? 0) + 1
+        let needed = s.solvesNeeded ?? 1
+        if done < needed {
+            s.solvesDone = done
+            s.newChallenge()
+            session = s
+            saveSession()
+            Haptics.success()
+            toast = Toast(message: "Solved \(done) of \(needed) — next one!", symbol: "checkmark.circle.fill", style: .success)
+        } else {
+            resolve(.solved)
+        }
+    }
+
+    func updateStrokes(_ strokes: [SketchStroke]) {
+        guard session != nil else { return }
+        session?.strokes = strokes
+        saveSession()
+    }
+
     /// Saves what has been typed so far (restored after a relaunch).
     func updateEditor(_ editor: MathEditor) {
         guard session != nil, session?.editor != editor else { return }
@@ -304,8 +327,10 @@ final class RingCoordinator: ObservableObject {
         UIApplication.shared.isIdleTimerDisabled = false
         switch outcome {
         case .solved:
+            AppSettings.shared.recordSolved()
             toast = Toast(message: "Solved — alarm off", symbol: "checkmark.circle.fill", style: .success)
         case .surrendered:
+            AppSettings.shared.recordSurrender()
             Haptics.press()
             toast = Toast(message: "Surrendered — alarm off", symbol: "flag.fill", style: .warning)
         }
@@ -323,8 +348,9 @@ final class RingCoordinator: ObservableObject {
     // MARK: Test button
 
     func scheduleTestRing(in seconds: TimeInterval = 10) async -> Bool {
-        let context = RingContext(itemID: nil, label: "Test alarm", challenge: .random,
-                                  difficulty: .medium, sound: .classic, purpose: .test)
+        let settings = AppSettings.shared
+        let context = RingContext(itemID: nil, label: "Test alarm", challenge: settings.quickChallenge,
+                                  difficulty: settings.quickDifficulty, sound: settings.quickSound, purpose: .test)
         let fireAt = Date().addingTimeInterval(seconds)
         do {
             try await AlarmScheduler.scheduleFixed(at: fireAt, context: context)

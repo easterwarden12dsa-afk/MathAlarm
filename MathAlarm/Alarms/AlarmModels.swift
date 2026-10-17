@@ -15,8 +15,7 @@ enum ChallengeKind: String, Codable, CaseIterable, Identifiable {
         }
     }
 
-    /// Challenges that exist in this build (Graph Sketch arrives in M3).
-    static let concreteKinds: [ChallengeKind] = [.integral, .derivative]
+    static let concreteKinds: [ChallengeKind] = [.integral, .derivative, .sketch]
 
     /// Picks a concrete challenge for `.random`; other kinds return themselves.
     func resolved() -> ChallengeKind {
@@ -30,6 +29,15 @@ enum ChallengeKind: String, Codable, CaseIterable, Identifiable {
         case .integral: .integral
         case .derivative, .sketch: .derivative
         case .random: Bool.random() ? .integral : .derivative
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .integral: "sum"
+        case .derivative: "function"
+        case .sketch: "scribble.variable"
+        case .random: "shuffle"
         }
     }
 }
@@ -75,10 +83,21 @@ final class ProblemHistory {
     /// A new problem that hasn't been shown recently; records it as shown.
     func fresh(_ kind: ProblemKind, level: Level) -> CalculusProblem {
         let p = ProblemFactory.make(kind, level: level, seed: ProblemFactory.randomSeed(), avoiding: avoid)
-        recent.append(p.signature)
+        remember(p.signature)
+        return p
+    }
+
+    func freshSketch(level: Level) -> SketchProblem {
+        // Sketch functions are a smaller set, so only avoid the last few.
+        let p = SketchFactory.make(level: level, seed: ProblemFactory.randomSeed(), avoiding: Set(recent.suffix(4)))
+        remember(p.signature)
+        return p
+    }
+
+    private func remember(_ signature: String) {
+        recent.append(signature)
         if recent.count > Self.limit { recent.removeFirst(recent.count - Self.limit) }
         Persistence.save(recent, to: Self.fileName)
-        return p
     }
 }
 
@@ -394,20 +413,49 @@ struct RingSession: Codable, Identifiable {
     /// relaunch returns to exactly the same challenge.
     var problem: CalculusProblem?
     var editor: MathEditor?
+    /// Graph Sketch challenge and the strokes drawn so far.
+    var sketch: SketchProblem?
+    var strokes: [SketchStroke]?
+    /// "Problems per ring" setting: how many must be solved, and how many are.
+    var solvesNeeded: Int?
+    var solvesDone: Int?
+    /// The challenge type chosen for the alarm (may be Random).
+    var requestedChallenge: ChallengeKind?
 
-    init(context: RingContext) {
+    init(context: RingContext, solvesNeeded: Int = 1) {
         label = context.label
+        requestedChallenge = context.challenge
         challenge = context.challenge.resolved()
         difficulty = context.difficulty
         sound = context.sound
         itemIDs = context.itemID.map { [$0] } ?? []
-        problem = ProblemHistory.shared.fresh(challenge.problemKind, level: difficulty.level)
-        editor = MathEditor()
+        self.solvesNeeded = solvesNeeded
+        solvesDone = 0
+        newChallenge()
     }
 
-    /// Shown above the problem when the chosen challenge isn't built yet.
-    var challengeNote: String? {
-        challenge == .sketch ? "Graph Sketch arrives in the next update — solve this derivative instead." : nil
+    /// Generates the next problem (or sketch) for this ring.
+    mutating func newChallenge() {
+        if let requested = requestedChallenge { challenge = requested.resolved() }
+        if challenge == .sketch {
+            sketch = ProblemHistory.shared.freshSketch(level: difficulty.level)
+            strokes = []
+            problem = nil
+            editor = nil
+        } else {
+            problem = ProblemHistory.shared.fresh(challenge.problemKind, level: difficulty.level)
+            editor = MathEditor()
+            sketch = nil
+            strokes = nil
+        }
+    }
+
+    var hasChallenge: Bool { problem != nil || sketch != nil }
+
+    var progressText: String? {
+        let needed = solvesNeeded ?? 1
+        guard needed > 1 else { return nil }
+        return "Problem \(min((solvesDone ?? 0) + 1, needed)) of \(needed)"
     }
 
     func context(purpose: AlarmPurpose) -> RingContext {

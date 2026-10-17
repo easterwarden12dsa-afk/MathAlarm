@@ -11,6 +11,18 @@ struct AlarmListView: View {
     var body: some View {
         NavigationStack {
             List {
+                if ExpiryMonitor.shouldWarn, let expiry = ExpiryMonitor.expirationDate {
+                    Section {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Label("Reinstall soon", systemImage: "exclamationmark.triangle.fill")
+                                .font(.headline)
+                                .foregroundStyle(.yellow)
+                            Text("This free install stops working \(expiry.formatted(.relative(presentation: .named))) (\(expiry.formatted(date: .abbreviated, time: .shortened))). Reinstall with iloader before then, or alarms may not ring.")
+                                .font(.subheadline)
+                        }
+                    }
+                }
+
                 if store.authorization != .authorized {
                     Section { permissionWarning }
                 }
@@ -24,12 +36,6 @@ struct AlarmListView: View {
                 }
 
                 Section {
-                    NavigationLink {
-                        PracticeView()
-                    } label: {
-                        Label("Practice challenges", systemImage: "function")
-                            .font(.headline)
-                    }
                     Button {
                         Haptics.tap()
                         Task {

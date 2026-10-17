@@ -45,6 +45,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.mathalarm.app
         PRODUCT_NAME: MathAlarm
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        MARKETING_VERSION: "1.0.0"
     dependencies:
       - target: MathAlarmWidget
         embed: true

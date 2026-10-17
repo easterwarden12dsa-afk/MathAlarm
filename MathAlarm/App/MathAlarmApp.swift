@@ -8,6 +8,7 @@ struct MathAlarmApp: App {
 
     init() {
         RingCoordinator.shared.start()
+        _ = TimerStore.shared   // starts following timer state
     }
 
     var body: some Scene {
