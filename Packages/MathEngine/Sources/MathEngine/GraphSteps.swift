@@ -42,9 +42,7 @@ public enum GraphSteps {
                     inside.append(r)
                 }
                 inside.sort { $0.x < $1.x }
-                let tol = 2e-3 * width
-                let matches = inside.count == numeric.count
-                    && zip(inside, numeric).allSatisfy { Swift.abs($0.x - $1) < tol }
+                let matches = algebraAgrees(inside.map(\.x), numeric: numeric, e: e, a: a, b: b)
                 if matches {
                     for r in inside { labels.append((r.x, r.label)) }
                     var lines = solved.lines
@@ -175,6 +173,19 @@ public enum GraphSteps {
             steps.append(SolutionStep("\(pt(x))  — \(what)", depth: 1))
         }
         return steps
+    }
+
+    /// Every numeric root has an algebraic one next to it, and every
+    /// algebraic one really is a zero (double roots the scan can miss count).
+    static func algebraAgrees(_ algebra: [Double], numeric: [Double], e: Expr, a: Double, b: Double) -> Bool {
+        let tol = 2e-3 * (b - a)
+        let scale = (0...200).map { e.evaluate(at: a + (b - a) * Double($0) / 200) }.filter(\.isFinite).map(Swift.abs).max() ?? 1
+        let allFound = numeric.allSatisfy { n in algebra.contains { Swift.abs($0 - n) < tol } }
+        let allReal = algebra.allSatisfy { r in
+            let v = e.evaluate(at: r)
+            return v.isFinite && Swift.abs(v) <= 1e-7 * Swift.max(1, scale)
+        }
+        return allFound && allReal
     }
 
     // MARK: Sign tables

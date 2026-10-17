@@ -57,7 +57,7 @@ final class GraphAlgebraTests: XCTestCase {
                 }
                 inside.sort()
                 let numeric = GraphSteps.roots(of: e, in: p.xMin...p.xMax)
-                let ok = inside.count == numeric.count && zip(inside, numeric).allSatisfy { Swift.abs($0 - $1) < 2e-3 * w }
+                let ok = GraphSteps.algebraAgrees(inside, numeric: numeric, e: e, a: p.xMin, b: p.xMax)
                 if !ok { failures.append("\(name) \(p.family!.kind) \(p.family!.p) k=\(p.family!.factor) [\(p.xMin), \(p.xMax)]: algebra \(inside) vs numeric \(numeric)") }
             }
         }
@@ -84,7 +84,8 @@ final class GraphAlgebraTests: XCTestCase {
         XCTAssertTrue(text.contains("cos 3x"), text)
         XCTAssertTrue(text.contains("x = −π/6,  0,  π/6"), text)
         XCTAssertTrue(text.contains("changes from + to −"), text)
-        XCTAssertFalse(text.contains("can't be solved exactly"), text)
+        // Only f″ = 0 needs the numeric method here; f′ = 0 is solved exactly.
+        XCTAssertEqual(text.components(separatedBy: "can't be solved exactly").count - 1, 1, text)
         XCTAssertTrue(steps.contains { $0.style == .heading && $0.text.hasPrefix("Step 3") })
     }
 

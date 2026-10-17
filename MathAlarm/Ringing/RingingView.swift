@@ -46,6 +46,7 @@ struct RingingView: View {
                         steps: { GraphSteps.steps(for: change, formulaVisible: display.showsFormula) },
                         onSolutionViewed: { ring.replaceProblem() },
                         allowZoneReveal: AppSettings.shared.zoneRevealInAlarms,
+                        change: change,
                         onSolved: { ring.solvedOne() }) {
                         ChangeHeader(change: change, display: display)
                     }

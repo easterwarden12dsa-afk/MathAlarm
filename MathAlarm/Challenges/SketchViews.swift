@@ -15,8 +15,10 @@ struct SketchCanvas: View {
     var regions: [SketchRegion] = []
     /// Practice only: draw the true graph (never during an alarm).
     var revealTruth = false
-    /// Show the true graph only inside these x-ranges (per-correction reveal).
-    var revealRanges: [ClosedRange<Double>] = []
+    /// Per-correction reveal: the true shape in a zone, fitted to the drawing.
+    var guides: [SketchStroke] = []
+    /// Lettered points (Change solutions: A on f, A′ on g).
+    var markers: [GraphMarker] = []
     /// Change challenge: the given graph f, drawn faintly behind.
     var reference: SketchProblem? = nil
     var showYScale = true
@@ -42,7 +44,7 @@ struct SketchCanvas: View {
                     for r in regions { drawRegion(ctx, map, r) }
                     if let reference { drawCurve(ctx, map, reference, color: .white.opacity(0.45), dash: [], width: 2.5) }
                     if revealTruth { drawCurve(ctx, map, problem, color: .green.opacity(0.85), dash: [6, 4], width: 2.5) }
-                    for r in revealRanges { drawCurve(ctx, map, problem, color: .green, dash: [6, 4], width: 3, within: r) }
+                    for g in guides { drawGuide(ctx, map, g) }
                     for s in strokes + [current] { drawStroke(ctx, map, s) }
                     if let eraserAt {
                         let circle = Path(ellipseIn: CGRect(x: eraserAt.x - eraserRadius, y: eraserAt.y - eraserRadius,
@@ -53,6 +55,7 @@ struct SketchCanvas: View {
                 }
                 labels(map)
                 regionBadges(map)
+                markerLabels(map)
             }
             .contentShape(Rectangle())
             .gesture(
@@ -178,6 +181,35 @@ struct SketchCanvas: View {
         ctx.stroke(path, with: .color(color), style: StrokeStyle(lineWidth: width, lineCap: .round, dash: dash))
     }
 
+    private func drawGuide(_ ctx: GraphicsContext, _ m: Mapping, _ g: SketchStroke) {
+        guard let first = g.first else { return }
+        var path = Path()
+        path.move(to: m.screen(first.x, first.y))
+        for p in g.dropFirst() { path.addLine(to: m.screen(p.x, p.y)) }
+        ctx.stroke(path, with: .color(.green), style: StrokeStyle(lineWidth: 3, lineCap: .round, dash: [6, 4]))
+    }
+
+    private func markerLabels(_ m: Mapping) -> some View {
+        ZStack(alignment: .topLeading) {
+            ForEach(Array(markers.enumerated()), id: \.offset) { _, mk in
+                let p = m.screen(mk.x, mk.y)
+                let color: Color = mk.onTarget ? .green : .white
+                Circle()
+                    .fill(color)
+                    .frame(width: 7, height: 7)
+                    .position(p)
+                Text(mk.label)
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(color)
+                    .padding(.horizontal, 3)
+                    .background(Color.black.opacity(0.6), in: RoundedRectangle(cornerRadius: 4))
+                    .fixedSize()
+                    .position(x: p.x + 11, y: p.y - 11)
+            }
+        }
+        .allowsHitTesting(false)
+    }
+
     /// Number badge + arrow in each band, matching the numbered hint list.
     private func regionBadges(_ m: Mapping) -> some View {
         ZStack(alignment: .topLeading) {
@@ -263,6 +295,8 @@ struct SketchChallengeView<Header: View>: View {
     var onSolutionViewed: (() -> Void)? = nil
     /// Each correction gets a "show the correct graph here" button.
     var allowZoneReveal = true
+    /// Change: the solution graph shows f with lettered points and their images.
+    var change: ChangeProblem? = nil
     var onSolved: () -> Void
     @ViewBuilder var header: Header
 
@@ -282,7 +316,7 @@ struct SketchChallengeView<Header: View>: View {
             // The canvas takes whatever height is left, so the controls below never get pushed off screen.
             SketchCanvas(problem: problem, strokes: $strokes, tool: tool,
                          regions: result?.passed == false ? result!.regions : [],
-                         revealTruth: reveal, revealRanges: revealed, reference: reference, showYScale: mode.showsYScale,
+                         revealTruth: reveal, guides: guides, reference: reference, showYScale: mode.showsYScale,
                          willChange: { history.append(strokes); if history.count > 60 { history.removeFirst() } })
                 .frame(minHeight: 140, maxHeight: .infinity)
                 .layoutPriority(-1)
@@ -299,7 +333,8 @@ struct SketchChallengeView<Header: View>: View {
         }
         .frame(maxWidth: .infinity)
         .sheet(isPresented: $showSteps, onDismiss: { onSolutionViewed?() }) {
-            GraphSolutionSheet(problem: problem, reference: reference, steps: steps?() ?? [],
+            GraphSolutionSheet(problem: problem, reference: change?.base ?? reference, steps: steps?() ?? [],
+                               markers: change.map { GraphSteps.markers(for: $0) } ?? [],
                                warning: onSolutionViewed == nil ? nil : "After you close this, you'll get a new problem of the same kind to draw.")
         }
         .confirmationDialog("Show how to draw it?", isPresented: $confirmSteps, titleVisibility: .visible) {
@@ -308,6 +343,12 @@ struct SketchChallengeView<Header: View>: View {
         } message: {
             Text("The alarm still needs a solved problem, so you'll get a fresh one afterwards.")
         }
+    }
+
+    /// The correct shape in each revealed zone, joined to what was drawn.
+    private var guides: [SketchStroke] {
+        let flagged = result?.passed == false ? result!.regions.map { $0.lo...$0.hi } : []
+        return revealed.map { SketchGuide.continuation(of: strokes, for: problem, in: $0, flagged: flagged) }
     }
 
     // MARK: Toolbar
@@ -579,6 +620,7 @@ struct GraphSolutionSheet: View {
     let problem: SketchProblem
     var reference: SketchProblem? = nil
     let steps: [SolutionStep]
+    var markers: [GraphMarker] = []
     var warning: String? = nil
     @Environment(\.dismiss) private var dismiss
 
@@ -591,22 +633,34 @@ struct GraphSolutionSheet: View {
                             .font(.footnote.weight(.semibold))
                             .foregroundStyle(.yellow)
                     }
+                    if !markers.isEmpty {
+                        graph(caption: "f in grey with its key points A, B, …; g in green with the moved points A′, B′, …")
+                    }
                     StepsList(steps: steps)
-                    Text("The finished graph (green\(reference == nil ? "" : "; f in grey")):")
-                        .font(.subheadline.weight(.semibold))
-                    SketchCanvas(problem: problem, strokes: .constant([]), revealTruth: true, reference: reference)
-                        .frame(height: 260)
-                        .allowsHitTesting(false)
+                    if markers.isEmpty {
+                        graph(caption: "The finished graph (green\(reference == nil ? "" : "; f in grey")):")
+                    }
                 }
                 .padding()
             }
             .background(Color.black)
             .navigationTitle("How to draw it")
+            .scrollIndicators(.visible)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
             }
         }
         .preferredColorScheme(.dark)
+    }
+
+    private func graph(caption: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(caption)
+                .font(.subheadline.weight(.semibold))
+            SketchCanvas(problem: problem, strokes: .constant([]), revealTruth: true, markers: markers, reference: reference)
+                .frame(height: 280)
+                .allowsHitTesting(false)
+        }
     }
 }

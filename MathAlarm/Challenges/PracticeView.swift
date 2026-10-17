@@ -116,7 +116,8 @@ struct PracticeView: View {
             let display = settings.changeDisplay
             SketchChallengeView(problem: change.target, strokes: $strokes, mode: mode,
                                 reference: display.showsGraph ? change.base : nil,
-                                allowReveal: true, steps: { GraphSteps.steps(for: change, formulaVisible: display.showsFormula) }, onSolved: solved) {
+                                allowReveal: true, steps: { GraphSteps.steps(for: change, formulaVisible: display.showsFormula) },
+                                change: change, onSolved: solved) {
                 ChangeHeader(change: change, display: display)
             }
             .id(change.signature + mode.rawValue)

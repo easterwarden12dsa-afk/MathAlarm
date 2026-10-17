@@ -1,14 +1,36 @@
 import SwiftUI
 import MathEngine
 
-/// Renders a list of worked-solution steps with indentation for sub-steps.
+/// Renders worked-solution steps. Headings split them into separate cards
+/// ("STEP 3" caption + title), sub-headings title the parts inside, and
+/// sub-steps are indented.
 struct StepsList: View {
     let steps: [SolutionStep]
 
+    /// Steps grouped into sections, each starting at a heading.
+    private var sections: [[SolutionStep]] {
+        var out: [[SolutionStep]] = []
+        for step in steps {
+            if step.style == .heading || out.isEmpty { out.append([step]) } else { out[out.count - 1].append(step) }
+        }
+        return out
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            ForEach(Array(steps.enumerated()), id: \.offset) { _, step in
-                StepRow(step: step)
+        VStack(alignment: .leading, spacing: 14) {
+            ForEach(Array(sections.enumerated()), id: \.offset) { _, section in
+                if section.first?.style == .heading {
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(Array(section.enumerated()), id: \.offset) { _, step in StepRow(step: step) }
+                    }
+                    .padding(14)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 16))
+                } else {
+                    VStack(alignment: .leading, spacing: 10) {
+                        ForEach(Array(section.enumerated()), id: \.offset) { _, step in StepRow(step: step) }
+                    }
+                }
             }
         }
     }
@@ -18,6 +40,38 @@ private struct StepRow: View {
     let step: SolutionStep
 
     var body: some View {
+        switch step.style {
+        case .heading:
+            heading
+        case .subheading:
+            Text(step.text)
+                .font(.subheadline.weight(.bold))
+                .foregroundStyle(.orange)
+                .padding(.top, 6)
+                .fixedSize(horizontal: false, vertical: true)
+        default:
+            row
+        }
+    }
+
+    /// "Step 3 · Extreme points" → small "STEP 3" caption over a bold title.
+    private var heading: some View {
+        let parts = step.text.components(separatedBy: " · ")
+        return VStack(alignment: .leading, spacing: 2) {
+            if parts.count == 2 {
+                Text(parts[0].uppercased())
+                    .font(.caption.weight(.bold))
+                    .tracking(1)
+                    .foregroundStyle(.orange)
+            }
+            Text(parts.count == 2 ? parts[1] : step.text)
+                .font(.title3.weight(.bold))
+                .foregroundStyle(.white)
+            Divider().overlay(Color.white.opacity(0.2)).padding(.top, 4)
+        }
+    }
+
+    private var row: some View {
         HStack(alignment: .top, spacing: 8) {
             if step.depth > 0 {
                 Rectangle()
@@ -27,10 +81,17 @@ private struct StepRow: View {
             }
             VStack(alignment: .leading, spacing: 4) {
                 if !step.text.isEmpty {
-                    Text(step.text)
-                        .font(.subheadline)
-                        .foregroundStyle(.white.opacity(0.85))
-                        .fixedSize(horizontal: false, vertical: true)
+                    if step.style == .result {
+                        Label(step.text, systemImage: "checkmark.seal.fill")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.green)
+                            .fixedSize(horizontal: false, vertical: true)
+                    } else {
+                        Text(step.text)
+                            .font(.subheadline)
+                            .foregroundStyle(.white.opacity(0.85))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
                 if step.math != nil || step.prime != nil {
                     FittedMath(sizes: [22, 19, 16, 14, 12, 11]) { size in
