@@ -119,8 +119,10 @@ final class SketchTests: XCTestCase {
         }
         let r = check(wrong, .standard)
         XCTAssertFalse(r.passed)
-        print("SAMPLE eachregion raw: \(SketchChecker.rawCheck(drawing(wrong, for: problem), for: problem, tolerance: SketchMode.standard.tolerance).hints)")
-        XCTAssertGreaterThanOrEqual(r.regions.count, 2, "\(r.regions)")
+        // Both wrong spots are covered (fixing them separately wouldn't be enough here,
+        // so they may come back as one wider zone).
+        XCTAssertTrue(r.regions.contains { $0.lo <= 0 && $0.hi >= 0 }, "\(r.regions)")
+        XCTAssertTrue(r.regions.contains { $0.lo <= .pi / 6 && $0.hi >= .pi / 6 }, "\(r.regions)")
         XCTAssertEqual(Set(r.hints).count, r.hints.count, "hints should differ: \(r.hints)")
         XCTAssertLessThanOrEqual(r.regions.count, 4)
     }

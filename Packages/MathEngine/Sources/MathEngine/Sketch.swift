@@ -601,7 +601,7 @@ public enum SketchChecker {
             if unmatched.count > extra, let first = unmatched.first {
                 bumps.append(SketchRegion(lo: first.x - shift, hi: first.x + shift, issue: .missingFeature,
                                           hint: "Your sketch has extra bumps (near x = \(lbl(first.x))) that the graph doesn't have."))
-            } else if let r = wiggleRegion(user: smoothUser, truth: smoothed(truth, radius: 3), xs: xs, range: range,
+            } else if let r = wiggleRegion(user: user, truth: truth, xs: xs, range: range,
                                            visible: visible, half: half, label: lbl) {
                 bumps.append(r)
             }
@@ -690,7 +690,7 @@ public enum SketchChecker {
             } else if let m = missing.first {
                 regions.append(SketchRegion(lo: m.x - near, hi: m.x + near, issue: .missingFeature,
                                             hint: "The graph has a \(m.isMax ? "peak" : "dip") near x = \(label(m.x)) — your drawing doesn't turn there."))
-            } else if let w = wiggleRegion(user: smoothUser, truth: smoothed(truth, radius: 3), xs: xs, range: span,
+            } else if let w = wiggleRegion(user: user, truth: truth, xs: xs, range: span,
                                            visible: shown, half: half, label: label) {
                 regions.append(w)
             }
@@ -720,6 +720,8 @@ public enum SketchChecker {
             }
             residual[i] = best.isFinite ? best : 0
         }
+        // Light smoothing removes finger jitter but keeps real bumps.
+        residual = smoothed(residual, radius: 2)
         let win = Swift.max(8, n / 4)
         var worst: (wave: Double, lo: Int, hi: Int)?
         var s = 0
@@ -731,7 +733,7 @@ public enum SketchChecker {
                 // A smooth error goes one way (tv ≈ its net change); waves go back and forth.
                 let net = Swift.abs(residual[idx.last!] - residual[idx.first!])
                 let wave = (tv - net) / range
-                if wave > 0.35, worst == nil || wave > worst!.wave { worst = (wave, idx.first!, idx.last!) }
+                if wave > 0.3, worst == nil || wave > worst!.wave { worst = (wave, idx.first!, idx.last!) }
             }
             s += win / 2
         }
