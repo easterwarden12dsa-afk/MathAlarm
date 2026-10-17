@@ -471,7 +471,7 @@ struct SketchChallengeView<Header: View>: View {
         }
         .sheet(isPresented: $showLines) {
             GuidelineSheet(lines: $guidelines, view: viewport ?? problem.viewport, zoomable: problem.isWhole)
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.large])
         }
         .confirmationDialog("Show how to draw it?", isPresented: $confirmSteps, titleVisibility: .visible) {
             Button("Show steps (new problem after)") { showSteps = true }
@@ -1012,13 +1012,25 @@ struct GuidelineSheet: View {
                     .pickerStyle(.segmented)
                     .onChange(of: kind) { _, _ in field = 0 }
 
-                    HStack(spacing: 10) {
+                    // The Add button sits right next to the values, so it never needs scrolling.
+                    HStack(spacing: 8) {
                         if kind == 2 {
                             valueBox("m", first, index: 0)
                             valueBox("b", second, index: 1)
                         } else {
                             valueBox(kind == 0 ? "x =" : "y =", first, index: 0)
                         }
+                        Button {
+                            add()
+                        } label: {
+                            Label("Add", systemImage: "plus")
+                                .font(.headline)
+                                .frame(minHeight: 30)
+                        }
+                        .buttonStyle(.glassProminent)
+                        .tint(.cyan)
+                        .controlSize(.large)
+                        .disabled(parsed == nil)
                     }
 
                     if let k = parsed, !Guideline.isVisible(k, in: view) {
@@ -1029,18 +1041,6 @@ struct GuidelineSheet: View {
                     }
 
                     pad
-
-                    Button {
-                        add()
-                    } label: {
-                        Label("Add line", systemImage: "plus.circle.fill")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity, minHeight: 30)
-                    }
-                    .buttonStyle(.glassProminent)
-                    .tint(.cyan)
-                    .controlSize(.large)
-                    .disabled(parsed == nil)
 
                     Text("Dashed helper lines for drawing — for example the asymptotes you found. They aren't checked.")
                         .font(.footnote)
