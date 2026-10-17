@@ -46,6 +46,9 @@ jobs:
           cp -R build/Build/Products/Release-iphoneos/MathAlarm.app Payload/
           zip -qry MathAlarm.ipa Payload
           ls -la MathAlarm.ipa
+          # Fingerprint so the downloaded file can be checked against what was built.
+          shasum -a 256 MathAlarm.ipa | tee ipa-sha256.txt
+          echo "### MathAlarm.ipa SHA-256: \`$(cut -d' ' -f1 ipa-sha256.txt)\`" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload .ipa
         uses: actions/upload-artifact@v4
@@ -69,12 +72,13 @@ jobs:
           grep -nE "error:|warning:|BUILD (SUCCEEDED|FAILED)|\*\* " build.log | head -300 > summary.txt || true
           tail -150 build.log > tail.txt
           mkdir -p /tmp/logs && cp build.log summary.txt tail.txt /tmp/logs/
+          cp ipa-sha256.txt /tmp/logs/ 2>/dev/null || true
           echo "${{ github.sha }} ${{ job.status }}" > /tmp/logs/status.txt
           git config user.name "ci"
           git config user.email "ci@users.noreply.github.com"
           git checkout --orphan ci-logs
           git rm -rfq . || true
           cp /tmp/logs/* .
-          git add build.log summary.txt tail.txt status.txt
+          git add build.log summary.txt tail.txt status.txt $(ls ipa-sha256.txt 2>/dev/null)
           git commit -qm "Build log for ${{ github.sha }}"
           git push -f origin ci-logs
