@@ -122,9 +122,9 @@ public struct SketchTolerance: Hashable, Sendable {
     /// into the same box), not by values or features.
     public var visual = false
     /// Visual mode: average gap between the curves (fraction of the box).
-    public var visualMeanTolerance = 0.07
+    public var visualMeanTolerance = 0.08
     /// Visual mode: a stretch where the gap is bigger than this is flagged.
-    public var visualLocalTolerance = 0.17
+    public var visualLocalTolerance = 0.2
 
     public init() {}
 
@@ -400,6 +400,19 @@ public enum SketchChecker {
         let n = xs.count
         let aspect = 1.5
         let reach = n / 4                          // only look ±25% sideways
+        // Line the drawing up with the graph the way the eye does: best
+        // vertical stretch + shift (least squares). Upside down can't be fixed.
+        let mu = user.reduce(0, +) / Double(n), mt = truth.reduce(0, +) / Double(n)
+        var cov = 0.0, varU = 0.0
+        for i in 0..<n { cov += (user[i] - mu) * (truth[i] - mt); varU += (user[i] - mu) * (user[i] - mu) }
+        guard varU > 1e-12, cov > 0 else {
+            return SketchResult(passed: false,
+                                regions: [SketchRegion(lo: a, hi: b, issue: .missingFeature,
+                                                       hint: "It doesn't look like the graph — check where it goes up and where it goes down.")],
+                                coverage: coverage)
+        }
+        let alpha = cov / varU
+        let user = user.map { mt + alpha * ($0 - mu) }
         func gap(_ i: Int, from ys: [Double], to other: [Double]) -> Double {
             var best = Double.infinity
             for j in Swift.max(0, i - reach)...Swift.min(n - 1, i + reach) {
