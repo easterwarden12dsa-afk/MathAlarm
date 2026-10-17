@@ -30,6 +30,7 @@ struct RingingView: View {
                         mode: AppSettings.shared.sketchMode,
                         steps: { GraphSteps.steps(for: sketch) },
                         onSolutionViewed: { ring.replaceProblem() },
+                        allowZoneReveal: AppSettings.shared.zoneRevealInAlarms,
                         onSolved: { ring.solvedOne() }) {
                         SketchHeader(problem: sketch)
                     }
@@ -44,6 +45,7 @@ struct RingingView: View {
                         reference: display.showsGraph ? change.base : nil,
                         steps: { GraphSteps.steps(for: change, formulaVisible: display.showsFormula) },
                         onSolutionViewed: { ring.replaceProblem() },
+                        allowZoneReveal: AppSettings.shared.zoneRevealInAlarms,
                         onSolved: { ring.solvedOne() }) {
                         ChangeHeader(change: change, display: display)
                     }

@@ -15,6 +15,8 @@ struct SketchCanvas: View {
     var regions: [SketchRegion] = []
     /// Practice only: draw the true graph (never during an alarm).
     var revealTruth = false
+    /// Show the true graph only inside these x-ranges (per-correction reveal).
+    var revealRanges: [ClosedRange<Double>] = []
     /// Change challenge: the given graph f, drawn faintly behind.
     var reference: SketchProblem? = nil
     var showYScale = true
@@ -40,6 +42,7 @@ struct SketchCanvas: View {
                     for r in regions { drawRegion(ctx, map, r) }
                     if let reference { drawCurve(ctx, map, reference, color: .white.opacity(0.45), dash: [], width: 2.5) }
                     if revealTruth { drawCurve(ctx, map, problem, color: .green.opacity(0.85), dash: [6, 4], width: 2.5) }
+                    for r in revealRanges { drawCurve(ctx, map, problem, color: .green, dash: [6, 4], width: 3, within: r) }
                     for s in strokes + [current] { drawStroke(ctx, map, s) }
                     if let eraserAt {
                         let circle = Path(ellipseIn: CGRect(x: eraserAt.x - eraserRadius, y: eraserAt.y - eraserRadius,
@@ -159,11 +162,14 @@ struct SketchCanvas: View {
         ctx.stroke(path, with: .color(.orange), style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
     }
 
-    private func drawCurve(_ ctx: GraphicsContext, _ m: Mapping, _ p: SketchProblem, color: Color, dash: [CGFloat], width: CGFloat) {
+    private func drawCurve(_ ctx: GraphicsContext, _ m: Mapping, _ p: SketchProblem, color: Color, dash: [CGFloat], width: CGFloat,
+                           within range: ClosedRange<Double>? = nil) {
         var path = Path()
         var started = false
+        let lo = Swift.max(p.xMin, range?.lowerBound ?? p.xMin), hi = Swift.min(p.xMax, range?.upperBound ?? p.xMax)
+        guard hi > lo else { return }
         for i in 0...240 {
-            let x = p.xMin + (p.xMax - p.xMin) * Double(i) / 240
+            let x = lo + (hi - lo) * Double(i) / 240
             let y = p.value(at: x)
             guard y.isFinite else { started = false; continue }
             let pt = m.screen(x, y)
@@ -256,6 +262,8 @@ struct SketchChallengeView<Header: View>: View {
     var steps: (() -> [SolutionStep])? = nil
     /// Ringing screen: viewing the steps swaps in a new problem afterwards.
     var onSolutionViewed: (() -> Void)? = nil
+    /// Each correction gets a "show the correct graph here" button.
+    var allowZoneReveal = true
     var onSolved: () -> Void
     @ViewBuilder var header: Header
 
@@ -267,13 +275,14 @@ struct SketchChallengeView<Header: View>: View {
     @State private var history: [[SketchStroke]] = []
     @State private var showSteps = false
     @State private var confirmSteps = false
+    @State private var revealed: [ClosedRange<Double>] = []
 
     var body: some View {
         VStack(spacing: 10) {
             header
             SketchCanvas(problem: problem, strokes: $strokes, tool: tool,
                          regions: result?.passed == false ? result!.regions : [],
-                         revealTruth: reveal, reference: reference, showYScale: mode.showsYScale,
+                         revealTruth: reveal, revealRanges: revealed, reference: reference, showYScale: mode.showsYScale,
                          willChange: { history.append(strokes); if history.count > 60 { history.removeFirst() } })
                 .frame(maxHeight: .infinity)
                 .modifier(Shake(animatableData: shakes))
@@ -319,6 +328,7 @@ struct SketchChallengeView<Header: View>: View {
                     history.append(strokes)
                     strokes = []
                     result = nil
+                    revealed = []
                 }
                 if steps != nil {
                     actionButton("list.number", "Steps") {
@@ -386,9 +396,34 @@ struct SketchChallengeView<Header: View>: View {
                             .font(.subheadline)
                             .foregroundStyle(.primary)
                             .fixedSize(horizontal: false, vertical: true)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        // Fix this zone: erase just here, and optionally peek at the right curve here.
+                        Button {
+                            Haptics.tap()
+                            history.append(strokes)
+                            strokes = SketchEraser.erase(strokes, xFrom: region.lo, to: region.hi)
+                        } label: {
+                            Image(systemName: "eraser").font(.subheadline.weight(.semibold))
+                        }
+                        .buttonStyle(.glass)
+                        .accessibilityLabel("Erase zone \(index + 1)")
+                        if allowZoneReveal {
+                            let range = region.lo...region.hi
+                            let shown = revealed.contains(range)
+                            Button {
+                                Haptics.tap()
+                                if shown { revealed.removeAll { $0 == range } } else { revealed.append(range) }
+                            } label: {
+                                Image(systemName: shown ? "eye.slash" : "eye").font(.subheadline.weight(.semibold))
+                            }
+                            .buttonStyle(.glass)
+                            .accessibilityLabel(shown ? "Hide correct graph in zone \(index + 1)" : "Show correct graph in zone \(index + 1)")
+                        }
                     }
                 }
-                Text("Fix just those parts — Erase rubs out a piece so you can redraw it.")
+                Text(allowZoneReveal
+                     ? "Fix just those parts: the eraser clears that zone, the eye shows the correct graph there (green)."
+                     : "Fix just those parts: the eraser next to a hint clears that zone so you can redraw it.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

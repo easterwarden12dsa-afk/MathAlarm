@@ -582,6 +582,39 @@ public enum SketchChecker {
 /// Removes only the part of the drawing under the eraser, splitting strokes
 /// where needed (so one long stroke isn't deleted all at once).
 public enum SketchEraser {
+    /// Removes everything drawn between x = lo and x = hi (one band),
+    /// splitting strokes that cross it.
+    public static func erase(_ strokes: [SketchStroke], xFrom lo: Double, to hi: Double) -> [SketchStroke] {
+        var out: [SketchStroke] = []
+        for stroke in strokes {
+            var current: SketchStroke = []
+            var previous: SketchPoint?
+            for p in stroke {
+                // Keep the cut clean: add the crossing point at the band edge.
+                if let q = previous {
+                    for edge in [lo, hi] where (q.x - edge) * (p.x - edge) < 0 {
+                        let t = (edge - q.x) / (p.x - q.x)
+                        let cut = SketchPoint(x: edge, y: q.y + t * (p.y - q.y))
+                        if !(q.x >= lo && q.x <= hi) { current.append(cut) }
+                    }
+                }
+                if p.x >= lo && p.x <= hi {
+                    if !current.isEmpty { out.append(current); current = [] }
+                } else {
+                    if current.isEmpty, let q = previous, q.x >= lo && q.x <= hi {
+                        let edge = p.x > hi ? hi : lo
+                        let t = (edge - q.x) / (p.x - q.x)
+                        current.append(SketchPoint(x: edge, y: q.y + t * (p.y - q.y)))
+                    }
+                    current.append(p)
+                }
+                previous = p
+            }
+            if !current.isEmpty { out.append(current) }
+        }
+        return out
+    }
+
     /// `rx`, `ry`: eraser radius in x- and y-units (an ellipse in graph space
     /// is a circle on screen).
     public static func erase(_ strokes: [SketchStroke], around c: SketchPoint, rx: Double, ry: Double) -> [SketchStroke] {

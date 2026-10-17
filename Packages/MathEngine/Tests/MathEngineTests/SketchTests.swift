@@ -163,6 +163,15 @@ final class SketchTests: XCTestCase {
         XCTAssertEqual(out.count, 2)
     }
 
+    func testEraseBandKeepsOutsideParts() {
+        let stroke = (0...100).map { SketchPoint(x: Double($0) / 100, y: Double($0) / 100) }
+        let out = SketchEraser.erase([stroke], xFrom: 0.3, to: 0.6)
+        XCTAssertEqual(out.count, 2)
+        XCTAssertTrue(out.flatMap { $0 }.allSatisfy { $0.x <= 0.3 + 1e-9 || $0.x >= 0.6 - 1e-9 })
+        XCTAssertEqual(out[0].last!.x, 0.3, accuracy: 0.011)
+        XCTAssertEqual(out[1].first!.x, 0.6, accuracy: 0.011)
+    }
+
     func testEraserLeavesOtherStrokesAlone() {
         let a = [SketchPoint(x: 0, y: 0), SketchPoint(x: 1, y: 0)]
         let b = [SketchPoint(x: 0, y: 5), SketchPoint(x: 1, y: 5)]

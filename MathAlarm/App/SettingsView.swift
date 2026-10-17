@@ -17,6 +17,7 @@ struct SettingsView: View {
                     Picker("Change shows f as", selection: $settings.changeDisplay) {
                         ForEach(AppSettings.ChangeDisplay.allCases) { Text($0.title).tag($0) }
                     }
+                    Toggle("Show correct part during alarms", isOn: $settings.zoneRevealInAlarms)
                 } header: {
                     Text("Challenges")
                 } footer: {

@@ -31,6 +31,10 @@ final class AppSettings: ObservableObject {
     @Published var changeDisplay: ChangeDisplay {
         didSet { defaults.set(changeDisplay.rawValue, forKey: "changeDisplay") }
     }
+    /// Let the "show the correct graph in this zone" button work during alarms too.
+    @Published var zoneRevealInAlarms: Bool {
+        didSet { defaults.set(zoneRevealInAlarms, forKey: "zoneRevealInAlarms") }
+    }
     /// Problems to solve before a ring stops (1–3).
     @Published var problemsPerRing: Int {
         didSet { defaults.set(problemsPerRing, forKey: "problemsPerRing") }
@@ -61,6 +65,7 @@ final class AppSettings: ObservableObject {
     private init() {
         sketchMode = SketchMode(rawValue: defaults.string(forKey: "sketchMode") ?? "") ?? .standard
         changeDisplay = ChangeDisplay(rawValue: defaults.string(forKey: "changeDisplay") ?? "") ?? .both
+        zoneRevealInAlarms = defaults.bool(forKey: "zoneRevealInAlarms")
         let perRing = defaults.integer(forKey: "problemsPerRing")
         problemsPerRing = (1...3).contains(perRing) ? perRing : 1
         quickChallenge = ChallengeKind(rawValue: defaults.string(forKey: "quickChallenge") ?? "") ?? .random
