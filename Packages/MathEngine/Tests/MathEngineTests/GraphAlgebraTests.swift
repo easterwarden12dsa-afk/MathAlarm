@@ -120,3 +120,27 @@ final class SketchGuideTests: XCTestCase {
         XCTAssertEqual(mid.y, 0.5 * p.value(at: mid.x) + 0.1, accuracy: 0.03)
     }
 }
+
+final class SolutionSampleTests: XCTestCase {
+    /// Prints a few full solutions into the CI log for proofreading.
+    func testPrintSamples() {
+        func dump(_ title: String, _ steps: [SolutionStep]) {
+            print("SAMPLE ===== \(title)")
+            for s in steps {
+                let pad = String(repeating: "  ", count: s.depth)
+                let tag = s.style.map { "[\($0.rawValue)] " } ?? ""
+                let math = s.math.map { "  {\(s.label ?? "") \($0.description)}" } ?? ""
+                print("SAMPLE \(pad)\(tag)\(s.text)\(math)")
+            }
+        }
+        dump("reference", GraphSteps.steps(for: SketchFactory.testCase()))
+        let x2ln = SketchFactory.finish(.sub(.p(.x, 2), .scaled(3, 1, .ln(.x))), 0.2, 3.1, piBased: false, level: .bagrut, seed: 1,
+                                        family: SketchFamily(.x2Ln, [3]))!
+        dump("x² − 3 ln x", GraphSteps.steps(for: x2ln))
+        var rng = SeededRandom(seed: 99)
+        if let p = SketchFactory.candidate(level: .hard, rng: &rng, seed: 99) { dump("hard \(p.function)", GraphSteps.steps(for: p)) }
+        let c = ChangeFactory.make(level: .bagrut, seed: 4242)
+        dump("change graph-only \(c.transform.formula)", GraphSteps.steps(for: c, formulaVisible: false))
+        dump("change formula \(c.transform.formula)", GraphSteps.steps(for: c, formulaVisible: true))
+    }
+}
