@@ -884,7 +884,7 @@ public struct ShapeMemory: Codable, Sendable {
     }
 
     func looksLikeRecent(_ shape: [Double]) -> Bool {
-        shapes.contains { ShapeKey.distance($0, shape) < 0.09 }
+        shapes.suffix(15).contains { ShapeKey.distance($0, shape) < 0.09 }
     }
 
     func usedRecently(_ kind: String, depth: Int) -> Bool { kinds.suffix(depth).contains(kind) }
@@ -971,9 +971,9 @@ public enum SketchFactory {
                     if notSeen == nil { notSeen = p }
                     // A different family from the last few, and a different look.
                     let kind = p.family?.kind.rawValue ?? "other"
-                    let strict = attempt < 50
-                    if strict && memory.usedRecently(kind, depth: 3) { continue }
-                    if memory.looksLikeRecent(ShapeKey.of(p)) { continue }
+                    // First: new family and new look; then: at least a new family.
+                    if memory.usedRecently(kind, depth: 3) && attempt < 70 { continue }
+                    if memory.looksLikeRecent(ShapeKey.of(p)) && attempt < 40 { continue }
                     return p
                 }
             }
@@ -1346,8 +1346,8 @@ public enum ChangeFactory {
             s = s &* 6_364_136_223_846_793_005 &+ 1_442_695_040_888_963_407
             guard let p = candidate(level: level, rng: &rng, seed: s), !avoiding.contains(p.signature) else { continue }
             if notSeen == nil { notSeen = p }
-            if attempt < 120 && memory.usedRecently(p.kindName, depth: 2) { continue }
-            if memory.looksLikeRecent(ShapeKey.of(p.target)) || memory.looksLikeRecent(ShapeKey.of(p.base)) { continue }
+            if attempt < 130 && memory.usedRecently(p.kindName, depth: 2) { continue }
+            if attempt < 80 && (memory.looksLikeRecent(ShapeKey.of(p.target)) || memory.looksLikeRecent(ShapeKey.of(p.base))) { continue }
             return p
         }
         if let notSeen { return notSeen }
