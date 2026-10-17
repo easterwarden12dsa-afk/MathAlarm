@@ -33,26 +33,31 @@ public typealias SketchStroke = [SketchPoint]
 
 // MARK: - Tunable tolerances
 
-/// The "close enough" thresholds. All errors are measured relative to the
+/// The "close enough" thresholds. Errors are measured relative to the
 /// function's range on the interval (max − min), positions relative to the
-/// interval width.
+/// interval width. The default (moderate) is meant for a quick, rough
+/// finger sketch: it checks the *shape* — where the graph rises and falls,
+/// its peaks, dips and zeros — not exact values.
 public struct SketchTolerance: Hashable, Sendable {
     /// Number of x columns the drawing is sampled at.
     public var columns = 80
-    /// Number of x segments that are judged separately (and highlighted).
+    /// Number of x strips judged separately.
     public var segments = 8
     /// Fraction of the interval that must be drawn.
-    public var minCoverage = 0.85
-    /// Allowed mean |error| in a segment.
-    public var segmentError = 0.16
+    public var minCoverage = 0.72
+    /// Allowed mean |error| in a strip (only flags clearly wrong heights).
+    public var segmentError = 0.32
     /// Allowed error at each end of the interval.
-    public var endpointError = 0.2
+    public var endpointError = 0.38
     /// Allowed |y| where the graph should touch/cross zero.
-    public var zeroError = 0.13
+    public var zeroError = 0.22
     /// How far a peak/dip may be from its true x position.
-    public var extremumShift = 0.08
+    public var extremumShift = 0.12
     /// A peak or dip only counts if it's at least this tall.
-    public var prominence = 0.12
+    public var prominence = 0.15
+    /// A rise/fall only counts if the true graph changes at least this much
+    /// across a strip; the sketch must then go the same way.
+    public var trendThreshold = 0.25
 
     public init() {}
 
@@ -60,48 +65,60 @@ public struct SketchTolerance: Hashable, Sendable {
 
     public static let relaxed: SketchTolerance = {
         var t = SketchTolerance()
-        t.minCoverage = 0.75; t.segmentError = 0.22; t.endpointError = 0.28
-        t.zeroError = 0.18; t.extremumShift = 0.12
+        t.minCoverage = 0.6; t.segmentError = 0.45; t.endpointError = 0.5
+        t.zeroError = 0.32; t.extremumShift = 0.17; t.trendThreshold = 0.35
         return t
     }()
 
     public static let strict: SketchTolerance = {
         var t = SketchTolerance()
-        t.minCoverage = 0.92; t.segmentError = 0.11; t.endpointError = 0.14
-        t.zeroError = 0.09; t.extremumShift = 0.055
+        t.minCoverage = 0.88; t.segmentError = 0.17; t.endpointError = 0.2
+        t.zeroError = 0.12; t.extremumShift = 0.07; t.trendThreshold = 0.18
         return t
     }()
 }
 
 // MARK: - Result
 
+/// One thing to fix, with the x-range it applies to. Regions are numbered in
+/// the app, and each hint says what to do in that band.
 public struct SketchRegion: Hashable, Sendable {
-    public enum Issue: String, Sendable { case tooHigh, tooLow, missingFeature, notDrawn }
+    public enum Issue: String, Sendable {
+        case tooHigh, tooLow          // value clearly off: bring it down / up
+        case shouldRise, shouldFall   // going the wrong way
+        case missingFeature           // a peak, dip or zero is missing or misplaced
+        case notDrawn                 // nothing drawn here
+    }
     public var lo: Double
     public var hi: Double
     public var issue: Issue
+    public var hint: String
 }
 
 public struct SketchResult: Sendable {
     public var passed: Bool
-    /// x-ranges to highlight. The true curve is never revealed.
+    /// x-ranges to highlight, most important first (at most 4). The true
+    /// curve is never revealed.
     public var regions: [SketchRegion]
-    /// Short hints such as "Too high here" or "Missing the dip near x = 0".
-    public var hints: [String]
+    public var hints: [String] { regions.map(\.hint) }
     public var coverage: Double
 }
 
 // MARK: - Checker
 
 public enum SketchChecker {
+    static let maxRegions = 4
+
     public static func check(_ strokes: [SketchStroke], for problem: SketchProblem,
                              tolerance t: SketchTolerance = .moderate) -> SketchResult {
         let a = problem.xMin, b = problem.xMax, width = b - a
         let n = t.columns
+        let half = width / Double(2 * n)
         let xs = (0..<n).map { a + width * (Double($0) + 0.5) / Double(n) }
         let truth = xs.map { problem.value(at: $0) }
         let fMax = truth.max() ?? 1, fMin = truth.min() ?? 0
         let range = Swift.max(fMax - fMin, 1e-9)
+        func lbl(_ x: Double) -> String { problem.xLabel(x) }
 
         // 1. The drawing as one y value per column.
         let sampled = sampleDrawing(strokes, xs: xs, columnWidth: width / Double(n))
@@ -115,81 +132,36 @@ public enum SketchChecker {
                 let missing = i < n && sampled[i] == nil
                 if missing, start == nil { start = i }
                 if !missing, let s = start {
-                    regions.append(SketchRegion(lo: xs[s] - width / Double(2 * n), hi: xs[i - 1] + width / Double(2 * n), issue: .notDrawn))
+                    let lo = xs[s] - half, hi = xs[i - 1] + half
+                    regions.append(SketchRegion(lo: lo, hi: hi, issue: .notDrawn,
+                                                hint: "Nothing drawn from x = \(lbl(lo)) to x = \(lbl(hi)) — draw across the whole interval."))
                     start = nil
                 }
             }
-            return SketchResult(passed: false, regions: regions,
-                                hints: ["Draw the graph across the whole interval — the shaded parts are empty."],
-                                coverage: coverage)
+            return SketchResult(passed: false, regions: Array(regions.prefix(maxRegions)), coverage: coverage)
         }
-        let user = fillGaps(sampled)
+        let user = smoothed(fillGaps(sampled), radius: 2)
 
-        var regions: [SketchRegion] = []
-        var hints: [String] = []
-        func addHint(_ h: String) { if !hints.contains(h) { hints.append(h) } }
-
-        // 2. Segment by segment: how far off is the drawing on average?
-        let perSegment = Swift.max(1, n / t.segments)
-        var segStart = 0
-        while segStart < n {
-            let segEnd = Swift.min(n, segStart + perSegment)
-            var absSum = 0.0, signedSum = 0.0
-            for i in segStart..<segEnd {
-                let d = user[i] - truth[i]
-                absSum += Swift.abs(d)
-                signedSum += d
-            }
-            let count = Double(segEnd - segStart)
-            if absSum / count / range > t.segmentError {
-                let high = signedSum > 0
-                regions.append(SketchRegion(lo: xs[segStart] - width / Double(2 * n),
-                                            hi: xs[segEnd - 1] + width / Double(2 * n),
-                                            issue: high ? .tooHigh : .tooLow))
-                addHint(high ? "Too high in the red band\(regions.count > 1 ? "s" : "")." : "Too low in the red band\(regions.count > 1 ? "s" : "").")
-            }
-            segStart = segEnd
-        }
-
-        // 3. End points.
-        let endWidth = width / Double(t.segments) / 2
-        if Swift.abs(user[0] - truth[0]) / range > t.endpointError {
-            regions.append(SketchRegion(lo: a, hi: a + endWidth, issue: user[0] > truth[0] ? .tooHigh : .tooLow))
-            addHint(user[0] > truth[0] ? "The left end starts too high." : "The left end starts too low.")
-        }
-        if Swift.abs(user[n - 1] - truth[n - 1]) / range > t.endpointError {
-            regions.append(SketchRegion(lo: b - endWidth, hi: b, issue: user[n - 1] > truth[n - 1] ? .tooHigh : .tooLow))
-            addHint(user[n - 1] > truth[n - 1] ? "The right end finishes too high." : "The right end finishes too low.")
-        }
-
-        // 4. Zeros: where the graph crosses or touches the x-axis.
+        // Problems found, in order of importance.
+        var features: [SketchRegion] = []   // peaks, dips, zeros
+        var trends: [SketchRegion] = []     // rising vs falling
+        var values: [SketchRegion] = []     // clearly too high / too low
         let shift = t.extremumShift * width
-        for x0 in zeros(xs: xs, ys: truth, range: range) {
-            let u0 = interpolate(user, xs: xs, at: x0)
-            if Swift.abs(u0) / range > t.zeroError {
-                regions.append(SketchRegion(lo: x0 - shift, hi: x0 + shift, issue: .missingFeature))
-                addHint("The graph should reach y = 0 near x = \(problem.xLabel(x0)).")
-            }
-        }
 
-        // 5. Peaks and dips must be there, at about the right place. Compared
-        // against how much the true curve itself rises/falls in the same window,
-        // using a lightly smoothed drawing so finger jitter isn't a "peak".
-        let smooth = smoothed(user, radius: 2)
+        // 2. Peaks and dips: present, and at about the right place.
         for e in extrema(xs: xs, ys: truth, range: range, minProminence: t.prominence) {
             let window = xs.indices.filter { Swift.abs(xs[$0] - e.x) <= 2 * shift }
             guard window.count >= 5 else { continue }
-            let tv = window.map { truth[$0] }, uv = window.map { smooth[$0] }
+            let tv = window.map { truth[$0] }, uv = window.map { user[$0] }
             func drop(_ v: [Double], _ isMax: Bool) -> Double {
                 let extreme = isMax ? v.max()! : v.min()!
                 return isMax ? Swift.min(extreme - v.first!, extreme - v.last!)
                              : Swift.min(v.first! - extreme, v.last! - extreme)
             }
             let trueDrop = drop(tv, e.isMax)
-            let atEdgeOfInterval = e.x - a < 2 * shift || b - e.x < 2 * shift
-            guard trueDrop > 0.04 * range || atEdgeOfInterval else { continue }
+            let nearEnd = e.x - a < 2 * shift || b - e.x < 2 * shift
+            guard trueDrop > 0.05 * range || nearEnd else { continue }
             let userDrop = drop(uv, e.isMax)
-            // Where the drawing's peak/dip is: centre of its top (or bottom) part.
             let extreme = e.isMax ? uv.max()! : uv.min()!
             let cutoff = 0.5 * Swift.max(userDrop, 1e-12)
             var wSum = 0.0, xSum = 0.0
@@ -198,15 +170,100 @@ public enum SketchChecker {
                 wSum += w; xSum += w * xs[i]
             }
             let centre = wSum > 0 ? xSum / wSum : xs[window[uv.firstIndex(of: extreme)!]]
-            let shapeOK = atEdgeOfInterval ? true : userDrop >= 0.35 * trueDrop
-            if !shapeOK || Swift.abs(centre - e.x) > shift {
-                regions.append(SketchRegion(lo: e.x - shift, hi: e.x + shift, issue: .missingFeature))
-                addHint(e.isMax ? "Missing the peak near x = \(problem.xLabel(e.x))."
-                                : "Missing the dip near x = \(problem.xLabel(e.x)).")
+            let shapeOK = nearEnd || userDrop >= 0.25 * trueDrop
+            let name = e.isMax ? "peak" : "dip"
+            if !shapeOK {
+                features.append(SketchRegion(lo: e.x - shift, hi: e.x + shift, issue: .missingFeature,
+                                             hint: "There should be a \(name) near x = \(lbl(e.x))."))
+            } else if Swift.abs(centre - e.x) > shift {
+                let side = centre < e.x ? "further right" : "further left"
+                features.append(SketchRegion(lo: e.x - shift, hi: e.x + shift, issue: .missingFeature,
+                                             hint: "Your \(name) is in the wrong place — move it \(side), to about x = \(lbl(e.x))."))
             }
         }
 
-        return SketchResult(passed: regions.isEmpty, regions: merge(regions), hints: hints, coverage: coverage)
+        // 3. Zeros: where the graph crosses or touches the x-axis.
+        for x0 in zeros(xs: xs, ys: truth, range: range) {
+            if features.contains(where: { x0 >= $0.lo && x0 <= $0.hi }) { continue }
+            let u0 = interpolate(user, xs: xs, at: x0)
+            if Swift.abs(u0) / range > t.zeroError {
+                features.append(SketchRegion(lo: x0 - shift * 0.7, hi: x0 + shift * 0.7, issue: .missingFeature,
+                                             hint: "The graph should reach y = 0 at x ≈ \(lbl(x0)) (yours is \(u0 > 0 ? "above" : "below") it)."))
+            }
+        }
+
+        // 4. Strip by strip: going the right way, and roughly the right height.
+        let perSegment = Swift.max(1, n / t.segments)
+        var s0 = 0
+        while s0 < n {
+            let s1 = Swift.min(n, s0 + perSegment) - 1
+            let lo = xs[s0] - half, hi = xs[s1] + half
+            defer { s0 = s1 + 1 }
+            if features.contains(where: { $0.lo < hi && $0.hi > lo }) { continue }
+            let trueChange = truth[s1] - truth[s0]
+            let userChange = user[s1] - user[s0]
+            if Swift.abs(trueChange) >= t.trendThreshold * range && userChange * trueChange <= 0.15 * trueChange * trueChange {
+                let rise = trueChange > 0
+                trends.append(SketchRegion(lo: lo, hi: hi, issue: rise ? .shouldRise : .shouldFall,
+                                           hint: "The graph should go \(rise ? "up" : "down") from x = \(lbl(lo)) to x = \(lbl(hi))."))
+                continue
+            }
+            var absSum = 0.0, signedSum = 0.0
+            for i in s0...s1 {
+                absSum += Swift.abs(user[i] - truth[i])
+                signedSum += user[i] - truth[i]
+            }
+            let count = Double(s1 - s0 + 1)
+            if absSum / count / range > t.segmentError {
+                let high = signedSum > 0
+                values.append(SketchRegion(lo: lo, hi: hi, issue: high ? .tooHigh : .tooLow,
+                                           hint: high ? "Too high from x = \(lbl(lo)) to x = \(lbl(hi)) — bring it down."
+                                                      : "Too low from x = \(lbl(lo)) to x = \(lbl(hi)) — bring it up."))
+            }
+        }
+
+        // 5. End points.
+        let endWidth = width / Double(t.segments) / 2
+        for (i, isLeft) in [(0, true), (n - 1, false)] {
+            let x = isLeft ? a : b
+            let lo = isLeft ? a : b - endWidth, hi = isLeft ? a + endWidth : b
+            let covered = (features + trends + values).contains { $0.lo < hi && $0.hi > lo }
+            if !covered, Swift.abs(user[i] - truth[i]) / range > t.endpointError {
+                let high = user[i] > truth[i]
+                values.append(SketchRegion(lo: lo, hi: hi, issue: high ? .tooHigh : .tooLow,
+                                           hint: "At x = \(lbl(x)) the graph should \(isLeft ? "start" : "end") \(high ? "lower" : "higher")."))
+            }
+        }
+
+        let all = mergeAdjacent(features, label: lbl) + mergeAdjacent(trends, label: lbl) + mergeAdjacent(values, label: lbl)
+        let shown = Array(all.prefix(maxRegions)).sorted { $0.lo < $1.lo }
+        return SketchResult(passed: all.isEmpty, regions: shown, coverage: coverage)
+    }
+
+    /// Joins neighbouring strips with the same issue into one band and
+    /// rewrites its hint for the combined x-range.
+    static func mergeAdjacent(_ regions: [SketchRegion], label: (Double) -> String) -> [SketchRegion] {
+        let sorted = regions.sorted { $0.lo < $1.lo }
+        var out: [SketchRegion] = []
+        for r in sorted {
+            if var last = out.last, r.issue == last.issue, r.issue != .missingFeature,
+               r.lo <= last.hi + 1e-9 {
+                last.hi = Swift.max(last.hi, r.hi)
+                let range = "from x = \(label(last.lo)) to x = \(label(last.hi))"
+                switch last.issue {
+                case .tooHigh: last.hint = "Too high \(range) — bring it down."
+                case .tooLow: last.hint = "Too low \(range) — bring it up."
+                case .shouldRise: last.hint = "The graph should go up \(range)."
+                case .shouldFall: last.hint = "The graph should go down \(range)."
+                case .notDrawn: last.hint = "Nothing drawn \(range)."
+                case .missingFeature: break
+                }
+                out[out.count - 1] = last
+            } else {
+                out.append(r)
+            }
+        }
+        return out
     }
 
     // MARK: Helpers
@@ -304,20 +361,6 @@ public enum SketchChecker {
             let prom = isMax ? ys[i] - Swift.max(left, right) : Swift.min(left, right) - ys[i]
             if prom >= minProminence * range {
                 out.append(Extremum(x: xs[i], y: ys[i], isMax: isMax, prominence: prom))
-            }
-        }
-        return out
-    }
-
-    static func merge(_ regions: [SketchRegion]) -> [SketchRegion] {
-        let sorted = regions.sorted { $0.lo < $1.lo }
-        var out: [SketchRegion] = []
-        for r in sorted {
-            if var last = out.last, r.lo <= last.hi, r.issue == last.issue {
-                last.hi = Swift.max(last.hi, r.hi)
-                out[out.count - 1] = last
-            } else {
-                out.append(r)
             }
         }
         return out

@@ -57,7 +57,32 @@ final class SketchTests: XCTestCase {
     func testUpsideDownFails() {
         let r = SketchChecker.check(drawing({ -self.problem.value(at: $0) }, for: problem), for: problem)
         XCTAssertFalse(r.passed)
-        XCTAssertTrue(r.regions.contains { $0.issue == .tooLow })
+        XCTAssertFalse(r.hints.isEmpty)
+    }
+
+    /// A quick, imperfect finger sketch: humps 25% too small, slightly
+    /// shifted, shaky. The shape is right, so it must pass.
+    func testRoughSketchPasses() {
+        let w = problem.xMax - problem.xMin
+        let rough: (Double) -> Double = { x in 0.75 * self.problem.value(at: x + 0.03 * w) }
+        let r = SketchChecker.check(drawing(rough, for: problem, noise: 0.04, strokes: 2), for: problem)
+        XCTAssertTrue(r.passed, "\(r.hints)")
+    }
+
+    func testEachRegionHasItsOwnHint() {
+        // Wrong in two separate places: a bump at 0 and the right hump missing.
+        let wrong: (Double) -> Double = { x in
+            if Swift.abs(x) < 0.12 { return 0.11 }
+            if x > 0.3 { return 0.0 }
+            return self.problem.value(at: x)
+        }
+        let r = SketchChecker.check(drawing(wrong, for: problem), for: problem)
+        XCTAssertFalse(r.passed)
+        XCTAssertGreaterThanOrEqual(r.regions.count, 2, "\(r.regions)")
+        XCTAssertEqual(Set(r.hints).count, r.hints.count, "hints should differ: \(r.hints)")
+        XCTAssertLessThanOrEqual(r.regions.count, 4)
+        XCTAssertTrue(r.regions.contains { $0.lo <= 0 && $0.hi >= 0 })
+        XCTAssertTrue(r.regions.contains { $0.lo <= .pi / 6 && $0.hi >= .pi / 6 })
     }
 
     func testPeaksInTheWrongPlaceFail() {
@@ -93,6 +118,8 @@ final class SketchTests: XCTestCase {
                 XCTAssertTrue(exact.passed, "exact sketch rejected for \(p.function) on [\(p.xMin), \(p.xMax)]: \(exact.hints)")
                 let noisy = SketchChecker.check(drawing(p.value, for: p, noise: 0.02, strokes: 2, seed: seed), for: p)
                 XCTAssertTrue(noisy.passed, "noisy sketch rejected for \(p.function): \(noisy.hints)")
+                let rough = SketchChecker.check(drawing({ 0.78 * p.value(at: $0) }, for: p, noise: 0.03, strokes: 3, seed: seed), for: p)
+                XCTAssertTrue(rough.passed, "rough sketch rejected for \(p.function) on [\(p.xMin), \(p.xMax)]: \(rough.hints)")
                 let mean = (p.yMin + p.yMax) / 2
                 let flat = SketchChecker.check(drawing({ _ in mean }, for: p), for: p)
                 XCTAssertFalse(flat.passed, "flat line accepted for \(p.function)")
