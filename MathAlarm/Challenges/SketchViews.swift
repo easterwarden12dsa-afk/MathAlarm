@@ -27,6 +27,8 @@ struct SketchCanvas: View {
     /// Whole-graph problems: the visible window (nil = the problem's own), changed by pinch, Move and the zoom buttons.
     var viewport: Binding<SketchViewport?> = .constant(nil)
     var zoomable = false
+    /// Your own dashed helper lines (asymptotes etc.) — not checked.
+    var guidelines: [Guideline] = []
 
     @State private var zoomStart: SketchViewport?
     @State private var panStart: SketchViewport?
@@ -63,6 +65,7 @@ struct SketchCanvas: View {
                         }
                         drawCurve(clipped, map, shown, color: .green.opacity(0.85), dash: [6, 4], width: 2.5)
                     }
+                    for line in guidelines { drawGuideline(clipped, map, line) }
                     for g in guides { drawGuide(clipped, map, g) }
                     for s in strokes + [current] { drawStroke(clipped, map, s) }
                     if let eraserAt {
@@ -275,6 +278,29 @@ struct SketchCanvas: View {
         ctx.stroke(path, with: .color(.green), style: StrokeStyle(lineWidth: 3, lineCap: .round, dash: [6, 4]))
     }
 
+    private func drawGuideline(_ ctx: GraphicsContext, _ m: Mapping, _ line: Guideline) {
+        let p = shown
+        var path = Path()
+        switch line.kind {
+        case .vertical(let c):
+            let x = m.screen(c, 0).x
+            path.move(to: CGPoint(x: x, y: m.plot.minY)); path.addLine(to: CGPoint(x: x, y: m.plot.maxY))
+        case .horizontal(let c):
+            let y = m.screen(0, c).y
+            path.move(to: CGPoint(x: m.plot.minX, y: y)); path.addLine(to: CGPoint(x: m.plot.maxX, y: y))
+        case .slanted(let k, let c):
+            path.move(to: m.screen(p.xMin, k * p.xMin + c)); path.addLine(to: m.screen(p.xMax, k * p.xMax + c))
+        }
+        ctx.stroke(path, with: .color(.cyan.opacity(0.8)), style: StrokeStyle(lineWidth: 1.5, dash: [7, 5]))
+        // Its equation, at the edge of the box.
+        let label = ctx.resolve(Text(line.title).font(.caption2.weight(.semibold)).foregroundColor(.cyan))
+        switch line.kind {
+        case .vertical(let c): ctx.draw(label, at: CGPoint(x: m.screen(c, 0).x + 4, y: m.plot.minY + 8), anchor: .leading)
+        case .horizontal(let c): ctx.draw(label, at: CGPoint(x: m.plot.maxX - 4, y: m.screen(0, c).y - 8), anchor: .trailing)
+        case .slanted(let k, let c): ctx.draw(label, at: m.screen(p.xMax, k * p.xMax + c).applying(.init(translationX: -4, y: -8)), anchor: .trailing)
+        }
+    }
+
     private func markerLabels(_ m: Mapping) -> some View {
         ZStack(alignment: .topLeading) {
             ForEach(Array(markers.enumerated()), id: \.offset) { _, mk in
@@ -409,6 +435,9 @@ struct SketchChallengeView<Header: View>: View {
     /// Whole-graph problems: the current view, and the stretch the last check used.
     @State private var viewport: SketchViewport?
     @State private var checked: SketchProblem?
+    /// Helper lines you added (x = 2, y = 1, y = x + 1…).
+    @State private var guidelines: [Guideline] = []
+    @State private var showLines = false
 
     var body: some View {
         VStack(spacing: 8) {
@@ -418,7 +447,7 @@ struct SketchChallengeView<Header: View>: View {
                          regions: result?.passed == false ? result!.regions : [],
                          revealTruth: reveal, guides: guides, reference: reference, showYScale: mode.showsYScale,
                          willChange: { history.append(strokes); if history.count > 60 { history.removeFirst() } },
-                         viewport: $viewport, zoomable: problem.isWhole)
+                         viewport: $viewport, zoomable: problem.isWhole, guidelines: guidelines)
                 .frame(minHeight: 140, maxHeight: .infinity)
                 .layoutPriority(-1)
                 .modifier(Shake(animatableData: shakes))
@@ -437,6 +466,10 @@ struct SketchChallengeView<Header: View>: View {
             GraphSolutionSheet(problem: problem, reference: change?.base ?? reference, steps: steps?() ?? [],
                                markers: change.map { GraphSteps.markers(for: $0) } ?? [],
                                warning: onSolutionViewed == nil ? nil : "After you close this, you'll get a new problem of the same kind to draw.")
+        }
+        .sheet(isPresented: $showLines) {
+            GuidelineSheet(lines: $guidelines)
+                .presentationDetents([.medium, .large])
         }
         .confirmationDialog("Show how to draw it?", isPresented: $confirmSteps, titleVisibility: .visible) {
             Button("Show steps (new problem after)") { showSteps = true }
@@ -474,6 +507,7 @@ struct SketchChallengeView<Header: View>: View {
                 if let last = history.popLast() { strokes = last } else if !strokes.isEmpty { strokes.removeLast() }
             }
             .disabled(history.isEmpty && strokes.isEmpty)
+            iconButton("line.diagonal", "Helper lines (asymptotes)") { showLines = true }
             iconButton("trash", "Clear") {
                 history.append(strokes)
                 strokes = []
@@ -774,5 +808,133 @@ struct GraphSolutionSheet: View {
                 .frame(height: 280)
                 .allowsHitTesting(false)
         }
+    }
+}
+
+// MARK: - Helper lines
+
+/// A dashed helper line the user adds while drawing (asymptotes and the like).
+struct Guideline: Identifiable, Hashable {
+    enum Kind: Hashable {
+        case vertical(Double)              // x = c
+        case horizontal(Double)            // y = c
+        case slanted(Double, Double)       // y = m·x + b
+    }
+    let id = UUID()
+    var kind: Kind
+    var title: String
+}
+
+/// Reads "5", "−2.5", "1/3", "π/2", "3π/4", "-2π", "e" and "ln 4"-free plain numbers.
+enum GuideNumber {
+    static func parse(_ text: String) -> Double? {
+        var s = text.lowercased().replacingOccurrences(of: " ", with: "")
+            .replacingOccurrences(of: "−", with: "-").replacingOccurrences(of: ",", with: ".")
+            .replacingOccurrences(of: "pi", with: "π")
+        guard !s.isEmpty else { return nil }
+        var sign = 1.0
+        if s.hasPrefix("-") { sign = -1; s.removeFirst() } else if s.hasPrefix("+") { s.removeFirst() }
+        let parts = s.split(separator: "/", omittingEmptySubsequences: false)
+        guard parts.count <= 2 else { return nil }
+        func term(_ t: Substring) -> Double? {
+            if t == "e" { return M_E }
+            if t.hasSuffix("π") {
+                let k = t.dropLast()
+                if k.isEmpty { return .pi }
+                return Double(k).map { $0 * .pi }
+            }
+            return Double(t)
+        }
+        guard let top = term(parts[0]) else { return nil }
+        if parts.count == 2 {
+            guard let bottom = term(parts[1]), bottom != 0 else { return nil }
+            return sign * top / bottom
+        }
+        return sign * top
+    }
+}
+
+/// Add or remove helper lines: x = c, y = c or y = m·x + b.
+struct GuidelineSheet: View {
+    @Binding var lines: [Guideline]
+    @Environment(\.dismiss) private var dismiss
+    @State private var kind = 0
+    @State private var first = ""
+    @State private var second = ""
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    Picker("Line", selection: $kind) {
+                        Text("x = c").tag(0)
+                        Text("y = c").tag(1)
+                        Text("y = mx + b").tag(2)
+                    }
+                    .pickerStyle(.segmented)
+                    if kind == 2 {
+                        TextField("slope m (e.g. 1, −1/2)", text: $first)
+                        TextField("b (e.g. 3, π/2)", text: $second)
+                    } else {
+                        TextField(kind == 0 ? "c (e.g. 5, −2, π/2)" : "c (e.g. 1, −0.5)", text: $first)
+                    }
+                    Button {
+                        add()
+                    } label: {
+                        Label("Add line", systemImage: "plus.circle.fill")
+                    }
+                    .disabled(parsed == nil)
+                } footer: {
+                    Text("Dashed helper lines for drawing — for example the asymptotes you found. They aren't checked.")
+                }
+                if !lines.isEmpty {
+                    Section("Your lines") {
+                        ForEach(lines) { line in
+                            HStack {
+                                Text(line.title).font(.body.monospaced())
+                                Spacer()
+                                Button(role: .destructive) {
+                                    lines.removeAll { $0.id == line.id }
+                                } label: {
+                                    Image(systemName: "trash")
+                                }
+                                .accessibilityLabel("Remove \(line.title)")
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Helper lines")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
+            }
+        }
+        .preferredColorScheme(.dark)
+    }
+
+    private var parsed: Guideline.Kind? {
+        switch kind {
+        case 0: GuideNumber.parse(first).map { .vertical($0) }
+        case 1: GuideNumber.parse(first).map { .horizontal($0) }
+        default:
+            if let m = GuideNumber.parse(first), let b = GuideNumber.parse(second.isEmpty ? "0" : second) { .slanted(m, b) } else { nil }
+        }
+    }
+
+    private func add() {
+        guard let k = parsed else { return }
+        Haptics.tap()
+        let clean = { (t: String) in t.trimmingCharacters(in: .whitespaces).replacingOccurrences(of: "-", with: "−") }
+        let title: String
+        switch k {
+        case .vertical: title = "x = \(clean(first))"
+        case .horizontal: title = "y = \(clean(first))"
+        case .slanted:
+            let b = clean(second)
+            title = "y = \(clean(first) == "1" ? "" : clean(first))x" + (b.isEmpty || b == "0" ? "" : (b.hasPrefix("−") ? " − \(b.dropFirst())" : " + \(b)"))
+        }
+        lines.append(Guideline(kind: k, title: title))
+        first = ""; second = ""
     }
 }
