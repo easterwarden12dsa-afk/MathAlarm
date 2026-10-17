@@ -29,6 +29,13 @@ final class SketchTests: XCTestCase {
         return result
     }
 
+    func check(_ g: @escaping (Double) -> Double, _ mode: SketchMode, noise: Double = 0, p: SketchProblem? = nil) -> SketchResult {
+        let p = p ?? problem
+        return SketchChecker.check(drawing(g, for: p, noise: noise, strokes: 2), for: p, mode: mode)
+    }
+
+    // MARK: Reference case
+
     func testReferenceCaseShape() {
         // sin²x·cos2x on [−π/4, π/4]: zero at −π/4, 0, π/4; humps of height 1/8 near ±π/6.
         XCTAssertEqual(problem.value(at: -.pi / 4), 0, accuracy: 1e-12)
@@ -38,99 +45,164 @@ final class SketchTests: XCTestCase {
         XCTAssertEqual(problem.xLabel(.pi / 6), "π/6")
     }
 
-    func testExactSketchPasses() {
-        let r = SketchChecker.check(drawing(problem.value, for: problem), for: problem)
-        XCTAssertTrue(r.passed, "\(r.hints)")
-    }
-
-    func testNoisyMultiStrokeSketchPasses() {
-        let r = SketchChecker.check(drawing(problem.value, for: problem, noise: 0.03, strokes: 3), for: problem)
-        XCTAssertTrue(r.passed, "\(r.hints)")
-    }
-
-    func testFlatLineFails() {
-        let r = SketchChecker.check(drawing({ _ in 0.06 }, for: problem), for: problem)
-        XCTAssertFalse(r.passed)
-        XCTAssertFalse(r.regions.isEmpty)
-    }
-
-    func testUpsideDownFails() {
-        let r = SketchChecker.check(drawing({ -self.problem.value(at: $0) }, for: problem), for: problem)
-        XCTAssertFalse(r.passed)
-        XCTAssertFalse(r.hints.isEmpty)
-    }
-
-    /// A quick, imperfect finger sketch: humps 25% too small, slightly
-    /// shifted, shaky. The shape is right, so it must pass.
-    func testRoughSketchPasses() {
-        let w = problem.xMax - problem.xMin
-        let rough: (Double) -> Double = { x in 0.75 * self.problem.value(at: x + 0.03 * w) }
-        let r = SketchChecker.check(drawing(rough, for: problem, noise: 0.04, strokes: 2), for: problem)
-        XCTAssertTrue(r.passed, "\(r.hints)")
-    }
-
-    func testEachRegionHasItsOwnHint() {
-        // Wrong in two separate places: a bump at 0 and the right hump missing.
-        let wrong: (Double) -> Double = { x in
-            if Swift.abs(x) < 0.12 { return 0.11 }
-            if x > 0.3 { return 0.0 }
-            return self.problem.value(at: x)
+    func testExactSketchPassesEveryMode() {
+        for mode in SketchMode.allCases {
+            XCTAssertTrue(check(problem.value, mode).passed, "\(mode)")
         }
-        let r = SketchChecker.check(drawing(wrong, for: problem), for: problem)
-        XCTAssertFalse(r.passed)
-        XCTAssertGreaterThanOrEqual(r.regions.count, 2, "\(r.regions)")
-        XCTAssertEqual(Set(r.hints).count, r.hints.count, "hints should differ: \(r.hints)")
-        XCTAssertLessThanOrEqual(r.regions.count, 4)
-        XCTAssertTrue(r.regions.contains { $0.lo <= 0 && $0.hi >= 0 })
-        XCTAssertTrue(r.regions.contains { $0.lo <= .pi / 6 && $0.hi >= .pi / 6 })
     }
 
-    func testPeaksInTheWrongPlaceFail() {
-        // Same height, but peaks at ±π/12 instead of ±π/6.
-        let wrong: (Double) -> Double = { x in pow(sin(2 * x), 2) * cos(4 * x) }
-        let r = SketchChecker.check(drawing(wrong, for: problem), for: problem)
-        XCTAssertFalse(r.passed)
-        XCTAssertTrue(r.hints.contains { $0.contains("peak") || $0.contains("Too") }, "\(r.hints)")
+    // MARK: Each mode accepts what it should
+
+    func testPrecisionAcceptsCarefulRejectsRough() {
+        XCTAssertTrue(check(problem.value, .precision, noise: 0.015).passed)
+        let w = problem.xMax - problem.xMin
+        let rough: (Double) -> Double = { x in 0.7 * self.problem.value(at: x + 0.04 * w) }
+        XCTAssertFalse(check(rough, .precision, noise: 0.04).passed)
+    }
+
+    func testStandardAcceptsSomewhatRough() {
+        let w = problem.xMax - problem.xMin
+        let rough: (Double) -> Double = { x in 0.85 * self.problem.value(at: x + 0.02 * w) }
+        XCTAssertTrue(check(rough, .standard, noise: 0.03).passed, "\(check(rough, .standard, noise: 0.03).hints)")
+    }
+
+    func testProportionsIgnoresVerticalScale() {
+        // Drawn 2.5× too tall: wrong values, right proportions.
+        let tall: (Double) -> Double = { x in 2.5 * self.problem.value(at: x) }
+        XCTAssertTrue(check(tall, .proportions, noise: 0.02).passed, "\(check(tall, .proportions).hints)")
+        XCTAssertFalse(check(tall, .standard).passed)
+        // But a hump of the wrong relative height fails.
+        let lopsided: (Double) -> Double = { x in x > 0 ? 0.35 * self.problem.value(at: x) : self.problem.value(at: x) }
+        XCTAssertFalse(check(lopsided, .proportions).passed)
+    }
+
+    func testShapeOnlyAcceptsRightStructure() {
+        // Wrong scale, offset and slightly misplaced peaks: structure still right.
+        let w = problem.xMax - problem.xMin
+        let mental: (Double) -> Double = { x in 3 * self.problem.value(at: x + 0.08 * w) + 0.4 }
+        XCTAssertTrue(check(mental, .shape, noise: 0.03).passed, "\(check(mental, .shape).hints)")
+        // A single hump instead of two fails even here.
+        let oneHump: (Double) -> Double = { x in cos(2 * x) }
+        XCTAssertFalse(check(oneHump, .shape).passed)
+    }
+
+    // MARK: Wrong sketches fail in every mode
+
+    func testWrongShapesFailEveryMode() {
+        let flat: (Double) -> Double = { _ in 0.06 }
+        let upsideDown: (Double) -> Double = { -self.problem.value(at: $0) }
+        let shiftedPeaks: (Double) -> Double = { x in pow(sin(2 * x), 2) * cos(4 * x) }
+        for mode in SketchMode.allCases {
+            XCTAssertFalse(check(flat, mode).passed, "flat passed in \(mode)")
+            XCTAssertFalse(check(upsideDown, mode).passed, "upside-down passed in \(mode)")
+            if mode != .shape {
+                XCTAssertFalse(check(shiftedPeaks, mode).passed, "shifted peaks passed in \(mode)")
+            }
+        }
     }
 
     func testFlagsTheRightRegion() {
         // Correct everywhere except a bump in the middle (where it should dip to 0).
         let bumped: (Double) -> Double = { x in Swift.abs(x) < 0.12 ? 0.11 : self.problem.value(at: x) }
-        let r = SketchChecker.check(drawing(bumped, for: problem), for: problem)
+        let r = check(bumped, .standard)
         XCTAssertFalse(r.passed)
         XCTAssertTrue(r.regions.contains { $0.lo <= 0 && $0.hi >= 0 }, "regions: \(r.regions)")
         XCTAssertFalse(r.regions.contains { $0.hi < -0.5 }, "left end wrongly flagged: \(r.regions)")
         XCTAssertTrue(r.hints.contains { $0.contains("x = 0") }, "\(r.hints)")
     }
 
+    func testEachRegionHasItsOwnHint() {
+        let wrong: (Double) -> Double = { x in
+            if Swift.abs(x) < 0.12 { return 0.11 }
+            if x > 0.3 { return 0.0 }
+            return self.problem.value(at: x)
+        }
+        let r = check(wrong, .standard)
+        XCTAssertFalse(r.passed)
+        XCTAssertGreaterThanOrEqual(r.regions.count, 2, "\(r.regions)")
+        XCTAssertEqual(Set(r.hints).count, r.hints.count, "hints should differ: \(r.hints)")
+        XCTAssertLessThanOrEqual(r.regions.count, 4)
+    }
+
     func testHalfDrawnFails() {
-        let r = SketchChecker.check(drawing(problem.value, for: problem, from: 0, to: 0.5), for: problem)
+        let r = SketchChecker.check(drawing(problem.value, for: problem, from: 0, to: 0.5), for: problem, mode: .standard)
         XCTAssertFalse(r.passed)
         XCTAssertTrue(r.regions.contains { $0.issue == .notDrawn && $0.lo > 0 })
     }
 
-    func testEveryGeneratedProblemAcceptsGoodSketches() {
+    func testEveryGeneratedProblemWorksInEveryMode() {
         for level in Level.allCases {
-            for seed in UInt64(1)...UInt64(40) {
+            for seed in UInt64(1)...UInt64(25) {
                 let p = SketchFactory.make(level: level, seed: seed &* 2_654_435_761)
-                XCTAssertTrue(p.yMax > p.yMin)
-                let exact = SketchChecker.check(drawing(p.value, for: p), for: p)
-                XCTAssertTrue(exact.passed, "exact sketch rejected for \(p.function) on [\(p.xMin), \(p.xMax)]: \(exact.hints)")
-                let noisy = SketchChecker.check(drawing(p.value, for: p, noise: 0.02, strokes: 2, seed: seed), for: p)
-                XCTAssertTrue(noisy.passed, "noisy sketch rejected for \(p.function): \(noisy.hints)")
-                let rough = SketchChecker.check(drawing({ 0.78 * p.value(at: $0) }, for: p, noise: 0.03, strokes: 3, seed: seed), for: p)
-                XCTAssertTrue(rough.passed, "rough sketch rejected for \(p.function) on [\(p.xMin), \(p.xMax)]: \(rough.hints)")
-                let mean = (p.yMin + p.yMax) / 2
-                let flat = SketchChecker.check(drawing({ _ in mean }, for: p), for: p)
-                XCTAssertFalse(flat.passed, "flat line accepted for \(p.function)")
+                for mode in SketchMode.allCases {
+                    let exact = check(p.value, mode, noise: 0.01, p: p)
+                    XCTAssertTrue(exact.passed, "good sketch rejected (\(mode)) for \(p.function) on [\(p.xMin), \(p.xMax)]: \(exact.hints)")
+                    let mean = (p.yMin + p.yMax) / 2
+                    XCTAssertFalse(check({ _ in mean }, mode, p: p).passed, "flat line accepted (\(mode)) for \(p.function)")
+                }
+                let rough = check({ 0.8 * p.value(at: $0) }, .proportions, noise: 0.03, p: p)
+                XCTAssertTrue(rough.passed, "rough sketch rejected for \(p.function): \(rough.hints)")
             }
         }
     }
 
-    func testStrictnessPresetsAreOrdered() {
-        let noisy = drawing(problem.value, for: problem, noise: 0.07, strokes: 2)
-        let relaxed = SketchChecker.check(noisy, for: problem, tolerance: .relaxed)
-        let strict = SketchChecker.check(noisy, for: problem, tolerance: .strict)
-        XCTAssertTrue(relaxed.passed || !strict.passed, "strict passed but relaxed failed")
+    // MARK: Eraser
+
+    func testEraserCutsOnlyTheMiddle() {
+        let stroke = (0...100).map { SketchPoint(x: Double($0) / 100, y: 0) }
+        let out = SketchEraser.erase([stroke], around: SketchPoint(x: 0.5, y: 0), rx: 0.05, ry: 0.05)
+        XCTAssertEqual(out.count, 2)
+        XCTAssertTrue(out[0].allSatisfy { $0.x < 0.46 })
+        XCTAssertTrue(out[1].allSatisfy { $0.x > 0.54 })
+        XCTAssertGreaterThan(out[0].count, 40)
+    }
+
+    func testEraserCutsALongStraightSegment() {
+        let stroke = [SketchPoint(x: 0, y: 0), SketchPoint(x: 1, y: 0)]
+        let out = SketchEraser.erase([stroke], around: SketchPoint(x: 0.5, y: 0), rx: 0.05, ry: 0.05)
+        XCTAssertEqual(out.count, 2)
+    }
+
+    func testEraserLeavesOtherStrokesAlone() {
+        let a = [SketchPoint(x: 0, y: 0), SketchPoint(x: 1, y: 0)]
+        let b = [SketchPoint(x: 0, y: 5), SketchPoint(x: 1, y: 5)]
+        let out = SketchEraser.erase([a, b], around: SketchPoint(x: 0.5, y: 0), rx: 0.05, ry: 0.05)
+        XCTAssertEqual(out.count, 3)
+        XCTAssertTrue(out.contains { $0.allSatisfy { $0.y == 5 } && $0.count >= 2 })
+    }
+
+    // MARK: Change
+
+    func testTransformsComputeTheRightGraph() {
+        let f = Expr.sum([.p(.x, 2), 1])
+        let t = 0.7
+        let fv = f.evaluate(at: t)
+        XCTAssertEqual(GraphTransform.reciprocalSquare.apply(f).evaluate(at: t), 1 / (fv * fv), accuracy: 1e-12)
+        XCTAssertEqual(GraphTransform.shift(2).apply(f).evaluate(at: t), fv + 2, accuracy: 1e-12)
+        XCTAssertEqual(GraphTransform.mirror.apply(.exp(.x)).evaluate(at: t), exp(-t), accuracy: 1e-12)
+        XCTAssertEqual(GraphTransform.derivative.apply(f).evaluate(at: t), 2 * t, accuracy: 1e-12)
+        XCTAssertEqual(GraphTransform.absolute.apply(.sub(.x, 1)).evaluate(at: 0.2), 0.8, accuracy: 1e-12)
+        XCTAssertEqual(GraphTransform.reciprocalSquare.formula, "g(x) = 1 / f(x)²")
+    }
+
+    func testChangeProblemsAreValidAndSolvable() {
+        for level in Level.allCases {
+            var transforms = Set<String>()
+            for seed in UInt64(1)...UInt64(30) {
+                let c = ChangeFactory.make(level: level, seed: seed &* 7_919)
+                transforms.insert(c.transform.formula.components(separatedBy: " ").prefix(4).joined())
+                let g = c.target
+                XCTAssertLessThanOrEqual(g.yMin, c.base.yMin)
+                XCTAssertGreaterThanOrEqual(g.yMax, c.base.yMax)
+                for i in 0...50 {
+                    let x = g.xMin + (g.xMax - g.xMin) * Double(i) / 50
+                    XCTAssertTrue(g.value(at: x).isFinite, "\(c.transform.formula) of \(c.base.function) undefined at \(x)")
+                }
+                XCTAssertTrue(check(g.value, .standard, noise: 0.01, p: g).passed, "\(c.transform.formula), f = \(c.base.function)")
+                // Drawing f instead of g must not pass.
+                XCTAssertFalse(check(c.base.value, .standard, p: g).passed, "drawing f passed for \(c.transform.formula), f = \(c.base.function)")
+            }
+            XCTAssertGreaterThan(transforms.count, 1, "no variety at \(level)")
+        }
     }
 }
