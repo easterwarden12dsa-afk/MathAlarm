@@ -202,3 +202,47 @@ final class HardIntegralTests: XCTestCase {
         XCTAssertGreaterThan(count, 5)
     }
 }
+
+final class TracingTests: XCTestCase {
+    /// A hand tracing of the solution graph: small wobble (1.5% of the box)
+    /// and a slight sideways offset, one stroke per visible branch.
+    func traced(_ p: SketchProblem) -> [SketchStroke] {
+        let box = p.yMax - p.yMin, w = p.xMax - p.xMin
+        var strokes: [SketchStroke] = [], cur: SketchStroke = []
+        for i in 0...300 {
+            let x = p.xMin + w * Double(i) / 300
+            let y = p.value(at: x - 0.008 * w) + 0.015 * box * sin(Double(i) * 0.7)
+            if y.isFinite, y >= p.yMin, y <= p.yMax { cur.append(SketchPoint(x: x, y: y)) } else if !cur.isEmpty { strokes.append(cur); cur = [] }
+        }
+        if !cur.isEmpty { strokes.append(cur) }
+        return strokes
+    }
+
+    func testTracedChangeAnswersPassInEveryMode() {
+        var failures: [String] = []
+        for level in [Level.medium, .hard, .bagrut] {
+            for seed in UInt64(1)...UInt64(60) {
+                let c = ChangeFactory.make(level: level, seed: seed &* 7_717)
+                for mode in SketchMode.allCases {
+                    let r = SketchChecker.check(traced(c.target), for: c.target, mode: mode)
+                    if !r.passed { failures.append("\(level) \(mode) \(c.transform.formula) f=\(c.base.function): \(r.hints)") }
+                }
+            }
+        }
+        XCTAssertTrue(failures.isEmpty, "\(failures.count) failures:\n" + failures.prefix(8).joined(separator: "\n"))
+    }
+
+    func testTracedSketchesPassInEveryMode() {
+        var failures: [String] = []
+        for level in Level.allCases {
+            for seed in UInt64(1)...UInt64(60) {
+                let p = SketchFactory.make(level: level, seed: seed &* 5_051)
+                for mode in SketchMode.allCases {
+                    let r = SketchChecker.check(traced(p), for: p, mode: mode)
+                    if !r.passed { failures.append("\(level) \(mode) \(p.function): \(r.hints)") }
+                }
+            }
+        }
+        XCTAssertTrue(failures.isEmpty, "\(failures.count) failures:\n" + failures.prefix(8).joined(separator: "\n"))
+    }
+}
