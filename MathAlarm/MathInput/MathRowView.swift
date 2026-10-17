@@ -47,20 +47,12 @@ struct MathRowView: View {
                 if caretIndex == row.atoms.count { Caret(size: size) }
             }
         }
-        // The box you're typing in is tinted, so it's obvious whether the
-        // cursor is still inside a fraction/power or already past it.
-        .padding(.horizontal, caretIndex != nil && !path.isEmpty ? 2 : 0)
-        .background {
-            if caretIndex != nil && !path.isEmpty {
-                RoundedRectangle(cornerRadius: 4).fill(Color.orange.opacity(0.22))
-            }
-        }
     }
 
     private var placeholder: some View {
         RoundedRectangle(cornerRadius: 3)
             .strokeBorder(style: StrokeStyle(lineWidth: 1.5, dash: [3, 2]))
-            .foregroundStyle(caretIndex != nil ? Color.orange : Color.white.opacity(0.45))
+            .foregroundStyle(Color.white.opacity(0.45))
             .frame(width: size * 0.62, height: size * 0.85)
             .overlay { if caretIndex != nil { Caret(size: size * 0.8) } }
             .contentShape(Rectangle())

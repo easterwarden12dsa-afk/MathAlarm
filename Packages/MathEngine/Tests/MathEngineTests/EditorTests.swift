@@ -180,3 +180,34 @@ final class PasteTests: XCTestCase {
         XCTAssertEqual(e.evaluate(at: 2), 10, accuracy: 1e-12)   // 2(x² + 1), not 2x² + 1
     }
 }
+
+final class PasteTests: XCTestCase {
+    func testPastedPiecesParseBack() {
+        for kind in [ProblemKind.derivative, .integral] {
+            for level in Level.allCases {
+                for seed in UInt64(1)...UInt64(12) {
+                    let p = ProblemFactory.make(kind, level: level, seed: seed &* 977)
+                    let pieces = ExprPieces.pieces(of: p.display)
+                    XCTAssertEqual(pieces.first, p.display)
+                    for piece in pieces {
+                        var ed = MathEditor()
+                        ed.paste(ExprDisplay.row(piece))
+                        guard let back = try? RowParser.parse(ed) else { XCTFail("unparsable paste \(piece)"); continue }
+                        for x in [0.3, 0.7, 1.3] {
+                            let a = piece.evaluate(at: x), b = back.evaluate(at: x)
+                            if a.isFinite { XCTAssertEqual(a, b, accuracy: 1e-9 * Swift.max(1, Swift.abs(a)), "\(piece) → \(back)") }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    func testPastingASumNextToSomethingAddsBrackets() {
+        var ed = MathEditor()
+        ed.insert(.d2)
+        ed.paste(ExprDisplay.row(.sum([.p(.x, 2), 1])))
+        let e = try! RowParser.parse(ed)
+        XCTAssertEqual(e.evaluate(at: 2), 10, accuracy: 1e-12)   // 2(x² + 1), not 2x² + 1
+    }
+}

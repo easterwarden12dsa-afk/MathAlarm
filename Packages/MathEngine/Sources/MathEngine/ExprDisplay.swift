@@ -149,3 +149,31 @@ public enum ExprPieces {
         return [first] + out.dropFirst().sorted { $0.size > $1.size }.prefix(limit - 1)
     }
 }
+
+/// The parts of a function worth copying into an answer: the whole thing,
+/// every inner function of the chain rule, bases, numerators, denominators.
+public enum ExprPieces {
+    public static func pieces(of e: Expr, limit: Int = 10) -> [Expr] {
+        var out: [Expr] = []
+        func add(_ s: Expr) {
+            guard s.containsX, s != .x, !out.contains(s) else { return }
+            out.append(s)
+        }
+        func walk(_ s: Expr) {
+            switch s {
+            case .fn(_, let u): add(s); walk(u)
+            case .pow(let b, let n): add(s); walk(b); walk(n)
+            case .div(let a, let b): add(s); walk(a); walk(b)
+            case .mul(let a, let b): walk(a); walk(b)
+            case .add(let a, let b), .sub(let a, let b): add(s); walk(a); walk(b)
+            case .neg(let a): walk(a)
+            default: break
+            }
+        }
+        add(e)
+        walk(e)
+        // Whole function first, then the biggest parts.
+        guard let first = out.first else { return [] }
+        return [first] + out.dropFirst().sorted { $0.size > $1.size }.prefix(limit - 1)
+    }
+}
