@@ -65,7 +65,7 @@ struct SketchCanvas: View {
                         }
                         drawCurve(clipped, map, shown, color: .green.opacity(0.85), dash: [6, 4], width: 2.5)
                     }
-                    for line in guidelines { drawGuideline(clipped, map, line) }
+                    for line in guidelines where !line.hidden { drawGuideline(clipped, map, line) }
                     for g in guides { drawGuide(clipped, map, g) }
                     for s in strokes + [current] { drawStroke(clipped, map, s) }
                     if let eraserAt {
@@ -452,6 +452,8 @@ struct SketchChallengeView<Header: View>: View {
                 .layoutPriority(-1)
                 .modifier(Shake(animatableData: shakes))
 
+            if !guidelines.isEmpty { lineChips }
+
             feedback
 
             GlassEffectContainer(spacing: 8) {
@@ -484,6 +486,53 @@ struct SketchChallengeView<Header: View>: View {
         let flagged = result?.passed == false ? result!.regions.map { $0.lo...$0.hi } : []
         return revealed.map { SketchGuide.continuation(of: strokes, for: checked ?? problem, in: $0, flagged: flagged,
                                                        fit: mode.tolerance.normalization) }
+    }
+
+    /// The helper lines you've added: tap to hide/show, ✕ to remove.
+    private var lineChips: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 6) {
+                Image(systemName: "line.diagonal")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.cyan)
+                    .accessibilityHidden(true)
+                ForEach($guidelines) { $line in
+                    HStack(spacing: 4) {
+                        Button {
+                            Haptics.tap()
+                            line.hidden.toggle()
+                        } label: {
+                            Text(line.title)
+                                .font(.footnote.monospaced().weight(.semibold))
+                                .foregroundStyle(line.hidden ? Color.secondary : Color.cyan)
+                                .strikethrough(line.hidden)
+                        }
+                        .accessibilityLabel(line.hidden ? "Show \(line.title)" : "Hide \(line.title)")
+                        Button {
+                            Haptics.tap()
+                            let id = line.id
+                            withAnimation { guidelines.removeAll { $0.id == id } }
+                        } label: {
+                            Image(systemName: "xmark").font(.caption2.weight(.bold)).foregroundStyle(.secondary)
+                        }
+                        .accessibilityLabel("Remove \(line.title)")
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(Color.white.opacity(0.08), in: Capsule())
+                }
+                if guidelines.count > 1 {
+                    Button("Remove all") {
+                        Haptics.tap()
+                        withAnimation { guidelines.removeAll() }
+                    }
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.red)
+                }
+            }
+            .buttonStyle(.plain)
+        }
+        .frame(height: 32)
     }
 
     // MARK: Toolbar
@@ -823,6 +872,8 @@ struct Guideline: Identifiable, Hashable {
     let id = UUID()
     var kind: Kind
     var title: String
+    /// Hidden lines stay in the list but aren't drawn.
+    var hidden = false
 }
 
 /// Reads "5", "−2.5", "1/3", "π/2", "3π/4", "-2π", "e" and "ln 4"-free plain numbers.
@@ -907,7 +958,17 @@ struct GuidelineSheet: View {
 
                     if !lines.isEmpty {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Your lines").font(.subheadline.weight(.semibold))
+                            HStack {
+                                Text("Your lines").font(.subheadline.weight(.semibold))
+                                Spacer()
+                                if lines.count > 1 {
+                                    Button("Remove all", role: .destructive) {
+                                        Haptics.tap()
+                                        lines.removeAll()
+                                    }
+                                    .font(.subheadline)
+                                }
+                            }
                             ForEach(lines) { line in
                                 HStack {
                                     Text(line.title).font(.body.monospaced()).foregroundStyle(.cyan)
