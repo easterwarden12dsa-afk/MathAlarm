@@ -105,9 +105,9 @@ final class ProblemHistory {
         return p
     }
 
-    func freshSketch(level: Level) -> SketchProblem {
-        // Sketch functions are a smaller set, so only avoid the last few.
-        let p = SketchFactory.make(level: level, seed: ProblemFactory.randomSeed(), avoiding: avoid)
+    /// `whole`: draw the whole graph (non-periodic functions), from Settings by default.
+    func freshSketch(level: Level, whole: Bool = UserDefaults.standard.bool(forKey: "wholeGraph")) -> SketchProblem {
+        let p = SketchFactory.make(level: level, seed: ProblemFactory.randomSeed(), avoiding: avoid, wholeDomain: whole)
         remember(p.signature)
         return p
     }

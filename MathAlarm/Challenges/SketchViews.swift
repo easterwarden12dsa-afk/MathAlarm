@@ -2,7 +2,7 @@ import SwiftUI
 import MathEngine
 
 enum SketchTool: String, CaseIterable, Identifiable {
-    case draw, erase
+    case draw, erase, pan
     var id: String { rawValue }
 }
 
@@ -24,6 +24,16 @@ struct SketchCanvas: View {
     var showYScale = true
     /// Called before each drawing/erasing gesture changes the strokes (for Undo).
     var willChange: () -> Void = {}
+    /// Whole-graph problems: the visible window (nil = the problem's own), changed by pinch, Move and the zoom buttons.
+    var viewport: Binding<SketchViewport?> = .constant(nil)
+    var zoomable = false
+
+    @State private var zoomStart: SketchViewport?
+    @State private var panStart: SketchViewport?
+    @State private var zooming = false
+
+    /// The problem as currently seen (zoomed/panned).
+    private var shown: SketchProblem { viewport.wrappedValue.map { problem.windowed($0) } ?? problem }
 
     @State private var current: SketchStroke = []
     @State private var eraserAt: CGPoint?
@@ -37,15 +47,24 @@ struct SketchCanvas: View {
             let plot = CGRect(x: insets.leading, y: insets.top,
                               width: geo.size.width - insets.leading - insets.trailing,
                               height: geo.size.height - insets.top - insets.bottom)
-            let map = Mapping(problem: problem, plot: plot)
+            let map = Mapping(problem: shown, plot: plot)
             ZStack(alignment: .topLeading) {
                 Canvas { ctx, _ in
                     drawAxes(ctx, map)
-                    for r in regions { drawRegion(ctx, map, r) }
-                    if let reference { drawCurve(ctx, map, reference, color: .white.opacity(0.45), dash: [], width: 2.5) }
-                    if revealTruth { drawCurve(ctx, map, problem, color: .green.opacity(0.85), dash: [6, 4], width: 2.5) }
-                    for g in guides { drawGuide(ctx, map, g) }
-                    for s in strokes + [current] { drawStroke(ctx, map, s) }
+                    var clipped = ctx
+                    clipped.clip(to: Path(map.plot))
+                    for r in regions { drawRegion(clipped, map, r) }
+                    if let reference { drawCurve(clipped, map, reference.windowed(shown.viewport), color: .white.opacity(0.45), dash: [], width: 2.5) }
+                    if revealTruth {
+                        for c in shown.poles where c > shown.xMin && c < shown.xMax {
+                            let x = map.screen(c, 0).x
+                            clipped.stroke(Path { $0.move(to: CGPoint(x: x, y: map.plot.minY)); $0.addLine(to: CGPoint(x: x, y: map.plot.maxY)) },
+                                           with: .color(.white.opacity(0.55)), style: StrokeStyle(lineWidth: 1.5, dash: [4, 4]))
+                        }
+                        drawCurve(clipped, map, shown, color: .green.opacity(0.85), dash: [6, 4], width: 2.5)
+                    }
+                    for g in guides { drawGuide(clipped, map, g) }
+                    for s in strokes + [current] { drawStroke(clipped, map, s) }
                     if let eraserAt {
                         let circle = Path(ellipseIn: CGRect(x: eraserAt.x - eraserRadius, y: eraserAt.y - eraserRadius,
                                                             width: 2 * eraserRadius, height: 2 * eraserRadius))
@@ -56,35 +75,96 @@ struct SketchCanvas: View {
                 labels(map)
                 regionBadges(map)
                 markerLabels(map)
+                if zoomable { zoomButtons }
             }
             .contentShape(Rectangle())
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
+                        if zooming { return }
+                        if tool == .pan {
+                            guard zoomable else { return }
+                            let start = panStart ?? shown.viewport
+                            panStart = start
+                            let dx = -Double(value.translation.width / plot.width) * (start.xMax - start.xMin)
+                            let dy = Double(value.translation.height / plot.height) * (start.yMax - start.yMin)
+                            viewport.wrappedValue = start.moved(dx: dx, dy: dy)
+                            return
+                        }
                         if !gestureActive {
                             gestureActive = true
                             willChange()
                         }
                         switch tool {
+                        case .pan:
+                            break
                         case .draw:
                             current.append(map.point(value.location))
                         case .erase:
                             eraserAt = value.location
-                            let rx = Double(eraserRadius / plot.width) * (problem.xMax - problem.xMin)
-                            let ry = Double(eraserRadius / plot.height) * (problem.yMax - problem.yMin)
+                            let rx = Double(eraserRadius / plot.width) * (shown.xMax - shown.xMin)
+                            let ry = Double(eraserRadius / plot.height) * (shown.yMax - shown.yMin)
                             strokes = SketchEraser.erase(strokes, around: map.point(value.location), rx: rx, ry: ry)
                         }
                     }
                     .onEnded { _ in
+                        panStart = nil
                         gestureActive = false
-                        if !current.isEmpty { strokes.append(current) }
+                        if !current.isEmpty && !zooming { strokes.append(current) }
                         current = []
                         eraserAt = nil
+                    }
+            )
+            .simultaneousGesture(
+                MagnifyGesture()
+                    .onChanged { value in
+                        guard zoomable else { return }
+                        zooming = true
+                        current = []
+                        let start = zoomStart ?? shown.viewport
+                        zoomStart = start
+                        zoom(to: start.zoomed(Double(value.magnification), around: start.center))
+                    }
+                    .onEnded { _ in
+                        zoomStart = nil
+                        zooming = false
                     }
             )
         }
         .background(Color(white: 0.07), in: RoundedRectangle(cornerRadius: 14))
         .accessibilityLabel("Drawing area for the graph")
+    }
+
+    // MARK: Zoom
+
+    /// Keeps zooming between 1/8 and 8 times the starting view.
+    private func zoom(to v: SketchViewport) {
+        let w0 = problem.xMax - problem.xMin
+        let w = v.xMax - v.xMin
+        guard w > w0 / 8, w < w0 * 8 else { return }
+        viewport.wrappedValue = v
+    }
+
+    private var zoomButtons: some View {
+        VStack(spacing: 6) {
+            zoomButton("plus.magnifyingglass", "Zoom in") { zoom(to: shown.viewport.zoomed(1.5, around: shown.viewport.center)) }
+            zoomButton("minus.magnifyingglass", "Zoom out") { zoom(to: shown.viewport.zoomed(1 / 1.5, around: shown.viewport.center)) }
+            zoomButton("arrow.counterclockwise", "Reset view") { viewport.wrappedValue = nil }
+        }
+        .padding(6)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+    }
+
+    private func zoomButton(_ symbol: String, _ label: String, action: @escaping () -> Void) -> some View {
+        Button {
+            Haptics.tap()
+            withAnimation(.easeInOut(duration: 0.2)) { action() }
+        } label: {
+            Image(systemName: symbol).font(.footnote.weight(.semibold)).frame(width: 18, height: 18)
+        }
+        .buttonStyle(.glass)
+        .buttonBorderShape(.circle)
+        .accessibilityLabel(label)
     }
 
     // MARK: Coordinates
@@ -114,29 +194,29 @@ struct SketchCanvas: View {
         }
         if showYScale {
             for t in yTicks {
-                let y = m.screen(problem.xMin, t).y
+                let y = m.screen(shown.xMin, t).y
                 ctx.stroke(Path { $0.move(to: CGPoint(x: m.plot.minX, y: y)); $0.addLine(to: CGPoint(x: m.plot.maxX, y: y)) }, with: .color(grid))
             }
         }
         ctx.stroke(Path(m.plot), with: .color(.white.opacity(0.25)), lineWidth: 1)
-        if problem.yMin < 0 && problem.yMax > 0 {
+        if shown.yMin < 0 && shown.yMax > 0 {
             let y = m.screen(0, 0).y
             ctx.stroke(Path { $0.move(to: CGPoint(x: m.plot.minX, y: y)); $0.addLine(to: CGPoint(x: m.plot.maxX, y: y)) },
                        with: .color(.white.opacity(0.75)), lineWidth: 1.5)
         }
-        if problem.xMin < 0 && problem.xMax > 0 {
+        if shown.xMin < 0 && shown.xMax > 0 {
             let x = m.screen(0, 0).x
             ctx.stroke(Path { $0.move(to: CGPoint(x: x, y: m.plot.minY)); $0.addLine(to: CGPoint(x: x, y: m.plot.maxY)) },
                        with: .color(.white.opacity(0.75)), lineWidth: 1.5)
         }
         for x in xTicks {
-            let p = m.screen(x, problem.yMin)
+            let p = m.screen(x, shown.yMin)
             ctx.stroke(Path { $0.move(to: CGPoint(x: p.x, y: m.plot.maxY)); $0.addLine(to: CGPoint(x: p.x, y: m.plot.maxY + 6)) },
                        with: .color(.white), lineWidth: 2)
         }
         if showYScale {
             for t in yTicks {
-                let y = m.screen(problem.xMin, t).y
+                let y = m.screen(shown.xMin, t).y
                 ctx.stroke(Path { $0.move(to: CGPoint(x: m.plot.minX - 6, y: y)); $0.addLine(to: CGPoint(x: m.plot.minX, y: y)) },
                            with: .color(.white), lineWidth: 2)
             }
@@ -144,8 +224,8 @@ struct SketchCanvas: View {
     }
 
     private func regionRect(_ m: Mapping, _ r: SketchRegion) -> CGRect {
-        let x1 = m.screen(Swift.max(r.lo, problem.xMin), 0).x
-        let x2 = m.screen(Swift.min(r.hi, problem.xMax), 0).x
+        let x1 = m.screen(Swift.max(r.lo, shown.xMin), 0).x
+        let x2 = m.screen(Swift.min(r.hi, shown.xMax), 0).x
         return CGRect(x: x1, y: m.plot.minY, width: Swift.max(6, x2 - x1), height: m.plot.height)
     }
 
@@ -171,12 +251,18 @@ struct SketchCanvas: View {
         var started = false
         let lo = Swift.max(p.xMin, range?.lowerBound ?? p.xMin), hi = Swift.min(p.xMax, range?.upperBound ?? p.xMax)
         guard hi > lo else { return }
-        for i in 0...240 {
-            let x = lo + (hi - lo) * Double(i) / 240
+        let span = p.yMax - p.yMin
+        var lastX = lo, lastY = Double.nan
+        for i in 0...480 {
+            let x = lo + (hi - lo) * Double(i) / 480
             let y = p.value(at: x)
             guard y.isFinite else { started = false; continue }
-            let pt = m.screen(x, y)
+            // Don't join across a vertical asymptote (or any jump off the box).
+            let crossesPole = p.poles.contains { ($0 - lastX) * ($0 - x) <= 0 }
+            if started && (crossesPole || Swift.abs(y - lastY) > 2 * span) { started = false }
+            let pt = m.screen(x, Swift.max(p.yMin - 3 * span, Swift.min(p.yMax + 3 * span, y)))
             if started { path.addLine(to: pt) } else { path.move(to: pt); started = true }
+            lastX = x; lastY = y
         }
         ctx.stroke(path, with: .color(color), style: StrokeStyle(lineWidth: width, lineCap: .round, dash: dash))
     }
@@ -234,15 +320,26 @@ struct SketchCanvas: View {
     // MARK: Labels
 
     private var xTicks: [Double] {
-        var ticks = [problem.xMin, problem.xMax]
-        if problem.xMin < 0 && problem.xMax > 0 { ticks.append(0) }
-        let mid = (problem.xMin + problem.xMax) / 2
-        if !(problem.xMin < 0 && problem.xMax > 0) || Swift.abs(mid) > 1e-9 { ticks.append(mid) }
+        if zoomable { return niceTicks(shown.xMin, shown.xMax) }
+        var ticks = [shown.xMin, shown.xMax]
+        if shown.xMin < 0 && shown.xMax > 0 { ticks.append(0) }
+        let mid = (shown.xMin + shown.xMax) / 2
+        if !(shown.xMin < 0 && shown.xMax > 0) || Swift.abs(mid) > 1e-9 { ticks.append(mid) }
+        return ticks
+    }
+
+    private func niceTicks(_ lo: Double, _ hi: Double) -> [Double] {
+        let raw = (hi - lo) / 4
+        let mag = pow(10, floor(log10(raw)))
+        let step = [1.0, 2, 2.5, 5, 10].map { $0 * mag }.first { $0 >= raw } ?? raw
+        var ticks: [Double] = []
+        var t = (lo / step).rounded(.up) * step
+        while t <= hi + 1e-9 { ticks.append(Swift.abs(t) < step * 1e-6 ? 0 : t); t += step }
         return ticks
     }
 
     private var yTicks: [Double] {
-        let lo = problem.yMin, hi = problem.yMax
+        let lo = shown.yMin, hi = shown.yMax
         let raw = (hi - lo) / 4
         let mag = pow(10, floor(log10(raw)))
         let step = [1.0, 2, 2.5, 5, 10].map { $0 * mag }.first { $0 >= raw } ?? raw
@@ -255,7 +352,7 @@ struct SketchCanvas: View {
     private func labels(_ m: Mapping) -> some View {
         ZStack(alignment: .topLeading) {
             ForEach(xTicks, id: \.self) { x in
-                Text(problem.xLabel(x))
+                Text(shown.xLabel(x))
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.white)
                     .fixedSize()
@@ -269,7 +366,7 @@ struct SketchCanvas: View {
                         .fixedSize()
                         .position(x: m.plot.minX - 24, y: m.screen(0, y).y)
                 }
-            } else if problem.yMin < 0 && problem.yMax > 0 {
+            } else if shown.yMin < 0 && shown.yMax > 0 {
                 Text("0")
                     .font(.caption2)
                     .foregroundStyle(.white.opacity(0.8))
@@ -309,6 +406,9 @@ struct SketchChallengeView<Header: View>: View {
     @State private var showSteps = false
     @State private var confirmSteps = false
     @State private var revealed: [ClosedRange<Double>] = []
+    /// Whole-graph problems: the current view, and the stretch the last check used.
+    @State private var viewport: SketchViewport?
+    @State private var checked: SketchProblem?
 
     var body: some View {
         VStack(spacing: 8) {
@@ -317,7 +417,8 @@ struct SketchChallengeView<Header: View>: View {
             SketchCanvas(problem: problem, strokes: $strokes, tool: tool,
                          regions: result?.passed == false ? result!.regions : [],
                          revealTruth: reveal, guides: guides, reference: reference, showYScale: mode.showsYScale,
-                         willChange: { history.append(strokes); if history.count > 60 { history.removeFirst() } })
+                         willChange: { history.append(strokes); if history.count > 60 { history.removeFirst() } },
+                         viewport: $viewport, zoomable: problem.isWhole)
                 .frame(minHeight: 140, maxHeight: .infinity)
                 .layoutPriority(-1)
                 .modifier(Shake(animatableData: shakes))
@@ -348,7 +449,8 @@ struct SketchChallengeView<Header: View>: View {
     /// The correct shape in each revealed zone, joined to what was drawn.
     private var guides: [SketchStroke] {
         let flagged = result?.passed == false ? result!.regions.map { $0.lo...$0.hi } : []
-        return revealed.map { SketchGuide.continuation(of: strokes, for: problem, in: $0, flagged: flagged) }
+        return revealed.map { SketchGuide.continuation(of: strokes, for: checked ?? problem, in: $0, flagged: flagged,
+                                                       fit: mode.tolerance.normalization) }
     }
 
     // MARK: Toolbar
@@ -366,6 +468,7 @@ struct SketchChallengeView<Header: View>: View {
         HStack(spacing: 8) {
             toolButton(.draw, "pencil.tip", "Draw", labelled: labelled)
             toolButton(.erase, "eraser", "Erase", labelled: labelled)
+            if problem.isWhole { toolButton(.pan, "hand.draw", "Move", labelled: labelled) }
             Spacer(minLength: 0)
             iconButton("arrow.uturn.backward", "Undo") {
                 if let last = history.popLast() { strokes = last } else if !strokes.isEmpty { strokes.removeLast() }
@@ -519,7 +622,15 @@ struct SketchChallengeView<Header: View>: View {
     }
 
     private func submit() {
-        let r = SketchChecker.check(strokes, for: problem, mode: mode)
+        let r: SketchResult
+        if problem.isWhole {
+            let out = SketchChecker.checkWhole(strokes, for: problem, view: viewport ?? problem.viewport, mode: mode)
+            r = out.result
+            checked = out.checked
+        } else {
+            r = SketchChecker.check(strokes, for: problem, mode: mode)
+            checked = problem
+        }
         withAnimation { result = r }
         if r.passed {
             solved = true
@@ -549,7 +660,8 @@ struct SketchHeader: View {
                 }
                 .foregroundStyle(.white)
             }
-            Text("Sketch for \(problem.xLabel(problem.xMin)) ≤ x ≤ \(problem.xLabel(problem.xMax))")
+            Text(problem.isWhole ? "Draw the whole graph — pinch, Move or ± to see more"
+                                 : "Sketch for \(problem.xLabel(problem.xMin)) ≤ x ≤ \(problem.xLabel(problem.xMax))")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }

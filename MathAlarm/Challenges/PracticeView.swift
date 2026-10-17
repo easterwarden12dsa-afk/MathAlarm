@@ -50,6 +50,7 @@ struct PracticeView: View {
             .toast($toast)
             .onChange(of: kind) { _, _ in newProblem() }
             .onChange(of: difficulty) { _, _ in newProblem() }
+            .onChange(of: settings.wholeGraph) { _, _ in if kind == .sketch { newProblem() } }
             .sheet(isPresented: $showSolution) {
                 SolutionSheet(problem: problem)
             }
@@ -71,6 +72,9 @@ struct PracticeView: View {
                 Menu {
                     Picker("Drawing mode", selection: $mode) {
                         ForEach(SketchMode.allCases) { Text($0.title).tag($0) }
+                    }
+                    if kind == .sketch {
+                        Toggle("Whole graph (zoom)", isOn: $settings.wholeGraph)
                     }
                 } label: {
                     chip(mode.title, "pencil.and.ruler")
@@ -136,7 +140,7 @@ struct PracticeView: View {
     private func newProblem() {
         switch kind {
         case .sketch:
-            sketch = ProblemHistory.shared.freshSketch(level: difficulty.level)
+            sketch = ProblemHistory.shared.freshSketch(level: difficulty.level, whole: settings.wholeGraph)
             strokes = []
         case .change:
             change = ProblemHistory.shared.freshChange(level: difficulty.level)

@@ -18,10 +18,11 @@ struct SettingsView: View {
                         ForEach(AppSettings.ChangeDisplay.allCases) { Text($0.title).tag($0) }
                     }
                     Toggle("Show correct part during alarms", isOn: $settings.zoneRevealInAlarms)
+                    Toggle("Sketch the whole graph", isOn: $settings.wholeGraph)
                 } header: {
                     Text("Challenges")
                 } footer: {
-                    Text("More problems per ring means you have to solve several in a row before the alarm stops. Surrender still works at any time.")
+                    Text("More problems per ring means you have to solve several in a row before the alarm stops. Surrender still works at any time.\n\nWhole graph: for functions that don't repeat, you draw the whole graph (asymptotes included) and can pinch, use Move or ± to zoom and pan. What you drew inside the view is checked, and it has to include every peak, dip, zero, inflection point and asymptote.")
                 }
 
                 Section {
@@ -114,7 +115,7 @@ struct SettingsView: View {
                     Text("""
                     Integrals and derivatives: your expression is compared with the correct one at 40 random points, so any equivalent form passes, simplified or not, with or without + C. Points are only taken from the interval shown with the problem (if any); there ln x and ln|x| agree, so both are accepted.
 
-                    Graph Sketch and Change: your drawing is compared with the true graph in 8 strips, at the ends, at zeros and at every peak and dip. The drawing mode decides how much has to match: Precision and Standard check values, Proportions allows any vertical scale, Shape only checks rises, falls and turns.
+                    Graph Sketch and Change: your drawing is compared with the true graph in 8 strips, at the ends, at zeros and at every peak and dip. The drawing mode decides how much has to match: Precision and Standard check values, Proportions allows any vertical scale, Shape only looks at the overall shape. Where the graph runs off the box (an asymptote), your line has to leave the box the same way. Every correction shown can be fixed in its zone: if fixing a small part wouldn't be enough, the zone is made bigger.
                     """)
                     .font(.footnote)
                 }

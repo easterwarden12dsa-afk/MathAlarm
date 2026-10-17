@@ -35,6 +35,10 @@ final class AppSettings: ObservableObject {
     @Published var zoneRevealInAlarms: Bool {
         didSet { defaults.set(zoneRevealInAlarms, forKey: "zoneRevealInAlarms") }
     }
+    /// Graph Sketch: draw the whole graph (zoom and pan) for non-periodic functions.
+    @Published var wholeGraph: Bool {
+        didSet { defaults.set(wholeGraph, forKey: "wholeGraph") }
+    }
     /// Problems to solve before a ring stops (1–3).
     @Published var problemsPerRing: Int {
         didSet { defaults.set(problemsPerRing, forKey: "problemsPerRing") }
@@ -66,6 +70,7 @@ final class AppSettings: ObservableObject {
         sketchMode = SketchMode(rawValue: defaults.string(forKey: "sketchMode") ?? "") ?? .standard
         changeDisplay = ChangeDisplay(rawValue: defaults.string(forKey: "changeDisplay") ?? "") ?? .both
         zoneRevealInAlarms = defaults.bool(forKey: "zoneRevealInAlarms")
+        wholeGraph = defaults.bool(forKey: "wholeGraph")
         let perRing = defaults.integer(forKey: "problemsPerRing")
         problemsPerRing = (1...3).contains(perRing) ? perRing : 1
         quickChallenge = ChallengeKind(rawValue: defaults.string(forKey: "quickChallenge") ?? "") ?? .random
