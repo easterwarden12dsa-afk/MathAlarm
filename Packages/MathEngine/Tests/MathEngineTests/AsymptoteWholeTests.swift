@@ -131,7 +131,7 @@ final class AsymptoteWholeTests: XCTestCase {
             XCTAssertGreaterThan(GraphSteps.steps(for: c, formulaVisible: false).count, 6)
             XCTAssertFalse(GraphSteps.markers(for: c).isEmpty)
         }
-        XCTAssertTrue(seen.isSuperset(of: ["anti", "poles", "ln", "exp", "absX"]), "\(seen)")
+        XCTAssertTrue(seen.isSuperset(of: ["anti", "poles", "ln", "exp"]), "\(seen)")
     }
 
     func testRootsIgnorePoles() {

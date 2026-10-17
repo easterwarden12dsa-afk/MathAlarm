@@ -114,7 +114,8 @@ public enum SketchMode: String, Codable, CaseIterable, Identifiable, Sendable {
     }
 
     /// Whether the canvas shows numbers on the y-axis.
-    public var showsYScale: Bool { self == .precision || self == .standard }
+    /// Proportions accepts any vertical scale, so numbers would mislead; Shape keeps them (heights still matter for the look).
+    public var showsYScale: Bool { self != .proportions }
 
     public var tolerance: SketchTolerance {
         switch self {
@@ -1182,7 +1183,7 @@ public enum SketchFactory {
                 return poled(.div(.exp(x), .sum([.n(a), .neg(.exp(x))])), la - 4, la + 3, [la], .expOverAMinus, [a],
                              labels: [a == 1 ? "0" : "ln \(a)"])
             case 35: // (eˣ − b)/(eˣ − 4)²
-                let b = r.pick([3, 5])
+                let b = 3
                 return poled(.div(.sum([.exp(x), .n(-b)]), .p(.sum([.exp(x), .n(-4)]), 2)), -2.5, 3, [log(4)], .expMinusBOverSq, [b],
                              labels: ["ln 4"])
             case 36: // (ln x)²/((ln x)² − 1)
@@ -1428,16 +1429,20 @@ public enum ChangeFactory {
     public static func make(level: Level, seed: UInt64, avoiding: Set<String> = [], memory: ShapeMemory = ShapeMemory()) -> ChangeProblem {
         var s = seed
         var notSeen: ChangeProblem?
+        var otherKind: ChangeProblem?
+        // Easy has only three kinds of rule, so it only avoids an immediate repeat.
+        let depth = level == .easy ? 1 : 2
         for attempt in 0..<160 {
             var rng = SeededRandom(seed: s)
             s = s &* 6_364_136_223_846_793_005 &+ 1_442_695_040_888_963_407
             guard let p = candidate(level: level, rng: &rng, seed: s), !avoiding.contains(p.signature) else { continue }
             if notSeen == nil { notSeen = p }
-            if attempt < 130 && memory.usedRecently(p.kindName, depth: 2) { continue }
+            if otherKind == nil, !memory.usedRecently(p.kindName, depth: 1) { otherKind = p }
+            if attempt < 130 && memory.usedRecently(p.kindName, depth: depth) { continue }
             if attempt < 80 && (memory.looksLikeRecent(ShapeKey.of(p.target)) || memory.looksLikeRecent(ShapeKey.of(p.base))) { continue }
             return p
         }
-        if let notSeen { return notSeen }
+        if let p = otherKind ?? notSeen { return p }
         // Always-valid fallback: 1/f² for f = x² + 1.
         let base = SketchFactory.finish(.sum([.p(.x, 2), 1]), -2, 2, piBased: false, level: level, seed: seed)!
         return build(base: base, transform: .reciprocalSquare, level: level, seed: seed)!
