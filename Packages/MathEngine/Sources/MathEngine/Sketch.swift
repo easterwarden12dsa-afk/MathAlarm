@@ -223,8 +223,10 @@ public enum SketchChecker {
             }
             return SketchResult(passed: false, regions: Array(regions.prefix(maxRegions)), coverage: coverage)
         }
+        // The drawing is lightly smoothed (finger jitter); the true graph gets
+        // the same smoothing so a perfect sketch compares as perfect.
         var user = smoothed(fillGaps(sampled), radius: 2)
-        var truth = rawTruth
+        var truth = smoothed(rawTruth, radius: 2)
         var range = rawRange
 
         // 2. Normalise for the relative modes.
@@ -772,24 +774,18 @@ public enum ChangeFactory {
     }
 
     static func candidate(level: Level, rng r: inout SeededRandom, seed: UInt64) -> ChangeProblem? {
-        let transform: GraphTransform
-        let c3 = r.nonZero(-3...3), c2 = r.nonZero(-2...2)
+        enum Kind { case shift, negate, scaleUp, scaleDown, absolute, mirror, negateShift, scaleNeg, square,
+                    reciprocal, derivative, squareRoot, reciprocalSquare }
+        let kinds: [Kind]
         switch level {
-        case .easy:
-            transform = r.pick([.shift(c3), .negate, .scale(2, 1), .scale(1, 2)])
-        case .medium:
-            transform = r.pick([.absolute, .mirror, .negateShift(c2), .scale(-2, 1), .square])
-        case .hard:
-            transform = r.pick([.reciprocal, .square, .derivative, .absolute, .squareRoot])
-        case .bagrut:
-            transform = r.pick([.reciprocalSquare, .derivative, .reciprocal, .squareRoot])
+        case .easy: kinds = [.shift, .negate, .scaleUp, .scaleDown]
+        case .medium: kinds = [.absolute, .mirror, .negateShift, .scaleNeg, .square]
+        case .hard: kinds = [.reciprocal, .square, .derivative, .absolute, .squareRoot]
+        case .bagrut: kinds = [.reciprocalSquare, .derivative, .reciprocal, .squareRoot]
         }
-        let needsPositive: Bool
-        switch transform {
-        case .reciprocal, .reciprocalSquare, .squareRoot: needsPositive = true
-        default: needsPositive = false
-        }
-        let baseLevel: Level = level == .bagrut ? .medium : (level == .easy ? .easy : .medium)
+        let kind = r.pick(kinds)
+        let needsPositive = [.reciprocal, .reciprocalSquare, .squareRoot].contains(kind)
+        let baseLevel: Level = level == .easy ? .easy : .medium
         let base: SketchProblem?
         if needsPositive || (level != .easy && r.int(0...2) == 0) {
             base = positiveBase(&r, level: level, seed: seed)
@@ -797,9 +793,29 @@ public enum ChangeFactory {
             base = SketchFactory.candidate(level: baseLevel, rng: &r, seed: seed)
         }
         guard let base else { return nil }
-        // |f| only makes sense if f goes negative; f(−x) needs a symmetric interval and a non-even f.
+        // Shifts big enough to see: about half the graph's height (at least 1).
+        let fRange = base.yMax - base.yMin
+        let step = Swift.max(1, Int((fRange / 1.3 / 2).rounded()))
+        let sign = r.bool() ? 1 : -1
+        let transform: GraphTransform
+        switch kind {
+        case .shift: transform = .shift(sign * step)
+        case .negate: transform = .negate
+        case .scaleUp: transform = .scale(2, 1)
+        case .scaleDown: transform = .scale(1, 2)
+        case .absolute: transform = .absolute
+        case .mirror: transform = .mirror
+        case .negateShift: transform = .negateShift(sign * step)
+        case .scaleNeg: transform = .scale(-2, 1)
+        case .square: transform = .square
+        case .reciprocal: transform = .reciprocal
+        case .derivative: transform = .derivative
+        case .squareRoot: transform = .squareRoot
+        case .reciprocalSquare: transform = .reciprocalSquare
+        }
+        // |f| only makes sense if f goes negative; f(−x) needs a symmetric interval.
         if case .absolute = transform {
-            guard (0...200).contains(where: { base.value(at: base.xMin + (base.xMax - base.xMin) * Double($0) / 200) < -0.05 * (base.yMax - base.yMin) }) else { return nil }
+            guard (0...200).contains(where: { base.value(at: base.xMin + (base.xMax - base.xMin) * Double($0) / 200) < -0.05 * fRange }) else { return nil }
         }
         if case .mirror = transform {
             guard Swift.abs(base.xMin + base.xMax) < 1e-9 else { return nil }
@@ -810,12 +826,14 @@ public enum ChangeFactory {
     static func build(base: SketchProblem, transform: GraphTransform, level: Level, seed: UInt64) -> ChangeProblem? {
         let g = transform.apply(base.function)
         guard var target = SketchFactory.finish(g, base.xMin, base.xMax, piBased: base.piBased, level: level, seed: seed) else { return nil }
-        // Reject transforms that leave the graph unchanged (e.g. f(−x) for an even f).
+        // Reject transforms that barely change the graph (e.g. f(−x) for an
+        // even f, or |f| where f is hardly negative): drawing f must not pass.
         let xs = (0...60).map { base.xMin + (base.xMax - base.xMin) * Double($0) / 60 }
         let gRange = target.yMax - target.yMin
-        guard xs.contains(where: { Swift.abs(g.evaluate(at: $0) - base.value(at: $0)) > 0.05 * gRange }) else { return nil }
-        // Don't let one graph dwarf the other on the shared canvas.
         let fRange = base.yMax - base.yMin
+        let meanDiff = xs.reduce(0) { $0 + Swift.abs(g.evaluate(at: $1) - base.value(at: $1)) } / Double(xs.count)
+        guard meanDiff > 0.3 * Swift.max(gRange, fRange) / 1.3 else { return nil }
+        // Don't let one graph dwarf the other on the shared canvas.
         guard gRange < 12 * fRange, fRange < 12 * gRange else { return nil }
         target.yMin = Swift.min(target.yMin, base.yMin)
         target.yMax = Swift.max(target.yMax, base.yMax)
