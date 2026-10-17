@@ -186,3 +186,19 @@ final class VarietyTests: XCTestCase {
         }
     }
 }
+
+final class HardIntegralTests: XCTestCase {
+    func testHardHasIntegralTasks() {
+        var count = 0
+        for seed in UInt64(1)...UInt64(80) {
+            let c = ChangeFactory.make(level: .hard, seed: seed &* 31)
+            if case .antiderivative = c.transform {
+                count += 1
+                let x = (c.base.xMin + c.base.xMax) / 2
+                XCTAssertEqual(NumericDerivative.at(x, of: c.target.function), c.base.value(at: x), accuracy: 1e-4)
+                XCTAssertTrue(c.transform.formula.hasPrefix("g(x) = ∫"))
+            }
+        }
+        XCTAssertGreaterThan(count, 5)
+    }
+}

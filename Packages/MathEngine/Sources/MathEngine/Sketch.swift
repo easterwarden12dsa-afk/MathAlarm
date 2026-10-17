@@ -1384,7 +1384,7 @@ public enum GraphTransform: Codable, Hashable, Sendable {
         case .reciprocalSquare: return "g(x) = 1 / f(x)²"
         case .squareRoot: return "g(x) = √f(x)"
         case .derivative: return "g(x) = f′(x)  (the derivative)"
-        case .antiderivative(let x0, let y0): return "g′(x) = f(x),  g(\(x0)) = \(y0)"
+        case .antiderivative(let x0, let y0): return "g(x) = ∫ f(x) dx,  g(\(x0)) = \(y0)"
         case .lnOf: return "g(x) = ln f(x)"
         case .expOf: return "g(x) = e^f(x)"
         case .absX: return "g(x) = f(|x|)"
@@ -1477,7 +1477,7 @@ public enum ChangeFactory {
         switch level {
         case .easy: kinds = [.shift, .negate, .scaleUp, .scaleDown]
         case .medium: kinds = [.absolute, .mirror, .negateShift, .scaleNeg, .square]
-        case .hard: kinds = [.reciprocal, .square, .derivative, .absolute, .squareRoot]
+        case .hard: kinds = [.reciprocal, .square, .derivative, .absolute, .squareRoot, .antiderivative, .antiderivative]
         // Weights follow the 571/572/581/582 papers: 1/f most often, then g′ = f, ln f, f′, |f|, e^f, f².
         // (f(|x|) never appears there.)
         case .bagrut: kinds = [.antiderivative, .antiderivative, .reciprocalPoles, .reciprocalPoles, .reciprocalPoles, .lnOf, .lnOf,
@@ -1489,7 +1489,9 @@ public enum ChangeFactory {
         case .antiderivative:
             // Given the graph of f = F′, draw F through a given point.
             var rr = r
-            guard let F = SketchFactory.candidate(level: r.bool() ? .hard : .medium, rng: &rr, seed: seed), F.poles.isEmpty,
+            // Hard integrates simpler graphs than Bagrut.
+            let fLevel: Level = level == .bagrut ? (r.bool() ? .hard : .medium) : (r.bool() ? .medium : .easy)
+            guard let F = SketchFactory.candidate(level: fLevel, rng: &rr, seed: seed), F.poles.isEmpty,
                   let base = SketchFactory.finish(F.function.derivative(), F.xMin, F.xMax, piBased: F.piBased, level: level, seed: seed)
             else { return nil }
             r = rr
