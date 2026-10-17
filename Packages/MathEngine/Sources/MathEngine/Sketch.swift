@@ -265,8 +265,13 @@ public enum SketchChecker {
             r.regions = consolidate(SketchResult(passed: false, regions: regions, coverage: r.coverage), problem).regions
         }
         if rawCheck(fixedAlongGuides(strokes, problem, r.regions, t), for: problem, tolerance: t).passed { return r }
-        // Piece by piece doesn't work: one band over everything that's off.
-        let lo = r.regions.map(\.lo).min() ?? problem.xMin, hi = r.regions.map(\.hi).max() ?? problem.xMax
+        // Piece by piece doesn't work: one band over everything that's off,
+        // or over the whole graph if even that isn't enough.
+        var lo = r.regions.map(\.lo).min() ?? problem.xMin, hi = r.regions.map(\.hi).max() ?? problem.xMax
+        let band = [SketchRegion(lo: lo, hi: hi, issue: .missingFeature, hint: "")]
+        if !rawCheck(fixedAlongGuides(strokes, problem, band, t), for: problem, tolerance: t).passed {
+            lo = problem.xMin; hi = problem.xMax
+        }
         r.regions = [SketchRegion(lo: lo, hi: hi, issue: .missingFeature,
                                   hint: "The general shape from x = \(problem.xLabel(lo)) to x = \(problem.xLabel(hi)) is off — redraw it (the eye shows the right shape).")]
         return r
@@ -337,6 +342,13 @@ public enum SketchChecker {
             anyOff && (Swift.max(0, i - k)...Swift.min(n - 1, i + k)).contains { !visible[$0] }
         }
         func column(_ x: Double) -> Int { Swift.max(0, Swift.min(n - 1, Int(((x - a) / width * Double(n)).rounded(.down)))) }
+        // Visible stretches between off-screen parts, numbered (−1 = off screen).
+        var run = [Int](repeating: -1, count: n)
+        var runCount = 0
+        for i in 0..<n where visible[i] {
+            if i == 0 || !visible[i - 1] { runCount += 1 }
+            run[i] = runCount
+        }
         let fMax = rawTruth.max() ?? 1, fMin = rawTruth.min() ?? 0
         let rawRange = Swift.max(fMax - fMin, 1e-9)
         let absolute = t.normalization == .none
@@ -442,7 +454,8 @@ public enum SketchChecker {
             // Search window: wide, but never reaching the neighbouring peak/dip.
             let neighbour = trueExtrema.filter { $0.x != e.x }.map { Swift.abs($0.x - e.x) }.min() ?? .infinity
             let radius = Swift.max(Swift.min(2 * shift, 0.9 * neighbour), 3 * width / Double(n))
-            let window = xs.indices.filter { Swift.abs(xs[$0] - e.x) <= radius }
+            let home = run[column(e.x)]
+            let window = xs.indices.filter { Swift.abs(xs[$0] - e.x) <= radius && run[$0] == home }
             guard window.count >= 5 else { continue }
             let tv = window.map { truth[$0] }, uv = window.map { user[$0] }
             func drop(_ v: [Double], _ isMax: Bool) -> Double {
@@ -1339,7 +1352,7 @@ public extension SketchChecker {
             if feat.x < view.xMin || feat.x > view.xMax {
                 missing.append(SketchRegion(lo: zone.lowerBound, hi: zone.upperBound, issue: .notDrawn,
                                             hint: "The graph has a \(feat.name) at \(where_), outside the view — move or zoom out and draw it too."))
-            } else if feat.x < lo + margin || feat.x > hi - margin {
+            } else if feat.x < lo - margin || feat.x > hi + margin {
                 missing.append(SketchRegion(lo: zone.lowerBound, hi: zone.upperBound, issue: .notDrawn,
                                             hint: "Draw further: the graph has a \(feat.name) at \(where_), and your drawing has to include it."))
             } else if let y = feat.y, y < view.yMin || y > view.yMax {
