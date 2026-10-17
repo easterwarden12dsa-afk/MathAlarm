@@ -471,7 +471,7 @@ struct SketchChallengeView<Header: View>: View {
         }
         .sheet(isPresented: $showLines) {
             GuidelineSheet(lines: $guidelines, view: viewport ?? problem.viewport, zoomable: problem.isWhole)
-                .presentationDetents([.large])
+                .presentationDetents([.medium, .large])
         }
         .confirmationDialog("Show how to draw it?", isPresented: $confirmSteps, titleVisibility: .visible) {
             Button("Show steps (new problem after)") { showSteps = true }
