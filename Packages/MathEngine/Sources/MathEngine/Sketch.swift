@@ -186,8 +186,8 @@ public struct SketchTolerance: Hashable, Sendable {
 
     public static let standard: SketchTolerance = {
         var t = SketchTolerance()
-        t.minCoverage = 0.8; t.segmentError = 0.16; t.endpointError = 0.18; t.zeroError = 0.11
-        t.extremumShift = 0.08; t.prominence = 0.12; t.trendThreshold = 0.2; t.extremeValueError = 0.14
+        t.minCoverage = 0.8; t.segmentError = 0.17; t.endpointError = 0.18; t.zeroError = 0.11
+        t.extremumShift = 0.08; t.prominence = 0.12; t.trendThreshold = 0.2; t.extremeValueError = 0.18
         t.maxExtraExtrema = 1
         return t
     }()
@@ -517,17 +517,6 @@ public enum SketchChecker {
             }
         }
 
-        // Shape mode: no big extra bumps the graph doesn't have.
-        if let extra = t.maxExtraExtrema {
-            let userExtrema = extrema(xs: xs, ys: smoothed(user, radius: 3), range: range, minProminence: 0.2)
-                .filter { !nearOff(column($0.x), 4) }
-            let unmatched = userExtrema.filter { u in !trueExtrema.contains { $0.isMax == u.isMax && Swift.abs($0.x - u.x) <= 2 * shift } }
-            if unmatched.count > extra, let first = unmatched.first {
-                features.append(SketchRegion(lo: first.x - shift, hi: first.x + shift, issue: .missingFeature,
-                                             hint: "Your sketch has an extra \(first.isMax ? "peak" : "dip") near x = \(lbl(first.x)) that the graph doesn't have."))
-            }
-        }
-
         // 4. Zeros: where the graph crosses or touches the x-axis.
         if t.checkZeros {
             for x0 in zeros(xs: xs, ys: rawTruth, range: rawRange) {
@@ -601,8 +590,27 @@ public enum SketchChecker {
             }
         }
 
+        // 7. No extra bumps: neither extra turns nor much more up-and-down than the graph.
+        var bumps: [SketchRegion] = []
+        if let extra = t.maxExtraExtrema {
+            let smoothUser = smoothed(user, radius: 3)
+            let userExtrema = extrema(xs: xs, ys: smoothUser, range: range, minProminence: 0.15)
+                .filter { !nearOff(column($0.x), 4) }
+            let looseTruth = extrema(xs: xs, ys: truth, range: range, minProminence: 0.05)
+            let unmatched = userExtrema.filter { u in !looseTruth.contains { $0.isMax == u.isMax && Swift.abs($0.x - u.x) <= 2 * shift } }
+            if unmatched.count > extra, let first = unmatched.first {
+                bumps.append(SketchRegion(lo: first.x - shift, hi: first.x + shift, issue: .missingFeature,
+                                          hint: "Your sketch has extra bumps (near x = \(lbl(first.x))) that the graph doesn't have."))
+            } else if let r = wiggleRegion(user: smoothUser, truth: smoothed(truth, radius: 3), xs: xs, range: range,
+                                           visible: visible, half: half, label: lbl) {
+                bumps.append(r)
+            }
+        }
+        let others = features + exits + trends + values
+        bumps = bumps.filter { b in !others.contains { $0.lo < b.hi && $0.hi > b.lo } }
+
         let all = mergeAdjacent(features, label: lbl) + mergeAdjacent(exits, label: lbl)
-            + mergeAdjacent(trends, label: lbl) + mergeAdjacent(values, label: lbl)
+            + mergeAdjacent(trends, label: lbl) + mergeAdjacent(values, label: lbl) + bumps
         return SketchResult(passed: all.isEmpty, regions: all.sorted { $0.lo < $1.lo }, coverage: coverage)
     }
 
@@ -669,16 +677,22 @@ public enum SketchChecker {
             }
             let span = Swift.max((truth.max() ?? 1) - (truth.min() ?? 0), 1e-9)
             let trueTurns = extrema(xs: xs, ys: truth, range: span, minProminence: 0.12).filter { clear($0.x) }
-            let userTurns = extrema(xs: xs, ys: smoothed(user, radius: 3), range: span, minProminence: 0.2).filter { clear($0.x) }
+            let smoothUser = smoothed(user, radius: 3)
+            let userTurns = extrema(xs: xs, ys: smoothUser, range: span, minProminence: 0.2).filter { clear($0.x) }
+            let userAnyTurns = extrema(xs: xs, ys: smoothUser, range: span, minProminence: 0.04)
+            let looseTrue = extrema(xs: xs, ys: truth, range: span, minProminence: 0.04)
             let near = 0.1 * (b - a)
-            let extra = userTurns.filter { u in !trueTurns.contains { $0.isMax == u.isMax && Swift.abs($0.x - u.x) <= near } }
-            let missing = trueTurns.filter { tt in tt.prominence >= 0.25 && !userTurns.contains { $0.isMax == tt.isMax && Swift.abs($0.x - tt.x) <= 1.2 * near } }
+            let extra = userTurns.filter { u in !looseTrue.contains { $0.isMax == u.isMax && Swift.abs($0.x - u.x) <= near } }
+            let missing = trueTurns.filter { tt in tt.prominence >= 0.3 && !userAnyTurns.contains { $0.isMax == tt.isMax && Swift.abs($0.x - tt.x) <= 1.5 * near } }
             if extra.count > 1, let e = extra.first {
                 regions.append(SketchRegion(lo: e.x - near, hi: e.x + near, issue: .missingFeature,
                                             hint: "Your drawing has extra bumps (near x = \(label(e.x))) that the graph doesn't have."))
             } else if let m = missing.first {
                 regions.append(SketchRegion(lo: m.x - near, hi: m.x + near, issue: .missingFeature,
                                             hint: "The graph has a \(m.isMax ? "peak" : "dip") near x = \(label(m.x)) — your drawing doesn't turn there."))
+            } else if let w = wiggleRegion(user: smoothUser, truth: smoothed(truth, radius: 3), xs: xs, range: span,
+                                           visible: shown, half: half, label: label) {
+                regions.append(w)
             }
         }
         if regions.isEmpty && mean > t.visualMeanTolerance {
@@ -686,6 +700,34 @@ public enum SketchChecker {
                                         hint: "The overall shape is off — compare where it rises, falls and turns."))
         }
         return SketchResult(passed: regions.isEmpty, regions: regions.sorted { $0.lo < $1.lo }, coverage: coverage)
+    }
+
+    /// Much more up-and-down than the graph (total variation) in some stretch
+    /// of the drawing: wiggles on a steep part don't make new peaks, but they
+    /// do make the line go up and down a lot.
+    static func wiggleRegion(user: [Double], truth: [Double], xs: [Double], range: Double, visible: [Bool],
+                             half: Double, label: (Double) -> String) -> SketchRegion? {
+        let n = xs.count
+        let win = Swift.max(6, n / 5)
+        var worst: (excess: Double, lo: Int, hi: Int)?
+        var s = 0
+        while s + win <= n {
+            let idx = Array(s..<(s + win))
+            if idx.allSatisfy({ visible[$0] }) {
+                var tvU = 0.0, tvT = 0.0
+                for (i, j) in zip(idx, idx.dropFirst()) {
+                    tvU += Swift.abs(user[j] - user[i])
+                    tvT += Swift.abs(truth[j] - truth[i])
+                }
+                let excess = (tvU - 1.4 * tvT) / range
+                if excess > 0.3, worst == nil || excess > worst!.excess { worst = (excess, idx.first!, idx.last!) }
+            }
+            s += win / 2
+        }
+        guard let w = worst else { return nil }
+        let lo = xs[w.lo] - half, hi = xs[w.hi] + half
+        return SketchRegion(lo: lo, hi: hi, issue: .missingFeature,
+                            hint: "From x = \(label(lo)) to x = \(label(hi)) your line goes up and down much more than the graph — smooth it out.")
     }
 
     /// Joins neighbouring strips with the same issue into one band and
