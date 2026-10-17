@@ -71,6 +71,7 @@ struct ChallengeView: View {
                     } label: {
                         MathRowView(row: ExprDisplay.row(piece), size: 15, mergeFunctionPowers: true)
                             .foregroundStyle(.white)
+                            .fixedSize()
                             .padding(.horizontal, 4)
                             .frame(minHeight: 26)
                     }
@@ -80,7 +81,8 @@ struct ChallengeView: View {
             }
             .padding(.horizontal, 2)
         }
-        .frame(height: 38)
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxHeight: 70)
     }
 
     var body: some View {

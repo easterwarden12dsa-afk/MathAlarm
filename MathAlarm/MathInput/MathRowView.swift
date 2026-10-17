@@ -142,7 +142,7 @@ private struct AtomView: View {
             TokenView(token: t, size: size)
         case .function(let f, let arg):
             HStack(alignment: .mathAxis, spacing: size * 0.06) {
-                Text(f.displayName).font(MathFont.upright(size))
+                Text(f.displayName).font(MathFont.upright(size)).mathPiece()
                 Bracketed(size: size) { child(arg, 0, size: size) }
             }
         case .fraction(let num, let den):
@@ -187,7 +187,7 @@ private struct FunctionView: View {
 
     var body: some View {
         HStack(alignment: .mathAxis, spacing: size * 0.04) {
-            Text(name).font(MathFont.upright(size))
+            Text(name).font(MathFont.upright(size)).mathPiece()
             MathRowView(row: exponent, size: Swift.max(12, size * 0.68), mergeFunctionPowers: merge)
                 .alignmentGuide(.mathAxis) { d in d[.bottom] + size * 0.12 }
             Bracketed(size: size) {
@@ -204,13 +204,19 @@ private struct TokenView: View {
     var body: some View {
         switch token {
         case .x, .c:
-            Text(token.rawValue).font(MathFont.italic(size))
+            Text(token.rawValue).font(MathFont.italic(size)).mathPiece()
         case .plus, .minus, .times:
-            Text(token.rawValue).font(MathFont.upright(size)).padding(.horizontal, size * 0.12)
+            Text(token.rawValue).font(MathFont.upright(size)).mathPiece().padding(.horizontal, size * 0.12)
         default:
-            Text(token.rawValue).font(MathFont.upright(size))
+            Text(token.rawValue).font(MathFont.upright(size)).mathPiece()
         }
     }
+}
+
+extension Text {
+    /// A piece of a formula never wraps or squeezes ("cos" must not become "co/s");
+    /// if a formula is too wide, FittedMath draws it smaller instead.
+    func mathPiece() -> some View { lineLimit(1).fixedSize() }
 }
 
 enum MathFont {
