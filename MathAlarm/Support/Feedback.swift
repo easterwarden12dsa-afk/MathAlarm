@@ -66,6 +66,8 @@ struct ToastView: View {
             .shadow(radius: 8)
             .padding(.top, 8)
             .transition(.move(edge: .top).combined(with: .opacity))
+            // Never block taps on the buttons underneath.
+            .allowsHitTesting(false)
     }
 }
 

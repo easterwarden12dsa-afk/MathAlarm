@@ -251,6 +251,10 @@ struct SketchChallengeView<Header: View>: View {
     var mode: SketchMode = .standard
     var reference: SketchProblem? = nil
     var allowReveal = false
+    /// Worked "how to draw it" solution (computed only when opened).
+    var steps: (() -> [SolutionStep])? = nil
+    /// Ringing screen: viewing the steps swaps in a new problem afterwards.
+    var onSolutionViewed: (() -> Void)? = nil
     var onSolved: () -> Void
     @ViewBuilder var header: Header
 
@@ -260,6 +264,8 @@ struct SketchChallengeView<Header: View>: View {
     @State private var shakes: CGFloat = 0
     @State private var tool: SketchTool = .draw
     @State private var history: [[SketchStroke]] = []
+    @State private var showSteps = false
+    @State private var confirmSteps = false
 
     var body: some View {
         VStack(spacing: 8) {
@@ -293,6 +299,11 @@ struct SketchChallengeView<Header: View>: View {
                         reveal.toggle()
                     }
                 }
+                if steps != nil {
+                    button("Steps", "list.number", Color(red: 0.10, green: 0.35, blue: 0.38)) {
+                        if onSolutionViewed == nil { showSteps = true } else { confirmSteps = true }
+                    }
+                }
             }
 
             Button(action: submit) {
@@ -304,6 +315,16 @@ struct SketchChallengeView<Header: View>: View {
             }
             .buttonStyle(PressableStyle())
             .disabled(solved || strokes.isEmpty)
+        }
+        .sheet(isPresented: $showSteps, onDismiss: { onSolutionViewed?() }) {
+            GraphSolutionSheet(problem: problem, reference: reference, steps: steps?() ?? [],
+                               warning: onSolutionViewed == nil ? nil : "After you close this, you'll get a new problem of the same kind to draw.")
+        }
+        .confirmationDialog("Show how to draw it?", isPresented: $confirmSteps, titleVisibility: .visible) {
+            Button("Show steps (new problem after)") { showSteps = true }
+            Button("Keep trying", role: .cancel) {}
+        } message: {
+            Text("The alarm still needs a solved problem, so you'll get a fresh one afterwards.")
         }
     }
 
@@ -451,5 +472,42 @@ enum SketchRegionStyle {
         case .missingFeature: "scope"
         case .notDrawn: "pencil.and.scribble"
         }
+    }
+}
+
+/// "How to draw it": the investigation steps plus the finished graph.
+struct GraphSolutionSheet: View {
+    let problem: SketchProblem
+    var reference: SketchProblem? = nil
+    let steps: [SolutionStep]
+    var warning: String? = nil
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    if let warning {
+                        Label(warning, systemImage: "arrow.triangle.2.circlepath")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(.yellow)
+                    }
+                    StepsList(steps: steps)
+                    Text("The finished graph (green\(reference == nil ? "" : "; f in grey")):")
+                        .font(.subheadline.weight(.semibold))
+                    SketchCanvas(problem: problem, strokes: .constant([]), revealTruth: true, reference: reference)
+                        .frame(height: 260)
+                        .allowsHitTesting(false)
+                }
+                .padding()
+            }
+            .background(Color.black)
+            .navigationTitle("How to draw it")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
+            }
+        }
+        .preferredColorScheme(.dark)
     }
 }

@@ -301,6 +301,17 @@ struct AlarmItem: Codable, Identifiable, Hashable {
 
     init() {}
 
+    /// A new alarm set to the current time (next minute), today.
+    static func startingNow() -> AlarmItem {
+        var item = AlarmItem()
+        let next = Date().addingTimeInterval(60)
+        let c = Calendar.current.dateComponents([.hour, .minute], from: next)
+        item.time = TimeOfDay(hour: c.hour ?? 7, minute: c.minute ?? 0)
+        item.onceDay = DayStamp(date: next)
+        item.weekdayTimes = item.weekdayTimes.map { var w = $0; w.time = item.time; return w }
+        return item
+    }
+
     enum CodingKeys: String, CodingKey {
         case id, label, isEnabled, repeatMode, time, onceDay, weekdayTimes
         case sound, challenge, difficulty, systemAlarmIDs, scheduledOnceDate, randomMix

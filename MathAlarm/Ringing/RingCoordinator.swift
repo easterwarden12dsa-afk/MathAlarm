@@ -278,9 +278,20 @@ final class RingCoordinator: ObservableObject {
 
     /// After the full solution was viewed: same kind and difficulty, new problem.
     func replaceProblem() {
-        guard var s = session, let old = s.problem else { return }
-        s.problem = ProblemHistory.shared.fresh(old.kind, level: old.level)
-        s.editor = MathEditor()
+        guard var s = session else { return }
+        let level = (s.currentDifficulty ?? s.difficulty).level
+        if let old = s.problem {
+            s.problem = ProblemHistory.shared.fresh(old.kind, level: old.level)
+            s.editor = MathEditor()
+        } else if s.sketch != nil {
+            s.sketch = ProblemHistory.shared.freshSketch(level: level)
+            s.strokes = []
+        } else if s.change != nil {
+            s.change = ProblemHistory.shared.freshChange(level: level)
+            s.strokes = []
+        } else {
+            return
+        }
         session = s
         saveSession()
         toast = Toast(message: "New problem — you've got this", symbol: "arrow.triangle.2.circlepath")

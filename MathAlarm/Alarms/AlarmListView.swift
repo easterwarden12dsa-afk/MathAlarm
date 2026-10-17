@@ -74,7 +74,7 @@ struct AlarmListView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         Haptics.tap()
-                        editing = EditorTarget(item: AlarmItem(), isNew: true)
+                        editing = EditorTarget(item: AlarmItem.startingNow(), isNew: true)
                     } label: {
                         Image(systemName: "plus")
                     }

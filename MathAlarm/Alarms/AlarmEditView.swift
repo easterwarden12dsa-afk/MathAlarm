@@ -7,7 +7,14 @@ struct AlarmEditView: View {
 
     @State private var draft: AlarmItem
     @State private var isSaving = false
+    @State private var onceInput: OnceInput = .date
+    @State private var fromNowMonths = 0
+    @State private var fromNowDays = 0
+    @State private var fromNowHours = 8
+    @State private var fromNowMinutes = 0
     let isNew: Bool
+
+    enum OnceInput { case date, fromNow }
 
     init(draft: AlarmItem, isNew: Bool) {
         _draft = State(initialValue: draft)
@@ -31,8 +38,29 @@ struct AlarmEditView: View {
 
                     switch draft.repeatMode {
                     case .once:
-                        DatePicker("Date & time", selection: onceBinding, in: Date()...,
-                                   displayedComponents: [.date, .hourAndMinute])
+                        Picker("Set by", selection: $onceInput) {
+                            Text("Date & time").tag(OnceInput.date)
+                            Text("Time from now").tag(OnceInput.fromNow)
+                        }
+                        .pickerStyle(.segmented)
+                        .onChange(of: onceInput) { _, input in if input == .fromNow { applyFromNow() } }
+                        if onceInput == .date {
+                            DatePicker("Date & time", selection: onceBinding, in: Date()...,
+                                       displayedComponents: [.date, .hourAndMinute])
+                        } else {
+                            HStack(spacing: 0) {
+                                fromNowWheel($fromNowMonths, 0...24, "mo")
+                                fromNowWheel($fromNowDays, 0...60, "d")
+                                fromNowWheel($fromNowHours, 0...23, "h")
+                                fromNowWheel($fromNowMinutes, 0...59, "min")
+                            }
+                            .frame(height: 130)
+                            if let fire = draft.onceFireDate {
+                                Text("Rings \(fire.formatted(date: .complete, time: .shortened))")
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
                     case .daily:
                         DatePicker("Time", selection: timeBinding($draft.time),
                                    displayedComponents: .hourAndMinute)
@@ -147,6 +175,35 @@ struct AlarmEditView: View {
                 }
             }
         }
+    }
+
+    /// One wheel of the "time from now" picker.
+    private func fromNowWheel(_ value: Binding<Int>, _ range: ClosedRange<Int>, _ unit: String) -> some View {
+        HStack(spacing: 1) {
+            Picker(unit, selection: value) {
+                ForEach(Array(range), id: \.self) { Text("\($0)").tag($0) }
+            }
+            .pickerStyle(.wheel)
+            .frame(maxWidth: .infinity)
+            .clipped()
+            .onChange(of: value.wrappedValue) { _, _ in applyFromNow() }
+            Text(unit).font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+        }
+    }
+
+    /// "1 month 13 days 2 h from now" → the alarm's date and time.
+    private func applyFromNow() {
+        var comps = DateComponents()
+        comps.month = fromNowMonths
+        comps.day = fromNowDays
+        comps.hour = fromNowHours
+        comps.minute = fromNowMinutes
+        guard let fire = Calendar.current.date(byAdding: comps, to: Date()) else { return }
+        // Round up to the next whole minute so it's never in the past.
+        let rounded = Date(timeIntervalSinceReferenceDate: (fire.timeIntervalSinceReferenceDate / 60).rounded(.up) * 60)
+        let c = Calendar.current.dateComponents([.hour, .minute], from: rounded)
+        draft.onceDay = DayStamp(date: rounded)
+        draft.time = TimeOfDay(hour: c.hour ?? 0, minute: c.minute ?? 0)
     }
 
     /// Date picker value for a one-time alarm (calendar day + time).

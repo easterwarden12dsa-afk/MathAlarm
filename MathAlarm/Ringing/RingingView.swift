@@ -28,6 +28,8 @@ struct RingingView: View {
                         strokes: Binding(get: { ring.session?.strokes ?? [] },
                                          set: { ring.updateStrokes($0) }),
                         mode: AppSettings.shared.sketchMode,
+                        steps: { GraphSteps.steps(for: sketch) },
+                        onSolutionViewed: { ring.replaceProblem() },
                         onSolved: { ring.solvedOne() }) {
                         SketchHeader(problem: sketch)
                     }
@@ -40,6 +42,8 @@ struct RingingView: View {
                                          set: { ring.updateStrokes($0) }),
                         mode: AppSettings.shared.sketchMode,
                         reference: display.showsGraph ? change.base : nil,
+                        steps: { GraphSteps.steps(for: change) },
+                        onSolutionViewed: { ring.replaceProblem() },
                         onSolved: { ring.solvedOne() }) {
                         ChangeHeader(change: change, display: display)
                     }

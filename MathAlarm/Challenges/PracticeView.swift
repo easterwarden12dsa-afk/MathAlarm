@@ -23,8 +23,8 @@ struct PracticeView: View {
     @State private var problem = ProblemHistory.shared.fresh(.integral, level: .medium)
     @State private var editor = MathEditor()
     @State private var sketch: SketchProblem?
-    @State private var strokes: [SketchStroke] = []
     @State private var change: ChangeProblem?
+    @State private var strokes: [SketchStroke] = []
     @State private var mode: SketchMode = AppSettings.shared.sketchMode
     @State private var showSolution = false
     @State private var solvedCount = 0
@@ -37,63 +37,15 @@ struct PracticeView: View {
                     ForEach(Kind.allCases) { Text($0.title).tag($0) }
                 }
                 .pickerStyle(.segmented)
+                .controlSize(.large)
 
-                HStack {
-                    Picker("Difficulty", selection: $difficulty) {
-                        ForEach(Difficulty.allCases) { Text($0.title).tag($0) }
-                    }
-                    .pickerStyle(.menu)
-                    if kind.isDrawing {
-                        Picker("Mode", selection: $mode) {
-                            ForEach(SketchMode.allCases) { Text($0.title).tag($0) }
-                        }
-                        .pickerStyle(.menu)
-                    }
-                    Spacer()
-                    if solvedCount > 0 {
-                        Text("Solved: \(solvedCount)").font(.subheadline.bold()).foregroundStyle(.green)
-                    }
-                    Spacer()
-                    Button {
-                        Haptics.tap()
-                        newProblem()
-                    } label: {
-                        Label("New", systemImage: "arrow.clockwise")
-                    }
-                    .buttonStyle(.bordered)
-                    if !kind.isDrawing {
-                        Button {
-                            showSolution = true
-                        } label: {
-                            Label("Solution", systemImage: "list.number")
-                        }
-                        .buttonStyle(.bordered)
-                    }
-                }
-                .font(.subheadline)
+                controls
 
-                if kind == .sketch, let sketch {
-                    SketchChallengeView(problem: sketch, strokes: $strokes, mode: mode,
-                                        allowReveal: true, onSolved: solved) {
-                        SketchHeader(problem: sketch)
-                    }
-                    .id(sketch.signature + mode.rawValue)
-                } else if kind == .change, let change {
-                    let display = settings.changeDisplay
-                    SketchChallengeView(problem: change.target, strokes: $strokes, mode: mode,
-                                        reference: display.showsGraph ? change.base : nil,
-                                        allowReveal: true, onSolved: solved) {
-                        ChangeHeader(change: change, display: display)
-                    }
-                    .id(change.signature + mode.rawValue)
-                } else {
-                    ChallengeView(problem: problem, editor: $editor, onSolved: solved)
-                        .id(problem.seed)
-                }
+                content
             }
             .padding(.horizontal, 12)
             .background(Color.black.ignoresSafeArea())
-            .navigationTitle("Practice")
+            .navigationTitle(solvedCount > 0 ? "Practice · \(solvedCount) solved" : "Practice")
             .navigationBarTitleDisplayMode(.inline)
             .toast($toast)
             .onChange(of: kind) { _, _ in newProblem() }
@@ -101,6 +53,75 @@ struct PracticeView: View {
             .sheet(isPresented: $showSolution) {
                 SolutionSheet(problem: problem)
             }
+        }
+    }
+
+    /// Difficulty, drawing mode and New — big, separate buttons so taps always land.
+    private var controls: some View {
+        HStack(spacing: 8) {
+            Menu {
+                Picker("Difficulty", selection: $difficulty) {
+                    ForEach(Difficulty.allCases) { Text($0.title).tag($0) }
+                }
+            } label: {
+                chip(difficulty.title, "dial.medium")
+            }
+            if kind.isDrawing {
+                Menu {
+                    Picker("Drawing mode", selection: $mode) {
+                        ForEach(SketchMode.allCases) { Text($0.title).tag($0) }
+                    }
+                } label: {
+                    chip(mode.title, "pencil.and.ruler")
+                }
+            } else {
+                Button {
+                    Haptics.tap()
+                    showSolution = true
+                } label: {
+                    chip("Solution", "list.number")
+                }
+            }
+            Button {
+                Haptics.tap()
+                newProblem()
+            } label: {
+                chip("New", "arrow.clockwise")
+            }
+        }
+        .buttonStyle(PressableStyle(scale: 0.95))
+    }
+
+    private func chip(_ title: String, _ symbol: String) -> some View {
+        Label(title, systemImage: symbol)
+            .font(.subheadline.weight(.semibold))
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity, minHeight: 44)
+            .background(Color(white: 0.2), in: RoundedRectangle(cornerRadius: 12))
+            .contentShape(Rectangle())
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if kind == .sketch, let sketch {
+            SketchChallengeView(problem: sketch, strokes: $strokes, mode: mode,
+                                allowReveal: true, steps: { GraphSteps.steps(for: sketch) }, onSolved: solved) {
+                SketchHeader(problem: sketch)
+            }
+            .id(sketch.signature + mode.rawValue)
+        } else if kind == .change, let change {
+            let display = settings.changeDisplay
+            SketchChallengeView(problem: change.target, strokes: $strokes, mode: mode,
+                                reference: display.showsGraph ? change.base : nil,
+                                allowReveal: true, steps: { GraphSteps.steps(for: change) }, onSolved: solved) {
+                ChangeHeader(change: change, display: display)
+            }
+            .id(change.signature + mode.rawValue)
+        } else {
+            ChallengeView(problem: problem, editor: $editor, onSolved: solved)
+                .id(problem.seed)
         }
     }
 
