@@ -28,6 +28,7 @@ struct SketchCanvas: View {
                     for s in strokes + [current] { drawStroke(ctx, map, s) }
                 }
                 labels(map)
+                regionBadges(map)
             }
             .contentShape(Rectangle())
             .gesture(
@@ -100,13 +101,38 @@ struct SketchCanvas: View {
         }
     }
 
-    private func drawRegion(_ ctx: GraphicsContext, _ m: Mapping, _ r: SketchRegion) {
+    private func regionRect(_ m: Mapping, _ r: SketchRegion) -> CGRect {
         let x1 = m.screen(Swift.max(r.lo, problem.xMin), 0).x
         let x2 = m.screen(Swift.min(r.hi, problem.xMax), 0).x
-        let rect = CGRect(x: x1, y: m.plot.minY, width: Swift.max(4, x2 - x1), height: m.plot.height)
-        let color: Color = r.issue == .notDrawn ? .yellow : .red
-        ctx.fill(Path(rect), with: .color(color.opacity(0.22)))
-        ctx.stroke(Path(rect), with: .color(color.opacity(0.6)), lineWidth: 1)
+        return CGRect(x: x1, y: m.plot.minY, width: Swift.max(6, x2 - x1), height: m.plot.height)
+    }
+
+    private func drawRegion(_ ctx: GraphicsContext, _ m: Mapping, _ r: SketchRegion) {
+        let rect = regionRect(m, r)
+        let color = SketchRegionStyle.color(r.issue)
+        ctx.fill(Path(rect), with: .color(color.opacity(0.2)))
+        ctx.stroke(Path(rect), with: .color(color.opacity(0.75)), style: StrokeStyle(lineWidth: 1.5, dash: [5, 3]))
+    }
+
+    /// Number badge + arrow in each band, matching the numbered hint list.
+    private func regionBadges(_ m: Mapping) -> some View {
+        ZStack(alignment: .topLeading) {
+            ForEach(Array(regions.enumerated()), id: \.offset) { index, r in
+                let rect = regionRect(m, r)
+                VStack(spacing: 4) {
+                    Text("\(index + 1)")
+                        .font(.caption.bold())
+                        .foregroundStyle(.black)
+                        .frame(width: 22, height: 22)
+                        .background(SketchRegionStyle.color(r.issue), in: Circle())
+                    Image(systemName: SketchRegionStyle.symbol(r.issue))
+                        .font(.title3.bold())
+                        .foregroundStyle(SketchRegionStyle.color(r.issue))
+                }
+                .position(x: rect.midX, y: rect.minY + 30)
+            }
+        }
+        .allowsHitTesting(false)
     }
 
     private func drawStroke(_ ctx: GraphicsContext, _ m: Mapping, _ s: SketchStroke) {
@@ -194,12 +220,23 @@ struct SketchChallengeView: View {
                 .modifier(Shake(animatableData: shakes))
 
             if let result, !result.passed {
-                VStack(alignment: .leading, spacing: 3) {
-                    ForEach(result.hints, id: \.self) { hint in
-                        Label(hint, systemImage: "exclamationmark.triangle.fill")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.red)
+                VStack(alignment: .leading, spacing: 4) {
+                    ForEach(Array(result.regions.enumerated()), id: \.offset) { index, region in
+                        HStack(alignment: .firstTextBaseline, spacing: 8) {
+                            Text("\(index + 1)")
+                                .font(.caption.bold())
+                                .foregroundStyle(.black)
+                                .frame(width: 20, height: 20)
+                                .background(SketchRegionStyle.color(region.issue), in: Circle())
+                            Text(region.hint)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(SketchRegionStyle.color(region.issue))
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
                     }
+                    Text("Keep editing — Undo removes your last stroke.")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.55))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             } else if solved {
@@ -287,6 +324,30 @@ struct SketchChallengeView: View {
         } else {
             Haptics.error()
             withAnimation(.linear(duration: 0.4)) { shakes += 1 }
+        }
+    }
+}
+
+/// Colours and arrows for each kind of sketch correction.
+enum SketchRegionStyle {
+    static func color(_ issue: SketchRegion.Issue) -> Color {
+        switch issue {
+        case .tooHigh: Color(red: 1.0, green: 0.35, blue: 0.35)
+        case .tooLow: Color(red: 0.35, green: 0.65, blue: 1.0)
+        case .shouldRise, .shouldFall: Color(red: 0.75, green: 0.5, blue: 1.0)
+        case .missingFeature: Color(red: 1.0, green: 0.85, blue: 0.2)
+        case .notDrawn: Color(white: 0.7)
+        }
+    }
+
+    static func symbol(_ issue: SketchRegion.Issue) -> String {
+        switch issue {
+        case .tooHigh: "arrow.down"
+        case .tooLow: "arrow.up"
+        case .shouldRise: "arrow.up.right"
+        case .shouldFall: "arrow.down.right"
+        case .missingFeature: "scope"
+        case .notDrawn: "pencil.and.scribble"
         }
     }
 }

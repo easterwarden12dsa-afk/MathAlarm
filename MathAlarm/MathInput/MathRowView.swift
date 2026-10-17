@@ -311,6 +311,12 @@ struct FittedMath<Content: View>: View {
 struct AnswerField: View {
     @Binding var editor: MathEditor
 
+    private static let endID = "answer-end"
+
+    private var isAtEnd: Bool {
+        editor.cursor.path.isEmpty && editor.cursor.index == editor.root.atoms.count
+    }
+
     private var size: CGFloat {
         let count = editor.root.atoms.count
         return count > 16 ? 23 : 27
@@ -319,8 +325,11 @@ struct AnswerField: View {
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal, showsIndicators: true) {
-                MathRowView(row: editor.root, cursor: editor.cursor, size: size) { target in
-                    editor.placeCursor(target)
+                HStack(spacing: 0) {
+                    MathRowView(row: editor.root, cursor: editor.cursor, size: size) { target in
+                        editor.placeCursor(target)
+                    }
+                    Color.clear.frame(width: 1, height: 1).id(Self.endID)
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
@@ -329,7 +338,13 @@ struct AnswerField: View {
             .scrollBounceBehavior(.basedOnSize)
             .onChange(of: editor) { _, _ in
                 withAnimation(.easeOut(duration: 0.15)) {
-                    proxy.scrollTo(MathRowView.caretID, anchor: .center)
+                    // Typing at the end: keep the right edge in view.
+                    // Cursor moved elsewhere: follow the cursor instead.
+                    if isAtEnd {
+                        proxy.scrollTo(Self.endID, anchor: .trailing)
+                    } else {
+                        proxy.scrollTo(MathRowView.caretID, anchor: .center)
+                    }
                 }
             }
         }
