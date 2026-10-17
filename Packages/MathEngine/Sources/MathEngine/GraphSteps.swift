@@ -76,9 +76,11 @@ public enum GraphSteps {
         return steps
     }
 
-    /// Change: first how the transformation acts on f, then the full
-    /// investigation of g.
-    public static func steps(for c: ChangeProblem) -> [SolutionStep] {
+    /// Change: first how the transformation acts on f, then how to get g.
+    /// With `formulaVisible: false` (f only shown as a graph) nothing uses
+    /// f's formula: key points are read off the graph and moved one by one.
+    public static func steps(for c: ChangeProblem, formulaVisible: Bool = true) -> [SolutionStep] {
+        if !formulaVisible { return graphOnlySteps(for: c) }
         var steps: [SolutionStep] = []
         steps.append(SolutionStep("Given:", label: "f(x) =", math: c.base.function))
         steps.append(SolutionStep("Task: \(c.transform.formula)"))
@@ -90,6 +92,77 @@ public enum GraphSteps {
         var g = c.target
         g.yMin = c.target.yMin
         steps += self.steps(for: g, name: "g")
+        return steps
+    }
+
+    /// Key points of a graph: ends, zeros, peaks, dips and inflection points.
+    struct KeyPoint { var x: Double; var kind: String }
+
+    static func keyPoints(_ p: SketchProblem) -> [KeyPoint] {
+        let f = p.function, a = p.xMin, b = p.xMax
+        let d1 = f.derivative(), d2 = d1.derivative()
+        var key: [KeyPoint] = [KeyPoint(x: a, kind: "left end"), KeyPoint(x: b, kind: "right end")]
+        key += roots(of: f, in: a...b).map { KeyPoint(x: $0, kind: "zero") }
+        key += roots(of: d1, in: a...b).compactMap { c in
+            let l = d1.evaluate(at: c - 1e-4 * (b - a)), r = d1.evaluate(at: c + 1e-4 * (b - a))
+            if l > 0 && r < 0 { return KeyPoint(x: c, kind: "peak") }
+            if l < 0 && r > 0 { return KeyPoint(x: c, kind: "dip") }
+            return nil
+        }
+        key += roots(of: d2, in: a...b).filter { x in
+            let e = 1e-3 * (b - a)
+            return (d2.evaluate(at: x - e) < 0) != (d2.evaluate(at: x + e) < 0)
+        }.map { KeyPoint(x: $0, kind: "inflection") }
+        var out: [KeyPoint] = []
+        for k in key.sorted(by: { $0.x < $1.x }) {
+            if let i = out.firstIndex(where: { Swift.abs($0.x - k.x) < 1e-6 * (b - a + 1) }) {
+                out[i].kind += ", " + k.kind
+            } else {
+                out.append(k)
+            }
+        }
+        return out
+    }
+
+    /// Change with f given only as a graph.
+    static func graphOnlySteps(for c: ChangeProblem) -> [SolutionStep] {
+        let f = c.base, g = c.target
+        func X(_ x: Double) -> String { f.xLabel(x) }
+        var steps: [SolutionStep] = []
+        steps.append(SolutionStep("You only have the grey graph of f — everything below is read off the graph, no formula needed."))
+        steps.append(SolutionStep("Task: \(c.transform.formula)"))
+
+        steps.append(SolutionStep("1. Read the important points of f from the grey graph:"))
+        let fKeys = keyPoints(f)
+        for k in fKeys {
+            steps.append(SolutionStep("(\(X(k.x)), \(num(f.value(at: k.x))))  — \(k.kind)", depth: 1))
+        }
+
+        steps.append(SolutionStep("2. What the change does:"))
+        for line in explanation(c) { steps.append(SolutionStep(line, depth: 1)) }
+
+        steps.append(SolutionStep("3. Move each point:"))
+        for k in fKeys {
+            let y = f.value(at: k.x)
+            switch c.transform {
+            case .mirror:
+                steps.append(SolutionStep("(\(X(k.x)), \(num(y)))  →  (\(X(-k.x)), \(num(y)))", depth: 1))
+            case .derivative:
+                let slope = NumericDerivative.at(k.x, of: f.function)
+                let why: String
+                if k.kind.contains("peak") || k.kind.contains("dip") { why = "f is flat here, so g = 0" }
+                else if k.kind.contains("inflection") { why = "steepest point of f, so g has a peak or dip here" }
+                else { why = "slope of f here" }
+                steps.append(SolutionStep("x = \(X(k.x)):  g ≈ \(num(slope))  — \(why)", depth: 1))
+            default:
+                steps.append(SolutionStep("(\(X(k.x)), \(num(y)))  →  (\(X(k.x)), \(num(g.value(at: k.x))))", depth: 1))
+            }
+        }
+
+        steps.append(SolutionStep("4. Plot g through these points (and its own turning points), left to right:"))
+        for k in keyPoints(g) {
+            steps.append(SolutionStep("(\(X(k.x)), \(num(g.value(at: k.x))))  — \(k.kind)", depth: 1))
+        }
         return steps
     }
 

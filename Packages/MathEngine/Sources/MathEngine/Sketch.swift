@@ -62,7 +62,7 @@ public enum SketchMode: String, Codable, CaseIterable, Identifiable, Sendable {
         case .precision: "Like pen and paper: peaks, dips, zeros and end values must be close to exact."
         case .standard: "Same checks as Precision, with more room for error."
         case .proportions: "Any vertical scale. Heights must be right relative to each other and to the x-axis."
-        case .shape: "Only the rough structure: where it rises, falls and turns."
+        case .shape: "Judged by eye: does your drawing look like the graph? Scale and exact values don't matter."
         }
     }
 
@@ -118,6 +118,13 @@ public struct SketchTolerance: Hashable, Sendable {
     public var checkEndpoints = true
     /// If set: at most this many extra bumps the true graph doesn't have.
     public var maxExtraExtrema: Int? = nil
+    /// Judge purely by eye: how close the two curves look (both squeezed
+    /// into the same box), not by values or features.
+    public var visual = false
+    /// Visual mode: average gap between the curves (fraction of the box).
+    public var visualMeanTolerance = 0.07
+    /// Visual mode: a stretch where the gap is bigger than this is flagged.
+    public var visualLocalTolerance = 0.17
 
     public init() {}
 
@@ -146,8 +153,8 @@ public struct SketchTolerance: Hashable, Sendable {
     public static let shape: SketchTolerance = {
         var t = SketchTolerance()
         t.normalization = .minMax
-        t.minCoverage = 0.6; t.extremumShift = 0.2; t.trendThreshold = 0.3; t.prominence = 0.15
-        t.checkValues = false; t.checkZeros = false; t.checkEndpoints = false; t.maxExtraExtrema = 1
+        t.visual = true
+        t.minCoverage = 0.6
         return t
     }()
 }
@@ -250,6 +257,10 @@ public enum SketchChecker {
             user = user.map { ($0 - uMin) / (uMax - uMin) }
             truth = truth.map { ($0 - fMin) / rawRange }
             range = 1
+        }
+
+        if t.visual {
+            return visualCheck(user: user, truth: truth, xs: xs, a: a, b: b, half: half, t: t, label: lbl, coverage: coverage)
         }
 
         var features: [SketchRegion] = []   // peaks, dips, zeros
@@ -377,6 +388,53 @@ public enum SketchChecker {
         let all = mergeAdjacent(features, label: lbl) + mergeAdjacent(trends, label: lbl) + mergeAdjacent(values, label: lbl)
         let shown = Array(all.prefix(maxRegions)).sorted { $0.lo < $1.lo }
         return SketchResult(passed: all.isEmpty, regions: shown, coverage: coverage)
+    }
+
+    /// "Does it look like the graph?" Both curves live in a unit box (x and
+    /// y each 0…1, x stretched by the canvas aspect). For every point of one
+    /// curve we take the distance to the *nearest* point of the other, which
+    /// is what the eye does: a slightly early hump still looks right, a
+    /// missing or extra hump does not.
+    static func visualCheck(user: [Double], truth: [Double], xs: [Double], a: Double, b: Double, half: Double,
+                            t: SketchTolerance, label: (Double) -> String, coverage: Double) -> SketchResult {
+        let n = xs.count
+        let aspect = 1.5
+        let reach = n / 4                          // only look ±25% sideways
+        func gap(_ i: Int, from ys: [Double], to other: [Double]) -> Double {
+            var best = Double.infinity
+            for j in Swift.max(0, i - reach)...Swift.min(n - 1, i + reach) {
+                let dx = Double(i - j) / Double(n - 1) * aspect
+                let dy = ys[i] - other[j]
+                best = Swift.min(best, (dx * dx + dy * dy).squareRoot())
+            }
+            return best
+        }
+        let truthGaps = (0..<n).map { gap($0, from: truth, to: user) }   // parts of the graph you missed
+        let userGaps = (0..<n).map { gap($0, from: user, to: truth) }    // parts you drew that aren't there
+        let mean = (truthGaps.reduce(0, +) + userGaps.reduce(0, +)) / Double(2 * n)
+
+        var regions: [SketchRegion] = []
+        var start: Int?
+        for i in 0...n {
+            let bad = i < n && Swift.max(truthGaps[i], userGaps[i]) > t.visualLocalTolerance
+            if bad, start == nil { start = i }
+            if !bad, let s = start {
+                if i - s >= 3 {
+                    let mid = (s + i - 1) / 2
+                    let high = user[mid] > truth[mid]
+                    let lo = xs[s] - half, hi = xs[i - 1] + half
+                    regions.append(SketchRegion(lo: lo, hi: hi, issue: high ? .tooHigh : .tooLow,
+                                                hint: "From x = \(label(lo)) to x = \(label(hi)) it doesn't look like the graph — it should be \(high ? "lower" : "higher") there."))
+                }
+                start = nil
+            }
+        }
+        if regions.isEmpty && mean > t.visualMeanTolerance {
+            regions.append(SketchRegion(lo: a, hi: b, issue: .missingFeature,
+                                        hint: "The overall shape is off — compare where it rises, falls and turns."))
+        }
+        let shown = regions.sorted { ($0.hi - $0.lo) > ($1.hi - $1.lo) }.prefix(maxRegions).sorted { $0.lo < $1.lo }
+        return SketchResult(passed: regions.isEmpty, regions: Array(shown), coverage: coverage)
     }
 
     /// Joins neighbouring strips with the same issue into one band and

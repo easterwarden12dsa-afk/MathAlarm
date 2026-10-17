@@ -245,3 +245,34 @@ final class GraphStepsTests: XCTestCase {
         }
     }
 }
+
+final class ChangeStepsTests: XCTestCase {
+    func testGraphOnlyStepsNeverUseTheFormula() {
+        for level in Level.allCases {
+            for seed in UInt64(1)...UInt64(12) {
+                let c = ChangeFactory.make(level: level, seed: seed &* 31_337)
+                let steps = GraphSteps.steps(for: c, formulaVisible: false)
+                XCTAssertTrue(steps.allSatisfy { $0.math == nil && $0.prime == nil }, "formula shown for \(c.transform.formula)")
+                XCTAssertFalse(steps.contains { $0.text.contains("f′(x) =") || $0.text.contains("f″") })
+                XCTAssertGreaterThan(steps.count, 6)
+            }
+        }
+    }
+
+    func testShapeModeIsVisual() {
+        let p = SketchFactory.testCase()
+        func draw(_ g: (Double) -> Double) -> [SketchStroke] {
+            [(0...200).map { i in
+                let x = p.xMin + (p.xMax - p.xMin) * Double(i) / 200
+                return SketchPoint(x: x, y: g(x))
+            }]
+        }
+        // Looks right (different scale, slightly early humps): passes.
+        let w = p.xMax - p.xMin
+        XCTAssertTrue(SketchChecker.check(draw { 4 * p.value(at: $0 + 0.05 * w) - 1 }, for: p, mode: .shape).passed)
+        // One hump instead of two: doesn't look right.
+        XCTAssertFalse(SketchChecker.check(draw { cos(2 * $0) }, for: p, mode: .shape).passed)
+        // A wiggly line: doesn't look right.
+        XCTAssertFalse(SketchChecker.check(draw { sin(14 * $0) }, for: p, mode: .shape).passed)
+    }
+}
