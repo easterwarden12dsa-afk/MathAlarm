@@ -470,7 +470,7 @@ struct SketchChallengeView<Header: View>: View {
                                warning: onSolutionViewed == nil ? nil : "After you close this, you'll get a new problem of the same kind to draw.")
         }
         .sheet(isPresented: $showLines) {
-            GuidelineSheet(lines: $guidelines)
+            GuidelineSheet(lines: $guidelines, view: viewport ?? problem.viewport, zoomable: problem.isWhole)
                 .presentationDetents([.medium, .large])
         }
         .confirmationDialog("Show how to draw it?", isPresented: $confirmSteps, titleVisibility: .visible) {
@@ -502,10 +502,15 @@ struct SketchChallengeView<Header: View>: View {
                             Haptics.tap()
                             line.hidden.toggle()
                         } label: {
-                            Text(line.title)
-                                .font(.footnote.monospaced().weight(.semibold))
-                                .foregroundStyle(line.hidden ? Color.secondary : Color.cyan)
-                                .strikethrough(line.hidden)
+                            HStack(spacing: 3) {
+                                if !line.isVisible(in: viewport ?? problem.viewport) {
+                                    Image(systemName: "exclamationmark.triangle.fill").font(.caption2).foregroundStyle(.orange)
+                                }
+                                Text(line.title)
+                                    .font(.footnote.monospaced().weight(.semibold))
+                                    .foregroundStyle(line.hidden ? Color.secondary : Color.cyan)
+                                    .strikethrough(line.hidden)
+                            }
                         }
                         .accessibilityLabel(line.hidden ? "Show \(line.title)" : "Hide \(line.title)")
                         Button {
@@ -874,6 +879,21 @@ struct Guideline: Identifiable, Hashable {
     var title: String
     /// Hidden lines stay in the list but aren't drawn.
     var hidden = false
+
+    /// Does any part of the line cross the visible box?
+    func isVisible(in v: SketchViewport) -> Bool {
+        Self.isVisible(kind, in: v)
+    }
+
+    static func isVisible(_ kind: Kind, in v: SketchViewport) -> Bool {
+        switch kind {
+        case .vertical(let c): return c >= v.xMin && c <= v.xMax
+        case .horizontal(let c): return c >= v.yMin && c <= v.yMax
+        case .slanted(let m, let b):
+            let y1 = m * v.xMin + b, y2 = m * v.xMax + b
+            return !(Swift.min(y1, y2) > v.yMax || Swift.max(y1, y2) < v.yMin)
+        }
+    }
 }
 
 /// Reads "5", "−2.5", "1/3", "π/2", "3π/4", "-2π", "e" and "ln 4"-free plain numbers.
@@ -909,6 +929,9 @@ enum GuideNumber {
 /// small built-in number pad (no system keyboard).
 struct GuidelineSheet: View {
     @Binding var lines: [Guideline]
+    /// What's on screen right now (to warn about lines you couldn't see).
+    var view: SketchViewport
+    var zoomable = false
     @Environment(\.dismiss) private var dismiss
     @State private var kind = 0
     @State private var first = ""
@@ -935,6 +958,13 @@ struct GuidelineSheet: View {
                         } else {
                             valueBox(kind == 0 ? "x =" : "y =", first, index: 0)
                         }
+                    }
+
+                    if let k = parsed, !Guideline.isVisible(k, in: view) {
+                        Label(outOfViewText(k), systemImage: "exclamationmark.triangle.fill")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(.orange)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
 
                     pad
@@ -972,6 +1002,10 @@ struct GuidelineSheet: View {
                             ForEach(lines) { line in
                                 HStack {
                                     Text(line.title).font(.body.monospaced()).foregroundStyle(.cyan)
+                                    if !line.isVisible(in: view) {
+                                        Label("out of view", systemImage: "exclamationmark.triangle.fill")
+                                            .font(.caption).foregroundStyle(.orange)
+                                    }
                                     Spacer()
                                     Button(role: .destructive) {
                                         Haptics.tap()
@@ -1046,6 +1080,19 @@ struct GuidelineSheet: View {
             }
         }
     }
+
+    private func outOfViewText(_ k: Guideline.Kind) -> String {
+        func n(_ v: Double) -> String { SketchFormat.number(v) }
+        let fix = zoomable ? " — zoom out or move the view to see it." : " — you won't see it on this graph."
+        switch k {
+        case .vertical: return "Out of view: the box only shows x from \(n(view.xMin)) to \(n(view.xMax))" + fix
+        case .horizontal: return "Out of view: the box only shows y from \(n(view.yMin)) to \(n(view.yMax))" + fix
+        case .slanted: return "Out of view: this line passes \((m(k) * view.xMin + b(k)) > view.yMax ? "above" : "below") the whole box" + fix
+        }
+    }
+
+    private func m(_ k: Guideline.Kind) -> Double { if case .slanted(let m, _) = k { return m }; return 0 }
+    private func b(_ k: Guideline.Kind) -> Double { if case .slanted(_, let b) = k { return b }; return 0 }
 
     private func press(_ key: String) {
         var text = field == 0 ? first : second
