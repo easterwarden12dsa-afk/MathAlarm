@@ -30,7 +30,7 @@ public enum GraphSteps {
         let poles = p.poles.filter { $0 > a && $0 < b }.sorted()
         var labels: [(Double, String)] = [(a, whole ? (p.domainLow.map { SketchFormat.number($0) } ?? "−∞") : p.xLabel(a)),
                                           (b, whole ? "∞" : p.xLabel(b))]
-        for c in poles { labels.append((c, solver.xLabel(c, exact: true))) }
+        for c in poles { labels.append((c, p.xLabel(c))) }
         func X(_ x: Double) -> String {
             labels.first { Swift.abs($0.0 - x) < 1e-7 * (width + 1) }?.1 ?? solver.xLabel(x, exact: true)
         }

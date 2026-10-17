@@ -168,7 +168,7 @@ struct Solver {
             let common = Self.power(v, k)
             if c.count == 1 {
                 let k0 = c[0]
-                s.say("\(k0 == 1 ? "" : (k0 == -1 ? "−" : Self.minus("\(k0)")))\(common) = 0  ⇒  \(v) = 0")
+                s.say(k0 == 1 && k == 1 ? "\(v) = 0" : "\(k0 == 1 ? "" : (k0 == -1 ? "−" : Self.minus("\(k0)")))\(common) = 0  ⇒  \(v) = 0")
                 s.roots.append(AlgebraRoot(x: 0, label: "0"))
                 return s
             }
@@ -426,7 +426,7 @@ struct Solver {
     func lnEquals(_ n: Int, _ d: Int, prefix: String? = nil) -> Solved {
         var s = Solved()
         let v = Self.frac(n, d)
-        let label = n == 0 ? "1" : (v == "1" ? "e" : "e^(\(v))")
+        let label = n == 0 ? "1" : (v == "1" ? "e" : (v.contains("/") || v.hasPrefix("−") && v.count > 2 ? "e^(\(v))" : "e" + (v.hasPrefix("−") ? "⁻" : "") + Self.sup(Swift.abs(n / d))))
         if let prefix { s.say(prefix) }
         s.say("ln x = \(v)  ⇒  x = \(label)\(n == 0 ? "" : "  (\(Self.approx(exp(Double(n) / Double(d)))))")")
         s.roots.append(AlgebraRoot(x: exp(Double(n) / Double(d)), label: label))
