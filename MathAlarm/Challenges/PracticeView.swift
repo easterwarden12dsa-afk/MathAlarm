@@ -23,6 +23,8 @@ struct PracticeView: View {
     @State private var problem = ProblemHistory.shared.fresh(.integral, level: .medium)
     @State private var editor = MathEditor()
     @State private var sketch: SketchProblem?
+    /// The interval version of the current sketch, so "Whole graph" can be switched without a new problem.
+    @State private var plainSketch: SketchProblem?
     @State private var change: ChangeProblem?
     @State private var strokes: [SketchStroke] = []
     @State private var mode: SketchMode = AppSettings.shared.sketchMode
@@ -50,7 +52,10 @@ struct PracticeView: View {
             .toast($toast)
             .onChange(of: kind) { _, _ in newProblem() }
             .onChange(of: difficulty) { _, _ in newProblem() }
-            .onChange(of: settings.wholeGraph) { _, _ in if kind == .sketch { newProblem() } }
+            .onChange(of: settings.wholeGraph) { _, whole in
+                // Same problem, same drawing — only the view changes.
+                if kind == .sketch, let plain = plainSketch { sketch = whole ? SketchFactory.whole(plain) : plain }
+            }
             .sheet(isPresented: $showSolution) {
                 SolutionSheet(problem: problem)
             }
@@ -115,7 +120,7 @@ struct PracticeView: View {
                                 allowReveal: true, steps: { GraphSteps.steps(for: sketch) }, onSolved: solved) {
                 SketchHeader(problem: sketch)
             }
-            .id(sketch.signature + mode.rawValue)
+            .id(sketch.function.description + mode.rawValue)
         } else if kind == .change, let change {
             let display = settings.changeDisplay
             SketchChallengeView(problem: change.target, strokes: $strokes, mode: mode,
@@ -140,7 +145,9 @@ struct PracticeView: View {
     private func newProblem() {
         switch kind {
         case .sketch:
-            sketch = ProblemHistory.shared.freshSketch(level: difficulty.level, whole: settings.wholeGraph)
+            let plain = ProblemHistory.shared.freshSketch(level: difficulty.level, whole: false)
+            plainSketch = plain
+            sketch = settings.wholeGraph ? SketchFactory.whole(plain) : plain
             strokes = []
         case .change:
             change = ProblemHistory.shared.freshChange(level: difficulty.level)

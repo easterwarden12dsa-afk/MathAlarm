@@ -170,17 +170,19 @@ final class VarietyTests: XCTestCase {
             var lookalikes = 0
             var sameKindInARow = 0
             var last = ""
+            var names: [String] = []
             for i in 1...25 {
                 let c = ChangeFactory.make(level: level, seed: UInt64(i) &* 40_503, avoiding: seen, memory: memory)
                 let key = ShapeKey.of(c.target)
                 if memory.shapes.suffix(10).contains(where: { ShapeKey.distance($0, key) < 0.09 }) { lookalikes += 1 }
                 if c.kindName == last { sameKindInARow += 1 }
                 last = c.kindName
+                names.append(c.kindName)
                 seen.insert(c.signature)
                 memory.remember(shape: key, kind: c.kindName)
             }
             XCTAssertLessThanOrEqual(lookalikes, level == .easy ? 7 : 4, "\(level)")
-            XCTAssertLessThanOrEqual(sameKindInARow, 2, "\(level)")
+            XCTAssertLessThanOrEqual(sameKindInARow, 2, "\(level): \(names)")
         }
     }
 }

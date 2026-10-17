@@ -679,7 +679,8 @@ public enum SketchChecker {
             let i = Int(((x - a) / columnWidth).rounded(.down))
             return i >= 0 && i < xs.count ? i : nil
         }
-        for stroke in strokes {
+        for raw in strokes {
+            let stroke = raw.filter { $0.x.isFinite && $0.y.isFinite }
             if stroke.count == 1, let c = column(stroke[0].x) { buckets[c].append(stroke[0].y) }
             for (p, q) in zip(stroke, stroke.dropFirst()) {
                 let lo = Swift.min(p.x, q.x), hi = Swift.max(p.x, q.x)
@@ -1572,6 +1573,10 @@ public enum ChangeFactory {
         guard meanDiff > 0.3 * Swift.max(gRange, fRange) / 1.3 else { return nil }
         // Don't let one graph dwarf the other on the shared canvas.
         guard gRange < 12 * fRange, fRange < 12 * gRange else { return nil }
+        // g must fill a fair part of the shared box, or it's a near-flat line.
+        let gVals = xs.map { g.evaluate(at: $0) }.filter { $0.isFinite && $0 >= target.yMin && $0 <= target.yMax }
+        let box = Swift.max(target.yMax, base.yMax) - Swift.min(target.yMin, base.yMin)
+        guard let gLo = gVals.min(), let gHi = gVals.max(), gHi - gLo > 0.25 * box else { return nil }
         target.yMin = Swift.min(target.yMin, base.yMin)
         target.yMax = Swift.max(target.yMax, base.yMax)
         return ChangeProblem(base: base, transform: transform, target: target, level: level, seed: seed)
