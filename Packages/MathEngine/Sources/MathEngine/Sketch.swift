@@ -433,10 +433,11 @@ public enum SketchChecker {
                     let up = off > problem.yMax
                     // The last few columns before the edge count (a steep climb drawn a hair early is fine).
                     let side = k > j ? -1 : 1
-                    let nearby = (0...3).map { j + side * $0 }.filter { $0 >= 0 && $0 < n && visible[$0] }.compactMap { sampled[$0] }
+                    let nearby = (0...4).map { j + side * $0 }.filter { $0 >= 0 && $0 < n && visible[$0] }.compactMap { sampled[$0] }
                     let u = up ? (nearby.max() ?? 0) : (nearby.min() ?? 0)
                     let level = (u - uMin) / (uMax - uMin)
-                    if up ? level < 0.65 : level > 0.35 {
+                    // Only the direction matters: heading up (top half) or down (bottom half).
+                    if up ? level < 0.5 : level > 0.5 {
                         let edge = (xs[j] + xs[k]) / 2
                         let pole = problem.poles.first { Swift.abs($0 - edge) < 0.08 * width }
                         let why = pole.map { " (vertical asymptote x = \(lbl($0)))" } ?? ""
@@ -581,7 +582,10 @@ public enum SketchChecker {
                 let lo = isLeft ? a : b - endWidth, hi = isLeft ? a + endWidth : b
                 let covered = (features + trends + values).contains { $0.lo < hi && $0.hi > lo } || !visible[i] || nearOff(i, 2)
                 let near = (Swift.max(0, i - 2)...Swift.min(n - 1, i + 2)).map { Swift.abs(user[i] - truth[$0]) }.min() ?? 0
-                if !covered, near / range > t.endpointError {
+                // Steep end: allow about two columns of sideways slack.
+                let j = isLeft ? Swift.min(n - 1, i + 1) : Swift.max(0, i - 1)
+                let slack = 2 * Swift.abs(truth[j] - truth[i])
+                if !covered, (near - slack) / range > t.endpointError {
                     let high = user[i] > truth[i]
                     let hint = absolute
                         ? "At x = \(lbl(x)) the graph should \(isLeft ? "start" : "end") near y = \(SketchFormat.number(problem.value(at: x)))."
