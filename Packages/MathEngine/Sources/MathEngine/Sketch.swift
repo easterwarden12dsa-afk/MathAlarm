@@ -433,11 +433,12 @@ public enum SketchChecker {
                     let up = off > problem.yMax
                     // The last few columns before the edge count (a steep climb drawn a hair early is fine).
                     let side = k > j ? -1 : 1
-                    let nearby = (0...4).map { j + side * $0 }.filter { $0 >= 0 && $0 < n && visible[$0] }.compactMap { sampled[$0] }
-                    let u = up ? (nearby.max() ?? 0) : (nearby.min() ?? 0)
-                    let level = (u - uMin) / (uMax - uMin)
-                    // Only the direction matters: heading up (top half) or down (bottom half).
-                    if up ? level < 0.5 : level > 0.5 {
+                    // Only the direction matters: over the last few columns before the
+                    // edge, is the line climbing (or falling) towards it?
+                    let far = j + side * 4
+                    guard far >= 0, far < n, visible[far], let uNear = sampled[j], let uFar = sampled[far] else { continue }
+                    let climb = (uNear - uFar) / (uMax - uMin)
+                    if up ? climb < 0.02 : climb > -0.02 {
                         let edge = (xs[j] + xs[k]) / 2
                         let pole = problem.poles.first { Swift.abs($0 - edge) < 0.08 * width }
                         let why = pole.map { " (vertical asymptote x = \(lbl($0)))" } ?? ""
