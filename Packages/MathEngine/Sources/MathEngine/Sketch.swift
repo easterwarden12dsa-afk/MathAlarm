@@ -733,7 +733,7 @@ public enum SketchChecker {
                 // A smooth error goes one way (tv ≈ its net change); waves go back and forth.
                 let net = Swift.abs(residual[idx.last!] - residual[idx.first!])
                 let wave = (tv - net) / range
-                if wave > 0.3, worst == nil || wave > worst!.wave { worst = (wave, idx.first!, idx.last!) }
+                if wave > 0.22, worst == nil || wave > worst!.wave { worst = (wave, idx.first!, idx.last!) }
             }
             s += win / 2
         }
