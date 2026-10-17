@@ -896,32 +896,93 @@ struct Guideline: Identifiable, Hashable {
     }
 }
 
-/// Reads "5", "−2.5", "1/3", "π/2", "3π/4", "-2π", "e" and "ln 4"-free plain numbers.
+/// Reads values like 5, −2.5, 1/3, 3π/4, ln(3), e^2, √2, 1 + ln 2, 2e^(−1):
+/// numbers, π, e, + − × / ^, ln, √ and brackets (missing ")" at the end are fine).
 enum GuideNumber {
     static func parse(_ text: String) -> Double? {
-        var s = text.lowercased().replacingOccurrences(of: " ", with: "")
+        let cleaned = text.lowercased()
             .replacingOccurrences(of: "−", with: "-").replacingOccurrences(of: ",", with: ".")
-            .replacingOccurrences(of: "pi", with: "π")
-        guard !s.isEmpty else { return nil }
-        var sign = 1.0
-        if s.hasPrefix("-") { sign = -1; s.removeFirst() } else if s.hasPrefix("+") { s.removeFirst() }
-        let parts = s.split(separator: "/", omittingEmptySubsequences: false)
-        guard parts.count <= 2 else { return nil }
-        func term(_ t: Substring) -> Double? {
-            if t == "e" { return M_E }
-            if t.hasSuffix("π") {
-                let k = t.dropLast()
-                if k.isEmpty { return .pi }
-                return Double(k).map { $0 * .pi }
+            .replacingOccurrences(of: "pi", with: "π").replacingOccurrences(of: "×", with: "*")
+            .replacingOccurrences(of: "·", with: "*").replacingOccurrences(of: " ", with: "")
+        var p = Parser(chars: Array(cleaned))
+        guard !p.chars.isEmpty, let v = p.expression(), p.atEnd, v.isFinite else { return nil }
+        return v
+    }
+
+    private struct Parser {
+        var chars: [Character]
+        var i = 0
+        var atEnd: Bool { i >= chars.count }
+        var peek: Character? { atEnd ? nil : chars[i] }
+
+        mutating func expression() -> Double? {
+            guard var v = term() else { return nil }
+            while let c = peek, c == "+" || c == "-" {
+                i += 1
+                guard let t = term() else { return nil }
+                v = c == "+" ? v + t : v - t
             }
-            return Double(t)
+            return v
         }
-        guard let top = term(parts[0]) else { return nil }
-        if parts.count == 2 {
-            guard let bottom = term(parts[1]), bottom != 0 else { return nil }
-            return sign * top / bottom
+
+        mutating func term() -> Double? {
+            guard var v = power() else { return nil }
+            while let c = peek {
+                if c == "*" || c == "/" {
+                    i += 1
+                    guard let f = power() else { return nil }
+                    if c == "*" { v *= f } else { guard f != 0 else { return nil }; v /= f }
+                } else if c.isNumber || c == "π" || c == "e" || c == "(" || c == "√" || c == "l" || c == "." {
+                    // Implicit multiplication: 2π, 3ln2, 2e^x, 2(1+π)
+                    guard let f = power() else { return nil }
+                    v *= f
+                } else {
+                    break
+                }
+            }
+            return v
         }
-        return sign * top
+
+        mutating func power() -> Double? {
+            guard let base = unary() else { return nil }
+            if peek == "^" {
+                i += 1
+                guard let e = power() else { return nil }
+                return pow(base, e)
+            }
+            return base
+        }
+
+        mutating func unary() -> Double? {
+            if peek == "-" { i += 1; return unary().map { -$0 } }
+            if peek == "+" { i += 1; return unary() }
+            return primary()
+        }
+
+        mutating func primary() -> Double? {
+            guard let c = peek else { return nil }
+            if c == "(" {
+                i += 1
+                let v = expression()
+                if peek == ")" { i += 1 }   // a missing ")" at the end is fine
+                return v
+            }
+            if c == "π" { i += 1; return .pi }
+            if c == "√" {
+                i += 1
+                guard let v = power(), v >= 0 else { return nil }
+                return v.squareRoot()
+            }
+            if c == "l", i + 1 < chars.count, chars[i + 1] == "n" {
+                i += 2
+                guard let v = power(), v > 0 else { return nil }
+                return log(v)
+            }
+            if c == "e" { i += 1; return M_E }
+            var digits = ""
+            while let d = peek, d.isNumber || d == "." { digits.append(d); i += 1 }
+            return Double(digits)
+        }
     }
 }
 
@@ -1056,7 +1117,8 @@ struct GuidelineSheet: View {
     }
 
     private var pad: some View {
-        let keys: [[String]] = [["7", "8", "9", "⌫"], ["4", "5", "6", "π"], ["1", "2", "3", "/"], ["−", "0", ".", "C"]]
+        let keys: [[String]] = [["7", "8", "9", "⌫", "C"], ["4", "5", "6", "π", "e"], ["1", "2", "3", "ln", "√"],
+                                ["0", ".", "−", "+", "^"], ["(", ")", "/", "×"]]
         return VStack(spacing: 6) {
             ForEach(keys, id: \.self) { row in
                 HStack(spacing: 6) {
@@ -1068,9 +1130,9 @@ struct GuidelineSheet: View {
                             Group {
                                 if key == "⌫" { Image(systemName: "delete.left") } else { Text(key) }
                             }
-                            .font(.system(size: 22, weight: .medium, design: .rounded))
+                            .font(.system(size: 20, weight: .medium, design: .rounded))
                             .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity, minHeight: 46)
+                            .frame(maxWidth: .infinity, minHeight: 44)
                             .background(Color(white: ["⌫", "C"].contains(key) ? 0.32 : 0.2), in: RoundedRectangle(cornerRadius: 10))
                         }
                         .buttonStyle(PressableStyle(scale: 0.9))
@@ -1097,11 +1159,13 @@ struct GuidelineSheet: View {
     private func press(_ key: String) {
         var text = field == 0 ? first : second
         switch key {
-        case "⌫": if !text.isEmpty { text.removeLast() }
+        case "⌫":
+            // ln( and √( go in one piece.
+            if text.hasSuffix("ln(") { text.removeLast(3) } else if text.hasSuffix("√(") { text.removeLast(2) } else if !text.isEmpty { text.removeLast() }
         case "C": text = ""
-        case "−":
-            // Minus only at the start (toggles the sign).
-            if text.hasPrefix("−") { text.removeFirst() } else { text = "−" + text }
+        case "ln": text += "ln("
+        case "√": text += "√("
+        case "^": text += "^"
         default: text += key
         }
         if field == 0 { first = text } else { second = text }
