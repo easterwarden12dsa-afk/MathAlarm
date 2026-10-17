@@ -17,7 +17,10 @@ enum DerivativeGenerator {
         let f: Expr
         let technique: String
         let shape = r.int(0...2)
-        switch (syllabus ? .hard : level, shape) {
+        // Bagrut questions go up to two chain layers combined with a product or
+        // quotient; deeper nesting isn't Bagrut style.
+        let structureLevel: Level = syllabus ? (shape == 2 ? .hard : .medium) : level
+        switch (structureLevel, shape) {
         case (.easy, 0):
             let g = inner(&r)
             f = w(g)
