@@ -30,7 +30,11 @@ public enum GraphSteps {
             labels.first { Swift.abs($0.0 - x) < 1e-7 * (width + 1) }?.1 ?? solver.xLabel(x, exact: true)
         }
         func Y(_ y: Double) -> String { num(y) }
-        func pt(_ x: Double) -> String { "(\(X(x)), \(Y(f.evaluate(at: x))))" }
+        /// Without "≈", for inequalities and coordinates.
+        func XB(_ x: Double) -> String { bare(X(x)) }
+        /// "x = π/6" or "x ≈ 0.355".
+        func eq(_ x: Double) -> String { equation(X(x)) }
+        func pt(_ x: Double) -> String { "(\(XB(x)), \(Y(f.evaluate(at: x))))" }
 
         /// Algebraic solutions inside the interval, checked against the
         /// numeric roots; falls back to sign changes if they disagree.
@@ -48,7 +52,7 @@ public enum GraphSteps {
                     var lines = solved.lines
                     lines.append(.result(inside.isEmpty
                         ? "No solutions inside \(X(a)) < x < \(X(b))."
-                        : "Inside \(X(a)) < x < \(X(b)):  x = " + inside.map(\.label).joined(separator: ",  "), depth: 1))
+                        : "Inside \(X(a)) < x < \(X(b)):  " + inside.map { equation($0.label) }.joined(separator: ",  "), depth: 1))
                     return (lines, inside.map(\.x), solved.exact)
                 }
             }
@@ -85,7 +89,8 @@ public enum GraphSteps {
         if let d = inv?.d1 {
             steps.append(SolutionStep("Differentiate and factor:", label: "\(name)′(x) =", math: d.display, depth: 1))
         } else {
-            steps.append(SolutionStep("Differentiate:", label: "\(name)′(x) =", math: d1.size <= 45 ? d1 : nil, depth: 1))
+            steps.append(SolutionStep(d1.size <= 80 ? "Differentiate:" : "Differentiate (a long expression — only its sign matters below).",
+                                      label: d1.size <= 80 ? "\(name)′(x) =" : nil, math: d1.size <= 80 ? d1 : nil, depth: 1))
         }
         steps.append(.subheading("Solve \(name)′(x) = 0"))
         let critPart = accept(inv?.d1?.solve, of: d1, name: "\(name)′(x)")
@@ -96,7 +101,7 @@ public enum GraphSteps {
         steps.append(SolutionStep("\(name)′ can only change sign where it is 0, so one test point in each part decides the sign there:", depth: 1))
         let s1 = signTable(d1, cuts: crit, a: a, b: b, solver: solver, X: X)
         for row in s1 {
-            steps.append(SolutionStep("\(X(row.lo)) < x < \(X(row.hi)):   \(name)′(\(row.testLabel)) \(num(row.value, approx: true)) \(row.positive ? "> 0   ↗ increasing" : "< 0   ↘ decreasing")", depth: 1))
+            steps.append(SolutionStep("\(XB(row.lo)) < x < \(XB(row.hi)):   \(name)′(\(row.testLabel)) \(num(row.value, approx: true)) \(row.positive ? "> 0   ↗ increasing" : "< 0   ↘ decreasing")", depth: 1))
         }
         steps.append(.subheading("Conclusion"))
         if crit.isEmpty {
@@ -106,16 +111,16 @@ public enum GraphSteps {
             let left = s1[i].positive, right = s1[i + 1].positive
             let v2 = d2.evaluate(at: c)
             let check = v2.isFinite && Swift.abs(v2) > 1e-9
-                ? "  Check: \(name)″(\(X(c))) \(num(v2, approx: true)) \(v2 < 0 ? "< 0 (∩)" : "> 0 (∪)") ✓"
+                ? "  Check: \(name)″(\(XB(c))) \(num(v2, approx: true)) \(v2 < 0 ? "< 0 (∩)" : "> 0 (∪)") ✓"
                 : ""
             if left && !right {
-                steps.append(.result("x = \(X(c)): \(name)′ changes from + to −  ⇒  maximum at \(pt(c)).", depth: 1))
+                steps.append(.result("\(eq(c)): \(name)′ changes from + to −  ⇒  maximum at \(pt(c)).", depth: 1))
                 if !check.isEmpty { steps.append(SolutionStep(check.trimmingCharacters(in: .whitespaces), depth: 2)) }
             } else if !left && right {
-                steps.append(.result("x = \(X(c)): \(name)′ changes from − to +  ⇒  minimum at \(pt(c)).", depth: 1))
+                steps.append(.result("\(eq(c)): \(name)′ changes from − to +  ⇒  minimum at \(pt(c)).", depth: 1))
                 if !check.isEmpty { steps.append(SolutionStep(check.trimmingCharacters(in: .whitespaces), depth: 2)) }
             } else {
-                steps.append(.result("x = \(X(c)): \(name)′ = 0 but doesn't change sign  ⇒  no turn, just a flat moment at \(pt(c)).", depth: 1))
+                steps.append(.result("\(eq(c)): \(name)′ = 0 but doesn't change sign  ⇒  no turn, just a flat moment at \(pt(c)).", depth: 1))
             }
         }
         if let first = s1.first, let last = s1.last {
@@ -128,7 +133,9 @@ public enum GraphSteps {
         if let d = inv?.d2 {
             steps.append(SolutionStep("Differentiate \(name)′ again:", label: "\(name)″(x) =", math: d.display, depth: 1))
         } else {
-            steps.append(SolutionStep("Differentiate \(name)′ again:", label: "\(name)″(x) =", math: d2.size <= 45 ? d2 : nil, depth: 1))
+            let d2s = d2.simplified()
+            steps.append(SolutionStep(d2s.size <= 80 ? "Differentiate \(name)′ again:" : "Differentiate \(name)′ again (a long expression — only its sign matters below).",
+                                      label: d2s.size <= 80 ? "\(name)″(x) =" : nil, math: d2s.size <= 80 ? d2s : nil, depth: 1))
         }
         steps.append(.subheading("Solve \(name)″(x) = 0"))
         let inflPart = accept(inv?.d2?.solve, of: d2, name: "\(name)″(x)")
@@ -136,16 +143,16 @@ public enum GraphSteps {
         let s2 = signTable(d2, cuts: inflPart.roots, a: a, b: b, solver: solver, X: X)
         steps.append(.subheading("Sign of \(name)″"))
         for row in s2 {
-            steps.append(SolutionStep("\(X(row.lo)) < x < \(X(row.hi)):   \(name)″(\(row.testLabel)) \(num(row.value, approx: true)) \(row.positive ? "> 0   ∪ bends up" : "< 0   ∩ bends down")", depth: 1))
+            steps.append(SolutionStep("\(XB(row.lo)) < x < \(XB(row.hi)):   \(name)″(\(row.testLabel)) \(num(row.value, approx: true)) \(row.positive ? "> 0   ∪ bends up" : "< 0   ∩ bends down")", depth: 1))
         }
         steps.append(.subheading("Conclusion"))
         var infl: [Double] = []
         for (i, c) in inflPart.roots.enumerated() where s2[i].positive != s2[i + 1].positive {
             infl.append(c)
-            steps.append(.result("x = \(X(c)): \(name)″ changes sign  ⇒  inflection point \(pt(c)).", depth: 1))
+            steps.append(.result("\(eq(c)): \(name)″ changes sign  ⇒  inflection point \(pt(c)).", depth: 1))
         }
         for (i, c) in inflPart.roots.enumerated() where s2[i].positive == s2[i + 1].positive {
-            steps.append(SolutionStep("x = \(X(c)): \(name)″ = 0 but keeps its sign — not an inflection point.", depth: 1))
+            steps.append(SolutionStep("\(eq(c)): \(name)″ = 0 but keeps its sign — not an inflection point.", depth: 1))
         }
         if infl.isEmpty {
             steps.append(.result("No inflection points: \(name) bends \(s2.first?.positive == true ? "up (∪)" : "down (∩)") everywhere.", depth: 1))
@@ -532,10 +539,18 @@ public enum GraphSteps {
         return notes.isEmpty ? "f is defined for every x." : notes.joined(separator: "; ") + "."
     }
 
+    static func bare(_ label: String) -> String {
+        label.hasPrefix("≈ ") ? String(label.dropFirst(2)) : label
+    }
+
+    static func equation(_ label: String, _ v: String = "x") -> String {
+        label.hasPrefix("≈ ") ? "\(v) \(label)" : "\(v) = \(label)"
+    }
+
     /// Integers exactly, otherwise 3 significant digits ("≈ 1.37" with `approx`).
     static func num(_ v: Double, approx: Bool = false) -> String {
         if !v.isFinite { return "undefined" }
-        if Swift.abs(v - v.rounded()) < 1e-9 { return (approx ? "= " : "") + SketchFormat.number(v.rounded()) }
+        if Swift.abs(v - v.rounded()) < 1e-9 { return (approx ? "= " : "") + SketchFormat.number(Swift.abs(v) < 1e-9 ? 0 : v.rounded()) }
         return (approx ? "≈ " : "") + String(format: "%.3g", v).replacingOccurrences(of: "-", with: "−")
     }
 }

@@ -241,7 +241,8 @@ struct Solver {
         var s = Solved()
         let text = Self.polyText([a2, b1, c0], v)
         let disc = b1 * b1 - 4 * a2 * c0
-        s.say("\(text) = 0:  Δ = b² − 4ac = \(Self.minus("\(b1 * b1)")) − 4·\(Self.minus("\(a2)"))·\(Self.minus("\(c0)")) = \(Self.minus("\(disc)"))")
+        func par(_ n: Int) -> String { n < 0 ? "(−\(-n))" : "\(n)" }
+        s.say("\(text) = 0:  Δ = b² − 4ac = \(par(b1))² − 4·\(par(a2))·\(par(c0)) = \(Self.minus("\(disc)"))")
         if disc < 0 {
             s.say("Δ < 0, so there are no real solutions.", depth: 2)
             return s
@@ -369,7 +370,7 @@ struct Solver {
         if xs.isEmpty {
             s.say("None of these lie inside the interval.", depth: 2)
         } else {
-            s.say("Inside the interval (n = …, −1, 0, 1, …):  x = " + labels.joined(separator: ",  "), depth: 2)
+            s.say("Inside the interval (n = …, −1, 0, 1, …):  " + labels.map { GraphSteps.equation($0) }.joined(separator: ",  "), depth: 2)
         }
         s.roots += zip(xs, labels).map { AlgebraRoot(x: $0, label: $1) }
         return s

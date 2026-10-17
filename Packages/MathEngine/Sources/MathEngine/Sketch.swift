@@ -674,6 +674,7 @@ public enum SketchFormat {
     }
 
     public static func number(_ v: Double) -> String {
+        if Swift.abs(v) < 1e-9 { return "0" }
         if Swift.abs(v - v.rounded()) < 1e-9 { return v < 0 ? "−\(Int(-v.rounded()))" : "\(Int(v.rounded()))" }
         let s = String(format: "%.2g", v)
         return s.replacingOccurrences(of: "-", with: "−")

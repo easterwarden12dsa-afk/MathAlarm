@@ -82,7 +82,7 @@ final class GraphAlgebraTests: XCTestCase {
         let steps = GraphSteps.steps(for: SketchFactory.testCase())
         let text = steps.map(\.text).joined(separator: "\n")
         XCTAssertTrue(text.contains("cos 3x"), text)
-        XCTAssertTrue(text.contains("x = −π/6,  0,  π/6"), text)
+        XCTAssertTrue(text.contains("x = −π/6,  x = 0,  x = π/6"), text)
         XCTAssertTrue(text.contains("changes from + to −"), text)
         // Only f″ = 0 needs the numeric method here; f′ = 0 is solved exactly.
         XCTAssertEqual(text.components(separatedBy: "can't be solved exactly").count - 1, 1, text)
