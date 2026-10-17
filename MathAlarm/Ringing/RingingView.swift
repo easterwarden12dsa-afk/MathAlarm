@@ -95,7 +95,7 @@ struct RingingView: View {
                 Label("Surrender", systemImage: "flag.fill")
                     .font(.headline.bold())
                     .foregroundStyle(.white)
-                    .frame(minWidth: 120, minHeight: 54)
+                    .frame(minWidth: 116, minHeight: 48)
                     .background(Color.red, in: RoundedRectangle(cornerRadius: 14))
             }
             .buttonStyle(PressableStyle())
@@ -114,7 +114,7 @@ struct RingingView: View {
                 .font(.headline.bold())
                 .monospacedDigit()
                 .foregroundStyle(muted ? Color.black : Color.white)
-                .frame(minWidth: 120, minHeight: 54)
+                .frame(minWidth: 116, minHeight: 48)
                 .background(muted ? Color.orange : Color.white.opacity(0.2),
                             in: RoundedRectangle(cornerRadius: 14))
                 .animation(.easeInOut(duration: 0.2), value: muted)

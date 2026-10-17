@@ -37,13 +37,13 @@ struct PracticeView: View {
                     ForEach(Kind.allCases) { Text($0.title).tag($0) }
                 }
                 .pickerStyle(.segmented)
-                .controlSize(.large)
 
                 controls
 
                 content
             }
             .padding(.horizontal, 12)
+            .padding(.bottom, 6)
             .background(Color.black.ignoresSafeArea())
             .navigationTitle(solvedCount > 0 ? "Practice · \(solvedCount) solved" : "Practice")
             .navigationBarTitleDisplayMode(.inline)
@@ -92,7 +92,6 @@ struct PracticeView: View {
         }
         .menuStyle(.button)
         .buttonStyle(.glass)
-        .controlSize(.large)
         }
     }
 
@@ -101,7 +100,7 @@ struct PracticeView: View {
             .font(.subheadline.weight(.semibold))
             .lineLimit(1)
             .minimumScaleFactor(0.8)
-            .frame(maxWidth: .infinity, minHeight: 32)
+            .frame(maxWidth: .infinity, minHeight: 28)
             .contentShape(Rectangle())
     }
 
