@@ -242,9 +242,10 @@ struct SketchCanvas: View {
     }
 }
 
-/// Graph Sketch / Change: header, canvas with Draw/Erase, Undo, Clear,
-/// Submit, and numbered corrections when the sketch is off (never the true
-/// curve during an alarm).
+/// Graph Sketch / Change: header, canvas, a Liquid Glass toolbar
+/// (Draw / Erase, Undo, Clear, Steps, Reveal) and one prominent Submit
+/// button. Corrections are numbered; the true curve is never shown during
+/// an alarm.
 struct SketchChallengeView<Header: View>: View {
     let problem: SketchProblem
     @Binding var strokes: [SketchStroke]
@@ -268,7 +269,7 @@ struct SketchChallengeView<Header: View>: View {
     @State private var confirmSteps = false
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 10) {
             header
             SketchCanvas(problem: problem, strokes: $strokes, tool: tool,
                          regions: result?.passed == false ? result!.regions : [],
@@ -279,41 +280,16 @@ struct SketchChallengeView<Header: View>: View {
 
             feedback
 
-            HStack(spacing: 8) {
-                Picker("Tool", selection: $tool) {
-                    Label("Draw", systemImage: "pencil.tip").tag(SketchTool.draw)
-                    Label("Erase", systemImage: "eraser").tag(SketchTool.erase)
-                }
-                .pickerStyle(.segmented)
-                .frame(maxWidth: 170)
-                button("Undo", "arrow.uturn.backward", Color(white: 0.25)) {
-                    if let last = history.popLast() { strokes = last } else if !strokes.isEmpty { strokes.removeLast() }
-                }
-                button("Clear", "trash", Color(red: 0.45, green: 0.16, blue: 0.16)) {
-                    history.append(strokes)
-                    strokes = []
-                    result = nil
-                }
-                if allowReveal {
-                    button(reveal ? "Hide" : "Reveal", reveal ? "eye.slash" : "eye", Color(red: 0.16, green: 0.30, blue: 0.42)) {
-                        reveal.toggle()
-                    }
-                }
-                if steps != nil {
-                    button("Steps", "list.number", Color(red: 0.10, green: 0.35, blue: 0.38)) {
-                        if onSolutionViewed == nil { showSteps = true } else { confirmSteps = true }
-                    }
-                }
-            }
+            toolbar
 
             Button(action: submit) {
-                Label(solved ? "Correct!" : "Submit sketch", systemImage: solved ? "checkmark" : "checkmark.circle")
-                    .font(.title3.bold())
-                    .foregroundStyle(.black)
-                    .frame(maxWidth: .infinity, minHeight: 54)
-                    .background(solved ? Color.green : Color.white, in: RoundedRectangle(cornerRadius: 16))
+                Label(solved ? "Correct!" : "Submit", systemImage: solved ? "checkmark" : "checkmark.circle")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity, minHeight: 34)
             }
-            .buttonStyle(PressableStyle())
+            .buttonStyle(.glassProminent)
+            .tint(solved ? .green : .orange)
+            .controlSize(.large)
             .disabled(solved || strokes.isEmpty)
         }
         .sheet(isPresented: $showSteps, onDismiss: { onSolutionViewed?() }) {
@@ -328,10 +304,77 @@ struct SketchChallengeView<Header: View>: View {
         }
     }
 
+    // MARK: Toolbar
+
+    private var toolbar: some View {
+        GlassEffectContainer(spacing: 8) {
+            HStack(spacing: 8) {
+                toolButton(.draw, "pencil.tip", "Draw")
+                toolButton(.erase, "eraser", "Erase")
+                Spacer(minLength: 4)
+                actionButton("arrow.uturn.backward", "Undo") {
+                    if let last = history.popLast() { strokes = last } else if !strokes.isEmpty { strokes.removeLast() }
+                }
+                actionButton("trash", "Clear") {
+                    history.append(strokes)
+                    strokes = []
+                    result = nil
+                }
+                if steps != nil {
+                    actionButton("list.number", "Steps") {
+                        if onSolutionViewed == nil { showSteps = true } else { confirmSteps = true }
+                    }
+                }
+                if allowReveal {
+                    actionButton(reveal ? "eye.slash" : "eye", reveal ? "Hide" : "Reveal") { reveal.toggle() }
+                }
+            }
+        }
+    }
+
+    private func toolLabel(_ symbol: String, _ title: String) -> some View {
+        VStack(spacing: 2) {
+            Image(systemName: symbol).font(.system(size: 17, weight: .semibold))
+            Text(title).font(.caption2.weight(.semibold)).fixedSize()
+        }
+        .frame(minWidth: 46, minHeight: 40)
+    }
+
+    @ViewBuilder
+    private func toolButton(_ t: SketchTool, _ symbol: String, _ title: String) -> some View {
+        let selected = tool == t
+        let action = {
+            Haptics.tap()
+            tool = t
+        }
+        if selected {
+            Button(action: action) { toolLabel(symbol, title) }
+                .buttonStyle(.glassProminent)
+                .tint(.orange)
+                .accessibilityAddTraits(.isSelected)
+        } else {
+            Button(action: action) { toolLabel(symbol, title) }
+                .buttonStyle(.glass)
+        }
+    }
+
+    private func actionButton(_ symbol: String, _ title: String, action: @escaping () -> Void) -> some View {
+        Button {
+            Haptics.tap()
+            action()
+        } label: {
+            toolLabel(symbol, title)
+        }
+        .buttonStyle(.glass)
+        .accessibilityLabel(title)
+    }
+
+    // MARK: Feedback
+
     @ViewBuilder
     private var feedback: some View {
         if let result, !result.passed {
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 5) {
                 ForEach(Array(result.regions.enumerated()), id: \.offset) { index, region in
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
                         Text("\(index + 1)")
@@ -340,40 +383,24 @@ struct SketchChallengeView<Header: View>: View {
                             .frame(width: 20, height: 20)
                             .background(SketchRegionStyle.color(region.issue), in: Circle())
                         Text(region.hint)
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(SketchRegionStyle.color(region.issue))
+                            .font(.subheadline)
+                            .foregroundStyle(.primary)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
-                Text("Fix just those parts — use Erase to rub out a piece, then redraw it.")
+                Text("Fix just those parts — Erase rubs out a piece so you can redraw it.")
                     .font(.caption)
-                    .foregroundStyle(.white.opacity(0.55))
+                    .foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         } else if solved {
             Label("Great sketch!", systemImage: "checkmark.circle.fill")
                 .font(.headline).foregroundStyle(.green)
         } else {
-            Text("\(mode.title) mode: \(mode.summary)")
-                .font(.footnote).foregroundStyle(.white.opacity(0.6))
+            Text("\(mode.title): \(mode.summary)")
+                .font(.footnote).foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
-    }
-
-    private func button(_ title: String, _ symbol: String, _ color: Color, action: @escaping () -> Void) -> some View {
-        Button {
-            Haptics.tap()
-            action()
-        } label: {
-            Label(title, systemImage: symbol)
-                .labelStyle(.iconOnly)
-                .font(.title3.weight(.semibold))
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity, minHeight: 44)
-                .background(color, in: RoundedRectangle(cornerRadius: 12))
-        }
-        .buttonStyle(PressableStyle())
-        .accessibilityLabel(title)
     }
 
     private func submit() {
@@ -393,73 +420,77 @@ struct SketchChallengeView<Header: View>: View {
     }
 }
 
-/// Header for a plain Graph Sketch problem.
+/// Header for a plain Graph Sketch problem: a quiet caption, the formula
+/// as the hero, and the interval — no coloured card.
 struct SketchHeader: View {
     let problem: SketchProblem
 
     var body: some View {
         VStack(spacing: 4) {
-            Text("Sketch the graph").font(.headline).foregroundStyle(.orange)
-            FittedMath(sizes: [26, 23, 20, 17, 15, 13]) { size in
+            Text("SKETCH THE GRAPH")
+                .font(.caption.weight(.semibold))
+                .tracking(1)
+                .foregroundStyle(.secondary)
+            FittedMath(sizes: [28, 25, 22, 19, 16, 14]) { size in
                 HStack(alignment: .mathAxis, spacing: size * 0.25) {
                     Text("y =").font(MathFont.italic(size))
                     MathRowView(row: ExprDisplay.row(problem.function), size: size, mergeFunctionPowers: true)
                 }
                 .foregroundStyle(.white)
             }
-            Text("for \(problem.xLabel(problem.xMin)) ≤ x ≤ \(problem.xLabel(problem.xMax))")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.white.opacity(0.75))
+            Text("\(problem.xLabel(problem.xMin)) ≤ x ≤ \(problem.xLabel(problem.xMax))")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
         }
-        .padding(8)
         .frame(maxWidth: .infinity)
-        .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 14))
     }
 }
 
-/// Header for a "Change" problem: the given f (formula and/or "grey graph")
-/// and what to draw.
+/// Header for a "Change" problem: what to draw is the hero; f's formula
+/// (if shown) is secondary.
 struct ChangeHeader: View {
     let change: ChangeProblem
     let display: AppSettings.ChangeDisplay
 
     var body: some View {
         VStack(spacing: 4) {
-            Text("Change: draw g").font(.headline).foregroundStyle(.orange)
+            Text("CHANGE")
+                .font(.caption.weight(.semibold))
+                .tracking(1)
+                .foregroundStyle(.secondary)
+            Text(change.transform.formula)
+                .font(.system(size: 26, weight: .medium, design: .serif))
+                .foregroundStyle(.white)
+                .minimumScaleFactor(0.6)
+                .lineLimit(1)
             if display.showsFormula {
-                FittedMath(sizes: [22, 20, 17, 15, 13, 12]) { size in
+                FittedMath(sizes: [18, 16, 14, 13, 12, 11]) { size in
                     HStack(alignment: .mathAxis, spacing: size * 0.25) {
-                        Text("f(x) =").font(MathFont.italic(size))
+                        Text("where f(x) =").font(MathFont.italic(size))
                         MathRowView(row: ExprDisplay.row(change.base.function), size: size, mergeFunctionPowers: true)
                     }
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.secondary)
                 }
             }
-            Text(change.transform.formula)
-                .font(.system(size: 22, weight: .semibold, design: .serif))
-                .foregroundStyle(.white)
             Text(display.showsGraph
-                 ? "The grey curve is f. Draw g for \(change.target.xLabel(change.target.xMin)) ≤ x ≤ \(change.target.xLabel(change.target.xMax))."
-                 : "Draw g for \(change.target.xLabel(change.target.xMin)) ≤ x ≤ \(change.target.xLabel(change.target.xMax)).")
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(.white.opacity(0.7))
-                .multilineTextAlignment(.center)
+                 ? "Grey curve = f · draw g for \(change.target.xLabel(change.target.xMin)) ≤ x ≤ \(change.target.xLabel(change.target.xMax))"
+                 : "Draw g for \(change.target.xLabel(change.target.xMin)) ≤ x ≤ \(change.target.xLabel(change.target.xMax))")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
         }
-        .padding(8)
         .frame(maxWidth: .infinity)
-        .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 14))
     }
 }
 
-/// Colours and arrows for each kind of sketch correction.
+/// System colours and arrows for each kind of sketch correction.
 enum SketchRegionStyle {
     static func color(_ issue: SketchRegion.Issue) -> Color {
         switch issue {
-        case .tooHigh: Color(red: 1.0, green: 0.35, blue: 0.35)
-        case .tooLow: Color(red: 0.35, green: 0.65, blue: 1.0)
-        case .shouldRise, .shouldFall: Color(red: 0.75, green: 0.5, blue: 1.0)
-        case .missingFeature: Color(red: 1.0, green: 0.85, blue: 0.2)
-        case .notDrawn: Color(white: 0.7)
+        case .tooHigh: .red
+        case .tooLow: .blue
+        case .shouldRise, .shouldFall: .purple
+        case .missingFeature: .yellow
+        case .notDrawn: .gray
         }
     }
 

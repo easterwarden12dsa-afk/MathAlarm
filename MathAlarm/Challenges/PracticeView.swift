@@ -58,6 +58,7 @@ struct PracticeView: View {
 
     /// Difficulty, drawing mode and New — big, separate buttons so taps always land.
     private var controls: some View {
+        GlassEffectContainer(spacing: 8) {
         HStack(spacing: 8) {
             Menu {
                 Picker("Difficulty", selection: $difficulty) {
@@ -89,7 +90,10 @@ struct PracticeView: View {
                 chip("New", "arrow.clockwise")
             }
         }
-        .buttonStyle(PressableStyle(scale: 0.95))
+        .menuStyle(.button)
+        .buttonStyle(.glass)
+        .controlSize(.large)
+        }
     }
 
     private func chip(_ title: String, _ symbol: String) -> some View {
@@ -97,9 +101,7 @@ struct PracticeView: View {
             .font(.subheadline.weight(.semibold))
             .lineLimit(1)
             .minimumScaleFactor(0.8)
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity, minHeight: 44)
-            .background(Color(white: 0.2), in: RoundedRectangle(cornerRadius: 12))
+            .frame(maxWidth: .infinity, minHeight: 32)
             .contentShape(Rectangle())
     }
 
@@ -115,7 +117,7 @@ struct PracticeView: View {
             let display = settings.changeDisplay
             SketchChallengeView(problem: change.target, strokes: $strokes, mode: mode,
                                 reference: display.showsGraph ? change.base : nil,
-                                allowReveal: true, steps: { GraphSteps.steps(for: change) }, onSolved: solved) {
+                                allowReveal: true, steps: { GraphSteps.steps(for: change, formulaVisible: display.showsFormula) }, onSolved: solved) {
                 ChangeHeader(change: change, display: display)
             }
             .id(change.signature + mode.rawValue)

@@ -42,7 +42,7 @@ struct RingingView: View {
                                          set: { ring.updateStrokes($0) }),
                         mode: AppSettings.shared.sketchMode,
                         reference: display.showsGraph ? change.base : nil,
-                        steps: { GraphSteps.steps(for: change) },
+                        steps: { GraphSteps.steps(for: change, formulaVisible: display.showsFormula) },
                         onSolutionViewed: { ring.replaceProblem() },
                         onSolved: { ring.solvedOne() }) {
                         ChangeHeader(change: change, display: display)
