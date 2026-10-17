@@ -15,7 +15,7 @@ settings:
   base:
     SWIFT_VERSION: "5.0"
     TARGETED_DEVICE_FAMILY: "1"
-    MARKETING_VERSION: "0.1.0"
+    MARKETING_VERSION: "1.0.0"
     CURRENT_PROJECT_VERSION: "1"
     ENABLE_USER_SCRIPT_SANDBOXING: "YES"
 
@@ -46,7 +46,6 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.mathalarm.app
         PRODUCT_NAME: MathAlarm
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        MARKETING_VERSION: "1.0.0"
     dependencies:
       - target: MathAlarmWidget
         embed: true
