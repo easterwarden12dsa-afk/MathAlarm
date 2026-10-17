@@ -266,5 +266,7 @@ struct ProblemFormula: View {
             }
         }
         .foregroundStyle(.white)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel((problem.kind == .integral ? "Integrate " : "Differentiate ") + problem.display.description)
     }
 }

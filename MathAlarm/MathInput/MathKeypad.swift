@@ -96,6 +96,31 @@ struct Key: Identifiable {
         Key(label: "", symbol: symbol, action: action, kind: kind)
     }
 
+    /// What VoiceOver reads for this key.
+    var spoken: String {
+        switch label {
+        case "x²": return "x squared"
+        case "xⁿ": return "power"
+        case "a/b": return "fraction, uses what you typed as the top"
+        case "√": return "square root"
+        case "|x|": return "absolute value"
+        case "eˣ": return "e to the power"
+        case "π": return "pi"
+        case "−": return "minus"
+        case "×": return "times"
+        case "f(x)": return "more functions"
+        case "123": return "numbers"
+        case "": break
+        default: return label
+        }
+        switch symbol {
+        case "delete.left": return "delete"
+        case "arrow.left": return "move cursor left"
+        case "arrow.right": return "move cursor right"
+        default: return label
+        }
+    }
+
     static func digit(_ n: Int) -> Key {
         Key(label: String(n), symbol: nil, action: .token(.digit(n)), kind: .number)
     }
@@ -124,6 +149,7 @@ private struct KeyButton: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(PressableStyle(scale: 0.88))
+        .accessibilityLabel(key.spoken)
     }
 
     private var font: Font {

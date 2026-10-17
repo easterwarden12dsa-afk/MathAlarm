@@ -149,6 +149,10 @@ final class RingCoordinator: ObservableObject {
                 }
             }
             Task { await AlarmStore.shared.resync() }
+            // A reinstall moves the expiry date: keep the reminder in step.
+            if AppSettings.shared.expiryReminder {
+                Task { await ExpiryMonitor.updateReminder(enabled: true) }
+            }
         case .background:
             isForeground = false
             guard inAppEngaged, let s = session else { return }
