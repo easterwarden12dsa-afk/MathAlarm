@@ -15,7 +15,8 @@ struct MathKeypad: View {
             ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
                 HStack(spacing: 6) {
                     ForEach(row) { key in
-                        KeyButton(key: key, height: keyHeight) { perform(key.action) }
+                        KeyButton(key: key, height: keyHeight,
+                                  longPress: key.longAction.map { long in { perform(long) } }) { perform(key.action) }
                     }
                 }
             }
@@ -31,7 +32,7 @@ struct MathKeypad: View {
     private var mainPage: [[Key]] {
         [
             [.sym("x", .token(.x), .variable), .sym("x²", .square, .op), .sym("xⁿ", .power, .op), .sym("a/b", .divide, .op), .icon("delete.left", .backspace, .action)],
-            [.digit(7), .digit(8), .digit(9), .sym("(", .paren, .op), .sym(")", .close, .op)],
+            [.digit(7), .digit(8), .digit(9), .bracket("(", .paren, long: .openOnly), .bracket(")", .close, long: .closeOnly)],
             [.digit(4), .digit(5), .digit(6), .sym("×", .token(.times), .op), .sym("|x|", .function(.abs), .function)],
             [.digit(1), .digit(2), .digit(3), .sym("+", .token(.plus), .op), .sym("−", .token(.minus), .op)],
             [.digit(0), .sym(".", .token(.dot), .number), .sym("π", .token(.pi), .variable), .sym("e", .token(.e), .variable), .sym("eˣ", .function(.exp), .function)],
@@ -45,7 +46,7 @@ struct MathKeypad: View {
             [.sym("sec", .function(.sec), .function), .sym("csc", .function(.csc), .function), .sym("cot", .function(.cot), .function), .sym("log", .function(.log), .function), .sym("|x|", .function(.abs), .function)],
             [.sym("arcsin", .function(.asin), .function), .sym("arccos", .function(.acos), .function), .sym("arctan", .function(.atan), .function), .sym("√", .function(.sqrt), .function),
              allowConstantC ? .sym("C", .token(.c), .variable) : .sym("eˣ", .function(.exp), .function)],
-            [.sym("sinh", .function(.sinh), .function), .sym("cosh", .function(.cosh), .function), .sym("tanh", .function(.tanh), .function), .sym("(", .paren, .op), .sym(")", .close, .op)],
+            [.sym("sinh", .function(.sinh), .function), .sym("cosh", .function(.cosh), .function), .sym("tanh", .function(.tanh), .function), .bracket("(", .paren, long: .openOnly), .bracket(")", .close, long: .closeOnly)],
             [.sym("x", .token(.x), .variable), .sym("x²", .square, .op), .sym("xⁿ", .power, .op), .sym("a/b", .divide, .op), .sym("π", .token(.pi), .variable)],
             [.icon("arrow.left", .left, .action), .icon("arrow.right", .right, .action), .sym("123", .page, .action), .sym("−", .token(.minus), .op), .sym("Clear", .clear, .danger)],
         ]
@@ -64,6 +65,8 @@ struct MathKeypad: View {
         case .divide: editor.divide()
         case .paren: editor.insertParen()
         case .close: editor.closeGroup()
+        case .openOnly: editor.openBracketOnly()
+        case .closeOnly: editor.closeBracketOnly()
         case .left: editor.moveLeft()
         case .right: editor.moveRight()
         case .backspace: editor.backspace()
@@ -77,6 +80,8 @@ enum KeyAction {
     case token(Token)
     case function(Fn)
     case square, power, fraction, divide, paren, close
+    /// Long press on a bracket key: a single "(" or ")".
+    case openOnly, closeOnly
     case left, right, backspace, clear, page
 }
 
@@ -87,6 +92,8 @@ struct Key: Identifiable {
     let symbol: String?
     let action: KeyAction
     let kind: Kind
+    /// What a long press does (brackets: a single bracket).
+    var longAction: KeyAction? = nil
 
     static func sym(_ label: String, _ action: KeyAction, _ kind: Kind) -> Key {
         Key(label: label, symbol: nil, action: action, kind: kind)
@@ -94,6 +101,10 @@ struct Key: Identifiable {
 
     static func icon(_ symbol: String, _ action: KeyAction, _ kind: Kind) -> Key {
         Key(label: "", symbol: symbol, action: action, kind: kind)
+    }
+
+    static func bracket(_ label: String, _ action: KeyAction, long: KeyAction) -> Key {
+        Key(label: label, symbol: nil, action: action, kind: .op, longAction: long)
     }
 
     /// What VoiceOver reads for this key.
@@ -129,10 +140,16 @@ struct Key: Identifiable {
 private struct KeyButton: View {
     let key: Key
     let height: CGFloat
+    var longPress: (() -> Void)? = nil
     let action: () -> Void
+    @State private var longPressed = false
 
     var body: some View {
-        Button(action: action) {
+        Button {
+            // A long press already did its thing; don't also tap.
+            if longPressed { longPressed = false; return }
+            action()
+        } label: {
             Group {
                 if let symbol = key.symbol {
                     Image(systemName: symbol).font(.system(size: 22, weight: .semibold))
@@ -149,7 +166,20 @@ private struct KeyButton: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(PressableStyle(scale: 0.88))
+        .simultaneousGesture(LongPressGesture(minimumDuration: 0.45).onEnded { _ in
+            guard let longPress else { return }
+            longPressed = true
+            Haptics.success()
+            longPress()
+        })
+        .overlay(alignment: .topTrailing) {
+            if longPress != nil {
+                // A small dot hints that a long press does something else.
+                Circle().fill(Color.white.opacity(0.5)).frame(width: 4, height: 4).padding(5).allowsHitTesting(false)
+            }
+        }
         .accessibilityLabel(key.spoken)
+        .accessibilityAction(named: key.label == "(" ? "Opening bracket only" : "Closing bracket only") { longPress?() }
     }
 
     private var font: Font {

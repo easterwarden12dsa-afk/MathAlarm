@@ -180,3 +180,24 @@ final class PasteTests: XCTestCase {
         XCTAssertEqual(e.evaluate(at: 2), 10, accuracy: 1e-12)   // 2(x² + 1), not 2x² + 1
     }
 }
+
+final class SingleBracketTests: XCTestCase {
+    func testCloseOnlyWrapsWhatCameBefore() {
+        var ed = MathEditor()
+        ed.insert(.x); ed.insert(.plus); ed.insert(.d1)
+        ed.closeBracketOnly()
+        ed.insertSquare()
+        let e = try! RowParser.parse(ed)
+        XCTAssertEqual(e.evaluate(at: 2), 9, accuracy: 1e-12)   // (x + 1)²
+    }
+
+    func testOpenOnlyWrapsWhatComesAfter() {
+        var ed = MathEditor()
+        ed.insert(.x); ed.insert(.plus); ed.insert(.d1)
+        ed.moveLeft(); ed.moveLeft(); ed.moveLeft()   // cursor before x
+        ed.insert(.d3)
+        ed.openBracketOnly()
+        let e = try! RowParser.parse(ed)
+        XCTAssertEqual(e.evaluate(at: 2), 9, accuracy: 1e-12)   // 3(x + 1)
+    }
+}

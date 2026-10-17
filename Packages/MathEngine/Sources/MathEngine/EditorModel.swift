@@ -137,6 +137,28 @@ public struct MathEditor: Codable, Hashable, Sendable {
         }
     }
 
+    /// Just "(": opens a bracket at the cursor that closes at the end of this
+    /// box, so everything after the cursor ends up inside it.
+    public mutating func openBracketOnly() {
+        var row = currentRow
+        let tail = Array(row.atoms[cursor.index...])
+        row.atoms.replaceSubrange(cursor.index..., with: [.paren(Row(tail))])
+        setRow(row, at: cursor.path)
+        cursor.path.append(.init(atom: cursor.index, child: 0))
+        cursor.index = 0
+    }
+
+    /// Just ")": closes a bracket at the cursor that opens at the start of
+    /// this box, e.g. x + 1 then ")" gives (x + 1).
+    public mutating func closeBracketOnly() {
+        var row = currentRow
+        guard cursor.index > 0 else { return }
+        let head = Array(row.atoms[..<cursor.index])
+        row.atoms.replaceSubrange(..<cursor.index, with: [.paren(Row(head))])
+        setRow(row, at: cursor.path)
+        cursor.index = 1
+    }
+
     /// Inserts a structure and puts the cursor in its first box.
     public mutating func insertFunction(_ f: Fn) {
         switch f {
