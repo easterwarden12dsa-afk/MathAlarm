@@ -316,3 +316,19 @@ final class StrictnessReport: XCTestCase {
         }
     }
 }
+
+final class StrictnessDebug: XCTestCase {
+    func testPrintFlatPeakEscapes() {
+        var shown = 0
+        for p in StrictnessReport.problems() where shown < 8 {
+            let v = StrictnessReport.variants(p)
+            let g = v.first { $0.0 == "flat peak" }!.1
+            let r = SketchChecker.check(StrictnessReport.drawing(p, g), for: p, mode: .precision)
+            if r.passed {
+                shown += 1
+                let ext = GraphSteps.keyPoints(p, inflections: false).filter { $0.kinds.contains(.peak) || $0.kinds.contains(.dip) }.map { "\(GraphSteps.num($0.x)):\(GraphSteps.num(p.value(at: $0.x)))" }
+                print("SAMPLE escape \(p.function) [\(GraphSteps.num(p.xMin)), \(GraphSteps.num(p.xMax))] y[\(GraphSteps.num(p.yMin)), \(GraphSteps.num(p.yMax))] ext \(ext)")
+            }
+        }
+    }
+}
