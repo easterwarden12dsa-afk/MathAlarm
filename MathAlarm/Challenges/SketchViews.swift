@@ -854,56 +854,81 @@ enum GuideNumber {
     }
 }
 
-/// Add or remove helper lines: x = c, y = c or y = m·x + b.
+/// Add or remove helper lines: x = c, y = c or y = m·x + b — typed on a
+/// small built-in number pad (no system keyboard).
 struct GuidelineSheet: View {
     @Binding var lines: [Guideline]
     @Environment(\.dismiss) private var dismiss
     @State private var kind = 0
     @State private var first = ""
     @State private var second = ""
+    /// Which value the pad types into (0 = c or m, 1 = b).
+    @State private var field = 0
 
     var body: some View {
         NavigationStack {
-            Form {
-                Section {
+            ScrollView {
+                VStack(spacing: 14) {
                     Picker("Line", selection: $kind) {
                         Text("x = c").tag(0)
                         Text("y = c").tag(1)
                         Text("y = mx + b").tag(2)
                     }
                     .pickerStyle(.segmented)
-                    if kind == 2 {
-                        TextField("slope m (e.g. 1, −1/2)", text: $first)
-                        TextField("b (e.g. 3, π/2)", text: $second)
-                    } else {
-                        TextField(kind == 0 ? "c (e.g. 5, −2, π/2)" : "c (e.g. 1, −0.5)", text: $first)
+                    .onChange(of: kind) { _, _ in field = 0 }
+
+                    HStack(spacing: 10) {
+                        if kind == 2 {
+                            valueBox("m", first, index: 0)
+                            valueBox("b", second, index: 1)
+                        } else {
+                            valueBox(kind == 0 ? "x =" : "y =", first, index: 0)
+                        }
                     }
+
+                    pad
+
                     Button {
                         add()
                     } label: {
                         Label("Add line", systemImage: "plus.circle.fill")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity, minHeight: 30)
                     }
+                    .buttonStyle(.glassProminent)
+                    .tint(.cyan)
+                    .controlSize(.large)
                     .disabled(parsed == nil)
-                } footer: {
+
                     Text("Dashed helper lines for drawing — for example the asymptotes you found. They aren't checked.")
-                }
-                if !lines.isEmpty {
-                    Section("Your lines") {
-                        ForEach(lines) { line in
-                            HStack {
-                                Text(line.title).font(.body.monospaced())
-                                Spacer()
-                                Button(role: .destructive) {
-                                    lines.removeAll { $0.id == line.id }
-                                } label: {
-                                    Image(systemName: "trash")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    if !lines.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Your lines").font(.subheadline.weight(.semibold))
+                            ForEach(lines) { line in
+                                HStack {
+                                    Text(line.title).font(.body.monospaced()).foregroundStyle(.cyan)
+                                    Spacer()
+                                    Button(role: .destructive) {
+                                        Haptics.tap()
+                                        lines.removeAll { $0.id == line.id }
+                                    } label: {
+                                        Image(systemName: "trash")
+                                    }
+                                    .buttonStyle(.glass)
+                                    .accessibilityLabel("Remove \(line.title)")
                                 }
-                                .accessibilityLabel("Remove \(line.title)")
                             }
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
+                .padding()
             }
+            .background(Color.black)
             .navigationTitle("Helper lines")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -911,6 +936,67 @@ struct GuidelineSheet: View {
             }
         }
         .preferredColorScheme(.dark)
+    }
+
+    /// One value; tap it to type into it with the pad.
+    private func valueBox(_ name: String, _ text: String, index: Int) -> some View {
+        Button {
+            Haptics.tap()
+            field = index
+        } label: {
+            HStack(spacing: 6) {
+                Text(name).font(.body.weight(.semibold)).foregroundStyle(.secondary)
+                Text(text.isEmpty ? " " : text)
+                    .font(.title3.monospaced())
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(.horizontal, 12)
+            .frame(maxWidth: .infinity, minHeight: 46)
+            .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
+            .overlay(RoundedRectangle(cornerRadius: 12).stroke(field == index ? Color.cyan : Color.clear, lineWidth: 2))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("\(name) \(text.isEmpty ? "empty" : text)")
+    }
+
+    private var pad: some View {
+        let keys: [[String]] = [["7", "8", "9", "⌫"], ["4", "5", "6", "π"], ["1", "2", "3", "/"], ["−", "0", ".", "C"]]
+        return VStack(spacing: 6) {
+            ForEach(keys, id: \.self) { row in
+                HStack(spacing: 6) {
+                    ForEach(row, id: \.self) { key in
+                        Button {
+                            Haptics.tap()
+                            press(key)
+                        } label: {
+                            Group {
+                                if key == "⌫" { Image(systemName: "delete.left") } else { Text(key) }
+                            }
+                            .font(.system(size: 22, weight: .medium, design: .rounded))
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity, minHeight: 46)
+                            .background(Color(white: ["⌫", "C"].contains(key) ? 0.32 : 0.2), in: RoundedRectangle(cornerRadius: 10))
+                        }
+                        .buttonStyle(PressableStyle(scale: 0.9))
+                        .accessibilityLabel(key == "⌫" ? "delete" : (key == "C" ? "clear" : key))
+                    }
+                }
+            }
+        }
+    }
+
+    private func press(_ key: String) {
+        var text = field == 0 ? first : second
+        switch key {
+        case "⌫": if !text.isEmpty { text.removeLast() }
+        case "C": text = ""
+        case "−":
+            // Minus only at the start (toggles the sign).
+            if text.hasPrefix("−") { text.removeFirst() } else { text = "−" + text }
+        default: text += key
+        }
+        if field == 0 { first = text } else { second = text }
     }
 
     private var parsed: Guideline.Kind? {
@@ -935,6 +1021,6 @@ struct GuidelineSheet: View {
             title = "y = \(clean(first) == "1" ? "" : clean(first))x" + (b.isEmpty || b == "0" ? "" : (b.hasPrefix("−") ? " − \(b.dropFirst())" : " + \(b)"))
         }
         lines.append(Guideline(kind: k, title: title))
-        first = ""; second = ""
+        first = ""; second = ""; field = 0
     }
 }
