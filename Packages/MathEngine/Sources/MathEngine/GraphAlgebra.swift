@@ -791,6 +791,58 @@ enum GraphAlgebra {
                              solve: S.product([(eT, S.never(eT, expText)), (pt([-2, 0, c]), S.poly([-2, 0, c]))])),
                 d2: Factored(display: .scaled(2, c * c, .mul(.mul(x, E), P([2, 0, -3 * c]))),
                              solve: S.product([("x", S.poly([1, 0])), (eT, S.never(eT, expText)), (pt([2, 0, -3 * c]), S.poly([2, 0, -3 * c]))])))
+        case .hyperbola:
+            let (a, c, k) = (q[0], q[1], q[2])
+            let D = Expr.sum([x, .n(-c)])
+            let dT = pt([1, -c])
+            var z: Solved
+            if k == 0 {
+                z = S.never("\(a)/(\(dT))", "a fraction with a nonzero top is never 0")
+            } else {
+                z = Solved()
+                z.say("\(a)/(\(dT)) = \(Solver.minus("\(-k)"))  ⇒  \(dT) = \(Solver.frac(-a, k))  ⇒  x = \(Solver.frac(c * k - a, k))")
+                z.roots = [AlgebraRoot(x: Double(c) - Double(a) / Double(k), label: Solver.frac(c * k - a, k))]
+            }
+            inv = Investigation(zeros: z,
+                                d1: Factored(display: .div(.n(-a), .p(D, 2)), solve: S.never("f′(x) = \(Solver.minus("\(-a)"))/(\(dT))²", "the top is never 0")),
+                                d2: Factored(display: .div(.n(2 * a), .p(D, 3)), solve: S.never("f″(x) = \(Solver.minus("\(2 * a)"))/(\(dT))³", "the top is never 0")))
+        case .ratOblique:
+            let (a, c) = (q[0], q[1])
+            let D = Expr.sum([x, .n(-c)])
+            let dT = pt([1, -c])
+            var d1 = S.fraction(pt([1, -2 * c, -a]), S.poly([1, -2 * c, -a]), denominator: "(\(dT))²", reason: "positive wherever f is defined")
+            d1.lines.insert(SolutionStep("Quotient rule: f′(x) = [2x(\(dT)) − (\(pt([1, 0, a])))]/(\(dT))² = (\(pt([1, -2 * c, -a])))/(\(dT))²", depth: 1), at: 0)
+            inv = Investigation(
+                zeros: S.fraction(pt([1, 0, a]), S.poly([1, 0, a]), denominator: dT, reason: "not 0 in the domain"),
+                d1: Factored(display: .div(P([1, -2 * c, -a]), .p(D, 2)), solve: d1),
+                d2: Factored(display: .div(.n(2 * (c * c + a)), .p(D, 3)),
+                             solve: S.never("f″(x) = \(2 * (c * c + a))/(\(dT))³", "the top is never 0")))
+        case .recipQuad:
+            let (a, c) = (q[0], q[1])
+            let Q = Expr.sum([.p(x, 2), .n(-a * a)])
+            let qT = pt([1, 0, -a * a])
+            inv = Investigation(
+                zeros: S.never("\(c)/(\(qT))", "a fraction with a nonzero top is never 0"),
+                d1: Factored(display: .div(.scaled(-2 * c, 1, x), .p(Q, 2)),
+                             solve: S.fraction(pt([-2 * c, 0]), S.poly([-2 * c, 0]), denominator: "(\(qT))²", reason: "positive wherever f is defined")),
+                d2: Factored(display: .div(.scaled(c, 1, P([6, 0, 2 * a * a])), .p(Q, 3)),
+                             solve: S.never("The top \(c == 1 ? "" : "\(Solver.minus("\(c)"))·")(\(pt([6, 0, 2 * a * a])))", "6x² + \(2 * a * a) is always positive")))
+        case .xOverQuad:
+            let a = q[0]
+            let Q = Expr.sum([.p(x, 2), .n(-a * a)])
+            let qT = pt([1, 0, -a * a])
+            inv = Investigation(
+                zeros: S.fraction("x", S.poly([1, 0]), denominator: qT, reason: "not 0 in the domain"),
+                d1: Factored(display: .neg(.div(P([1, 0, a * a]), .p(Q, 2))),
+                             solve: S.never("f′(x) = −(\(pt([1, 0, a * a])))/(\(qT))²", "x² + \(a * a) is always positive")),
+                d2: Factored(display: .div(.scaled(2, 1, .mul(x, P([1, 0, 3 * a * a]))), .p(Q, 3)),
+                             solve: S.fraction("2x(\(pt([1, 0, 3 * a * a])))", S.poly([1, 0, 3 * a * a, 0]), denominator: "(\(qT))³", reason: "not 0 in the domain")))
+        case .tanX:
+            inv = Investigation(
+                zeros: S.trig(.tan, 1, 1, 0, "0"),
+                d1: Factored(display: .div(1, .p(.cos(x), 2)), solve: S.never("f′(x) = 1/cos²x", "it is always positive")),
+                d2: Factored(display: .div(.scaled(2, 1, .sin(x)), .p(.cos(x), 3)),
+                             solve: S.fraction("2 sin x", S.trig(.sin, 1, 1, 0, "0"), denominator: "cos³x", reason: "not 0 in the domain")))
         }
 
         // A vertical factor k multiplies f′ and f″ but doesn't move their zeros.

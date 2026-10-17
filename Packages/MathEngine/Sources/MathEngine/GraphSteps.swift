@@ -19,13 +19,18 @@ public struct GraphMarker: Hashable, Sendable {
 public enum GraphSteps {
     public static func steps(for p: SketchProblem, name: String = "f") -> [SolutionStep] {
         let f = p.function
-        let a = p.xMin, b = p.xMax
+        // Whole-graph problems on x > 0 are investigated from the domain's edge.
+        let a = p.domainLow.map { Swift.max($0, p.xMin) } ?? p.xMin, b = p.xMax
         let d1 = f.derivative()
         let d2 = d1.derivative()
         let solver = Solver(a: a, b: b, piBased: p.piBased)
         let inv = GraphAlgebra.investigate(p)
         let width = b - a
-        var labels: [(Double, String)] = [(a, p.xLabel(a)), (b, p.xLabel(b))]
+        let whole = p.isWhole
+        let poles = p.poles.filter { $0 > a && $0 < b }.sorted()
+        var labels: [(Double, String)] = [(a, whole ? (p.domainLow.map { SketchFormat.number($0) } ?? "−∞") : p.xLabel(a)),
+                                          (b, whole ? "∞" : p.xLabel(b))]
+        for c in poles { labels.append((c, solver.xLabel(c, exact: true))) }
         func X(_ x: Double) -> String {
             labels.first { Swift.abs($0.0 - x) < 1e-7 * (width + 1) }?.1 ?? solver.xLabel(x, exact: true)
         }
@@ -35,6 +40,7 @@ public enum GraphSteps {
         /// "x = π/6" or "x ≈ 0.355".
         func eq(_ x: Double) -> String { equation(X(x)) }
         func pt(_ x: Double) -> String { "(\(XB(x)), \(Y(f.evaluate(at: x))))" }
+        let range = whole ? "its domain" : "\(X(a)) < x < \(X(b))"
 
         /// Algebraic solutions inside the interval, checked against the
         /// numeric roots; falls back to sign changes if they disagree.
@@ -51,30 +57,61 @@ public enum GraphSteps {
                     for r in inside { labels.append((r.x, r.label)) }
                     var lines = solved.lines
                     lines.append(.result(inside.isEmpty
-                        ? "No solutions inside \(X(a)) < x < \(X(b))."
-                        : "Inside \(X(a)) < x < \(X(b)):  " + inside.map { equation($0.label) }.joined(separator: ",  "), depth: 1))
+                        ? "No solutions on \(range)."
+                        : "On \(range):  " + inside.map { equation($0.label) }.joined(separator: ",  "), depth: 1))
                     return (lines, inside.map(\.x), solved.exact)
                 }
             }
             var s = solver.numeric(e, name: eqName)
-            s.lines.insert(SolutionStep("This equation can't be solved exactly by hand. \(eqName) is continuous, so it is 0 wherever it changes sign (intermediate value theorem):", depth: 1), at: 0)
+            s.lines.insert(SolutionStep("This equation can't be solved exactly by hand. \(eqName) is continuous (between asymptotes), so it is 0 wherever it changes sign (intermediate value theorem):", depth: 1), at: 0)
             for r in s.roots { labels.append((r.x, r.label)) }
             return (s.lines, s.roots.map(\.x), false)
+        }
+
+        /// Signs on each side of x in a sign table.
+        func sides(_ rows: [SignRow], _ x: Double) -> (left: Bool, right: Bool)? {
+            let tol = 1e-9 * (width + 1)
+            guard let l = rows.first(where: { Swift.abs($0.hi - x) < tol }),
+                  let r = rows.first(where: { Swift.abs($0.lo - x) < tol }) else { return nil }
+            return (l.positive, r.positive)
         }
 
         var steps: [SolutionStep] = []
         steps.append(.heading("The function"))
         steps.append(SolutionStep("", label: "\(name)(x) =", math: f))
-        steps.append(SolutionStep("on the interval \(X(a)) ≤ x ≤ \(X(b))."))
+        steps.append(SolutionStep(whole ? "Draw the whole graph — every x where it is defined."
+                                        : "on the interval \(X(a)) ≤ x ≤ \(X(b))."))
 
-        // Step 1 · Domain
-        steps.append(.heading("Step 1 · Domain"))
-        steps.append(SolutionStep(domainNote(f)))
-        steps.append(SolutionStep("On \(X(a)) ≤ x ≤ \(X(b)) it is defined and continuous, so there are no vertical asymptotes here (and on a closed interval no horizontal ones either)."))
+        // Step 1 · Domain (and asymptotes)
+        steps.append(.heading(poles.isEmpty && !whole ? "Step 1 · Domain" : "Step 1 · Domain and asymptotes"))
+        steps.append(SolutionStep(domainNote(f) + (poles.isEmpty ? "" : "  So x ≠ " + poles.map(X).joined(separator: ", ") + ".")))
+        if poles.isEmpty && !whole {
+            steps.append(SolutionStep("On \(X(a)) ≤ x ≤ \(X(b)) it is defined and continuous, so there are no vertical asymptotes here (and on a closed interval no horizontal ones either)."))
+        }
+        var poleNotes: [(Double, String)] = []
+        if !poles.isEmpty {
+            steps.append(.subheading("Vertical asymptotes"))
+            for c in poles {
+                let e = 1e-6 * (width + 1)
+                let l = f.evaluate(at: c - e), r = f.evaluate(at: c + e)
+                func inf(_ v: Double) -> String { v > 0 ? "+∞" : "−∞" }
+                steps.append(SolutionStep("x = \(X(c)) is not in the domain, and next to it |\(name)(x)| grows without bound — a vertical asymptote.", depth: 1))
+                steps.append(.result("x → \(X(c))⁻:  \(name)(x) → \(inf(l));    x → \(X(c))⁺:  \(name)(x) → \(inf(r))", depth: 2))
+                poleNotes.append((c, "vertical asymptote x = \(X(c)): \(inf(l)) on the left, \(inf(r)) on the right"))
+            }
+        }
+        var endNotes: [String] = []
+        if whole {
+            steps.append(.subheading("Behaviour at the ends of the domain"))
+            for line in endBehaviour(p, name: name) {
+                steps.append(line.0)
+                endNotes.append(line.1)
+            }
+        }
 
         // Step 2 · Intercepts
         steps.append(.heading("Step 2 · Intercepts with the axes"))
-        if a <= 0 && b >= 0 {
+        if a <= 0 && b >= 0, f.evaluate(at: 0).isFinite {
             steps.append(.subheading("y-axis (x = 0)"))
             steps.append(SolutionStep("\(name)(0) = \(Y(f.evaluate(at: 0)))  →  the point (0, \(Y(f.evaluate(at: 0))))", depth: 1))
         }
@@ -98,32 +135,38 @@ public enum GraphSteps {
         let crit = critPart.roots
 
         steps.append(.subheading("Sign of \(name)′ — the proof"))
-        steps.append(SolutionStep("\(name)′ can only change sign where it is 0, so one test point in each part decides the sign there:", depth: 1))
-        let s1 = signTable(d1, cuts: crit, a: a, b: b, solver: solver, X: X)
+        steps.append(SolutionStep("\(name)′ can only change sign where it is 0\(poles.isEmpty ? "" : " or undefined (at the asymptotes)"), so one test point in each part decides the sign there:", depth: 1))
+        let s1 = signTable(d1, cuts: (crit + poles).sorted(), a: a, b: b, solver: solver, X: X)
         for row in s1 {
             steps.append(SolutionStep("\(XB(row.lo)) < x < \(XB(row.hi)):   \(name)′(\(row.testLabel)) \(num(row.value, approx: true)) \(row.positive ? "> 0   ↗ increasing" : "< 0   ↘ decreasing")", depth: 1))
         }
         steps.append(.subheading("Conclusion"))
         if crit.isEmpty {
-            steps.append(.result("\(name)′ never changes sign: \(name) is \(s1.first?.positive == true ? "increasing" : "decreasing") on the whole interval, with no turning points.", depth: 1))
+            let all = Set(s1.map(\.positive))
+            steps.append(.result(all.count == 1
+                ? "\(name)′ never changes sign: \(name) is \(s1.first?.positive == true ? "increasing" : "decreasing") on each part of \(range), with no turning points."
+                : "No turning points: \(name)′ only changes sign across an asymptote.", depth: 1))
         }
-        for (i, c) in crit.enumerated() {
-            let left = s1[i].positive, right = s1[i + 1].positive
+        var turns: [(Double, String)] = []
+        for c in crit {
+            guard let (left, right) = sides(s1, c) else { continue }
             let v2 = d2.evaluate(at: c)
             let check = v2.isFinite && Swift.abs(v2) > 1e-9
-                ? "  Check: \(name)″(\(XB(c))) \(num(v2, approx: true)) \(v2 < 0 ? "< 0 (∩)" : "> 0 (∪)") ✓"
+                ? "Check: \(name)″(\(XB(c))) \(num(v2, approx: true)) \(v2 < 0 ? "< 0 (∩)" : "> 0 (∪)") ✓"
                 : ""
             if left && !right {
                 steps.append(.result("\(eq(c)): \(name)′ changes from + to −  ⇒  maximum at \(pt(c)).", depth: 1))
-                if !check.isEmpty { steps.append(SolutionStep(check.trimmingCharacters(in: .whitespaces), depth: 2)) }
+                if !check.isEmpty { steps.append(SolutionStep(check, depth: 2)) }
+                turns.append((c, "maximum"))
             } else if !left && right {
                 steps.append(.result("\(eq(c)): \(name)′ changes from − to +  ⇒  minimum at \(pt(c)).", depth: 1))
-                if !check.isEmpty { steps.append(SolutionStep(check.trimmingCharacters(in: .whitespaces), depth: 2)) }
+                if !check.isEmpty { steps.append(SolutionStep(check, depth: 2)) }
+                turns.append((c, "minimum"))
             } else {
                 steps.append(.result("\(eq(c)): \(name)′ = 0 but doesn't change sign  ⇒  no turn, just a flat moment at \(pt(c)).", depth: 1))
             }
         }
-        if let first = s1.first, let last = s1.last {
+        if !whole, let first = s1.first, let last = s1.last {
             steps.append(SolutionStep("End points: \(pt(a)) is an end \(first.positive ? "minimum" : "maximum") (the graph \(first.positive ? "rises" : "falls") from it), \(pt(b)) is an end \(last.positive ? "maximum" : "minimum").", depth: 1))
         }
 
@@ -140,33 +183,38 @@ public enum GraphSteps {
         steps.append(.subheading("Solve \(name)″(x) = 0"))
         let inflPart = accept(inv?.d2?.solve, of: d2, name: "\(name)″(x)")
         steps += inflPart.lines
-        let s2 = signTable(d2, cuts: inflPart.roots, a: a, b: b, solver: solver, X: X)
+        let s2 = signTable(d2, cuts: (inflPart.roots + poles).sorted(), a: a, b: b, solver: solver, X: X)
         steps.append(.subheading("Sign of \(name)″"))
         for row in s2 {
             steps.append(SolutionStep("\(XB(row.lo)) < x < \(XB(row.hi)):   \(name)″(\(row.testLabel)) \(num(row.value, approx: true)) \(row.positive ? "> 0   ∪ bends up" : "< 0   ∩ bends down")", depth: 1))
         }
         steps.append(.subheading("Conclusion"))
         var infl: [Double] = []
-        for (i, c) in inflPart.roots.enumerated() where s2[i].positive != s2[i + 1].positive {
-            infl.append(c)
-            steps.append(.result("\(eq(c)): \(name)″ changes sign  ⇒  inflection point \(pt(c)).", depth: 1))
-        }
-        for (i, c) in inflPart.roots.enumerated() where s2[i].positive == s2[i + 1].positive {
-            steps.append(SolutionStep("\(eq(c)): \(name)″ = 0 but keeps its sign — not an inflection point.", depth: 1))
+        for c in inflPart.roots {
+            guard let (l, r) = sides(s2, c) else { continue }
+            if l != r {
+                infl.append(c)
+                steps.append(.result("\(eq(c)): \(name)″ changes sign  ⇒  inflection point \(pt(c)).", depth: 1))
+            } else {
+                steps.append(SolutionStep("\(eq(c)): \(name)″ = 0 but keeps its sign — not an inflection point.", depth: 1))
+            }
         }
         if infl.isEmpty {
-            steps.append(.result("No inflection points: \(name) bends \(s2.first?.positive == true ? "up (∪)" : "down (∩)") everywhere.", depth: 1))
+            let all = Set(s2.map(\.positive))
+            steps.append(.result(all.count == 1
+                ? "No inflection points: \(name) bends \(s2.first?.positive == true ? "up (∪)" : "down (∩)") everywhere."
+                : "No inflection points: the bending only changes across an asymptote, which isn't part of the graph.", depth: 1))
         }
 
         // Step 5 · Draw it
         steps.append(.heading("Step 5 · Draw it"))
-        steps.append(SolutionStep("Plot these points from left to right and join them, rising/falling (Step 3) and bending (Step 4) as found:"))
-        var key: [(Double, String)] = [(a, "start"), (b, "end")]
-        key += zs.map { ($0, "on the x-axis") }
-        key += crit.enumerated().compactMap { i, c in
-            let l = s1[i].positive, r = s1[i + 1].positive
-            return l == r ? nil : (c, l ? "maximum" : "minimum")
+        if !poles.isEmpty {
+            steps.append(SolutionStep("First draw the asymptotes as dashed lines; the graph gets closer and closer to them without touching."))
         }
+        steps.append(SolutionStep("Plot these points from left to right and join them, rising/falling (Step 3) and bending (Step 4) as found:"))
+        var key: [(Double, String)] = whole ? [] : [(a, "start"), (b, "end")]
+        key += zs.map { ($0, "on the x-axis") }
+        key += turns
         key += infl.map { ($0, "inflection") }
         var seen: [(Double, String)] = []
         for k in key.sorted(by: { $0.0 < $1.0 }) {
@@ -176,10 +224,63 @@ public enum GraphSteps {
                 seen.append(k)
             }
         }
-        for (x, what) in seen {
-            steps.append(SolutionStep("\(pt(x))  — \(what)", depth: 1))
+        var lines: [(Double, String)] = seen.map { ($0.0, "\(pt($0.0))  — \($0.1)") }
+        lines += poleNotes.map { ($0.0, "x = \(X($0.0)):  \($0.1)") }
+        for (_, text) in lines.sorted(by: { $0.0 < $1.0 }) {
+            steps.append(SolutionStep(text, depth: 1))
         }
+        for note in endNotes { steps.append(SolutionStep(note, depth: 1)) }
         return steps
+    }
+
+    /// Whole graph: what f does at the ends of its domain (horizontal or
+    /// oblique asymptotes, or growing without bound), as (step, short note).
+    static func endBehaviour(_ p: SketchProblem, name: String) -> [(SolutionStep, String)] {
+        let f = p.function
+        var out: [(SolutionStep, String)] = []
+        let why: String = {
+            if f.contains(.exp) { return "an exponential beats any power of x" }
+            if f.contains(.ln) { return "ln x grows more slowly than any power of x" }
+            if f.hasDivision { return "compare the highest powers of x on the top and the bottom" }
+            return "the highest power of x decides"
+        }()
+        if let fam = p.family, fam.kind == .ratOblique {
+            let (a, c) = (fam.p[0], fam.p[1])
+            let k = fam.factor
+            let lineText = Solver.polyText([1, c]).replacingOccurrences(of: "x", with: "x")
+            out.append((SolutionStep("Divide: (\(Solver.polyText([1, 0, a])))/(\(Solver.polyText([1, -c]))) = \(lineText) + \(c * c + a)/(\(Solver.polyText([1, -c]))). The last part → 0 as x → ±∞, so the graph approaches the line y = \(k == 1 ? "" : "\(k)(")\(lineText)\(k == 1 ? "" : ")") — an oblique asymptote.", depth: 1),
+                        "both ends: close to the oblique asymptote y = \(k == 1 ? "" : "\(k)(")\(lineText)\(k == 1 ? "" : ")")"))
+            return out
+        }
+        func limit(_ sign: Double) -> Double? {
+            let v = [1e2, 1e3, 1e4].map { f.evaluate(at: sign * $0) }
+            if v.contains(where: \.isNaN) { return nil }
+            if v.allSatisfy(\.isFinite), Swift.abs(v[2] - v[1]) < 1e-3 * Swift.max(1, Swift.abs(v[2])) { return v[2] }
+            return v[2].isFinite ? (v[2] > 0 ? .infinity : -.infinity) : v[2]
+        }
+        func describe(_ L: Double, _ side: String) -> (SolutionStep, String) {
+            if L.isFinite {
+                let l = Swift.abs(L) < 1e-6 ? 0 : (L * 1e6).rounded() / 1e6
+                return (.result("x → \(side):  \(name)(x) → \(num(l))  ⇒  y = \(num(l)) is a horizontal asymptote (\(why)).", depth: 1),
+                        "x → \(side): the graph gets close to y = \(num(l))")
+            }
+            return (SolutionStep("x → \(side):  \(name)(x) → \(L > 0 ? "+∞" : "−∞") — no horizontal asymptote on this side (\(why)).", depth: 1),
+                    "x → \(side): the graph goes \(L > 0 ? "up" : "down") forever")
+        }
+        if let low = p.domainLow {
+            let v = f.evaluate(at: low + 1e-9), v2 = f.evaluate(at: low + 1e-7)
+            if !v.isFinite || Swift.abs(v) > 10 * Swift.max(1, Swift.abs(v2)) {
+                out.append((.result("x → \(num(low))⁺:  \(name)(x) → \(v > 0 ? "+∞" : "−∞")  ⇒  x = \(num(low)) is a vertical asymptote.", depth: 1),
+                            "x → \(num(low))⁺: shoots \(v > 0 ? "up" : "down") along x = \(num(low))"))
+            } else {
+                out.append((SolutionStep("x → \(num(low))⁺:  \(name)(x) → \(num(v)) — the graph starts there.", depth: 1),
+                            "x → \(num(low))⁺: starts near (\(num(low)), \(num(v)))"))
+            }
+        } else if let L = limit(-1) {
+            out.append(describe(L, "−∞"))
+        }
+        if let L = limit(1) { out.append(describe(L, "∞")) }
+        return out
     }
 
     /// Every numeric root has an algebraic one next to it, and every
@@ -193,6 +294,28 @@ public enum GraphSteps {
             return v.isFinite && Swift.abs(v) <= 1e-7 * Swift.max(1, scale)
         }
         return allFound && allReal
+    }
+
+    /// What a drawing of the whole graph has to include: peaks, dips,
+    /// zeros, inflection points and vertical asymptotes (y nil).
+    static func features(of p: SketchProblem) -> [(x: Double, y: Double?, name: String)] {
+        var out: [(x: Double, y: Double?, name: String)] = []
+        for k in keyPoints(p) {
+            let kinds = k.kinds.filter { $0 != .leftEnd && $0 != .rightEnd }
+            guard !kinds.isEmpty else { continue }
+            let name = kinds.map { kind -> String in
+                switch kind {
+                case .zero: return "zero"
+                case .peak: return "peak"
+                case .dip: return "dip"
+                case .inflection: return "inflection point"
+                default: return ""
+                }
+            }.joined(separator: " and ")
+            out.append((k.x, p.value(at: k.x), name))
+        }
+        for c in p.poles where c > p.xMin && c < p.xMax { out.append((c, nil, "vertical asymptote")) }
+        return out.sorted { $0.x < $1.x }
     }
 
     // MARK: Sign tables
@@ -503,7 +626,9 @@ public enum GraphSteps {
         let a = range.lowerBound, b = range.upperBound
         let xs = (0...n).map { a + (b - a) * Double($0) / Double(n) }
         let ys = xs.map { e.evaluate(at: $0) }
-        let scale = ys.filter { $0.isFinite }.map { Swift.abs($0) }.max() ?? 1
+        let finite = ys.filter { $0.isFinite }.map { Swift.abs($0) }.sorted()
+        let scale = finite.last ?? 1
+        let typical = finite.isEmpty ? 1 : finite[finite.count / 2]
         var out: [Double] = []
         for i in 0..<n where ys[i].isFinite && ys[i + 1].isFinite {
             if ys[i] == 0 { out.append(xs[i]); continue }
@@ -513,11 +638,13 @@ public enum GraphSteps {
                     let mid = (lo + hi) / 2, fm = e.evaluate(at: mid)
                     if (fm < 0) == (flo < 0) { lo = mid; flo = fm } else { hi = mid }
                 }
-                out.append((lo + hi) / 2)
+                // A sign change across a vertical asymptote is not a zero.
+                let mid = (lo + hi) / 2
+                if Swift.abs(e.evaluate(at: mid)) <= 1e-6 * Swift.max(1, typical) { out.append(mid) }
             }
         }
         // Touching zeros (e.g. x² at 0).
-        for i in 1..<n where ys[i].isFinite && Swift.abs(ys[i]) < 1e-6 * Swift.max(scale, 1e-9) {
+        for i in 1..<n where ys[i].isFinite && Swift.abs(ys[i]) < 1e-6 * Swift.max(Swift.min(scale, 10 * typical), 1e-9) {
             let isExt = (Swift.abs(ys[i]) <= Swift.abs(ys[i - 1])) && (Swift.abs(ys[i]) <= Swift.abs(ys[i + 1]))
             if isExt, !out.contains(where: { Swift.abs($0 - xs[i]) < 3 * (b - a) / Double(n) }) { out.append(xs[i]) }
         }
@@ -535,6 +662,7 @@ public enum GraphSteps {
         var notes: [String] = []
         if f.contains(.ln) { notes.append("ln needs a positive argument") }
         if f.contains(.sqrt) { notes.append("√ needs a non-negative argument") }
+        if f.contains(.tan) { notes.append("tan x is undefined where cos x = 0") }
         if f.hasDivision { notes.append("a denominator must not be 0") }
         return notes.isEmpty ? "f is defined for every x." : notes.joined(separator: "; ") + "."
     }

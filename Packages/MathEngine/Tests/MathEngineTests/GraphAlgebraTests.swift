@@ -139,6 +139,12 @@ final class SolutionSampleTests: XCTestCase {
         dump("x² − 3 ln x", GraphSteps.steps(for: x2ln))
         var rng = SeededRandom(seed: 99)
         if let p = SketchFactory.candidate(level: .hard, rng: &rng, seed: 99) { dump("hard \(p.function)", GraphSteps.steps(for: p)) }
+        var r2 = SeededRandom(seed: 3)
+        for _ in 0..<400 {
+            if let p = SketchFactory.candidate(level: .bagrut, rng: &r2, seed: 3), p.family?.kind == .ratOblique {
+                dump("oblique \(p.function)", GraphSteps.steps(for: SketchFactory.whole(p))); break
+            }
+        }
         let c = ChangeFactory.make(level: .bagrut, seed: 4242)
         dump("change graph-only \(c.transform.formula)", GraphSteps.steps(for: c, formulaVisible: false))
         dump("change formula \(c.transform.formula)", GraphSteps.steps(for: c, formulaVisible: true))

@@ -16,6 +16,24 @@ public struct SketchProblem: Codable, Hashable, Sendable {
     public var seed: UInt64
     /// Which generator family made it (lets the solution solve f′ = 0 exactly).
     public var family: SketchFamily? = nil
+    /// x positions of vertical asymptotes (in or near the interval).
+    public var asymptotes: [Double]? = nil
+    /// Draw the whole graph (zoom and pan); xMin…yMax is then just the starting view.
+    public var wholeDomain: Bool? = nil
+    /// Whole-graph problems defined only for x > domainLow (ln, √).
+    public var domainLow: Double? = nil
+
+    public var isWhole: Bool { wholeDomain == true }
+    public var poles: [Double] { asymptotes ?? [] }
+
+    /// The same problem seen through another window (zoomed or panned).
+    public func windowed(_ v: SketchViewport) -> SketchProblem {
+        var p = self
+        p.xMin = v.xMin; p.xMax = v.xMax; p.yMin = v.yMin; p.yMax = v.yMax
+        return p
+    }
+
+    public var viewport: SketchViewport { SketchViewport(xMin: xMin, xMax: xMax, yMin: yMin, yMax: yMax) }
 
     public var signature: String { "sketch:\(function.description):\(xMin):\(xMax)" }
 
@@ -23,6 +41,29 @@ public struct SketchProblem: Codable, Hashable, Sendable {
 
     /// Label for an x position, e.g. "−π/4" or "1.5".
     public func xLabel(_ x: Double) -> String { SketchFormat.x(x, piBased: piBased) }
+}
+
+/// The visible part of the plane on the canvas.
+public struct SketchViewport: Codable, Hashable, Sendable {
+    public var xMin: Double
+    public var xMax: Double
+    public var yMin: Double
+    public var yMax: Double
+    public init(xMin: Double, xMax: Double, yMin: Double, yMax: Double) {
+        self.xMin = xMin; self.xMax = xMax; self.yMin = yMin; self.yMax = yMax
+    }
+
+    /// Zoomed by `factor` (> 1 zooms in) around a point.
+    public func zoomed(_ factor: Double, around c: SketchPoint) -> SketchViewport {
+        SketchViewport(xMin: c.x - (c.x - xMin) / factor, xMax: c.x + (xMax - c.x) / factor,
+                       yMin: c.y - (c.y - yMin) / factor, yMax: c.y + (yMax - c.y) / factor)
+    }
+
+    public func moved(dx: Double, dy: Double) -> SketchViewport {
+        SketchViewport(xMin: xMin + dx, xMax: xMax + dx, yMin: yMin + dy, yMax: yMax + dy)
+    }
+
+    public var center: SketchPoint { SketchPoint(x: (xMin + xMax) / 2, y: (yMin + yMax) / 2) }
 }
 
 public struct SketchPoint: Codable, Hashable, Sendable {
@@ -197,13 +238,105 @@ public enum SketchChecker {
         check(strokes, for: problem, tolerance: mode.tolerance)
     }
 
+    /// Checks a drawing. Every correction it reports can really be fixed
+    /// in its zone: redrawing each zone along its guide (the "eye" curve)
+    /// is simulated first, and zones that wouldn't be enough are widened —
+    /// up to one band over the whole stretch that's off.
     public static func check(_ strokes: [SketchStroke], for problem: SketchProblem,
                              tolerance t: SketchTolerance) -> SketchResult {
+        var r = consolidate(rawCheck(strokes, for: problem, tolerance: t), problem)
+        guard !r.passed, !r.regions.contains(where: { $0.issue == .notDrawn }) else { return r }
+        let w = problem.xMax - problem.xMin
+        for _ in 0..<4 {
+            let after = rawCheck(fixedAlongGuides(strokes, problem, r.regions, t), for: problem, tolerance: t)
+            if after.passed { return r }
+            // Widen zones the fix wouldn't cure; add the new trouble spots.
+            var regions = r.regions
+            for bad in after.regions {
+                if let i = regions.firstIndex(where: { $0.lo < bad.hi + 0.02 * w && $0.hi > bad.lo - 0.02 * w }) {
+                    regions[i].lo = Swift.max(problem.xMin, Swift.min(regions[i].lo, bad.lo) - 0.12 * w)
+                    regions[i].hi = Swift.min(problem.xMax, Swift.max(regions[i].hi, bad.hi) + 0.12 * w)
+                    regions[i].issue = .missingFeature
+                    regions[i].hint = "The shape is off from x = \(problem.xLabel(regions[i].lo)) to x = \(problem.xLabel(regions[i].hi)) — redraw this whole stretch (the eye shows the right shape)."
+                } else {
+                    regions.append(bad)
+                }
+            }
+            r.regions = consolidate(SketchResult(passed: false, regions: regions, coverage: r.coverage), problem).regions
+        }
+        if rawCheck(fixedAlongGuides(strokes, problem, r.regions, t), for: problem, tolerance: t).passed { return r }
+        // Piece by piece doesn't work: one band over everything that's off.
+        let lo = r.regions.map(\.lo).min() ?? problem.xMin, hi = r.regions.map(\.hi).max() ?? problem.xMax
+        r.regions = [SketchRegion(lo: lo, hi: hi, issue: .missingFeature,
+                                  hint: "The general shape from x = \(problem.xLabel(lo)) to x = \(problem.xLabel(hi)) is off — redraw it (the eye shows the right shape).")]
+        return r
+    }
+
+    /// The drawing with every zone erased and redrawn along its guide.
+    static func fixedAlongGuides(_ strokes: [SketchStroke], _ p: SketchProblem, _ regions: [SketchRegion],
+                                 _ t: SketchTolerance) -> [SketchStroke] {
+        let zones = regions.map { $0.lo...$0.hi }
+        var fixed = strokes
+        for z in zones { fixed = SketchEraser.erase(fixed, xFrom: z.lowerBound, to: z.upperBound) }
+        for z in zones {
+            let g = SketchGuide.continuation(of: strokes, for: p, in: z, flagged: zones, fit: t.normalization)
+            if !g.isEmpty { fixed.append(g) }
+        }
+        return fixed
+    }
+
+    /// At most `maxRegions` corrections: the closest ones are merged rather
+    /// than dropped, so fixing every shown zone fixes everything.
+    static func consolidate(_ r: SketchResult, _ p: SketchProblem) -> SketchResult {
+        var regions = r.regions.sorted { $0.lo < $1.lo }
+        // Overlaps first.
+        var merged: [SketchRegion] = []
+        for reg in regions {
+            if var last = merged.last, reg.lo <= last.hi {
+                last.hi = Swift.max(last.hi, reg.hi)
+                if reg.issue != last.issue { last.issue = .missingFeature }
+                if reg.hint != last.hint { last.hint += " " + reg.hint }
+                merged[merged.count - 1] = last
+            } else {
+                merged.append(reg)
+            }
+        }
+        regions = merged
+        while regions.count > maxRegions {
+            var best = 0
+            for i in 0..<(regions.count - 1) where regions[i + 1].lo - regions[i].hi < regions[best + 1].lo - regions[best].hi { best = i }
+            let a = regions[best], b = regions[best + 1]
+            regions[best] = SketchRegion(lo: a.lo, hi: b.hi, issue: a.issue == b.issue ? a.issue : .missingFeature,
+                                         hint: "Several things are off from x = \(p.xLabel(a.lo)) to x = \(p.xLabel(b.hi)) — redraw this part (the eye shows the right shape).")
+            regions.remove(at: best + 1)
+        }
+        var out = r
+        out.regions = regions
+        return out
+    }
+
+    static func rawCheck(_ strokes: [SketchStroke], for problem: SketchProblem,
+                         tolerance t: SketchTolerance) -> SketchResult {
         let a = problem.xMin, b = problem.xMax, width = b - a
         let n = t.columns
         let half = width / Double(2 * n)
         let xs = (0..<n).map { a + width * (Double($0) + 0.5) / Double(n) }
-        let rawTruth = xs.map { problem.value(at: $0) }
+        let exact = xs.map { problem.value(at: $0) }
+        // Columns where the graph is on screen. Elsewhere (it runs off the
+        // top/bottom near an asymptote, or isn't defined) nothing is
+        // required; both curves are bridged straight across.
+        let viewPad = 0.02 * (problem.yMax - problem.yMin)
+        let visible = exact.map { $0.isFinite && $0 >= problem.yMin - viewPad && $0 <= problem.yMax + viewPad }
+        guard visible.contains(true) else {
+            return SketchResult(passed: false, regions: [SketchRegion(lo: a, hi: b, issue: .notDrawn,
+                                                                     hint: "None of the graph is on screen here — move or zoom the view.")], coverage: 0)
+        }
+        let anyOff = visible.contains(false)
+        let rawTruth = anyOff ? fillGaps(exact.indices.map { visible[$0] ? exact[$0] : nil }) : exact
+        func nearOff(_ i: Int, _ k: Int) -> Bool {
+            anyOff && (Swift.max(0, i - k)...Swift.min(n - 1, i + k)).contains { !visible[$0] }
+        }
+        func column(_ x: Double) -> Int { Swift.max(0, Swift.min(n - 1, Int(((x - a) / width * Double(n)).rounded(.down)))) }
         let fMax = rawTruth.max() ?? 1, fMin = rawTruth.min() ?? 0
         let rawRange = Swift.max(fMax - fMin, 1e-9)
         let absolute = t.normalization == .none
@@ -212,16 +345,17 @@ public enum SketchChecker {
             SketchResult(passed: false, regions: [SketchRegion(lo: a, hi: b, issue: issue, hint: hint)], coverage: 1)
         }
 
-        // 1. The drawing as one y value per column.
-        let sampled = sampleDrawing(strokes, xs: xs, columnWidth: width / Double(n))
+        // 1. The drawing as one y value per column (only where the graph is on screen).
+        let drawn = sampleDrawing(strokes, xs: xs, columnWidth: width / Double(n))
+        let sampled = anyOff ? drawn.indices.map { visible[$0] ? drawn[$0] : nil } : drawn
         let filled = sampled.compactMap { $0 }.count
-        let coverage = Double(filled) / Double(n)
+        let coverage = Double(filled) / Double(visible.filter { $0 }.count)
 
         if coverage < t.minCoverage {
             var regions: [SketchRegion] = []
             var start: Int?
             for i in 0...n {
-                let missing = i < n && sampled[i] == nil
+                let missing = i < n && visible[i] && sampled[i] == nil
                 if missing, start == nil { start = i }
                 if !missing, let s = start {
                     let lo = xs[s] - half, hi = xs[i - 1] + half
@@ -230,7 +364,10 @@ public enum SketchChecker {
                     start = nil
                 }
             }
-            return SketchResult(passed: false, regions: Array(regions.prefix(maxRegions)), coverage: coverage)
+            return SketchResult(passed: false, regions: regions, coverage: coverage)
+        }
+        guard filled >= 2 else {
+            return SketchResult(passed: false, regions: [SketchRegion(lo: a, hi: b, issue: .notDrawn, hint: "Draw the graph across the box.")], coverage: coverage)
         }
         // The drawing is lightly smoothed (finger jitter); the true graph gets
         // the same smoothing so a perfect sketch compares as perfect.
@@ -261,8 +398,35 @@ public enum SketchChecker {
             range = 1
         }
 
+        // Where the graph leaves the box (e.g. at a vertical asymptote), the
+        // drawing must leave it the same way: up at the top, down at the bottom.
+        var exits: [SketchRegion] = []
+        if anyOff {
+            let drawnVals = sampled.compactMap { $0 }
+            let uMin = drawnVals.min() ?? 0, uMax = drawnVals.max() ?? 1
+            for j in 0..<n where visible[j] {
+                for k in [j - 1, j + 1] where k >= 0 && k < n && !visible[k] {
+                    let off = exact[k]
+                    guard !off.isNaN, let u = sampled[j], uMax - uMin > 1e-9 else { continue }
+                    let up = off > problem.yMax
+                    let level = (u - uMin) / (uMax - uMin)
+                    if up ? level < 0.65 : level > 0.35 {
+                        let edge = (xs[j] + xs[k]) / 2
+                        let pole = problem.poles.first { Swift.abs($0 - edge) < 0.08 * width }
+                        let why = pole.map { " (vertical asymptote x = \(lbl($0)))" } ?? ""
+                        exits.append(SketchRegion(lo: Swift.max(a, xs[Swift.min(j, k)] - 4 * half), hi: Swift.min(b, xs[Swift.max(j, k)] + 4 * half),
+                                                  issue: up ? .tooLow : .tooHigh,
+                                                  hint: "Near x = \(lbl(edge)) the graph shoots \(up ? "up out of the top" : "down out of the bottom") of the box\(why) — take your line there."))
+                    }
+                }
+            }
+        }
+
         if t.visual {
-            return visualCheck(user: user, truth: truth, xs: xs, a: a, b: b, half: half, t: t, label: lbl, coverage: coverage)
+            var r = visualCheck(user: user, truth: truth, xs: xs, a: a, b: b, half: half, t: t, label: lbl, coverage: coverage,
+                                visible: visible)
+            if !exits.isEmpty { r.regions += mergeAdjacent(exits, label: lbl); r.passed = false }
+            return r
         }
 
         var features: [SketchRegion] = []   // peaks, dips, zeros
@@ -271,7 +435,9 @@ public enum SketchChecker {
         let shift = t.extremumShift * width
 
         // 3. Peaks and dips: present, at about the right place (and height).
+        // (Turns created by the straight bridge over an off-screen part don't count.)
         let trueExtrema = extrema(xs: xs, ys: truth, range: range, minProminence: t.prominence)
+            .filter { !nearOff(column($0.x), 3) }
         for e in trueExtrema {
             // Search window: wide, but never reaching the neighbouring peak/dip.
             let neighbour = trueExtrema.filter { $0.x != e.x }.map { Swift.abs($0.x - e.x) }.min() ?? .infinity
@@ -320,6 +486,7 @@ public enum SketchChecker {
         // Shape mode: no big extra bumps the graph doesn't have.
         if let extra = t.maxExtraExtrema {
             let userExtrema = extrema(xs: xs, ys: smoothed(user, radius: 3), range: range, minProminence: 0.2)
+                .filter { !nearOff(column($0.x), 4) }
             let unmatched = userExtrema.filter { u in !trueExtrema.contains { $0.isMax == u.isMax && Swift.abs($0.x - u.x) <= 2 * shift } }
             if unmatched.count > extra, let first = unmatched.first {
                 features.append(SketchRegion(lo: first.x - shift, hi: first.x + shift, issue: .missingFeature,
@@ -331,6 +498,7 @@ public enum SketchChecker {
         if t.checkZeros {
             for x0 in zeros(xs: xs, ys: rawTruth, range: rawRange) {
                 if features.contains(where: { x0 >= $0.lo && x0 <= $0.hi }) { continue }
+                if nearOff(column(x0), 1) { continue }
                 let u0 = interpolate(user, xs: xs, at: x0)
                 if Swift.abs(u0) / range > t.zeroError {
                     features.append(SketchRegion(lo: x0 - shift * 0.7, hi: x0 + shift * 0.7, issue: .missingFeature,
@@ -347,6 +515,7 @@ public enum SketchChecker {
             let lo = xs[s0] - half, hi = xs[s1] + half
             defer { s0 = s1 + 1 }
             if features.contains(where: { $0.lo < hi && $0.hi > lo }) { continue }
+            if anyOff, (s0...s1).contains(where: { !visible[$0] }) { continue }
             let trueChange = truth[s1] - truth[s0]
             let userChange = user[s1] - user[s0]
             if Swift.abs(trueChange) >= t.trendThreshold * range && userChange * trueChange <= 0.15 * trueChange * trueChange {
@@ -376,7 +545,7 @@ public enum SketchChecker {
             for (i, isLeft) in [(0, true), (n - 1, false)] {
                 let x = isLeft ? a : b
                 let lo = isLeft ? a : b - endWidth, hi = isLeft ? a + endWidth : b
-                let covered = (features + trends + values).contains { $0.lo < hi && $0.hi > lo }
+                let covered = (features + trends + values).contains { $0.lo < hi && $0.hi > lo } || !visible[i] || nearOff(i, 2)
                 if !covered, Swift.abs(user[i] - truth[i]) / range > t.endpointError {
                     let high = user[i] > truth[i]
                     let hint = absolute
@@ -387,9 +556,9 @@ public enum SketchChecker {
             }
         }
 
-        let all = mergeAdjacent(features, label: lbl) + mergeAdjacent(trends, label: lbl) + mergeAdjacent(values, label: lbl)
-        let shown = Array(all.prefix(maxRegions)).sorted { $0.lo < $1.lo }
-        return SketchResult(passed: all.isEmpty, regions: shown, coverage: coverage)
+        let all = mergeAdjacent(features, label: lbl) + mergeAdjacent(exits, label: lbl)
+            + mergeAdjacent(trends, label: lbl) + mergeAdjacent(values, label: lbl)
+        return SketchResult(passed: all.isEmpty, regions: all.sorted { $0.lo < $1.lo }, coverage: coverage)
     }
 
     /// "Does it look like the graph?" Both curves live in a unit box (x and
@@ -398,7 +567,8 @@ public enum SketchChecker {
     /// is what the eye does: a slightly early hump still looks right, a
     /// missing or extra hump does not.
     static func visualCheck(user: [Double], truth: [Double], xs: [Double], a: Double, b: Double, half: Double,
-                            t: SketchTolerance, label: (Double) -> String, coverage: Double) -> SketchResult {
+                            t: SketchTolerance, label: (Double) -> String, coverage: Double,
+                            visible: [Bool]? = nil) -> SketchResult {
         let n = xs.count
         let aspect = 1.5
         let reach = n / 4                          // only look ±25% sideways
@@ -424,9 +594,10 @@ public enum SketchChecker {
             }
             return best
         }
-        let truthGaps = (0..<n).map { gap($0, from: truth, to: user) }   // parts of the graph you missed
-        let userGaps = (0..<n).map { gap($0, from: user, to: truth) }    // parts you drew that aren't there
-        let mean = (truthGaps.reduce(0, +) + userGaps.reduce(0, +)) / Double(2 * n)
+        let shown = visible ?? Array(repeating: true, count: n)
+        let truthGaps = (0..<n).map { shown[$0] ? gap($0, from: truth, to: user) : 0 }   // parts of the graph you missed
+        let userGaps = (0..<n).map { shown[$0] ? gap($0, from: user, to: truth) : 0 }    // parts you drew that aren't there
+        let mean = (truthGaps.reduce(0, +) + userGaps.reduce(0, +)) / Double(2 * Swift.max(1, shown.filter { $0 }.count))
 
         var regions: [SketchRegion] = []
         var start: Int?
@@ -448,8 +619,7 @@ public enum SketchChecker {
             regions.append(SketchRegion(lo: a, hi: b, issue: .missingFeature,
                                         hint: "The overall shape is off — compare where it rises, falls and turns."))
         }
-        let shown = regions.sorted { ($0.hi - $0.lo) > ($1.hi - $1.lo) }.prefix(maxRegions).sorted { $0.lo < $1.lo }
-        return SketchResult(passed: regions.isEmpty, regions: Array(shown), coverage: coverage)
+        return SketchResult(passed: regions.isEmpty, regions: regions.sorted { $0.lo < $1.lo }, coverage: coverage)
     }
 
     /// Joins neighbouring strips with the same issue into one band and
@@ -691,6 +861,24 @@ public struct SketchFamily: Codable, Hashable, Sendable {
         case cubic3, sinCos, xExp, rational1, quartic, linExp, bump
         case sinSin, quadGauss, sin2cos, powExp, sinExpDecay, quartic3, ratQuad, xSin
         case x2Ln, lnQuad, xPlusInv, expLin, powLn, lnOverPow, sqrtLin, expOverQuad, cubicK, xGauss
+        // With vertical asymptotes.
+        case hyperbola, ratOblique, recipQuad, xOverQuad, tanX
+
+        /// Not periodic, so "draw the whole graph" makes sense.
+        public var allowsWholeDomain: Bool {
+            switch self {
+            case .trigSin, .trigCos, .shiftSin, .sinCos, .sinSin, .sin2cos, .sinExpDecay, .xSin, .tanX, .xPlusInv: false
+            default: true
+            }
+        }
+
+        /// Whole-graph problems that only exist for x > 0.
+        public var positiveDomain: Bool {
+            switch self {
+            case .x2Ln, .powLn, .lnOverPow, .sqrtLin: true
+            default: false
+            }
+        }
     }
     public var kind: Kind
     public var p: [Int]
@@ -705,13 +893,14 @@ public struct SketchFamily: Codable, Hashable, Sendable {
 }
 
 public enum SketchFactory {
-    public static func make(level: Level, seed: UInt64, avoiding: Set<String> = []) -> SketchProblem {
+    public static func make(level: Level, seed: UInt64, avoiding: Set<String> = [], wholeDomain: Bool = false) -> SketchProblem {
         var s = seed
         var anyValid: SketchProblem?
         for _ in 0..<80 {
             var rng = SeededRandom(seed: s)
             for _ in 0..<50 {
-                if let p = candidate(level: level, rng: &rng, seed: s), valid(p) {
+                if var p = candidate(level: level, rng: &rng, seed: s), valid(p) {
+                    if wholeDomain { p = whole(p) }
                     if !avoiding.contains(p.signature) { return p }
                     if anyValid == nil { anyValid = p }
                 }
@@ -720,6 +909,19 @@ public enum SketchFactory {
         }
         // Everything was seen recently: repeat a random one rather than always the same.
         return anyValid ?? testCase(seed: seed)
+    }
+
+    /// "Draw the whole graph" version of a non-periodic problem: the interval
+    /// becomes a slightly wider starting view.
+    public static func whole(_ p: SketchProblem) -> SketchProblem {
+        guard let fam = p.family, fam.kind.allowsWholeDomain else { return p }
+        var q = p
+        let w = p.xMax - p.xMin
+        q.xMin = p.xMin - 0.15 * w
+        q.xMax = p.xMax + 0.15 * w
+        if fam.kind.positiveDomain { q.domainLow = 0; q.xMin = Swift.max(q.xMin, -0.05 * w) }
+        q.wholeDomain = true
+        return q
     }
 
     /// The reference example: sin²(x)·cos(2x) on [−π/4, π/4].
@@ -741,9 +943,14 @@ public enum SketchFactory {
             finish(factor == 1 ? f : .scaled(factor, 1, f), a, b, piBased: isPi, level: level, seed: seed,
                    family: SketchFamily(kind, params, factor: factor))
         }
+        func poled(_ f: Expr, _ a: Double, _ b: Double, _ poles: [Double], pi isPi: Bool = false,
+                   _ kind: SketchFamily.Kind, _ params: [Int]) -> SketchProblem? {
+            finishPoled(factor == 1 ? f : .scaled(factor, 1, f), a, b, poles: poles, piBased: isPi, level: level, seed: seed,
+                        family: SketchFamily(kind, params, factor: factor))
+        }
         switch level {
         case .easy:
-            switch r.int(0...5) {
+            switch r.int(0...7) {
             case 0: // a(x − r1)(x − r2)
                 let r1 = r.int(-4...2), r2 = r1 + r.int(1...5), a = r.pick([1, -1, 2, -2])
                 let f = Expr.scaled(a, 1, .mul(.sum([x, .n(-r1)]), .sum([x, .n(-r2)])))
@@ -766,12 +973,23 @@ public enum SketchFactory {
                 let h = r.int(-3...3), k = r.int(-4...4), a = r.pick([1, -1])
                 return done(.sum([.scaled(a, 1, .p(.sum([x, .n(-h)]), 2)), .n(k)]), Double(h - 3), Double(h + r.int(2...3)),
                             .vertex, [a, h, k])
+            case 6, 7: // a/(x − p) + k: a hyperbola
+                let a = r.pick([1, 2, 3, -1, -2]), p = r.int(-2...2), k = r.int(-2...2)
+                return poled(.sum([.div(.n(a), .sum([x, .n(-p)])), .n(k)]), Double(p - 4), Double(p + 4), [Double(p)], .hyperbola, [a, p, k])
             default: // k + sin(x)
                 let k = r.nonZero(-2...2)
                 return done(.sum([.n(k), .sin(x)]), -pi, pi, pi: true, .shiftSin, [k])
             }
         case .medium:
-            switch r.int(0...6) {
+            switch r.int(0...9) {
+            case 7: // a/(x − p) + k
+                let a = r.pick([1, 2, 3, -1, -2, -3]), p = r.int(-3...3), k = r.int(-3...3)
+                return poled(.sum([.div(.n(a), .sum([x, .n(-p)])), .n(k)]), Double(p - 4), Double(p + 4), [Double(p)], .hyperbola, [a, p, k])
+            case 8: // c/(x² − a²)
+                let a = r.int(1...2), c = r.pick([1, 2, -1, 4])
+                return poled(.div(.n(c), .sum([.p(x, 2), .n(-a * a)])), -Double(a) - 3, Double(a) + 3, [-Double(a), Double(a)], .recipQuad, [a, c])
+            case 9: // tan x
+                return poled(.tan(x), -pi, pi, [-pi / 2, pi / 2], pi: true, .tanX, [])
             case 0: // cubic with three roots
                 var roots = Set<Int>()
                 while roots.count < 3 { roots.insert(r.int(-4...4)) }
@@ -801,7 +1019,13 @@ public enum SketchFactory {
                 return done(.sum([.div(.n(c), .sum([.p(x, 2), 1])), .n(k)]), -3, 3, .bump, [c, k])
             }
         case .hard:
-            switch r.int(0...8) {
+            switch r.int(0...10) {
+            case 9: // x/(x² − a²)
+                let a = r.int(1...3)
+                return poled(.div(x, .sum([.p(x, 2), .n(-a * a)])), -Double(a) - 3, Double(a) + 3, [-Double(a), Double(a)], .xOverQuad, [a])
+            case 10: // c/(x² − a²)
+                let a = r.int(1...3), c = r.pick([1, 3, -2])
+                return poled(.div(.n(c), .sum([.p(x, 2), .n(-a * a)])), -Double(a) - 3, Double(a) + 3, [-Double(a), Double(a)], .recipQuad, [a, c])
             case 7: // sin(x) + sin(kx)/k
                 let k = r.int(2...3)
                 return done(.sum([.sin(x), .div(.sin(lin(k)), .n(k))]), -pi, pi, pi: true, .sinSin, [k])
@@ -829,7 +1053,15 @@ public enum SketchFactory {
                 return done(.mul(x, .sin(x)), -2 * pi, 2 * pi, pi: true, .xSin, [])
             }
         case .bagrut:
-            switch r.int(0...10) {
+            switch r.int(0...13) {
+            case 11, 12: // (x² + a)/(x − p): vertical and oblique asymptote
+                let p = r.int(-2...2)
+                var a = r.pick([-3, -1, 0, 1, 3, 5])
+                if p * p + a == 0 { a += 1 }
+                return poled(.div(.sum([.p(x, 2), .n(a)]), .sum([x, .n(-p)])), Double(p) - 6, Double(p) + 6, [Double(p)], .ratOblique, [a, p])
+            case 13: // x/(x² − a²)
+                let a = r.int(1...3)
+                return poled(.div(x, .sum([.p(x, 2), .n(-a * a)])), -Double(a) - 3, Double(a) + 3, [-Double(a), Double(a)], .xOverQuad, [a])
             case 7: // x² − a·ln x
                 let a = r.int(1...4)
                 return done(.sub(.p(x, 2), .scaled(a, 1, .ln(x))), 0.2, 2.5 + Double(a) * 0.2, .x2Ln, [a])
@@ -881,6 +1113,25 @@ public enum SketchFactory {
         let margin = 0.15 * (hi - lo)
         return SketchProblem(function: f, xMin: a, xMax: b, yMin: lo - margin, yMax: hi + margin,
                              piBased: piBased, level: level, seed: seed, family: family)
+    }
+
+    /// Like `finish`, for functions with vertical asymptotes: the y-range
+    /// comes from the graph away from the poles (plus every turning point),
+    /// so the branches run off the top and bottom of the box.
+    static func finishPoled(_ f: Expr, _ a: Double, _ b: Double, poles: [Double], piBased: Bool, level: Level, seed: UInt64,
+                            family: SketchFamily?) -> SketchProblem? {
+        let w = b - a
+        let keep = 0.12 * w
+        let xs = (0...400).map { a + w * Double($0) / 400 }.filter { x in poles.allSatisfy { Swift.abs(x - $0) > keep } }
+        var ys = xs.map { f.evaluate(at: $0) }.filter(\.isFinite)
+        ys += GraphSteps.roots(of: f.derivative(), in: a...b).map { f.evaluate(at: $0) }.filter(\.isFinite)
+        guard ys.count > 20, var lo = ys.min(), var hi = ys.max() else { return nil }
+        let range = Swift.max(hi - lo, 1e-6)
+        if lo > 0 && lo < 0.4 * range { lo = 0 }
+        if hi < 0 && -hi < 0.4 * range { hi = 0 }
+        let margin = 0.2 * (hi - lo)
+        return SketchProblem(function: f, xMin: a, xMax: b, yMin: lo - margin, yMax: hi + margin,
+                             piBased: piBased, level: level, seed: seed, family: family, asymptotes: poles)
     }
 
     static func valid(_ p: SketchProblem) -> Bool {
@@ -1016,7 +1267,7 @@ public enum ChangeFactory {
         } else {
             base = SketchFactory.candidate(level: baseLevel, rng: &r, seed: seed)
         }
-        guard let base else { return nil }
+        guard let base, base.poles.isEmpty else { return nil }
         // Shifts big enough to see: about half the graph's height (at least 1).
         let fRange = base.yMax - base.yMin
         let step = Swift.max(1, Int((fRange / 1.3 / 2).rounded()))
@@ -1065,14 +1316,56 @@ public enum ChangeFactory {
     }
 }
 
+// MARK: - Whole graph
+
+public extension SketchChecker {
+    /// Whole-graph problems: only what was drawn inside the view is checked,
+    /// and that stretch must include every peak, dip, zero, inflection point
+    /// and vertical asymptote (so zooming into a dull part doesn't pass).
+    static func checkWhole(_ strokes: [SketchStroke], for p: SketchProblem, view: SketchViewport,
+                           mode: SketchMode) -> (result: SketchResult, checked: SketchProblem) {
+        let drawnX = strokes.flatMap { $0 }.filter { $0.x >= view.xMin && $0.x <= view.xMax && $0.y >= view.yMin && $0.y <= view.yMax }.map(\.x)
+        guard let lo = drawnX.min(), let hi = drawnX.max(), hi - lo > 1e-6 * (view.xMax - view.xMin) else {
+            return (SketchResult(passed: false, regions: [SketchRegion(lo: view.xMin, hi: view.xMax, issue: .notDrawn,
+                                                                     hint: "Draw the graph — everything you draw inside the view is checked.")],
+                                 coverage: 0), p.windowed(view))
+        }
+        let checked = p.windowed(SketchViewport(xMin: lo, xMax: hi, yMin: view.yMin, yMax: view.yMax))
+        let margin = 0.02 * (p.xMax - p.xMin)
+        var missing: [SketchRegion] = []
+        for feat in GraphSteps.features(of: p) {
+            let where_ = "x ≈ \(p.xLabel(feat.x))"
+            let zone = (feat.x - 2 * margin)...(feat.x + 2 * margin)
+            if feat.x < view.xMin || feat.x > view.xMax {
+                missing.append(SketchRegion(lo: zone.lowerBound, hi: zone.upperBound, issue: .notDrawn,
+                                            hint: "The graph has a \(feat.name) at \(where_), outside the view — move or zoom out and draw it too."))
+            } else if feat.x < lo + margin || feat.x > hi - margin {
+                missing.append(SketchRegion(lo: zone.lowerBound, hi: zone.upperBound, issue: .notDrawn,
+                                            hint: "Draw further: the graph has a \(feat.name) at \(where_), and your drawing has to include it."))
+            } else if let y = feat.y, y < view.yMin || y > view.yMax {
+                missing.append(SketchRegion(lo: zone.lowerBound, hi: zone.upperBound, issue: .notDrawn,
+                                            hint: "The \(feat.name) at \(where_) is off the screen \(y > view.yMax ? "(above)" : "(below)") — zoom out or move the view so you can draw it."))
+            }
+        }
+        if !missing.isEmpty {
+            return (consolidate(SketchResult(passed: false, regions: missing, coverage: 0), p), checked)
+        }
+        return (check(strokes, for: checked, mode: mode), checked)
+    }
+}
+
 // MARK: - Zone guide
 
 /// "Show the correct graph in this zone", fitted to the user's own drawing:
 /// the true shape, scaled and shifted like the parts they drew, and bent so
 /// it joins their strokes at both edges of the zone — no floating pieces.
 public enum SketchGuide {
+    /// `fit` follows the drawing mode: `.none` (Precision, Standard) keeps the
+    /// true heights, `.scale` (Proportions) takes your vertical scale,
+    /// `.minMax` (Shape) your scale and position.
     public static func continuation(of strokes: [SketchStroke], for p: SketchProblem, in zone: ClosedRange<Double>,
-                                    flagged: [ClosedRange<Double>] = []) -> SketchStroke {
+                                    flagged: [ClosedRange<Double>] = [],
+                                    fit: SketchTolerance.Normalization = .minMax) -> SketchStroke {
         let a = p.xMin, b = p.xMax, w = b - a
         let n = 120
         let colW = w / Double(n)
@@ -1090,7 +1383,12 @@ public enum SketchGuide {
             if fv.isFinite { pairs.append((fv, u)) }
         }
         var alpha = 1.0, beta = 0.0
-        if pairs.count >= 6 {
+        if fit == .none {
+            // True heights; only the joins at the edges follow the drawing.
+        } else if fit == .scale {
+            let num = pairs.reduce(0) { $0 + $1.f * $1.u }, den = pairs.reduce(0) { $0 + $1.f * $1.f }
+            if pairs.count >= 6, den > 1e-12, (0.25...4).contains(num / den) { alpha = num / den }
+        } else if pairs.count >= 6 {
             let fm = pairs.reduce(0) { $0 + $1.f } / Double(pairs.count)
             let um = pairs.reduce(0) { $0 + $1.u } / Double(pairs.count)
             let cov = pairs.reduce(0) { $0 + ($1.f - fm) * ($1.u - um) }
@@ -1101,6 +1399,7 @@ public enum SketchGuide {
         } else if !pairs.isEmpty {
             beta = pairs.reduce(0) { $0 + ($1.u - $1.f) } / Double(pairs.count)
         }
+        let view = (p.yMax - p.yMin)
         func fitted(_ x: Double) -> Double { alpha * p.value(at: x) + beta }
 
         // Where the drawing meets the zone edges (searching outwards a little).
@@ -1135,7 +1434,7 @@ public enum SketchGuide {
         return (0...100).compactMap { i in
             let x = lo + (hi - lo) * Double(i) / 100
             let y = fitted(x) + correction(x)
-            return y.isFinite ? SketchPoint(x: x, y: y) : nil
+            return y.isFinite && y > p.yMin - view && y < p.yMax + view ? SketchPoint(x: x, y: y) : nil
         }
     }
 }
