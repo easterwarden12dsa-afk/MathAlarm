@@ -521,6 +521,7 @@ public enum GraphSteps {
         case .mirror:
             return "mirror it in the y-axis: same height, x on the other side"
         case .reciprocal:
+            if onAxis { return "f is 0 here, so x = \(c.base.xLabel(k.x)) is a vertical asymptote of g — next to it g shoots to ±∞ on the side where f is ±" }
             if near1 { return "stays put — at height \(y > 0 ? "1" : "−1"), 1/f = f" }
             return Swift.abs(y) > 1 ? "same x; it's further than 1 from the axis, so 1/f is closer than 1 (between 0 and \(y > 0 ? "1" : "−1"))"
                                     : "same x; it's closer than 1 to the axis, so 1/f is further than 1 (beyond \(y > 0 ? "1" : "−1"))"
@@ -536,6 +537,26 @@ public enum GraphSteps {
         case .squareRoot:
             if near1 { return "stays at height 1" }
             return y > 1 ? "same x, lower but still above 1 (√ pulls towards 1)" : "same x, higher but still below 1 (√ pulls towards 1)"
+        case .antiderivative(let x0, let y0):
+            let f = c.base.function, h = 1e-4 * (c.base.xMax - c.base.xMin)
+            if k.kinds.contains(.leftEnd) { return "g starts at the given point (\(x0), \(y0)) and \(f.evaluate(at: k.x + h) > 0 ? "rises" : "falls") from there (f is \(f.evaluate(at: k.x + h) > 0 ? "positive" : "negative"))" }
+            if k.kinds.contains(.zero) {
+                let l = f.evaluate(at: k.x - h), r = f.evaluate(at: k.x + h)
+                if l > 0 && r < 0 { return "f changes from + to −, so g has a maximum at this x" }
+                if l < 0 && r > 0 { return "f changes from − to +, so g has a minimum at this x" }
+                return "f touches 0 without changing sign: g is flat for a moment but keeps going"
+            }
+            if k.kinds.contains(.peak) || k.kinds.contains(.dip) { return "f \(k.kinds.contains(.peak) ? "peaks" : "dips") here, so g is steepest here — an inflection point of g" }
+            return "g \(f.evaluate(at: k.x - h) > 0 ? "rises" : "falls") into this end (f is \(f.evaluate(at: k.x - h) > 0 ? "positive" : "negative") there)"
+        case .lnOf:
+            if near1 { return "on the x-axis: ln 1 = 0" }
+            return y > 1 ? "same x, above the x-axis but much lower (ln shrinks big heights)" : "same x, below the x-axis (ln of a number between 0 and 1 is negative)"
+        case .expOf:
+            if onAxis { return "at height 1 (e⁰ = 1)" }
+            return y > 0 ? "same x, above 1 (and higher the higher A is)" : "same x, between 0 and 1"
+        case .absX:
+            if Swift.abs(k.x) < 1e-9 { return "stays — g is symmetric about the y-axis" }
+            return k.x > 0 ? "stays (for x ≥ 0, g = f), and is copied to −x as its mirror image" : "dropped: for x < 0, g copies the right half instead"
         case .derivative:
             if k.kinds.contains(.peak) || k.kinds.contains(.dip) { return "on the x-axis — f is flat there, its slope is 0" }
             let slope = c.base.function.derivative().evaluate(at: k.x)
@@ -568,6 +589,12 @@ public enum GraphSteps {
             return " — f read from right to left"
         case .derivative:
             return rises ? " — f bends up (∪) there, so its slope grows" : " — f bends down (∩) there, so its slope shrinks"
+        case .antiderivative:
+            return f.value(at: mid) > 0 ? " — f is above the x-axis there" : " — f is below the x-axis there"
+        case .lnOf, .expOf:
+            return " — like f (the rule keeps the order of heights)"
+        case .absX:
+            return mid < 0 ? " — the mirror image of the right half" : " — exactly like f"
         }
     }
 
@@ -596,7 +623,9 @@ public enum GraphSteps {
                     "The picture is reversed left to right; heights don't change."]
         case .reciprocal:
             return ["Same x, height 1 ÷ (height of f). The sign stays the same.",
-                    "f never reaches 0 on this interval, so g has no vertical asymptote here.",
+                    c.target.poles.isEmpty
+                        ? "f never reaches 0 on this interval, so g has no vertical asymptote here."
+                        : "Where f = 0, 1/f is undefined: every zero of f is a vertical asymptote of g, with g on the same side (+ or −) as f.",
                     "Big becomes small and small becomes big: a peak of f becomes a dip of g, and a dip becomes a peak.",
                     "Where f is at height 1 (or −1), g is there too — the graphs meet."]
         case .square:
@@ -610,6 +639,23 @@ public enum GraphSteps {
         case .squareRoot:
             return ["Same x, height √(height of f) — f is never negative here.",
                     "√ keeps the order (g rises where f rises) but pulls every height towards 1."]
+        case .antiderivative:
+            return ["g′ = f: where f is above the x-axis g rises, where f is below it g falls.",
+                    "Where f crosses the x-axis g turns: a maximum if f goes from + to −, a minimum if from − to +.",
+                    "Where f has a peak or a dip, g is steepest: an inflection point of g.",
+                    "Start at the given point and follow these rules from left to right."]
+        case .lnOf:
+            return ["Same x, height ln(height of f); f > 0 here, so g is defined everywhere.",
+                    "ln keeps the order: peaks stay peaks, dips stay dips, at the same x.",
+                    "Where f = 1, g = 0; where f is below 1, g is negative."]
+        case .expOf:
+            return ["Same x, height e^(height of f): g is always positive.",
+                    "e^ keeps the order: peaks stay peaks, dips stay dips, at the same x.",
+                    "Where f = 0, g = 1; where f is negative, g is between 0 and 1."]
+        case .absX:
+            return ["g(x) = f(|x|): for x ≥ 0 g is exactly f.",
+                    "For x < 0, g repeats the right half mirrored, so g is symmetric about the y-axis.",
+                    "Whatever f does left of the y-axis doesn't matter."]
         case .derivative:
             return ["g = f′ is the slope of f at each x.",
                     "Where f rises g is above the x-axis, where f falls g is below it.",

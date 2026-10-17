@@ -55,7 +55,7 @@ final class AsymptoteWholeTests: XCTestCase {
                 }
             }
         }
-        XCTAssertEqual(kinds, [.hyperbola, .ratOblique, .recipQuad, .xOverQuad, .tanX])
+        XCTAssertTrue(kinds.isSuperset(of: [.hyperbola, .ratOblique, .recipQuad, .xOverQuad, .tanX, .cosOverSin, .expOverLin, .ratTwoPoles]), "\(kinds)")
     }
 
     /// Every correction shown can be fixed in its zone: redrawing the zones
@@ -111,6 +111,27 @@ final class AsymptoteWholeTests: XCTestCase {
         // Steps talk about the ends.
         let text = GraphSteps.steps(for: q).map(\.text).joined(separator: "\n")
         XCTAssertTrue(text.contains("horizontal asymptote"), text)
+    }
+
+    func testBagrutChangeKinds() {
+        var seen = Set<String>()
+        for seed in UInt64(1)...UInt64(120) {
+            let c = ChangeFactory.make(level: .bagrut, seed: seed &* 9_973)
+            switch c.transform {
+            case .antiderivative: seen.insert("anti")
+                // g′ = f really holds.
+                let x = (c.base.xMin + c.base.xMax) / 2
+                XCTAssertEqual(NumericDerivative.at(x, of: c.target.function), c.base.value(at: x), accuracy: 1e-4)
+            case .reciprocal where !c.target.poles.isEmpty: seen.insert("poles")
+            case .lnOf: seen.insert("ln")
+            case .expOf: seen.insert("exp")
+            case .absX: seen.insert("absX")
+            default: break
+            }
+            XCTAssertGreaterThan(GraphSteps.steps(for: c, formulaVisible: false).count, 6)
+            XCTAssertFalse(GraphSteps.markers(for: c).isEmpty)
+        }
+        XCTAssertTrue(seen.isSuperset(of: ["anti", "poles", "ln", "exp", "absX"]), "\(seen)")
     }
 
     func testRootsIgnorePoles() {

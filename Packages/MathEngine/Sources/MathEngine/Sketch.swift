@@ -1203,6 +1203,10 @@ public enum GraphTransform: Codable, Hashable, Sendable {
     case reciprocalSquare    // 1/f(x)²
     case squareRoot          // √f(x)
     case derivative          // f′(x)
+    case antiderivative(x0: String, y0: String)   // g′ = f, g(x0) = y0
+    case lnOf                // ln f(x)
+    case expOf               // e^f(x)
+    case absX                // f(|x|)
 
     public func apply(_ f: Expr) -> Expr {
         switch self {
@@ -1217,6 +1221,10 @@ public enum GraphTransform: Codable, Hashable, Sendable {
         case .reciprocalSquare: return .div(1, .p(f, 2))
         case .squareRoot: return .sqrt(f)
         case .derivative: return f.derivative()
+        case .antiderivative: return f   // built from the original function instead (see ChangeFactory)
+        case .lnOf: return .ln(f)
+        case .expOf: return .exp(f)
+        case .absX: return f.substitutingX(with: .abs(.x))
         }
     }
 
@@ -1235,6 +1243,10 @@ public enum GraphTransform: Codable, Hashable, Sendable {
         case .reciprocalSquare: return "g(x) = 1 / f(x)²"
         case .squareRoot: return "g(x) = √f(x)"
         case .derivative: return "g(x) = f′(x)  (the derivative)"
+        case .antiderivative(let x0, let y0): return "g′(x) = f(x),  g(\(x0)) = \(y0)"
+        case .lnOf: return "g(x) = ln f(x)"
+        case .expOf: return "g(x) = e^f(x)"
+        case .absX: return "g(x) = f(|x|)"
         }
     }
 }
@@ -1299,15 +1311,53 @@ public enum ChangeFactory {
 
     static func candidate(level: Level, rng r: inout SeededRandom, seed: UInt64) -> ChangeProblem? {
         enum Kind { case shift, negate, scaleUp, scaleDown, absolute, mirror, negateShift, scaleNeg, square,
-                    reciprocal, derivative, squareRoot, reciprocalSquare }
+                    reciprocal, derivative, squareRoot, reciprocalSquare, antiderivative, reciprocalPoles, lnOf, expOf, absX }
         let kinds: [Kind]
         switch level {
         case .easy: kinds = [.shift, .negate, .scaleUp, .scaleDown]
         case .medium: kinds = [.absolute, .mirror, .negateShift, .scaleNeg, .square]
         case .hard: kinds = [.reciprocal, .square, .derivative, .absolute, .squareRoot]
-        case .bagrut: kinds = [.reciprocalSquare, .derivative, .reciprocal, .squareRoot]
+        case .bagrut: kinds = [.antiderivative, .antiderivative, .reciprocalPoles, .reciprocalPoles, .lnOf, .expOf, .absX,
+                               .derivative, .reciprocalSquare]
         }
         let kind = r.pick(kinds)
+        // Bagrut-only kinds build their own base.
+        switch kind {
+        case .antiderivative:
+            // Given the graph of f = F′, draw F through a given point.
+            var rr = r
+            guard let F = SketchFactory.candidate(level: r.bool() ? .hard : .medium, rng: &rr, seed: seed), F.poles.isEmpty,
+                  let base = SketchFactory.finish(F.function.derivative(), F.xMin, F.xMax, piBased: F.piBased, level: level, seed: seed)
+            else { return nil }
+            r = rr
+            let y0 = F.value(at: F.xMin)
+            let y0Text = Swift.abs(y0 - (y0 * 100).rounded() / 100) < 1e-9 ? SketchFormat.number(y0) : String(format: "%.2f", y0).replacingOccurrences(of: "-", with: "−")
+            return build(base: base, transform: .antiderivative(x0: F.xLabel(F.xMin), y0: y0Text), level: level, seed: seed,
+                         target: F.function)
+        case .reciprocalPoles:
+            // 1/f where f crosses the x-axis: vertical asymptotes at f's zeros.
+            guard let base = SketchFactory.candidate(level: .medium, rng: &r, seed: seed), base.poles.isEmpty else { return nil }
+            let w = base.xMax - base.xMin
+            let zeros = GraphSteps.roots(of: base.function, in: base.xMin...base.xMax)
+            guard !zeros.isEmpty, zeros.allSatisfy({ z in
+                z - base.xMin > 0.1 * w && base.xMax - z > 0.1 * w
+                    && Swift.abs(base.function.derivative().evaluate(at: z)) > 1e-3
+            }) else { return nil }
+            return build(base: base, transform: .reciprocal, level: level, seed: seed, poles: zeros)
+        case .lnOf:
+            guard let base = positiveBase(&r, level: level, seed: seed) else { return nil }
+            return build(base: base, transform: .lnOf, level: level, seed: seed)
+        case .expOf:
+            guard let base = SketchFactory.candidate(level: .easy, rng: &r, seed: seed), base.poles.isEmpty,
+                  base.yMax - base.yMin < 6 else { return nil }
+            return build(base: base, transform: .expOf, level: level, seed: seed)
+        case .absX:
+            guard let base = SketchFactory.candidate(level: .medium, rng: &r, seed: seed), base.poles.isEmpty,
+                  Swift.abs(base.xMin + base.xMax) < 1e-9 else { return nil }
+            return build(base: base, transform: .absX, level: level, seed: seed)
+        default:
+            break
+        }
         let needsPositive = [.reciprocal, .reciprocalSquare, .squareRoot].contains(kind)
         let baseLevel: Level = level == .easy ? .easy : .medium
         let base: SketchProblem?
@@ -1336,6 +1386,7 @@ public enum ChangeFactory {
         case .derivative: transform = .derivative
         case .squareRoot: transform = .squareRoot
         case .reciprocalSquare: transform = .reciprocalSquare
+        case .antiderivative, .reciprocalPoles, .lnOf, .expOf, .absX: return nil
         }
         // |f| only makes sense if f goes negative; f(−x) needs a symmetric interval.
         if case .absolute = transform {
@@ -1347,15 +1398,20 @@ public enum ChangeFactory {
         return build(base: base, transform: transform, level: level, seed: seed)
     }
 
-    static func build(base: SketchProblem, transform: GraphTransform, level: Level, seed: UInt64) -> ChangeProblem? {
-        let g = transform.apply(base.function)
-        guard var target = SketchFactory.finish(g, base.xMin, base.xMax, piBased: base.piBased, level: level, seed: seed) else { return nil }
+    static func build(base: SketchProblem, transform: GraphTransform, level: Level, seed: UInt64,
+                      target targetFunction: Expr? = nil, poles: [Double] = []) -> ChangeProblem? {
+        let g = targetFunction ?? transform.apply(base.function)
+        let made = poles.isEmpty
+            ? SketchFactory.finish(g, base.xMin, base.xMax, piBased: base.piBased, level: level, seed: seed)
+            : SketchFactory.finishPoled(g, base.xMin, base.xMax, poles: poles, piBased: base.piBased, level: level, seed: seed, family: nil)
+        guard var target = made else { return nil }
         // Reject transforms that barely change the graph (e.g. f(−x) for an
         // even f, or |f| where f is hardly negative): drawing f must not pass.
         let xs = (0...60).map { base.xMin + (base.xMax - base.xMin) * Double($0) / 60 }
         let gRange = target.yMax - target.yMin
         let fRange = base.yMax - base.yMin
-        let meanDiff = xs.reduce(0) { $0 + Swift.abs(g.evaluate(at: $1) - base.value(at: $1)) } / Double(xs.count)
+        let diffs = xs.map { Swift.abs(g.evaluate(at: $0) - base.value(at: $0)) }.filter(\.isFinite)
+        let meanDiff = diffs.reduce(0, +) / Double(Swift.max(1, diffs.count))
         guard meanDiff > 0.3 * Swift.max(gRange, fRange) / 1.3 else { return nil }
         // Don't let one graph dwarf the other on the shared canvas.
         guard gRange < 12 * fRange, fRange < 12 * gRange else { return nil }
