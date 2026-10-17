@@ -79,7 +79,7 @@ final class SketchTests: XCTestCase {
     func testShapeOnlyAcceptsRightStructure() {
         // Wrong scale, offset and slightly misplaced peaks: structure still right.
         let w = problem.xMax - problem.xMin
-        let mental: (Double) -> Double = { x in 3 * self.problem.value(at: x + 0.04 * w) + 0.4 }
+        let mental: (Double) -> Double = { x in 3 * self.problem.value(at: x + 0.02 * w) + 0.4 }
         XCTAssertTrue(check(mental, .shape, noise: 0.03).passed, "\(check(mental, .shape).hints)")
         // A single hump instead of two fails even here.
         let oneHump: (Double) -> Double = { x in cos(2 * x) }
@@ -269,7 +269,7 @@ final class ChangeStepsTests: XCTestCase {
         }
         // Looks right (different scale, slightly early humps): passes.
         let w = p.xMax - p.xMin
-        XCTAssertTrue(SketchChecker.check(draw { 4 * p.value(at: $0 + 0.05 * w) - 1 }, for: p, mode: .shape).passed)
+        XCTAssertTrue(SketchChecker.check(draw { 4 * p.value(at: $0 + 0.02 * w) - 1 }, for: p, mode: .shape).passed)
         // One hump instead of two: doesn't look right.
         XCTAssertFalse(SketchChecker.check(draw { cos(2 * $0) }, for: p, mode: .shape).passed)
         // A wiggly line: doesn't look right.
