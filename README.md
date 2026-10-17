@@ -52,10 +52,16 @@ Free-Apple-ID installs stop opening **7 days** after installing.
 **Tabs:** Alarms · Timer · Practice · Settings.
 
 - **Alarms:** one-time (date and time), every day, or chosen weekdays each
-  with its own time. Each alarm has its own sound, challenge (Integral,
-  Derivative, Graph Sketch or Random) and difficulty (Easy, Medium, Hard, or
-  **Bagrut 5U**, which uses only the 5-unit syllabus). "Ring in 10 seconds"
-  tests the whole flow.
+  with its own time. Each alarm has its own sound, difficulty (Easy, Medium,
+  Hard, or **Bagrut 5U**, which uses only the 5-unit syllabus) and challenge:
+  - **Integral**, **Derivative**: type the answer on the math keypad.
+  - **Graph Sketch**: draw the graph of a function.
+  - **Change**: you're given f (as a graph, a formula or both; see Settings)
+    and draw a related graph, e.g. f(x) + 2, |f(x)|, f(−x), 1/f(x)², f′(x).
+  - **Random**: per alarm, pick which of the four types it mixes, each at its
+    own difficulty.
+
+  "Ring in 10 seconds" tests the whole flow.
 - **Timer:** countdown with a live Lock Screen / Dynamic Island display and
   Pause/Resume. At zero it rings exactly like an alarm.
 - **Practice:** every challenge without an alarm, with full step-by-step
@@ -120,11 +126,22 @@ copy-protected and can't be used.
   - **Domain rule:** points are taken only from the interval shown with the
     problem (if one is shown). On that interval ln(u) and ln|u| give the
     same values, so both are accepted.
+- **Drawing modes** (Graph Sketch and Change; Settings, or per session in
+  Practice):
+  - **Precision**: like pen and paper; positions *and* heights of peaks, dips,
+    zeros and ends must be close.
+  - **Standard**: the same checks with more room for error.
+  - **Proportions**: any vertical scale; your sketch is first stretched to fit
+    best, then heights are judged relative to each other and to the x-axis.
+  - **Shape only**: the rough structure you'd picture in your head; where it
+    rises, falls and turns. No values.
+  - Drawing tools: **Draw** and **Erase**. Erase rubs out only the part under
+    your finger, splitting a stroke if needed. **Undo** also undoes erasing
+    and Clear.
 - **Graph Sketch.** The drawing becomes y(x) in 80 columns.
   - It is judged in 8 strips (mean error ÷ the function's range), at both
     ends, at every zero, and at every peak or dip (position and shape).
-  - Thresholds live in `SketchTolerance`, with relaxed / moderate / strict
-    presets.
+  - Thresholds live in `SketchTolerance`, one preset per drawing mode.
   - Failing strips are shaded red with hints such as "Too high in the red
     band" or "Missing the dip near x = 0". The correct curve is never shown
     during an alarm.
