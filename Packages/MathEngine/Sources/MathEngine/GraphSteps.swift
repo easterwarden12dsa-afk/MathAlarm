@@ -493,7 +493,11 @@ public enum GraphSteps {
             let rises = gr > gl
             steps.append(SolutionStep("\(l.letter) to \(r.letter): g \(rises ? "rises" : "falls")\(joinReason(c, from: l.src, to: r.src, rises: rises))", depth: 1))
         }
-        steps.append(SolutionStep("Keep the curve smooth between the points and copy how f bends. There's no need to find g's exact inflection points — the shape between the marked points is enough."))
+        if case .antiderivative = c.transform {
+            steps.append(SolutionStep("Between the points g bends up (∪) where f rises and down (∩) where f falls. There's no need for exact heights beyond the given starting point — the shape between the marked points is enough."))
+        } else {
+            steps.append(SolutionStep("Keep the curve smooth between the points and copy how f bends. There's no need to find g's exact inflection points — the shape between the marked points is enough."))
+        }
 
         if formulaVisible {
             steps.append(.heading("Check with the formula"))
