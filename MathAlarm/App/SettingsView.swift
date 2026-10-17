@@ -13,13 +13,37 @@ struct SettingsView: View {
                     Stepper(value: $settings.problemsPerRing, in: 1...3) {
                         LabeledContent("Problems per ring", value: "\(settings.problemsPerRing)")
                     }
-                    Picker("Graph Sketch strictness", selection: $settings.sketchStrictness) {
-                        ForEach(AppSettings.Strictness.allCases) { Text($0.title).tag($0) }
+                    Picker("Change shows f as", selection: $settings.changeDisplay) {
+                        ForEach(AppSettings.ChangeDisplay.allCases) { Text($0.title).tag($0) }
                     }
                 } header: {
                     Text("Challenges")
                 } footer: {
                     Text("More problems per ring means you have to solve several in a row before the alarm stops. Surrender still works at any time.")
+                }
+
+                Section {
+                    ForEach(SketchMode.allCases) { mode in
+                        Button {
+                            Haptics.tap()
+                            settings.sketchMode = mode
+                        } label: {
+                            HStack(alignment: .top) {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(mode.title).font(.headline).foregroundStyle(.primary)
+                                    Text(mode.summary).font(.footnote).foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                if settings.sketchMode == mode {
+                                    Image(systemName: "checkmark").foregroundStyle(.orange).fontWeight(.bold)
+                                }
+                            }
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                    }
+                } header: {
+                    Text("Drawing mode (Graph Sketch and Change)")
                 }
 
                 Section {
@@ -88,7 +112,7 @@ struct SettingsView: View {
                     Text("""
                     Integrals and derivatives: your expression is compared with the correct one at 40 random points, so any equivalent form passes, simplified or not, with or without + C. Points are only taken from the interval shown with the problem (if any); there ln x and ln|x| agree, so both are accepted.
 
-                    Graph Sketch: your drawing is compared with the true graph in 8 strips, at the ends, at zeros and at every peak and dip. "Strictness" sets how close it has to be.
+                    Graph Sketch and Change: your drawing is compared with the true graph in 8 strips, at the ends, at zeros and at every peak and dip. The drawing mode decides how much has to match: Precision and Standard check values, Proportions allows any vertical scale, Shape only checks rises, falls and turns.
                     """)
                     .font(.footnote)
                 }

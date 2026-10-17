@@ -1,18 +1,32 @@
 import SwiftUI
 import MathEngine
 
-/// Drawing canvas with labelled axes for the Graph Sketch challenge.
+enum SketchTool: String, CaseIterable, Identifiable {
+    case draw, erase
+    var id: String { rawValue }
+}
+
+/// Drawing canvas with labelled axes for Graph Sketch and Change.
 /// Strokes are stored in function coordinates (x, y), not screen points.
 struct SketchCanvas: View {
     let problem: SketchProblem
     @Binding var strokes: [SketchStroke]
+    var tool: SketchTool = .draw
     var regions: [SketchRegion] = []
     /// Practice only: draw the true graph (never during an alarm).
     var revealTruth = false
+    /// Change challenge: the given graph f, drawn faintly behind.
+    var reference: SketchProblem? = nil
+    var showYScale = true
+    /// Called before each drawing/erasing gesture changes the strokes (for Undo).
+    var willChange: () -> Void = {}
 
     @State private var current: SketchStroke = []
+    @State private var eraserAt: CGPoint?
+    @State private var gestureActive = false
 
     private let insets = EdgeInsets(top: 12, leading: 46, bottom: 30, trailing: 14)
+    private let eraserRadius: CGFloat = 22
 
     var body: some View {
         GeometryReader { geo in
@@ -24,8 +38,15 @@ struct SketchCanvas: View {
                 Canvas { ctx, _ in
                     drawAxes(ctx, map)
                     for r in regions { drawRegion(ctx, map, r) }
-                    if revealTruth { drawTruth(ctx, map) }
+                    if let reference { drawCurve(ctx, map, reference, color: .white.opacity(0.45), dash: [], width: 2.5) }
+                    if revealTruth { drawCurve(ctx, map, problem, color: .green.opacity(0.85), dash: [6, 4], width: 2.5) }
                     for s in strokes + [current] { drawStroke(ctx, map, s) }
+                    if let eraserAt {
+                        let circle = Path(ellipseIn: CGRect(x: eraserAt.x - eraserRadius, y: eraserAt.y - eraserRadius,
+                                                            width: 2 * eraserRadius, height: 2 * eraserRadius))
+                        ctx.fill(circle, with: .color(.white.opacity(0.12)))
+                        ctx.stroke(circle, with: .color(.white.opacity(0.8)), lineWidth: 1.5)
+                    }
                 }
                 labels(map)
                 regionBadges(map)
@@ -34,11 +55,25 @@ struct SketchCanvas: View {
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
-                        current.append(map.point(value.location))
+                        if !gestureActive {
+                            gestureActive = true
+                            willChange()
+                        }
+                        switch tool {
+                        case .draw:
+                            current.append(map.point(value.location))
+                        case .erase:
+                            eraserAt = value.location
+                            let rx = Double(eraserRadius / plot.width) * (problem.xMax - problem.xMin)
+                            let ry = Double(eraserRadius / plot.height) * (problem.yMax - problem.yMin)
+                            strokes = SketchEraser.erase(strokes, around: map.point(value.location), rx: rx, ry: ry)
+                        }
                     }
                     .onEnded { _ in
+                        gestureActive = false
                         if !current.isEmpty { strokes.append(current) }
                         current = []
+                        eraserAt = nil
                     }
             )
         }
@@ -71,13 +106,13 @@ struct SketchCanvas: View {
             let x = m.plot.minX + m.plot.width * CGFloat(i) / 8
             ctx.stroke(Path { $0.move(to: CGPoint(x: x, y: m.plot.minY)); $0.addLine(to: CGPoint(x: x, y: m.plot.maxY)) }, with: .color(grid))
         }
-        for t in yTicks {
-            let y = m.screen(problem.xMin, t).y
-            ctx.stroke(Path { $0.move(to: CGPoint(x: m.plot.minX, y: y)); $0.addLine(to: CGPoint(x: m.plot.maxX, y: y)) }, with: .color(grid))
+        if showYScale {
+            for t in yTicks {
+                let y = m.screen(problem.xMin, t).y
+                ctx.stroke(Path { $0.move(to: CGPoint(x: m.plot.minX, y: y)); $0.addLine(to: CGPoint(x: m.plot.maxX, y: y)) }, with: .color(grid))
+            }
         }
-        // Frame
         ctx.stroke(Path(m.plot), with: .color(.white.opacity(0.25)), lineWidth: 1)
-        // x-axis (y = 0) and y-axis (x = 0) when visible
         if problem.yMin < 0 && problem.yMax > 0 {
             let y = m.screen(0, 0).y
             ctx.stroke(Path { $0.move(to: CGPoint(x: m.plot.minX, y: y)); $0.addLine(to: CGPoint(x: m.plot.maxX, y: y)) },
@@ -88,16 +123,17 @@ struct SketchCanvas: View {
             ctx.stroke(Path { $0.move(to: CGPoint(x: x, y: m.plot.minY)); $0.addLine(to: CGPoint(x: x, y: m.plot.maxY)) },
                        with: .color(.white.opacity(0.75)), lineWidth: 1.5)
         }
-        // Tick marks at the interval ends (and 0)
         for x in xTicks {
             let p = m.screen(x, problem.yMin)
             ctx.stroke(Path { $0.move(to: CGPoint(x: p.x, y: m.plot.maxY)); $0.addLine(to: CGPoint(x: p.x, y: m.plot.maxY + 6)) },
                        with: .color(.white), lineWidth: 2)
         }
-        for t in yTicks {
-            let y = m.screen(problem.xMin, t).y
-            ctx.stroke(Path { $0.move(to: CGPoint(x: m.plot.minX - 6, y: y)); $0.addLine(to: CGPoint(x: m.plot.minX, y: y)) },
-                       with: .color(.white), lineWidth: 2)
+        if showYScale {
+            for t in yTicks {
+                let y = m.screen(problem.xMin, t).y
+                ctx.stroke(Path { $0.move(to: CGPoint(x: m.plot.minX - 6, y: y)); $0.addLine(to: CGPoint(x: m.plot.minX, y: y)) },
+                           with: .color(.white), lineWidth: 2)
+            }
         }
     }
 
@@ -112,6 +148,28 @@ struct SketchCanvas: View {
         let color = SketchRegionStyle.color(r.issue)
         ctx.fill(Path(rect), with: .color(color.opacity(0.2)))
         ctx.stroke(Path(rect), with: .color(color.opacity(0.75)), style: StrokeStyle(lineWidth: 1.5, dash: [5, 3]))
+    }
+
+    private func drawStroke(_ ctx: GraphicsContext, _ m: Mapping, _ s: SketchStroke) {
+        guard let first = s.first else { return }
+        var path = Path()
+        path.move(to: m.screen(first.x, first.y))
+        for p in s.dropFirst() { path.addLine(to: m.screen(p.x, p.y)) }
+        if s.count == 1 { path.addEllipse(in: CGRect(origin: m.screen(first.x, first.y), size: .zero).insetBy(dx: -2, dy: -2)) }
+        ctx.stroke(path, with: .color(.orange), style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
+    }
+
+    private func drawCurve(_ ctx: GraphicsContext, _ m: Mapping, _ p: SketchProblem, color: Color, dash: [CGFloat], width: CGFloat) {
+        var path = Path()
+        var started = false
+        for i in 0...240 {
+            let x = p.xMin + (p.xMax - p.xMin) * Double(i) / 240
+            let y = p.value(at: x)
+            guard y.isFinite else { started = false; continue }
+            let pt = m.screen(x, y)
+            if started { path.addLine(to: pt) } else { path.move(to: pt); started = true }
+        }
+        ctx.stroke(path, with: .color(color), style: StrokeStyle(lineWidth: width, lineCap: .round, dash: dash))
     }
 
     /// Number badge + arrow in each band, matching the numbered hint list.
@@ -133,25 +191,6 @@ struct SketchCanvas: View {
             }
         }
         .allowsHitTesting(false)
-    }
-
-    private func drawStroke(_ ctx: GraphicsContext, _ m: Mapping, _ s: SketchStroke) {
-        guard let first = s.first else { return }
-        var path = Path()
-        path.move(to: m.screen(first.x, first.y))
-        for p in s.dropFirst() { path.addLine(to: m.screen(p.x, p.y)) }
-        if s.count == 1 { path.addEllipse(in: CGRect(origin: m.screen(first.x, first.y), size: .zero).insetBy(dx: -2, dy: -2)) }
-        ctx.stroke(path, with: .color(.orange), style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
-    }
-
-    private func drawTruth(_ ctx: GraphicsContext, _ m: Mapping) {
-        var path = Path()
-        for i in 0...200 {
-            let x = problem.xMin + (problem.xMax - problem.xMin) * Double(i) / 200
-            let p = m.screen(x, problem.value(at: x))
-            if i == 0 { path.move(to: p) } else { path.addLine(to: p) }
-        }
-        ctx.stroke(path, with: .color(.green.opacity(0.85)), style: StrokeStyle(lineWidth: 2.5, dash: [6, 4]))
     }
 
     // MARK: Labels
@@ -184,107 +223,83 @@ struct SketchCanvas: View {
                     .fixedSize()
                     .position(x: m.screen(x, 0).x, y: m.plot.maxY + 18)
             }
-            ForEach(yTicks, id: \.self) { y in
-                Text(SketchFormat.number(y))
+            if showYScale {
+                ForEach(yTicks, id: \.self) { y in
+                    Text(SketchFormat.number(y))
+                        .font(.caption2)
+                        .foregroundStyle(.white.opacity(0.8))
+                        .fixedSize()
+                        .position(x: m.plot.minX - 24, y: m.screen(0, y).y)
+                }
+            } else if problem.yMin < 0 && problem.yMax > 0 {
+                Text("0")
                     .font(.caption2)
                     .foregroundStyle(.white.opacity(0.8))
-                    .fixedSize()
-                    .position(x: m.plot.minX - 24, y: m.screen(0, y).y)
+                    .position(x: m.plot.minX - 12, y: m.screen(0, 0).y)
             }
         }
         .allowsHitTesting(false)
     }
 }
 
-/// The Graph Sketch challenge: problem, canvas, Undo / Clear / Submit, and
-/// feedback bands + hints when the sketch is off (never the true curve).
-struct SketchChallengeView: View {
+/// Graph Sketch / Change: header, canvas with Draw/Erase, Undo, Clear,
+/// Submit, and numbered corrections when the sketch is off (never the true
+/// curve during an alarm).
+struct SketchChallengeView<Header: View>: View {
     let problem: SketchProblem
     @Binding var strokes: [SketchStroke]
-    var tolerance: SketchTolerance = .moderate
+    var mode: SketchMode = .standard
+    var reference: SketchProblem? = nil
     var allowReveal = false
     var onSolved: () -> Void
+    @ViewBuilder var header: Header
 
     @State private var result: SketchResult?
     @State private var solved = false
     @State private var reveal = false
     @State private var shakes: CGFloat = 0
+    @State private var tool: SketchTool = .draw
+    @State private var history: [[SketchStroke]] = []
 
     var body: some View {
         VStack(spacing: 8) {
             header
-            SketchCanvas(problem: problem, strokes: $strokes,
+            SketchCanvas(problem: problem, strokes: $strokes, tool: tool,
                          regions: result?.passed == false ? result!.regions : [],
-                         revealTruth: reveal)
+                         revealTruth: reveal, reference: reference, showYScale: mode.showsYScale,
+                         willChange: { history.append(strokes); if history.count > 60 { history.removeFirst() } })
                 .frame(maxHeight: .infinity)
                 .modifier(Shake(animatableData: shakes))
 
-            if let result, !result.passed {
-                VStack(alignment: .leading, spacing: 4) {
-                    ForEach(Array(result.regions.enumerated()), id: \.offset) { index, region in
-                        HStack(alignment: .firstTextBaseline, spacing: 8) {
-                            Text("\(index + 1)")
-                                .font(.caption.bold())
-                                .foregroundStyle(.black)
-                                .frame(width: 20, height: 20)
-                                .background(SketchRegionStyle.color(region.issue), in: Circle())
-                            Text(region.hint)
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(SketchRegionStyle.color(region.issue))
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
-                    }
-                    Text("Keep editing — Undo removes your last stroke.")
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.55))
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            } else if solved {
-                Label("Great sketch!", systemImage: "checkmark.circle.fill")
-                    .font(.headline).foregroundStyle(.green)
-            } else {
-                Text("Draw the graph with your finger. Several strokes are fine.")
-                    .font(.footnote).foregroundStyle(.white.opacity(0.6))
-            }
+            feedback
 
-            HStack(spacing: 10) {
-                Button {
-                    Haptics.tap()
-                    if !strokes.isEmpty { strokes.removeLast() }
-                } label: {
-                    Label("Undo", systemImage: "arrow.uturn.backward")
-                        .frame(maxWidth: .infinity, minHeight: 50)
-                        .background(Color(white: 0.25), in: RoundedRectangle(cornerRadius: 12))
+            HStack(spacing: 8) {
+                Picker("Tool", selection: $tool) {
+                    Label("Draw", systemImage: "pencil.tip").tag(SketchTool.draw)
+                    Label("Erase", systemImage: "eraser").tag(SketchTool.erase)
                 }
-                Button {
-                    Haptics.tap()
+                .pickerStyle(.segmented)
+                .frame(maxWidth: 170)
+                button("Undo", "arrow.uturn.backward", Color(white: 0.25)) {
+                    if let last = history.popLast() { strokes = last } else if !strokes.isEmpty { strokes.removeLast() }
+                }
+                button("Clear", "trash", Color(red: 0.45, green: 0.16, blue: 0.16)) {
+                    history.append(strokes)
                     strokes = []
                     result = nil
-                } label: {
-                    Label("Clear", systemImage: "trash")
-                        .frame(maxWidth: .infinity, minHeight: 50)
-                        .background(Color(red: 0.45, green: 0.16, blue: 0.16), in: RoundedRectangle(cornerRadius: 12))
                 }
                 if allowReveal {
-                    Button {
-                        Haptics.tap()
+                    button(reveal ? "Hide" : "Reveal", reveal ? "eye.slash" : "eye", Color(red: 0.16, green: 0.30, blue: 0.42)) {
                         reveal.toggle()
-                    } label: {
-                        Label(reveal ? "Hide" : "Reveal", systemImage: reveal ? "eye.slash" : "eye")
-                            .frame(maxWidth: .infinity, minHeight: 50)
-                            .background(Color(red: 0.16, green: 0.30, blue: 0.42), in: RoundedRectangle(cornerRadius: 12))
                     }
                 }
             }
-            .font(.headline)
-            .foregroundStyle(.white)
-            .buttonStyle(PressableStyle())
 
             Button(action: submit) {
                 Label(solved ? "Correct!" : "Submit sketch", systemImage: solved ? "checkmark" : "checkmark.circle")
                     .font(.title3.bold())
                     .foregroundStyle(.black)
-                    .frame(maxWidth: .infinity, minHeight: 56)
+                    .frame(maxWidth: .infinity, minHeight: 54)
                     .background(solved ? Color.green : Color.white, in: RoundedRectangle(cornerRadius: 16))
             }
             .buttonStyle(PressableStyle())
@@ -292,7 +307,76 @@ struct SketchChallengeView: View {
         }
     }
 
-    private var header: some View {
+    @ViewBuilder
+    private var feedback: some View {
+        if let result, !result.passed {
+            VStack(alignment: .leading, spacing: 4) {
+                ForEach(Array(result.regions.enumerated()), id: \.offset) { index, region in
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Text("\(index + 1)")
+                            .font(.caption.bold())
+                            .foregroundStyle(.black)
+                            .frame(width: 20, height: 20)
+                            .background(SketchRegionStyle.color(region.issue), in: Circle())
+                        Text(region.hint)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(SketchRegionStyle.color(region.issue))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                Text("Fix just those parts — use Erase to rub out a piece, then redraw it.")
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.55))
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        } else if solved {
+            Label("Great sketch!", systemImage: "checkmark.circle.fill")
+                .font(.headline).foregroundStyle(.green)
+        } else {
+            Text("\(mode.title) mode: \(mode.summary)")
+                .font(.footnote).foregroundStyle(.white.opacity(0.6))
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private func button(_ title: String, _ symbol: String, _ color: Color, action: @escaping () -> Void) -> some View {
+        Button {
+            Haptics.tap()
+            action()
+        } label: {
+            Label(title, systemImage: symbol)
+                .labelStyle(.iconOnly)
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .background(color, in: RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(PressableStyle())
+        .accessibilityLabel(title)
+    }
+
+    private func submit() {
+        let r = SketchChecker.check(strokes, for: problem, mode: mode)
+        withAnimation { result = r }
+        if r.passed {
+            solved = true
+            Haptics.success()
+            Task {
+                try? await Task.sleep(nanoseconds: 800_000_000)
+                onSolved()
+            }
+        } else {
+            Haptics.error()
+            withAnimation(.linear(duration: 0.4)) { shakes += 1 }
+        }
+    }
+}
+
+/// Header for a plain Graph Sketch problem.
+struct SketchHeader: View {
+    let problem: SketchProblem
+
+    var body: some View {
         VStack(spacing: 4) {
             Text("Sketch the graph").font(.headline).foregroundStyle(.orange)
             FittedMath(sizes: [26, 23, 20, 17, 15, 13]) { size in
@@ -310,21 +394,39 @@ struct SketchChallengeView: View {
         .frame(maxWidth: .infinity)
         .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 14))
     }
+}
 
-    private func submit() {
-        let r = SketchChecker.check(strokes, for: problem, tolerance: tolerance)
-        withAnimation { result = r }
-        if r.passed {
-            solved = true
-            Haptics.success()
-            Task {
-                try? await Task.sleep(nanoseconds: 800_000_000)
-                onSolved()
+/// Header for a "Change" problem: the given f (formula and/or "grey graph")
+/// and what to draw.
+struct ChangeHeader: View {
+    let change: ChangeProblem
+    let display: AppSettings.ChangeDisplay
+
+    var body: some View {
+        VStack(spacing: 4) {
+            Text("Change: draw g").font(.headline).foregroundStyle(.orange)
+            if display.showsFormula {
+                FittedMath(sizes: [22, 20, 17, 15, 13, 12]) { size in
+                    HStack(alignment: .mathAxis, spacing: size * 0.25) {
+                        Text("f(x) =").font(MathFont.italic(size))
+                        MathRowView(row: ExprDisplay.row(change.base.function), size: size, mergeFunctionPowers: true)
+                    }
+                    .foregroundStyle(.white)
+                }
             }
-        } else {
-            Haptics.error()
-            withAnimation(.linear(duration: 0.4)) { shakes += 1 }
+            Text(change.transform.formula)
+                .font(.system(size: 22, weight: .semibold, design: .serif))
+                .foregroundStyle(.white)
+            Text(display.showsGraph
+                 ? "The grey curve is f. Draw g for \(change.target.xLabel(change.target.xMin)) ≤ x ≤ \(change.target.xLabel(change.target.xMax))."
+                 : "Draw g for \(change.target.xLabel(change.target.xMin)) ≤ x ≤ \(change.target.xLabel(change.target.xMax)).")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.white.opacity(0.7))
+                .multilineTextAlignment(.center)
         }
+        .padding(8)
+        .frame(maxWidth: .infinity)
+        .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 14))
     }
 }
 

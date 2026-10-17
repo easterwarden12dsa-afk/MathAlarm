@@ -2,7 +2,7 @@ import Foundation
 import MathEngine
 
 enum ChallengeKind: String, Codable, CaseIterable, Identifiable {
-    case integral, derivative, sketch, random
+    case integral, derivative, sketch, change, random
 
     var id: String { rawValue }
 
@@ -11,11 +11,22 @@ enum ChallengeKind: String, Codable, CaseIterable, Identifiable {
         case .integral: "Integral"
         case .derivative: "Derivative"
         case .sketch: "Graph Sketch"
+        case .change: "Change"
         case .random: "Random"
         }
     }
 
-    static let concreteKinds: [ChallengeKind] = [.integral, .derivative, .sketch]
+    var summary: String {
+        switch self {
+        case .integral: "Find an antiderivative"
+        case .derivative: "Differentiate a function"
+        case .sketch: "Draw the graph of a function"
+        case .change: "Given f, draw a related graph like 1/f(x)² or |f(x)|"
+        case .random: "A mix — choose which types below"
+        }
+    }
+
+    static let concreteKinds: [ChallengeKind] = [.integral, .derivative, .sketch, .change]
 
     /// Picks a concrete challenge for `.random`; other kinds return themselves.
     func resolved() -> ChallengeKind {
@@ -27,7 +38,7 @@ enum ChallengeKind: String, Codable, CaseIterable, Identifiable {
     var problemKind: ProblemKind {
         switch self {
         case .integral: .integral
-        case .derivative, .sketch: .derivative
+        case .derivative, .sketch, .change: .derivative
         case .random: Bool.random() ? .integral : .derivative
         }
     }
@@ -37,6 +48,7 @@ enum ChallengeKind: String, Codable, CaseIterable, Identifiable {
         case .integral: "sum"
         case .derivative: "function"
         case .sketch: "scribble.variable"
+        case .change: "arrow.triangle.swap"
         case .random: "shuffle"
         }
     }
@@ -83,6 +95,12 @@ final class ProblemHistory {
     /// A new problem that hasn't been shown recently; records it as shown.
     func fresh(_ kind: ProblemKind, level: Level) -> CalculusProblem {
         let p = ProblemFactory.make(kind, level: level, seed: ProblemFactory.randomSeed(), avoiding: avoid)
+        remember(p.signature)
+        return p
+    }
+
+    func freshChange(level: Level) -> ChangeProblem {
+        let p = ChangeFactory.make(level: level, seed: ProblemFactory.randomSeed(), avoiding: Set(recent.suffix(6)))
         remember(p.signature)
         return p
     }
@@ -159,6 +177,33 @@ struct AlarmSound: Codable, Hashable, Identifiable {
     var resolved: AlarmSound {
         if isCustom, let url = playbackURL, !FileManager.default.fileExists(atPath: url.path) { return .classic }
         return self
+    }
+}
+
+/// Settings for the Random challenge: which types it picks from, each with
+/// its own difficulty (nil = the alarm's difficulty).
+struct RandomMix: Codable, Hashable {
+    struct Entry: Codable, Hashable, Identifiable {
+        var kind: ChallengeKind
+        var enabled: Bool
+        var difficulty: Difficulty?
+        var id: ChallengeKind { kind }
+    }
+    var entries: [Entry] = ChallengeKind.concreteKinds.map { Entry(kind: $0, enabled: true, difficulty: nil) }
+
+    var enabledKinds: [ChallengeKind] { entries.filter(\.enabled).map(\.kind) }
+
+    func difficulty(for kind: ChallengeKind, default fallback: Difficulty) -> Difficulty {
+        entries.first { $0.kind == kind }?.difficulty ?? fallback
+    }
+
+    /// Adds types introduced in newer versions to mixes saved by older ones.
+    var upgraded: RandomMix {
+        var m = self
+        for k in ChallengeKind.concreteKinds where !m.entries.contains(where: { $0.kind == k }) {
+            m.entries.append(Entry(kind: k, enabled: true, difficulty: nil))
+        }
+        return m
     }
 }
 
@@ -246,6 +291,7 @@ struct AlarmItem: Codable, Identifiable, Hashable {
     var sound: AlarmSound = .classic
     var challenge: ChallengeKind = .random
     var difficulty: Difficulty = .medium
+    var randomMix = RandomMix()
 
     /// AlarmKit alarm IDs currently scheduled for this item.
     var systemAlarmIDs: [UUID] = []
@@ -257,7 +303,7 @@ struct AlarmItem: Codable, Identifiable, Hashable {
 
     enum CodingKeys: String, CodingKey {
         case id, label, isEnabled, repeatMode, time, onceDay, weekdayTimes
-        case sound, challenge, difficulty, systemAlarmIDs, scheduledOnceDate
+        case sound, challenge, difficulty, systemAlarmIDs, scheduledOnceDate, randomMix
     }
 
     // Tolerant decoding: fields added in later versions get defaults, so
@@ -277,6 +323,7 @@ struct AlarmItem: Codable, Identifiable, Hashable {
         difficulty = (try? c.decodeIfPresent(Difficulty.self, forKey: .difficulty)) ?? d.difficulty
         systemAlarmIDs = try c.decodeIfPresent([UUID].self, forKey: .systemAlarmIDs) ?? []
         scheduledOnceDate = try c.decodeIfPresent(Date.self, forKey: .scheduledOnceDate)
+        randomMix = ((try? c.decodeIfPresent(RandomMix.self, forKey: .randomMix)) ?? nil)?.upgraded ?? d.randomMix
     }
 
     // MARK: Derived schedule info
@@ -346,12 +393,13 @@ struct AlarmItem: Codable, Identifiable, Hashable {
         switch repeatMode {
         case .once:
             guard let d = onceFireDate, d > Date() else { return "Pick a time in the future." }
-            return nil
         case .daily:
-            return nil
+            break
         case .weekdays:
-            return enabledWeekdays.isEmpty ? "Turn on at least one day." : nil
+            if enabledWeekdays.isEmpty { return "Turn on at least one day." }
         }
+        if challenge == .random && randomMix.enabledKinds.isEmpty { return "Switch on at least one challenge type in the Random mix." }
+        return nil
     }
 }
 
@@ -373,6 +421,7 @@ struct RingContext: Codable, Hashable {
     var sound: AlarmSound
     var purpose: AlarmPurpose
     var createdAt = Date()
+    var mix: RandomMix?
 
     static let fallback = RingContext(itemID: nil, label: "Alarm", challenge: .random,
                                       difficulty: .medium, sound: .classic, purpose: .alarm)
@@ -391,6 +440,7 @@ struct RingContext: Codable, Hashable {
         self.init(itemID: item.id, label: item.label.isEmpty ? "Alarm" : item.label,
                   challenge: item.challenge, difficulty: item.difficulty,
                   sound: item.sound, purpose: .alarm)
+        mix = item.randomMix
     }
 }
 
@@ -416,6 +466,11 @@ struct RingSession: Codable, Identifiable {
     /// Graph Sketch challenge and the strokes drawn so far.
     var sketch: SketchProblem?
     var strokes: [SketchStroke]?
+    /// "Change" challenge (uses `strokes` too).
+    var change: ChangeProblem?
+    /// Random settings and the difficulty of the current problem.
+    var mix: RandomMix?
+    var currentDifficulty: Difficulty?
     /// "Problems per ring" setting: how many must be solved, and how many are.
     var solvesNeeded: Int?
     var solvesDone: Int?
@@ -431,26 +486,36 @@ struct RingSession: Codable, Identifiable {
         itemIDs = context.itemID.map { [$0] } ?? []
         self.solvesNeeded = solvesNeeded
         solvesDone = 0
+        mix = context.mix
         newChallenge()
     }
 
     /// Generates the next problem (or sketch) for this ring.
     mutating func newChallenge() {
-        if let requested = requestedChallenge { challenge = requested.resolved() }
-        if challenge == .sketch {
-            sketch = ProblemHistory.shared.freshSketch(level: difficulty.level)
+        var level = difficulty
+        if requestedChallenge == .random {
+            let mix = (self.mix ?? RandomMix()).upgraded
+            challenge = mix.enabledKinds.randomElement() ?? ChallengeKind.concreteKinds.randomElement()!
+            level = mix.difficulty(for: challenge, default: difficulty)
+        } else if let requested = requestedChallenge {
+            challenge = requested.resolved()
+        }
+        currentDifficulty = level
+        problem = nil; editor = nil; sketch = nil; change = nil; strokes = nil
+        switch challenge {
+        case .sketch:
+            sketch = ProblemHistory.shared.freshSketch(level: level.level)
             strokes = []
-            problem = nil
-            editor = nil
-        } else {
-            problem = ProblemHistory.shared.fresh(challenge.problemKind, level: difficulty.level)
+        case .change:
+            change = ProblemHistory.shared.freshChange(level: level.level)
+            strokes = []
+        default:
+            problem = ProblemHistory.shared.fresh(challenge.problemKind, level: level.level)
             editor = MathEditor()
-            sketch = nil
-            strokes = nil
         }
     }
 
-    var hasChallenge: Bool { problem != nil || sketch != nil }
+    var hasChallenge: Bool { problem != nil || sketch != nil || change != nil }
 
     var progressText: String? {
         let needed = solvesNeeded ?? 1

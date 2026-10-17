@@ -9,22 +9,27 @@ final class AppSettings: ObservableObject {
     static let shared = AppSettings()
     private let defaults = UserDefaults.standard
 
-    enum Strictness: String, CaseIterable, Identifiable {
-        case relaxed, moderate, strict
+    /// How the "Change" challenge shows the given function f.
+    enum ChangeDisplay: String, CaseIterable, Identifiable {
+        case graph, formula, both
         var id: String { rawValue }
-        var title: String { rawValue.capitalized }
-        var tolerance: SketchTolerance {
+        var title: String {
             switch self {
-            case .relaxed: .relaxed
-            case .moderate: .moderate
-            case .strict: .strict
+            case .graph: "Graph"
+            case .formula: "Formula"
+            case .both: "Both"
             }
         }
+        var showsGraph: Bool { self != .formula }
+        var showsFormula: Bool { self != .graph }
     }
 
-    /// How close a Graph Sketch has to be.
-    @Published var sketchStrictness: Strictness {
-        didSet { defaults.set(sketchStrictness.rawValue, forKey: "sketchStrictness") }
+    /// How Graph Sketch and Change drawings are judged.
+    @Published var sketchMode: SketchMode {
+        didSet { defaults.set(sketchMode.rawValue, forKey: "sketchMode") }
+    }
+    @Published var changeDisplay: ChangeDisplay {
+        didSet { defaults.set(changeDisplay.rawValue, forKey: "changeDisplay") }
     }
     /// Problems to solve before a ring stops (1–3).
     @Published var problemsPerRing: Int {
@@ -54,7 +59,8 @@ final class AppSettings: ObservableObject {
     private var lastSolvedDay: String
 
     private init() {
-        sketchStrictness = Strictness(rawValue: defaults.string(forKey: "sketchStrictness") ?? "") ?? .moderate
+        sketchMode = SketchMode(rawValue: defaults.string(forKey: "sketchMode") ?? "") ?? .standard
+        changeDisplay = ChangeDisplay(rawValue: defaults.string(forKey: "changeDisplay") ?? "") ?? .both
         let perRing = defaults.integer(forKey: "problemsPerRing")
         problemsPerRing = (1...3).contains(perRing) ? perRing : 1
         quickChallenge = ChallengeKind(rawValue: defaults.string(forKey: "quickChallenge") ?? "") ?? .random

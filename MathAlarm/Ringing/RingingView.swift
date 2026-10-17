@@ -27,9 +27,23 @@ struct RingingView: View {
                         problem: sketch,
                         strokes: Binding(get: { ring.session?.strokes ?? [] },
                                          set: { ring.updateStrokes($0) }),
-                        tolerance: AppSettings.shared.sketchStrictness.tolerance,
-                        onSolved: { ring.solvedOne() })
+                        mode: AppSettings.shared.sketchMode,
+                        onSolved: { ring.solvedOne() }) {
+                        SketchHeader(problem: sketch)
+                    }
                     .id(sketch.signature + "\(session.solvesDone ?? 0)")
+                } else if let session = ring.session, let change = session.change {
+                    let display = AppSettings.shared.changeDisplay
+                    SketchChallengeView(
+                        problem: change.target,
+                        strokes: Binding(get: { ring.session?.strokes ?? [] },
+                                         set: { ring.updateStrokes($0) }),
+                        mode: AppSettings.shared.sketchMode,
+                        reference: display.showsGraph ? change.base : nil,
+                        onSolved: { ring.solvedOne() }) {
+                        ChangeHeader(change: change, display: display)
+                    }
+                    .id(change.signature + "\(session.solvesDone ?? 0)")
                 } else if let session = ring.session, let problem = session.problem {
                     ChallengeView(
                         problem: problem,

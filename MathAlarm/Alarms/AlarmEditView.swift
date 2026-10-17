@@ -50,7 +50,7 @@ struct AlarmEditView: View {
                     }
                 }
 
-                Section("Challenge") {
+                Section {
                     Picker("Type", selection: $draft.challenge) {
                         ForEach(ChallengeKind.allCases) { kind in
                             Text(kind.title).tag(kind)
@@ -62,6 +62,31 @@ struct AlarmEditView: View {
                         }
                     }
                     .pickerStyle(.segmented)
+                } header: {
+                    Text("Challenge")
+                } footer: {
+                    Text(draft.challenge.summary)
+                }
+
+                if draft.challenge == .random {
+                    Section {
+                        ForEach($draft.randomMix.entries) { $entry in
+                            VStack(alignment: .leading, spacing: 6) {
+                                Toggle(entry.kind.title, isOn: $entry.enabled)
+                                if entry.enabled {
+                                    Picker("Difficulty", selection: $entry.difficulty) {
+                                        Text("Alarm's").tag(Difficulty?.none)
+                                        ForEach(Difficulty.allCases) { Text($0.title).tag(Difficulty?.some($0)) }
+                                    }
+                                    .pickerStyle(.segmented)
+                                }
+                            }
+                        }
+                    } header: {
+                        Text("Random mix")
+                    } footer: {
+                        Text("Each ring picks one of the switched-on types, at its own difficulty (\"Alarm's\" uses the difficulty above).")
+                    }
                 }
 
                 Section("Sound") {
