@@ -246,3 +246,73 @@ final class TracingTests: XCTestCase {
         XCTAssertTrue(failures.isEmpty, "\(failures.count) failures:\n" + failures.prefix(8).joined(separator: "\n"))
     }
 }
+
+/// How often each mode accepts deliberately wrong drawings (printed for calibration).
+final class StrictnessReport: XCTestCase {
+    static func problems() -> [SketchProblem] {
+        var out: [SketchProblem] = []
+        for level in Level.allCases {
+            for seed in UInt64(1)...UInt64(40) { out.append(SketchFactory.make(level: level, seed: seed &* 3_331)) }
+            for seed in UInt64(1)...UInt64(15) { out.append(ChangeFactory.make(level: level, seed: seed &* 919).target) }
+        }
+        return out
+    }
+
+    static func drawing(_ p: SketchProblem, _ g: (Double) -> Double) -> [SketchStroke] {
+        let w = p.xMax - p.xMin
+        var strokes: [SketchStroke] = [], cur: SketchStroke = []
+        for i in 0...300 {
+            let x = p.xMin + w * Double(i) / 300
+            let y = g(x)
+            if y.isFinite, y >= p.yMin, y <= p.yMax { cur.append(SketchPoint(x: x, y: y)) } else if !cur.isEmpty { strokes.append(cur); cur = [] }
+        }
+        if !cur.isEmpty { strokes.append(cur) }
+        return strokes
+    }
+
+    static func variants(_ p: SketchProblem) -> [(String, (Double) -> Double)] {
+        let H = p.yMax - p.yMin, W = p.xMax - p.xMin
+        let mid = (p.yMax + p.yMin) / 2
+        let f = { (x: Double) in p.value(at: x) }
+        let wob = { (x: Double) in 0.015 * H * sin((x - p.xMin) / W * 140) }
+        // The biggest turn of the graph, flattened.
+        let ext = GraphSteps.keyPoints(p, inflections: false).filter { $0.kinds.contains(.peak) || $0.kinds.contains(.dip) }
+        let flat: (Double) -> Double = { x in
+            guard let e = ext.max(by: { Swift.abs(f($0.x) - mid) < Swift.abs(f($1.x) - mid) }) else { return f(x) }
+            let lo = e.x - 0.1 * W, hi = e.x + 0.1 * W
+            guard x > lo, x < hi else { return f(x) }
+            let t = (x - lo) / (hi - lo)
+            return f(lo) + t * (f(hi) - f(lo))
+        }
+        return [
+            ("traced", { f($0 - 0.008 * W) + wob($0) }),
+            ("up 8%", { f($0) + 0.08 * H + wob($0) }),
+            ("up 15%", { f($0) + 0.15 * H + wob($0) }),
+            ("up 25%", { f($0) + 0.25 * H + wob($0) }),
+            ("squash 0.7", { mid + 0.7 * (f($0) - mid) + wob($0) }),
+            ("squash 0.5", { mid + 0.5 * (f($0) - mid) + wob($0) }),
+            ("sideways 4%", { f($0 - 0.04 * W) + wob($0) }),
+            ("sideways 8%", { f($0 - 0.08 * W) + wob($0) }),
+            ("sideways 12%", { f($0 - 0.12 * W) + wob($0) }),
+            ("flat peak", { flat($0) + wob($0) }),
+            ("bumpy", { f($0) + 0.1 * H * sin(($0 - p.xMin) / W * 2 * .pi * 5) }),
+        ]
+    }
+
+    func testPrintAcceptanceRates() {
+        let ps = Self.problems()
+        for mode in SketchMode.allCases {
+            var line = "SAMPLE strictness \(mode):"
+            for (i, name) in Self.variants(ps[0]).map(\.0).enumerated() {
+                var ok = 0, total = 0
+                for p in ps {
+                    let g = Self.variants(p)[i].1
+                    total += 1
+                    if SketchChecker.check(Self.drawing(p, g), for: p, mode: mode).passed { ok += 1 }
+                }
+                line += "  \(name) \(Int((100 * Double(ok) / Double(total)).rounded()))%"
+            }
+            print(line)
+        }
+    }
+}
