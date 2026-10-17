@@ -28,6 +28,7 @@ struct RingingView: View {
                         editor: Binding(get: { ring.session?.editor ?? MathEditor() },
                                         set: { ring.updateEditor($0) }),
                         note: session.challengeNote,
+                        onSolutionViewed: { ring.replaceProblem() },
                         onSolved: { ring.resolve(.solved) })
                     .id(problem.seed)
                 } else {

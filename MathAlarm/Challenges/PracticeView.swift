@@ -5,7 +5,7 @@ import MathEngine
 struct PracticeView: View {
     @State private var kind: ProblemKind = .integral
     @State private var difficulty: Difficulty = .medium
-    @State private var problem = ProblemFactory.make(.integral, level: .medium, seed: ProblemFactory.randomSeed())
+    @State private var problem = ProblemHistory.shared.fresh(.integral, level: .medium)
     @State private var editor = MathEditor()
     @State private var showAnswer = false
     @State private var solvedCount = 0
@@ -40,17 +40,17 @@ struct PracticeView: View {
                 Button {
                     showAnswer = true
                 } label: {
-                    Label("Show answer", systemImage: "eye")
+                    Label("Full solution", systemImage: "list.number")
                 }
                 .buttonStyle(.bordered)
             }
             .font(.subheadline)
 
-            ChallengeView(problem: problem, editor: $editor) {
+            ChallengeView(problem: problem, editor: $editor, onSolved: {
                 solvedCount += 1
                 toast = Toast(message: "Correct! Next problem…", symbol: "checkmark.circle.fill", style: .success)
                 newProblem()
-            }
+            })
             .id(problem.seed)
         }
         .padding(.horizontal, 12)
@@ -61,45 +61,12 @@ struct PracticeView: View {
         .onChange(of: kind) { _, _ in newProblem() }
         .onChange(of: difficulty) { _, _ in newProblem() }
         .sheet(isPresented: $showAnswer) {
-            AnswerSheet(problem: problem)
-                .presentationDetents([.medium])
+            SolutionSheet(problem: problem)
         }
     }
 
     private func newProblem() {
-        problem = ProblemFactory.make(kind, level: difficulty.level, seed: ProblemFactory.randomSeed())
+        problem = ProblemHistory.shared.fresh(kind, level: difficulty.level)
         editor = MathEditor()
-    }
-}
-
-private struct AnswerSheet: View {
-    let problem: CalculusProblem
-
-    var body: some View {
-        VStack(spacing: 18) {
-            Text("One correct answer").font(.headline).foregroundStyle(.orange)
-            FittedMath { size in
-                ProblemFormula(problem: problem, size: size)
-            }
-            Text("=").font(.title)
-            FittedMath { size in
-                HStack(alignment: .mathAxis, spacing: 6) {
-                    MathRowView(row: ExprDisplay.row(problem.reference), size: size, mergeFunctionPowers: true)
-                    if problem.kind == .integral {
-                        Text("+ C").font(MathFont.italic(size))
-                    }
-                }
-                .foregroundStyle(.white)
-            }
-            Text("Technique: \(problem.technique)")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            Text("Any equivalent form is accepted.")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-        }
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.black)
     }
 }

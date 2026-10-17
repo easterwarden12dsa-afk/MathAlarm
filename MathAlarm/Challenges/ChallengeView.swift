@@ -6,14 +6,21 @@ import MathEngine
 struct ChallengeView: View {
     let problem: CalculusProblem
     @Binding var editor: MathEditor
-    /// A note shown above the problem (e.g. "Graph Sketch arrives in M3").
+    /// A note shown above the problem (e.g. "Graph Sketch arrives later").
     var note: String? = nil
+    /// When set (ringing screen), opening the full solution replaces the
+    /// problem with a new one; the closure does the replacing.
+    var onSolutionViewed: (() -> Void)? = nil
     var onSolved: () -> Void
 
     @State private var feedback: Feedback?
     @State private var wrongAttempts = 0
     @State private var shakes: CGFloat = 0
     @State private var solved = false
+    @State private var lastWrongAnswer: Expr?
+    @State private var showWhy = false
+    @State private var showSolution = false
+    @State private var confirmSolution = false
 
     enum Feedback: Equatable {
         case wrong
@@ -48,7 +55,7 @@ struct ChallengeView: View {
     }
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 8) {
             if let note {
                 Text(note)
                     .font(.footnote.weight(.semibold))
@@ -63,35 +70,64 @@ struct ChallengeView: View {
 
             feedbackLine
 
-            MathKeypad(editor: $editor, allowConstantC: problem.kind == .integral)
+            MathKeypad(editor: $editor, allowConstantC: problem.kind == .integral, keyHeight: 44)
 
             Button(action: check) {
                 Label(solved ? "Correct!" : "Check answer", systemImage: solved ? "checkmark" : "checkmark.circle")
                     .font(.title3.bold())
                     .foregroundStyle(.black)
-                    .frame(maxWidth: .infinity, minHeight: 58)
+                    .frame(maxWidth: .infinity, minHeight: 56)
                     .background(solved ? Color.green : Color.white, in: RoundedRectangle(cornerRadius: 16))
             }
             .buttonStyle(PressableStyle())
             .disabled(solved)
         }
         .onChange(of: editor) { _, _ in
-            if feedback != .correct { feedback = nil }
+            if feedback != .correct && feedback != .wrong && feedback != .undefined { feedback = nil }
+        }
+        .sheet(isPresented: $showWhy) {
+            if let lastWrongAnswer {
+                WhyWrongSheet(problem: problem, answer: lastWrongAnswer)
+            }
+        }
+        .sheet(isPresented: $showSolution, onDismiss: {
+            onSolutionViewed?()
+        }) {
+            SolutionSheet(problem: problem,
+                          warning: onSolutionViewed == nil ? nil : "After you close this, you'll get a new problem of the same kind to solve.")
+        }
+        .confirmationDialog("Show the full solution?", isPresented: $confirmSolution, titleVisibility: .visible) {
+            Button("Show solution (new problem after)") { showSolution = true }
+            Button("Keep trying", role: .cancel) {}
+        } message: {
+            Text("The alarm still needs a solved problem, so you'll get a fresh one afterwards.")
         }
     }
 
     // MARK: Pieces
 
     private var problemCard: some View {
-        VStack(spacing: 6) {
-            Text(problem.kind == .integral ? "Integrate" : "Differentiate")
-                .font(.headline)
-                .foregroundStyle(.orange)
+        VStack(spacing: 4) {
+            HStack {
+                Text(problem.kind == .integral ? "Integrate" : "Differentiate")
+                    .font(.headline)
+                    .foregroundStyle(.orange)
+                Spacer()
+                Button {
+                    Haptics.tap()
+                    if onSolutionViewed == nil { showSolution = true } else { confirmSolution = true }
+                } label: {
+                    Label("Steps", systemImage: "list.number")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .buttonStyle(PressableStyle())
+                .tint(.cyan)
+            }
             FittedMath { size in
                 ProblemFormula(problem: problem, size: size)
             }
             .frame(maxWidth: .infinity)
-            .frame(minHeight: 70)
+            .frame(minHeight: 64)
             if problem.hasRestrictedDomain {
                 Text("for \(format(problem.domainLow)) ≤ x ≤ \(format(problem.domainHigh))")
                     .font(.footnote)
@@ -103,30 +139,26 @@ struct ChallengeView: View {
                     .foregroundStyle(.cyan)
             }
         }
-        .padding(12)
+        .padding(10)
         .frame(maxWidth: .infinity)
         .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 16))
     }
 
     private var answerCard: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 2) {
             HStack {
                 Text(problem.kind == .integral ? "Your antiderivative" : "Your derivative")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.white.opacity(0.6))
                 Spacer()
-                if problem.kind == .integral {
-                    Text("+ C optional")
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.5))
-                }
+                Text(problem.kind == .integral ? "+ C optional · tap to move cursor" : "tap to move cursor")
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.45))
             }
-            FittedMath(sizes: [30, 26, 22, 19, 16, 13]) { size in
-                MathRowView(row: editor.root, cursor: editor.cursor, size: size)
-            }
-            .frame(maxWidth: .infinity, minHeight: 64, alignment: .leading)
+            AnswerField(editor: $editor)
         }
-        .padding(12)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
         .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
         .overlay(RoundedRectangle(cornerRadius: 16).stroke(borderColor, lineWidth: 2))
     }
@@ -141,11 +173,27 @@ struct ChallengeView: View {
     @ViewBuilder
     private var feedbackLine: some View {
         if let feedback {
-            Label(feedback.text, systemImage: feedback.symbol)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(feedback.color)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .transition(.opacity)
+            HStack(spacing: 8) {
+                Label(feedback.text, systemImage: feedback.symbol)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(feedback.color)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                if (feedback == .wrong || feedback == .undefined), lastWrongAnswer != nil {
+                    Button {
+                        Haptics.tap()
+                        showWhy = true
+                    } label: {
+                        Label("Why?", systemImage: "questionmark.circle.fill")
+                            .font(.subheadline.bold())
+                            .foregroundStyle(.black)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(Color.red, in: Capsule())
+                    }
+                    .buttonStyle(PressableStyle())
+                }
+            }
+            .transition(.opacity)
         }
     }
 
@@ -165,9 +213,9 @@ struct ChallengeView: View {
                     onSolved()
                 }
             case .incorrect:
-                wrong(.wrong)
+                wrong(.wrong, answer)
             case .undefined:
-                wrong(.undefined)
+                wrong(.undefined, answer)
             }
         } catch let error as EntryError {
             withAnimation { feedback = .incomplete(error.message) }
@@ -178,8 +226,9 @@ struct ChallengeView: View {
         }
     }
 
-    private func wrong(_ f: Feedback) {
+    private func wrong(_ f: Feedback, _ answer: Expr) {
         wrongAttempts += 1
+        lastWrongAnswer = answer
         withAnimation { feedback = f }
         withAnimation(.linear(duration: 0.4)) { shakes += 1 }
         Haptics.error()

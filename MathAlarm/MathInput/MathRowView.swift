@@ -10,8 +10,12 @@ extension VerticalAlignment {
     static let mathAxis = VerticalAlignment(MathAxis.self)
 }
 
+/// Tap handler: where the cursor should go.
+typealias CursorTap = (Cursor) -> Void
+
 /// Typesets a row of the structured editor (also used for problems, via
-/// `ExprDisplay`). Draws the caret when `cursor` points into this row.
+/// `ExprDisplay`). Draws the caret when `cursor` points into this row, and
+/// lets the user tap a spot to move the cursor there.
 struct MathRowView: View {
     let row: Row
     var path: [Cursor.Step] = []
@@ -19,6 +23,9 @@ struct MathRowView: View {
     var size: CGFloat = 28
     /// Problem display: draw sin(x)² as sin²(x).
     var mergeFunctionPowers = false
+    var onTap: CursorTap? = nil
+
+    static let caretID = "math-caret"
 
     private var caretIndex: Int? {
         guard let cursor, cursor.path == path else { return nil }
@@ -33,8 +40,19 @@ struct MathRowView: View {
                 ForEach(elements, id: \.index) { element in
                     if caretIndex == element.index { Caret(size: size) }
                     element.view
+                        .modifier(TapToPlace(enabled: onTap != nil) { rightHalf in
+                            onTap?(Cursor(path: path, index: rightHalf ? element.index + element.span : element.index))
+                        })
                 }
                 if caretIndex == row.atoms.count { Caret(size: size) }
+            }
+        }
+        // The box you're typing in is tinted, so it's obvious whether the
+        // cursor is still inside a fraction/power or already past it.
+        .padding(.horizontal, caretIndex != nil && !path.isEmpty ? 2 : 0)
+        .background {
+            if caretIndex != nil && !path.isEmpty {
+                RoundedRectangle(cornerRadius: 4).fill(Color.orange.opacity(0.22))
             }
         }
     }
@@ -45,10 +63,14 @@ struct MathRowView: View {
             .foregroundStyle(caretIndex != nil ? Color.orange : Color.white.opacity(0.45))
             .frame(width: size * 0.62, height: size * 0.85)
             .overlay { if caretIndex != nil { Caret(size: size * 0.8) } }
+            .contentShape(Rectangle())
+            .onTapGesture { onTap?(Cursor(path: path, index: 0)) }
     }
 
     private struct Element {
         let index: Int
+        /// Number of atoms this element covers (2 for a merged sin² pair).
+        let span: Int
         let view: AnyView
     }
 
@@ -62,20 +84,41 @@ struct MathRowView: View {
             let childPath = { (child: Int) in basePath + [Cursor.Step(atom: index, child: child)] }
             if mergeFunctionPowers, case .function(let f, let arg) = atoms[i],
                i + 1 < atoms.count, case .power(let exponent) = atoms[i + 1] {
-                result.append(Element(index: i, view: AnyView(
+                result.append(Element(index: i, span: 2, view: AnyView(
                     FunctionView(name: f.displayName, exponent: exponent, argument: arg, size: size,
                                  merge: mergeFunctionPowers)
                 )))
                 i += 2
                 continue
             }
-            result.append(Element(index: i, view: AnyView(
+            result.append(Element(index: i, span: 1, view: AnyView(
                 AtomView(atom: atoms[i], childPath: childPath, cursor: cursor, size: size,
-                         merge: mergeFunctionPowers)
+                         merge: mergeFunctionPowers, onTap: onTap)
             )))
             i += 1
         }
         return result
+    }
+}
+
+/// Tapping the left half of an item puts the cursor before it, the right half after it.
+private struct TapToPlace: ViewModifier {
+    let enabled: Bool
+    let action: (Bool) -> Void
+    @State private var width: CGFloat = 0
+
+    func body(content: Content) -> some View {
+        if enabled {
+            content
+                .contentShape(Rectangle())
+                .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
+                .onTapGesture(coordinateSpace: .local) { location in
+                    Haptics.tap()
+                    action(location.x > width / 2)
+                }
+        } else {
+            content
+        }
     }
 }
 
@@ -84,7 +127,8 @@ private struct Caret: View {
     var body: some View {
         RoundedRectangle(cornerRadius: 1)
             .fill(Color.orange)
-            .frame(width: 2.5, height: size * 1.05)
+            .frame(width: 3, height: size * 1.15)
+            .id(MathRowView.caretID)
     }
 }
 
@@ -94,6 +138,11 @@ private struct AtomView: View {
     let cursor: Cursor?
     let size: CGFloat
     let merge: Bool
+    let onTap: CursorTap?
+
+    private func child(_ row: Row, _ index: Int, size: CGFloat) -> MathRowView {
+        MathRowView(row: row, path: childPath(index), cursor: cursor, size: size, mergeFunctionPowers: merge, onTap: onTap)
+    }
 
     var body: some View {
         switch atom {
@@ -102,40 +151,36 @@ private struct AtomView: View {
         case .function(let f, let arg):
             HStack(alignment: .mathAxis, spacing: size * 0.06) {
                 Text(f.displayName).font(MathFont.upright(size))
-                Bracketed(open: "(", close: ")", size: size) {
-                    MathRowView(row: arg, path: childPath(0), cursor: cursor, size: size, mergeFunctionPowers: merge)
-                }
+                Bracketed(size: size) { child(arg, 0, size: size) }
             }
         case .fraction(let num, let den):
             VStack(spacing: size * 0.12) {
-                MathRowView(row: num, path: childPath(0), cursor: cursor, size: size * 0.86, mergeFunctionPowers: merge)
+                child(num, 0, size: size * 0.86)
                 Rectangle()
                     .fill(Color.white)
                     .frame(height: Swift.max(1.5, size * 0.06))
                     .frame(maxWidth: .infinity)
                     .alignmentGuide(.mathAxis) { d in d[VerticalAlignment.center] }
-                MathRowView(row: den, path: childPath(1), cursor: cursor, size: size * 0.86, mergeFunctionPowers: merge)
+                child(den, 1, size: size * 0.86)
             }
             .padding(.horizontal, size * 0.08)
             .fixedSize()
         case .power(let exponent):
-            MathRowView(row: exponent, path: childPath(0), cursor: cursor, size: Swift.max(12, size * 0.68), mergeFunctionPowers: merge)
+            child(exponent, 0, size: Swift.max(12, size * 0.68))
                 .alignmentGuide(.mathAxis) { d in d[.bottom] + size * 0.12 }
         case .sqrt(let r):
-            MathRowView(row: r, path: childPath(0), cursor: cursor, size: size, mergeFunctionPowers: merge)
+            child(r, 0, size: size)
                 .padding(.leading, size * 0.62)
                 .padding(.top, size * 0.16)
                 .padding(.trailing, size * 0.06)
                 .overlay(RadicalShape(hookWidth: size * 0.55).stroke(Color.white, style: StrokeStyle(lineWidth: Swift.max(1.5, size * 0.06), lineJoin: .round)))
         case .abs(let r):
-            MathRowView(row: r, path: childPath(0), cursor: cursor, size: size, mergeFunctionPowers: merge)
+            child(r, 0, size: size)
                 .padding(.horizontal, size * 0.22)
                 .padding(.vertical, size * 0.04)
                 .overlay(AbsBars().stroke(Color.white, lineWidth: Swift.max(1.5, size * 0.06)))
         case .paren(let r):
-            Bracketed(open: "(", close: ")", size: size) {
-                MathRowView(row: r, path: childPath(0), cursor: cursor, size: size, mergeFunctionPowers: merge)
-            }
+            Bracketed(size: size) { child(r, 0, size: size) }
         }
     }
 }
@@ -153,7 +198,7 @@ private struct FunctionView: View {
             Text(name).font(MathFont.upright(size))
             MathRowView(row: exponent, size: Swift.max(12, size * 0.68), mergeFunctionPowers: merge)
                 .alignmentGuide(.mathAxis) { d in d[.bottom] + size * 0.12 }
-            Bracketed(open: "(", close: ")", size: size) {
+            Bracketed(size: size) {
                 MathRowView(row: argument, size: size, mergeFunctionPowers: merge)
             }
         }
@@ -183,8 +228,6 @@ enum MathFont {
 
 /// Round brackets that stretch to the height of their content.
 private struct Bracketed<Content: View>: View {
-    let open: String
-    let close: String
     let size: CGFloat
     @ViewBuilder var content: Content
 
@@ -201,11 +244,9 @@ private struct ParenShape: Shape {
         var p = Path()
         let w = Swift.min(rect.height * 0.18, 10)
         let inset: CGFloat = 1
-        // Left (
         p.move(to: CGPoint(x: rect.minX + w + inset, y: rect.minY + 1))
         p.addQuadCurve(to: CGPoint(x: rect.minX + w + inset, y: rect.maxY - 1),
                        control: CGPoint(x: rect.minX + inset - w * 0.4, y: rect.midY))
-        // Right )
         p.move(to: CGPoint(x: rect.maxX - w - inset, y: rect.minY + 1))
         p.addQuadCurve(to: CGPoint(x: rect.maxX - w - inset, y: rect.maxY - 1),
                        control: CGPoint(x: rect.maxX - inset + w * 0.4, y: rect.midY))
@@ -261,6 +302,41 @@ struct FittedMath<Content: View>: View {
             ScrollView(.horizontal, showsIndicators: true) {
                 content(sizes.last ?? 14).fixedSize().padding(.horizontal, 4)
             }
+        }
+    }
+}
+
+/// The answer being typed: fixed readable size, scrolls sideways to keep the
+/// cursor in view, and fades the edges when there's more to the left/right.
+struct AnswerField: View {
+    @Binding var editor: MathEditor
+
+    private var size: CGFloat {
+        let count = editor.root.atoms.count
+        return count > 16 ? 23 : 27
+    }
+
+    var body: some View {
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: true) {
+                MathRowView(row: editor.root, cursor: editor.cursor, size: size) { target in
+                    editor.placeCursor(target)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .frame(minHeight: 60)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+            .onChange(of: editor) { _, _ in
+                withAnimation(.easeOut(duration: 0.15)) {
+                    proxy.scrollTo(MathRowView.caretID, anchor: .center)
+                }
+            }
+        }
+        .contentShape(Rectangle())
+        // Tapping empty space to the right puts the cursor at the very end.
+        .onTapGesture {
+            editor.placeCursor(Cursor(path: [], index: editor.root.atoms.count))
         }
     }
 }

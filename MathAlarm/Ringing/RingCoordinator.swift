@@ -172,7 +172,7 @@ final class RingCoordinator: ObservableObject {
         inAppEngaged = true
         if s.problem == nil {
             // Session saved by an older version: give it a problem now.
-            s.problem = ProblemFactory.make(s.challenge.problemKind, level: s.difficulty.level, seed: ProblemFactory.randomSeed())
+            s.problem = ProblemHistory.shared.fresh(s.challenge.problemKind, level: s.difficulty.level)
             s.editor = MathEditor()
         }
         if let r = s.reRingID {
@@ -271,6 +271,16 @@ final class RingCoordinator: ObservableObject {
         Haptics.press()
         toast = Toast(message: "Muted — sound returns in 1:30", symbol: "speaker.slash.fill")
         Task { await refreshWatchdog() }
+    }
+
+    /// After the full solution was viewed: same kind and difficulty, new problem.
+    func replaceProblem() {
+        guard var s = session, let old = s.problem else { return }
+        s.problem = ProblemHistory.shared.fresh(old.kind, level: old.level)
+        s.editor = MathEditor()
+        session = s
+        saveSession()
+        toast = Toast(message: "New problem — you've got this", symbol: "arrow.triangle.2.circlepath")
     }
 
     /// Saves what has been typed so far (restored after a relaunch).

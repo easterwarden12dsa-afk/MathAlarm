@@ -30,9 +30,9 @@ struct MathKeypad: View {
 
     private var mainPage: [[Key]] {
         [
-            [.sym("x", .token(.x), .variable), .sym("x²", .square, .op), .sym("xⁿ", .power, .op), .sym("a/b", .fraction, .op), .icon("delete.left", .backspace, .action)],
+            [.sym("x", .token(.x), .variable), .sym("x²", .square, .op), .sym("xⁿ", .power, .op), .sym("a/b", .divide, .op), .icon("delete.left", .backspace, .action)],
             [.digit(7), .digit(8), .digit(9), .sym("(", .paren, .op), .sym(")", .close, .op)],
-            [.digit(4), .digit(5), .digit(6), .sym("×", .token(.times), .op), .sym("÷", .divide, .op)],
+            [.digit(4), .digit(5), .digit(6), .sym("×", .token(.times), .op), .sym("|x|", .function(.abs), .function)],
             [.digit(1), .digit(2), .digit(3), .sym("+", .token(.plus), .op), .sym("−", .token(.minus), .op)],
             [.digit(0), .sym(".", .token(.dot), .number), .sym("π", .token(.pi), .variable), .sym("e", .token(.e), .variable), .sym("eˣ", .function(.exp), .function)],
             [.icon("arrow.left", .left, .action), .icon("arrow.right", .right, .action), .sym("f(x)", .page, .action), .sym("√", .function(.sqrt), .function), .sym("Clear", .clear, .danger)],
@@ -46,7 +46,7 @@ struct MathKeypad: View {
             [.sym("arcsin", .function(.asin), .function), .sym("arccos", .function(.acos), .function), .sym("arctan", .function(.atan), .function), .sym("√", .function(.sqrt), .function),
              allowConstantC ? .sym("C", .token(.c), .variable) : .sym("eˣ", .function(.exp), .function)],
             [.sym("sinh", .function(.sinh), .function), .sym("cosh", .function(.cosh), .function), .sym("tanh", .function(.tanh), .function), .sym("(", .paren, .op), .sym(")", .close, .op)],
-            [.sym("x", .token(.x), .variable), .sym("x²", .square, .op), .sym("xⁿ", .power, .op), .sym("a/b", .fraction, .op), .sym("π", .token(.pi), .variable)],
+            [.sym("x", .token(.x), .variable), .sym("x²", .square, .op), .sym("xⁿ", .power, .op), .sym("a/b", .divide, .op), .sym("π", .token(.pi), .variable)],
             [.icon("arrow.left", .left, .action), .icon("arrow.right", .right, .action), .sym("123", .page, .action), .sym("−", .token(.minus), .op), .sym("Clear", .clear, .danger)],
         ]
     }

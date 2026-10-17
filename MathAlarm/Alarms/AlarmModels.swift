@@ -36,16 +36,49 @@ enum ChallengeKind: String, Codable, CaseIterable, Identifiable {
 
 enum Difficulty: String, Codable, CaseIterable, Identifiable {
     case easy, medium, hard
+    /// Hardest Bagrut 5-unit questions, using only that syllabus.
+    case bagrut
 
     var id: String { rawValue }
-    var title: String { rawValue.capitalized }
+
+    var title: String {
+        switch self {
+        case .bagrut: "Bagrut 5U"
+        default: rawValue.capitalized
+        }
+    }
 
     var level: Level {
         switch self {
         case .easy: .easy
         case .medium: .medium
         case .hard: .hard
+        case .bagrut: .bagrut
         }
+    }
+}
+
+/// Remembers recently shown problems so they aren't repeated.
+final class ProblemHistory {
+    static let shared = ProblemHistory()
+    private static let fileName = "problemHistory.json"
+    private static let limit = 400
+
+    private var recent: [String]
+
+    private init() {
+        recent = Persistence.load([String].self, from: Self.fileName) ?? []
+    }
+
+    var avoid: Set<String> { Set(recent) }
+
+    /// A new problem that hasn't been shown recently; records it as shown.
+    func fresh(_ kind: ProblemKind, level: Level) -> CalculusProblem {
+        let p = ProblemFactory.make(kind, level: level, seed: ProblemFactory.randomSeed(), avoiding: avoid)
+        recent.append(p.signature)
+        if recent.count > Self.limit { recent.removeFirst(recent.count - Self.limit) }
+        Persistence.save(recent, to: Self.fileName)
+        return p
     }
 }
 
@@ -368,7 +401,7 @@ struct RingSession: Codable, Identifiable {
         difficulty = context.difficulty
         sound = context.sound
         itemIDs = context.itemID.map { [$0] } ?? []
-        problem = ProblemFactory.make(challenge.problemKind, level: difficulty.level, seed: ProblemFactory.randomSeed())
+        problem = ProblemHistory.shared.fresh(challenge.problemKind, level: difficulty.level)
         editor = MathEditor()
     }
 
