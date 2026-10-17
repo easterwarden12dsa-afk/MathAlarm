@@ -30,7 +30,12 @@ public enum GraphSteps {
         let poles = p.poles.filter { $0 > a && $0 < b }.sorted()
         var labels: [(Double, String)] = [(a, whole ? (p.domainLow.map { SketchFormat.number($0) } ?? "−∞") : p.xLabel(a)),
                                           (b, whole ? "∞" : p.xLabel(b))]
-        for c in poles { labels.append((c, p.xLabel(c))) }
+        for c in poles {
+            let i = p.poles.firstIndex { Swift.abs($0 - c) < 1e-12 }
+            labels.append((c, i.flatMap { p.asymptoteLabels?[safe: $0] } ?? p.xLabel(c)))
+        }
+        let holes = (p.holes ?? []).filter { $0 > a && $0 < b }
+        let breaks = (poles + holes).sorted()
         func X(_ x: Double) -> String {
             labels.first { Swift.abs($0.0 - x) < 1e-7 * (width + 1) }?.1 ?? solver.xLabel(x, exact: true)
         }
@@ -48,7 +53,8 @@ public enum GraphSteps {
             let numeric = roots(of: e, in: a...b)
             if let solved {
                 var inside: [AlgebraRoot] = []
-                for r in solved.roots where solver.inside(r.x) && !poles.contains(where: { Swift.abs($0 - r.x) < 1e-7 * (width + 1) })
+                for r in solved.roots where solver.inside(r.x) && !breaks.contains(where: { Swift.abs($0 - r.x) < 1e-7 * (width + 1) })
+                    && e.evaluate(at: r.x).isFinite
                     && !inside.contains(where: { Swift.abs($0.x - r.x) < 1e-7 * (width + 1) }) {
                     inside.append(r)
                 }
@@ -85,7 +91,9 @@ public enum GraphSteps {
 
         // Step 1 · Domain (and asymptotes)
         steps.append(.heading(poles.isEmpty && !whole ? "Step 1 · Domain" : "Step 1 · Domain and asymptotes"))
-        steps.append(SolutionStep(domainNote(f) + (poles.isEmpty ? "" : "  So x ≠ " + poles.map(X).joined(separator: ", ") + ".")))
+        steps.append(SolutionStep(domainNote(f) + (breaks.isEmpty ? "" : "  So x ≠ " + breaks.map(X).joined(separator: ", ") + ".")
+                                  + (f.evaluate(at: (a + b) / 2).isNaN || (0..<40).contains { f.evaluate(at: a + (b - a) * Double($0) / 40).isNaN }
+                                     ? " Parts of the interval are outside the domain — there is no graph there." : "")))
         if poles.isEmpty && !whole {
             steps.append(SolutionStep("On \(X(a)) ≤ x ≤ \(X(b)) it is defined and continuous, so there are no vertical asymptotes here (and on a closed interval no horizontal ones either)."))
         }
@@ -137,7 +145,7 @@ public enum GraphSteps {
 
         steps.append(.subheading("Sign of \(name)′ — the proof"))
         steps.append(SolutionStep("\(name)′ can only change sign where it is 0\(poles.isEmpty ? "" : " or undefined (at the asymptotes)"), so one test point in each part decides the sign there:", depth: 1))
-        let s1 = signTable(d1, cuts: (crit + poles).sorted(), a: a, b: b, solver: solver, X: X)
+        let s1 = signTable(d1, cuts: (crit + breaks).sorted(), a: a, b: b, solver: solver, X: X)
         for row in s1 {
             steps.append(SolutionStep("\(XB(row.lo)) < x < \(XB(row.hi)):   \(name)′(\(row.testLabel)) \(num(row.value, approx: true)) \(row.positive ? "> 0   ↗ increasing" : "< 0   ↘ decreasing")", depth: 1))
         }
@@ -184,7 +192,7 @@ public enum GraphSteps {
         steps.append(.subheading("Solve \(name)″(x) = 0"))
         let inflPart = accept(inv?.d2?.solve, of: d2, name: "\(name)″(x)")
         steps += inflPart.lines
-        let s2 = signTable(d2, cuts: (inflPart.roots + poles).sorted(), a: a, b: b, solver: solver, X: X)
+        let s2 = signTable(d2, cuts: (inflPart.roots + breaks).sorted(), a: a, b: b, solver: solver, X: X)
         steps.append(.subheading("Sign of \(name)″"))
         for row in s2 {
             steps.append(SolutionStep("\(XB(row.lo)) < x < \(XB(row.hi)):   \(name)″(\(row.testLabel)) \(num(row.value, approx: true)) \(row.positive ? "> 0   ∪ bends up" : "< 0   ∩ bends down")", depth: 1))
@@ -204,7 +212,7 @@ public enum GraphSteps {
             let all = Set(s2.map(\.positive))
             steps.append(.result(all.count == 1
                 ? "No inflection points: \(name) bends \(s2.first?.positive == true ? "up (∪)" : "down (∩)") everywhere."
-                : "No inflection points: the bending only changes across an asymptote, which isn't part of the graph.", depth: 1))
+                : "No inflection points: the bending only changes across \(holes.isEmpty ? "an asymptote" : "a point that isn't in the domain"), which isn't part of the graph.", depth: 1))
         }
 
         // Step 5 · Draw it
@@ -338,6 +346,7 @@ public enum GraphSteps {
             let (t, label) = testPoint(l, r, piBased: solver.piBased)
             var v = e.evaluate(at: t)
             if !v.isFinite || v == 0 { v = e.evaluate(at: (l + r) / 2) }
+            guard v.isFinite else { continue }   // that part is outside the domain
             rows.append(SignRow(lo: l, hi: r, testLabel: label, value: v, positive: v > 0))
         }
         return rows
@@ -754,4 +763,8 @@ extension Expr {
             return a.hasDivision || b.hasDivision
         }
     }
+}
+
+extension Array {
+    subscript(safe i: Int) -> Element? { indices.contains(i) ? self[i] : nil }
 }

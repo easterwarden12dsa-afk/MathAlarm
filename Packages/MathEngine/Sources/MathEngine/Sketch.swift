@@ -22,6 +22,10 @@ public struct SketchProblem: Codable, Hashable, Sendable {
     public var wholeDomain: Bool? = nil
     /// Whole-graph problems defined only for x > domainLow (ln, √).
     public var domainLow: Double? = nil
+    /// Exact names for the asymptotes ("ln 4", "1/e"), same order as `asymptotes`.
+    public var asymptoteLabels: [String]? = nil
+    /// Single x values missing from the domain (no asymptote), e.g. 0 for 4x(ln x² − 1).
+    public var holes: [Double]? = nil
 
     public var isWhole: Bool { wholeDomain == true }
     public var poles: [Double] { asymptotes ?? [] }
@@ -925,12 +929,19 @@ public struct SketchFamily: Codable, Hashable, Sendable {
         // Bagrut 5U.
         case sinSqCos, xPlusTrig, sinOverCos, twoSinSin2, expSin, lnCos, cosOverSin, sinCos2
         case expQuadE, ln2, xLn2, expOverLin, lnQuadratic, ratTwoPoles, logistic
+        // From the 571/572/581/582 papers.
+        case rootRatX, rootRatX2, trigFrac1, cosPlusInvSq, invCosSq, cosQuadInv, sinRatio, twoSinCos2, cos3Sin
+        case expRat2, expOverAMinus, expMinusBOverSq, lnSqRatio, xOverLnA, xnThreeMinusLn, fourXLnX2, xLnPoly
+        case xPlusLnQuad, lnQuadMinusX, polyOverExp
+        // Easy monotone shapes.
+        case expShift, lnShift, sqrtShift
 
         /// Not periodic, so "draw the whole graph" makes sense.
         public var allowsWholeDomain: Bool {
             switch self {
             case .trigSin, .trigCos, .shiftSin, .sinCos, .sinSin, .sin2cos, .sinExpDecay, .xSin, .tanX, .xPlusInv,
-                 .sinSqCos, .xPlusTrig, .sinOverCos, .twoSinSin2, .expSin, .lnCos, .cosOverSin, .sinCos2: false
+                 .sinSqCos, .xPlusTrig, .sinOverCos, .twoSinSin2, .expSin, .lnCos, .cosOverSin, .sinCos2,
+                 .trigFrac1, .cosPlusInvSq, .invCosSq, .cosQuadInv, .sinRatio, .twoSinCos2, .cos3Sin, .lnShift, .sqrtShift: false
             default: true
             }
         }
@@ -938,7 +949,7 @@ public struct SketchFamily: Codable, Hashable, Sendable {
         /// Whole-graph problems that only exist for x > 0.
         public var positiveDomain: Bool {
             switch self {
-            case .x2Ln, .powLn, .lnOverPow, .sqrtLin, .ln2, .xLn2: true
+            case .x2Ln, .powLn, .lnOverPow, .sqrtLin, .ln2, .xLn2, .lnSqRatio, .xOverLnA, .xnThreeMinusLn, .xLnPoly: true
             default: false
             }
         }
@@ -1017,13 +1028,22 @@ public enum SketchFactory {
                    family: SketchFamily(kind, params, factor: factor))
         }
         func poled(_ f: Expr, _ a: Double, _ b: Double, _ poles: [Double], pi isPi: Bool = false,
-                   _ kind: SketchFamily.Kind, _ params: [Int]) -> SketchProblem? {
+                   _ kind: SketchFamily.Kind, _ params: [Int], labels: [String]? = nil) -> SketchProblem? {
             finishPoled(factor == 1 ? f : .scaled(factor, 1, f), a, b, poles: poles, piBased: isPi, level: level, seed: seed,
-                        family: SketchFamily(kind, params, factor: factor))
+                        family: SketchFamily(kind, params, factor: factor), labels: labels)
         }
         switch level {
         case .easy:
-            switch r.int(0...7) {
+            switch r.int(0...10) {
+            case 8: // eˣ − c
+                let c = r.int(1...3)
+                return done(.sum([.exp(x), .n(-c)]), -3, 2, .expShift, [c])
+            case 9: // ln(x + a) + k
+                let a = r.int(-1...2), k = r.int(-1...1)
+                return done(.sum([.ln(.sum([x, .n(a)])), .n(k)]), Double(-a) + 0.05, Double(-a) + 8, .lnShift, [a, k])
+            case 10: // √(x + a) − k
+                let a = r.int(-1...3), k = r.int(1...2)
+                return done(.sum([.sqrt(.sum([x, .n(a)])), .n(-k)]), Double(-a), Double(-a) + 9, .sqrtShift, [a, k])
             case 0: // a(x − r1)(x − r2)
                 let r1 = r.int(-4...2), r2 = r1 + r.int(1...5), a = r.pick([1, -1, 2, -2])
                 let f = Expr.scaled(a, 1, .mul(.sum([x, .n(-r1)]), .sum([x, .n(-r2)])))
@@ -1129,7 +1149,70 @@ public enum SketchFactory {
             // Bagrut 5U (571/572 style): trig investigations on [0, 2π], ln and
             // eˣ compositions, rational functions with two kinds of asymptote.
             let twoPi = 2 * pi
-            switch r.int(0...23) {
+            switch r.int(0...43) {
+            // Shapes taken from real 571/572/581/582 papers (2019–2026).
+            case 24: // x/√(x² − a²): two branches, y = ±1
+                let a = r.int(1...2)
+                return poled(.div(x, .sqrt(.sum([.p(x, 2), .n(-a * a)]))), -Double(a) - 4, Double(a) + 4, [-Double(a), Double(a)], .rootRatX, [a])
+            case 25: // x²/√(x² − a²)
+                let a = r.int(1...2)
+                return poled(.div(.p(x, 2), .sqrt(.sum([.p(x, 2), .n(-a * a)]))), -Double(a) - 4, Double(a) + 4, [-Double(a), Double(a)], .rootRatX2, [a])
+            case 26: // sin x/(1 + sin²x)
+                return done(.div(.sin(x), .sum([1, .p(.sin(x), 2)])), 0, twoPi, pi: true, .trigFrac1, [])
+            case 27: // cos x + 2/cos²x
+                return poled(.sum([.cos(x), .div(2, .p(.cos(x), 2))]), -pi, pi, [-pi / 2, pi / 2], pi: true, .cosPlusInvSq, [])
+            case 28: // 1/cos²x − 4
+                return poled(.sum([.div(1, .p(.cos(x), 2)), .n(-4)]), -pi, pi, [-pi / 2, pi / 2], pi: true, .invCosSq, [])
+            case 29: // 6/(2cos²x − 5cos x − 3)
+                return poled(.div(6, .sum([.scaled(2, 1, .p(.cos(x), 2)), .scaled(-5, 1, .cos(x)), .n(-3)])), 0, twoPi,
+                             [2 * pi / 3, 4 * pi / 3], pi: true, .cosQuadInv, [])
+            case 30: // (sin x − 1)/(sin x + 1)
+                return poled(.div(.sum([.sin(x), .n(-1)]), .sum([.sin(x), 1])), 0, twoPi, [3 * pi / 2], pi: true, .sinRatio, [])
+            case 31: // 2sin x + cos 2x − 1
+                return done(.sum([.scaled(2, 1, .sin(x)), .cos(.mul(2, x)), .n(-1)]), -pi / 2, 3 * pi / 2, pi: true, .twoSinCos2, [])
+            case 32: // cos³x·sin x
+                return done(.mul(.p(.cos(x), 3), .sin(x)), 0, pi, pi: true, .cos3Sin, [])
+            case 33: // 2e^(2x)/(e^(2x) − 5eˣ + 4)
+                return poled(.div(.scaled(2, 1, .exp(.mul(2, x))), .sum([.exp(.mul(2, x)), .scaled(-5, 1, .exp(x)), 4])), -3, 3,
+                             [0, log(4)], .expRat2, [], labels: ["0", "ln 4"])
+            case 34: // eˣ/(a − eˣ)
+                let a = r.pick([1, 2, 4])
+                let la = log(Double(a))
+                return poled(.div(.exp(x), .sum([.n(a), .neg(.exp(x))])), la - 4, la + 3, [la], .expOverAMinus, [a],
+                             labels: [a == 1 ? "0" : "ln \(a)"])
+            case 35: // (eˣ − b)/(eˣ − 4)²
+                let b = r.pick([3, 5])
+                return poled(.div(.sum([.exp(x), .n(-b)]), .p(.sum([.exp(x), .n(-4)]), 2)), -2.5, 3, [log(4)], .expMinusBOverSq, [b],
+                             labels: ["ln 4"])
+            case 36: // (ln x)²/((ln x)² − 1)
+                return poled(.div(.p(.ln(x), 2), .sum([.p(.ln(x), 2), .n(-1)])), 0.05, 10, [exp(-1), exp(1)], .lnSqRatio, [],
+                             labels: ["1/e", "e"])
+            case 37: // x/(ln x − a)
+                let a = r.int(0...1)
+                return poled(.div(x, .sum([.ln(x), .n(-a)])), a == 0 ? 0.1 : 0.2, a == 0 ? 12 : 28, [exp(Double(a))], .xOverLnA, [a],
+                             labels: [a == 0 ? "1" : "e"])
+            case 38: // xⁿ(3 − ln x)
+                let n = r.int(1...2)
+                return done(.mul(n == 1 ? x : .p(x, 2), .sum([3, .neg(.ln(x))])), 0.05, 23, .xnThreeMinusLn, [n])
+            case 39: // 4x(ln(x²) − 1): not defined at 0
+                if var p = done(.scaled(4, 1, .mul(x, .sum([.ln(.p(x, 2)), .n(-1)]))), -3, 3, .fourXLnX2, []) {
+                    p.holes = [0]
+                    return p
+                }
+                return nil
+            case 40: // x((ln x)² − 2ln x + 2)
+                return done(.mul(x, .sum([.p(.ln(x), 2), .scaled(-2, 1, .ln(x)), 2])), 0.02, 6, .xLnPoly, [])
+            case 41: // x + ln(x² − c): two branches
+                let c = r.pick([8, 3])
+                let rc = Double(c).squareRoot()
+                return poled(.sum([x, .ln(.sum([.p(x, 2), .n(-c)]))]), -rc - 5, rc + 5, [-rc, rc], .xPlusLnQuad, [c],
+                             labels: c == 8 ? ["−2√2", "2√2"] : ["−√3", "√3"])
+            case 42: // 8ln(x² + 7) − 2x
+                return done(.sum([.scaled(8, 1, .ln(.sum([.p(x, 2), 7]))), .scaled(-2, 1, x)]), -4, 11, .lnQuadMinusX, [])
+            case 43: // (a − x²)·e^(−x)
+                let a = r.pick([1, 3, 8])
+                let ra = Double(a).squareRoot()
+                return done(.mul(.sum([.n(a), .neg(.p(x, 2))]), .exp(.neg(x))), -ra - 0.3, 3 + Double(a + 2).squareRoot(), .polyOverExp, [a])
             case 0, 1: // sin²x + m·cos x
                 let m = r.pick([1, -1])
                 return done(.sum([.p(.sin(x), 2), .scaled(m, 1, .cos(x))]), 0, twoPi, pi: true, .sinSqCos, [m])
@@ -1205,8 +1288,10 @@ public enum SketchFactory {
     static func finish(_ f: Expr, _ a: Double, _ b: Double, piBased: Bool, level: Level, seed: UInt64,
                        family: SketchFamily? = nil) -> SketchProblem? {
         let xs = (0...200).map { a + (b - a) * Double($0) / 200 }
-        let ys = xs.map { f.evaluate(at: $0) }
-        guard ys.allSatisfy({ $0.isFinite }) else { return nil }
+        // (A single missing point such as x = 0 in x·ln x² is allowed.)
+        let all = xs.map { f.evaluate(at: $0) }
+        guard all.filter({ !$0.isFinite }).count <= 1 else { return nil }
+        let ys = all.filter(\.isFinite)
         var lo = ys.min()!, hi = ys.max()!
         let range = Swift.max(hi - lo, 1e-6)
         // Show the x-axis when it's in (or close to) the picture.
@@ -1221,7 +1306,7 @@ public enum SketchFactory {
     /// comes from the graph away from the poles (plus every turning point),
     /// so the branches run off the top and bottom of the box.
     static func finishPoled(_ f: Expr, _ a: Double, _ b: Double, poles: [Double], piBased: Bool, level: Level, seed: UInt64,
-                            family: SketchFamily?) -> SketchProblem? {
+                            family: SketchFamily?, labels: [String]? = nil) -> SketchProblem? {
         let w = b - a
         let keep = 0.12 * w
         let xs = (0...400).map { a + w * Double($0) / 400 }.filter { x in poles.allSatisfy { Swift.abs(x - $0) > keep } }
@@ -1233,7 +1318,8 @@ public enum SketchFactory {
         if hi < 0 && -hi < 0.4 * range { hi = 0 }
         let margin = 0.2 * (hi - lo)
         return SketchProblem(function: f, xMin: a, xMax: b, yMin: lo - margin, yMax: hi + margin,
-                             piBased: piBased, level: level, seed: seed, family: family, asymptotes: poles)
+                             piBased: piBased, level: level, seed: seed, family: family, asymptotes: poles,
+                             asymptoteLabels: labels)
     }
 
     static func valid(_ p: SketchProblem) -> Bool {
@@ -1386,8 +1472,10 @@ public enum ChangeFactory {
         case .easy: kinds = [.shift, .negate, .scaleUp, .scaleDown]
         case .medium: kinds = [.absolute, .mirror, .negateShift, .scaleNeg, .square]
         case .hard: kinds = [.reciprocal, .square, .derivative, .absolute, .squareRoot]
-        case .bagrut: kinds = [.antiderivative, .antiderivative, .reciprocalPoles, .reciprocalPoles, .lnOf, .expOf, .absX,
-                               .derivative, .reciprocalSquare]
+        // Weights follow the 571/572/581/582 papers: 1/f most often, then g′ = f, ln f, f′, |f|, e^f, f².
+        // (f(|x|) never appears there.)
+        case .bagrut: kinds = [.antiderivative, .antiderivative, .reciprocalPoles, .reciprocalPoles, .reciprocalPoles, .lnOf, .lnOf,
+                               .expOf, .derivative, .derivative, .absolute, .square, .reciprocalSquare]
         }
         let kind = r.pick(kinds)
         // Bagrut-only kinds build their own base.

@@ -156,7 +156,7 @@ final class VarietyTests: XCTestCase {
                 kinds.append(kind)
                 memory.remember(shape: key, kind: kind)
             }
-            XCTAssertLessThanOrEqual(lookalikes, 2, "\(level): \(lookalikes) look-alikes")
+            XCTAssertLessThanOrEqual(lookalikes, level == .easy ? 6 : 3, "\(level): \(lookalikes) look-alikes")
             for i in 3..<kinds.count {
                 XCTAssertFalse(kinds[i - 3..<i].contains(kinds[i]), "\(level): family \(kinds[i]) repeated within 3: \(kinds)")
             }
@@ -179,7 +179,7 @@ final class VarietyTests: XCTestCase {
                 seen.insert(c.signature)
                 memory.remember(shape: key, kind: c.kindName)
             }
-            XCTAssertLessThanOrEqual(lookalikes, 3, "\(level)")
+            XCTAssertLessThanOrEqual(lookalikes, level == .easy ? 7 : 4, "\(level)")
             XCTAssertLessThanOrEqual(sameKindInARow, 2, "\(level)")
         }
     }

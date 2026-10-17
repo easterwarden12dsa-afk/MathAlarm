@@ -1012,6 +1012,203 @@ enum GraphAlgebra {
                 d2: Factored(display: .div(.scaled(c, 1, .mul(.exp(x), .sum([.n(c), .neg(.exp(x))]))), .p(E, 3)),
                              solve: S.fraction("\(c == 1 ? "" : "\(c)")eˣ(\(c) − eˣ)", S.product([("eˣ", S.never("eˣ", expText)), ("\(c) − eˣ", S.expEquals(c, 1))]),
                                                denominator: "(eˣ + \(c))³", reason: "positive")))
+        case .rootRatX:
+            let a = q[0]
+            let Q = Expr.sum([.p(x, 2), .n(-a * a)])
+            let qT = pt([1, 0, -a * a])
+            inv = Investigation(
+                zeros: S.never("x/√(\(qT))", "x = 0 is outside the domain |x| > \(a)"),
+                d1: Factored(display: .neg(.div(.n(a * a), .pow(Q, .q(3, 2)))),
+                             solve: S.never("f′(x) = −\(a * a)/(\(qT))^(3/2)", "the top is never 0")),
+                d2: Factored(display: .div(.scaled(3 * a * a, 1, x), .pow(Q, .q(5, 2))),
+                             solve: S.fraction("\(3 * a * a)x", S.poly([3 * a * a, 0]), denominator: "(\(qT))^(5/2)", reason: "positive in the domain")))
+        case .rootRatX2:
+            let a = q[0]
+            let Q = Expr.sum([.p(x, 2), .n(-a * a)])
+            let qT = pt([1, 0, -a * a])
+            var d1 = S.fraction("x(\(pt([1, 0, -2 * a * a])))", S.poly([1, 0, -2 * a * a, 0]), denominator: "(\(qT))^(3/2)", reason: "positive in the domain")
+            d1.lines.insert(SolutionStep("f′(x) = [2x·√(\(qT)) − x²·x/√(\(qT))]/(\(qT)) = x(2(\(qT)) − x²)/(\(qT))^(3/2) = x(\(pt([1, 0, -2 * a * a])))/(\(qT))^(3/2). (x = 0 is outside the domain |x| > \(a).)", depth: 1), at: 0)
+            inv = Investigation(
+                zeros: S.never("x²/√(\(qT))", "x = 0 is outside the domain |x| > \(a)"),
+                d1: Factored(display: .div(.mul(x, P([1, 0, -2 * a * a])), .pow(Q, .q(3, 2))), solve: d1),
+                d2: Factored(display: .div(.scaled(a * a, 1, P([1, 0, 2 * a * a])), .pow(Q, .q(5, 2))),
+                             solve: S.never("f″(x) = \(a * a == 1 ? "" : "\(a * a)")(\(pt([1, 0, 2 * a * a])))/(\(qT))^(5/2)", "it is positive in the domain")))
+        case .trigFrac1:
+            var d1 = S.fraction("cos³x", S.trig(.cos, 1, 1, 0, "0"), denominator: "(1 + sin²x)²", reason: "positive")
+            d1.lines.insert(SolutionStep("Quotient rule: f′(x) = [cos x(1 + sin²x) − sin x·2 sin x cos x]/(1 + sin²x)² = cos x(1 − sin²x)/(1 + sin²x)² = cos³x/(1 + sin²x)²", depth: 1), at: 0)
+            inv = Investigation(zeros: S.fraction("sin x", S.trig(.sin, 1, 1, 0, "0"), denominator: "1 + sin²x", reason: "positive"),
+                                d1: Factored(display: .div(.p(.cos(x), 3), .p(.sum([1, .p(.sin(x), 2)]), 2)), solve: d1), d2: nil)
+        case .cosPlusInvSq:
+            var z = Solved()
+            z.say("Multiply by cos²x (≠ 0 in the domain): cos³x + 2 = 0  ⇒  cos³x = −2 — impossible, since cos³x ≥ −1. No solution.")
+            var d1 = S.fraction("sin x·(4 − cos³x)", S.product([("sin x", S.trig(.sin, 1, 1, 0, "0")), ("4 − cos³x", S.never("4 − cos³x", "cos³x ≤ 1 < 4"))]),
+                                denominator: "cos³x", reason: "not 0 in the domain")
+            d1.lines.insert(SolutionStep("f′(x) = −sin x + 2·2·sin x/cos³x = sin x·(4 − cos³x)/cos³x", depth: 1), at: 0)
+            inv = Investigation(zeros: z,
+                                d1: Factored(display: .div(.mul(.sin(x), .sum([4, .neg(.p(.cos(x), 3))])), .p(.cos(x), 3)), solve: d1), d2: nil)
+        case .invCosSq:
+            var z = Solved()
+            z.say("1/cos²x = 4  ⇒  cos²x = 1/4  ⇒  cos x = 1/2  or  cos x = −1/2")
+            z.append(S.trig(.cos, 1, 1, 0.5, "1/2"))
+            z.append(S.trig(.cos, 1, 1, -0.5, "−1/2"))
+            inv = Investigation(zeros: z,
+                                d1: Factored(display: .div(.scaled(2, 1, .sin(x)), .p(.cos(x), 3)),
+                                             solve: S.fraction("2 sin x", S.trig(.sin, 1, 1, 0, "0"), denominator: "cos³x", reason: "not 0 in the domain")),
+                                d2: Factored(display: .div(.sum([.scaled(2, 1, .p(.cos(x), 2)), .scaled(6, 1, .p(.sin(x), 2))]), .p(.cos(x), 4)),
+                                             solve: S.never("f″(x) = (2cos²x + 6sin²x)/cos⁴x", "the top is positive (2cos²x + 6sin²x ≥ 2)")))
+        case .cosQuadInv:
+            let D = Expr.sum([.scaled(2, 1, .p(.cos(x), 2)), .scaled(-5, 1, .cos(x)), .n(-3)])
+            var d1 = S.fraction("6 sin x·(4cos x − 5)", S.product([("sin x", S.trig(.sin, 1, 1, 0, "0")),
+                                                                   ("4cos x − 5", S.trig(.cos, 1, 1, 1.25, "5/4"))]),
+                                denominator: "(2cos²x − 5cos x − 3)²", reason: "positive in the domain")
+            d1.lines.insert(SolutionStep("Chain rule: (2cos²x − 5cos x − 3)′ = sin x·(5 − 4cos x), so f′(x) = −6 sin x(5 − 4cos x)/(…)² = 6 sin x(4cos x − 5)/(…)². The denominator 2cos²x − 5cos x − 3 = (2cos x + 1)(cos x − 3) is 0 where cos x = −1/2: the asymptotes x = 2π/3, 4π/3.", depth: 1), at: 0)
+            inv = Investigation(zeros: S.never("6/(2cos²x − 5cos x − 3)", "the top is 6"),
+                                d1: Factored(display: .div(.scaled(6, 1, .mul(.sin(x), .sum([.scaled(4, 1, .cos(x)), .n(-5)]))), .p(D, 2)), solve: d1), d2: nil)
+        case .sinRatio:
+            var d1 = S.fraction("2cos x", S.trig(.cos, 1, 1, 0, "0"), denominator: "(sin x + 1)²", reason: "positive in the domain (it is 0 only at x = 3π/2)")
+            d1.lines.insert(SolutionStep("Quotient rule: f′(x) = [cos x(sin x + 1) − (sin x − 1)cos x]/(sin x + 1)² = 2cos x/(sin x + 1)²", depth: 1), at: 0)
+            inv = Investigation(zeros: S.fraction("sin x − 1", S.trig(.sin, 1, 1, 1, "1"), denominator: "sin x + 1", reason: "not 0 in the domain"),
+                                d1: Factored(display: .div(.scaled(2, 1, .cos(x)), .p(.sum([.sin(x), 1]), 2)), solve: d1), d2: nil)
+        case .twoSinCos2:
+            var z = S.product([("sin x", S.trig(.sin, 1, 1, 0, "0")), ("1 − sin x", S.trig(.sin, 1, 1, 1, "1"))])
+            z.lines.insert(SolutionStep("cos 2x = 1 − 2sin²x:  f(x) = 2 sin x − 2sin²x = 2 sin x·(1 − sin x)", depth: 1), at: 0)
+            var d2 = Solved()
+            d2.say("f″(x) = −2 sin x − 4cos 2x = −2 sin x − 4(1 − 2sin²x) = 8sin²x − 2 sin x − 4")
+            d2.append(S.sinPoly([8, -2, -4]))
+            inv = Investigation(zeros: z,
+                                d1: Factored(display: .scaled(2, 1, .mul(.cos(x), .sum([1, .scaled(-2, 1, .sin(x))]))),
+                                             solve: S.product([("cos x", S.trig(.cos, 1, 1, 0, "0")), ("1 − 2 sin x", S.trig(.sin, 1, 1, 0.5, "1/2"))])),
+                                d2: Factored(display: .sum([.scaled(8, 1, .p(.sin(x), 2)), .scaled(-2, 1, .sin(x)), .n(-4)]), solve: d2))
+        case .cos3Sin:
+            var d1 = S.product([("cos²x", S.trig(.cos, 1, 1, 0, "0")), ("1 − 4sin²x", S.sinPoly([-4, 0, 1]))])
+            d1.lines.insert(SolutionStep("f′(x) = −3cos²x sin²x + cos⁴x = cos²x(cos²x − 3sin²x) = cos²x(1 − 4sin²x)", depth: 1), at: 0)
+            inv = Investigation(zeros: S.product([("cos³x", S.trig(.cos, 1, 1, 0, "0")), ("sin x", S.trig(.sin, 1, 1, 0, "0"))]),
+                                d1: Factored(display: .mul(.p(.cos(x), 2), .sum([1, .scaled(-4, 1, .p(.sin(x), 2))])), solve: d1), d2: nil)
+        case .expRat2:
+            let D = Expr.sum([.exp(.mul(2, x)), .scaled(-5, 1, .exp(x)), 4])
+            var d1 = S.fraction("2e^(2x)(8 − 5eˣ)", S.product([("2e^(2x)", S.never("2e^(2x)", expText)), ("8 − 5eˣ", S.expEquals(8, 5))]),
+                                denominator: "(e^(2x) − 5eˣ + 4)²", reason: "positive in the domain")
+            d1.lines.insert(SolutionStep("With t = eˣ: f = 2t²/(t² − 5t + 4) and f′(x) = t·df/dt = 2t²(8 − 5t)/(t² − 5t + 4)². The denominator (eˣ − 1)(eˣ − 4) is 0 at x = 0 and x = ln 4: the asymptotes.", depth: 1), at: 0)
+            inv = Investigation(zeros: S.never("2e^(2x)/(…)", "the top 2e^(2x) is never 0"),
+                                d1: Factored(display: .div(.mul(.scaled(2, 1, .exp(.mul(2, x))), .sum([8, .scaled(-5, 1, .exp(x))])), .p(D, 2)), solve: d1),
+                                d2: nil)
+        case .expOverAMinus:
+            let a = q[0]
+            let D = Expr.sum([.n(a), .neg(.exp(x))])
+            inv = Investigation(zeros: S.never("eˣ/(\(a) − eˣ)", "the top eˣ is never 0"),
+                                d1: Factored(display: .div(.scaled(a, 1, .exp(x)), .p(D, 2)),
+                                             solve: S.never("f′(x) = \(a == 1 ? "" : "\(a)")eˣ/(\(a) − eˣ)²", "it is positive")),
+                                d2: Factored(display: .div(.scaled(a, 1, .mul(.exp(x), .sum([.n(a), .exp(x)]))), .p(D, 3)),
+                                             solve: S.never("f″(x) = \(a == 1 ? "" : "\(a)")eˣ(\(a) + eˣ)/(\(a) − eˣ)³", "the top is always positive")))
+        case .expMinusBOverSq:
+            let b = q[0]
+            let D = Expr.sum([.exp(x), .n(-4)])
+            var d1 = S.fraction("eˣ(\(2 * b - 4) − eˣ)", S.product([("eˣ", S.never("eˣ", expText)), ("\(2 * b - 4) − eˣ", S.expEquals(2 * b - 4, 1))]),
+                                denominator: "(eˣ − 4)³", reason: "not 0 in the domain")
+            d1.lines.insert(SolutionStep("Quotient rule: f′(x) = [eˣ(eˣ − 4)² − (eˣ − \(b))·2(eˣ − 4)eˣ]/(eˣ − 4)⁴ = eˣ[(eˣ − 4) − 2(eˣ − \(b))]/(eˣ − 4)³ = eˣ(\(2 * b - 4) − eˣ)/(eˣ − 4)³", depth: 1), at: 0)
+            inv = Investigation(zeros: S.fraction("eˣ − \(b)", S.expEquals(b, 1), denominator: "(eˣ − 4)²", reason: "not 0 in the domain"),
+                                d1: Factored(display: .div(.mul(.exp(x), .sum([.n(2 * b - 4), .neg(.exp(x))])), .p(D, 3)), solve: d1), d2: nil)
+        case .lnSqRatio:
+            let L = Expr.sum([.p(.ln(x), 2), .n(-1)])
+            var d1 = S.fraction("−2 ln x", S.lnEquals(0, 1), denominator: "x((ln x)² − 1)²", reason: "positive in the domain")
+            d1.lines.insert(SolutionStep("With u = ln x: f = u²/(u² − 1) = 1 + 1/(u² − 1), so f′(x) = −2u/(u² − 1)² · (1/x) = −2 ln x/(x((ln x)² − 1)²). The asymptotes are where (ln x)² = 1: x = e and x = 1/e.", depth: 1), at: 0)
+            inv = Investigation(zeros: S.fraction("(ln x)²", S.lnEquals(0, 1), denominator: "(ln x)² − 1", reason: "not 0 in the domain"),
+                                d1: Factored(display: .div(.scaled(-2, 1, .ln(x)), .mul(x, .p(L, 2))), solve: d1), d2: nil)
+        case .xOverLnA:
+            let a = q[0]
+            let L = Expr.sum([.ln(x), .n(-a)])
+            let lT = a == 0 ? "ln x" : "ln x − \(a)"
+            inv = Investigation(zeros: S.never("x/(\(lT))", "x > 0 in the domain"),
+                                d1: Factored(display: .div(.sum([.ln(x), .n(-a - 1)]), .p(L, 2)),
+                                             solve: S.fraction("ln x − \(a + 1)", S.lnEquals(a + 1, 1), denominator: "(\(lT))²", reason: "positive in the domain")),
+                                d2: Factored(display: .div(.sum([.n(a + 2), .neg(.ln(x))]), .mul(x, .p(L, 3))),
+                                             solve: S.fraction("\(a + 2) − ln x", S.lnEquals(a + 2, 1), denominator: "x(\(lT))³", reason: "not 0 in the domain")))
+        case .xnThreeMinusLn:
+            let n = q[0]
+            let z = S.product([(n == 1 ? "x" : "x²", S.never(n == 1 ? "x" : "x²", "x > 0 here")), ("3 − ln x", S.lnEquals(3, 1))])
+            if n == 1 {
+                inv = Investigation(zeros: z,
+                                    d1: Factored(display: .sum([2, .neg(.ln(x))]), solve: S.lnEquals(2, 1, prefix: "f′(x) = 3 − ln x − 1 = 2 − ln x = 0:")),
+                                    d2: Factored(display: .neg(.div(1, x)), solve: S.never("f″(x) = −1/x", "it is negative for x > 0")))
+            } else {
+                inv = Investigation(zeros: z,
+                                    d1: Factored(display: .mul(x, .sum([5, .scaled(-2, 1, .ln(x))])),
+                                                 solve: S.product([("x", S.never("x", "x > 0 here")), ("5 − 2 ln x", S.lnEquals(5, 2))])),
+                                    d2: Factored(display: .sum([3, .scaled(-2, 1, .ln(x))]), solve: S.lnEquals(3, 2)))
+            }
+        case .fourXLnX2:
+            var z = Solved()
+            z.say("x ≠ 0, so ln(x²) − 1 = 0  ⇒  x² = e  ⇒  x = ±√e  (≈ ±1.65)")
+            z.roots = [AlgebraRoot(x: exp(0.5), label: "√e"), AlgebraRoot(x: -exp(0.5), label: "−√e")]
+            var d1 = Solved()
+            d1.say("f′(x) = 4(ln(x²) − 1) + 4x·(2x/x²) = 4 ln(x²) + 4 = 0  ⇒  ln(x²) = −1  ⇒  x² = 1/e  ⇒  x = ±1/√e  (≈ ±0.607)")
+            d1.roots = [AlgebraRoot(x: exp(-0.5), label: "1/√e"), AlgebraRoot(x: -exp(-0.5), label: "−1/√e")]
+            inv = Investigation(zeros: z,
+                                d1: Factored(display: .scaled(4, 1, .sum([.ln(.p(x, 2)), 1])), solve: d1),
+                                d2: Factored(display: .div(8, x), solve: S.never("f″(x) = 8/x", "8/x is never 0 (its sign changes at x = 0, which isn't in the domain)")))
+        case .xLnPoly:
+            var z = Solved()
+            z.say("x > 0, so solve (ln x)² − 2 ln x + 2 = 0 with u = ln x:")
+            var u = S.poly([1, -2, 2], "u")
+            u.roots = []
+            z.append(u, indent: 1)
+            var d1 = Solved()
+            d1.say("f′(x) = (ln x)² − 2 ln x + 2 + x·(2 ln x − 2)/x = (ln x)².  (ln x)² = 0  ⇒  ln x = 0  ⇒  x = 1 — a double zero, so f′ ≥ 0 and doesn't change sign there.")
+            d1.roots = [AlgebraRoot(x: 1, label: "1")]
+            inv = Investigation(zeros: z,
+                                d1: Factored(display: .p(.ln(x), 2), solve: d1),
+                                d2: Factored(display: .div(.scaled(2, 1, .ln(x)), x),
+                                             solve: S.fraction("2 ln x", S.lnEquals(0, 1), denominator: "x", reason: "positive")))
+        case .xPlusLnQuad:
+            let c = q[0]
+            var d1 = S.fraction(pt([1, 2, -c]), S.poly([1, 2, -c]), denominator: pt([1, 0, -c]), reason: "not 0 in the domain |x| > √\(c)")
+            d1.lines.insert(SolutionStep("f′(x) = 1 + 2x/(x² − \(c)) = (\(pt([1, 2, -c])))/(x² − \(c)). The domain is x² > \(c); a solution with x² < \(c) doesn't count.", depth: 1), at: 0)
+            inv = Investigation(zeros: nil,
+                                d1: Factored(display: .div(P([1, 2, -c]), P([1, 0, -c])), solve: d1),
+                                d2: Factored(display: .neg(.div(.scaled(2, 1, P([1, 0, c])), .p(P([1, 0, -c]), 2))),
+                                             solve: S.never("f″(x) = −2(x² + \(c))/(x² − \(c))²", "it is negative everywhere in the domain")))
+        case .lnQuadMinusX:
+            inv = Investigation(zeros: nil,
+                                d1: Factored(display: .div(.scaled(-2, 1, P([1, -8, 7])), P([1, 0, 7])),
+                                             solve: S.fraction("−2(x² − 8x + 7)", S.poly([1, -8, 7]), denominator: "x² + 7", reason: "always positive")),
+                                d2: Factored(display: .div(.scaled(16, 1, P([-1, 0, 7])), .p(P([1, 0, 7]), 2)),
+                                             solve: S.fraction("16(7 − x²)", S.poly([-1, 0, 7]), denominator: "(x² + 7)²", reason: "always positive")))
+        case .polyOverExp:
+            let a = q[0]
+            let E = Expr.exp(.neg(x))
+            inv = Investigation(zeros: S.product([(pt([-1, 0, a]), S.poly([-1, 0, a])), ("e^(−x)", S.never("e^(−x)", expText))]),
+                                d1: Factored(display: .mul(E, P([1, -2, -a])),
+                                             solve: S.product([("e^(−x)", S.never("e^(−x)", expText)), (pt([1, -2, -a]), S.poly([1, -2, -a]))])),
+                                d2: Factored(display: .mul(E, P([-1, 4, a - 2])),
+                                             solve: S.product([("e^(−x)", S.never("e^(−x)", expText)), (pt([-1, 4, a - 2]), S.poly([-1, 4, a - 2]))])))
+        case .expShift:
+            let c = q[0]
+            inv = Investigation(zeros: S.expEquals(c, 1),
+                                d1: Factored(display: .exp(x), solve: S.never("f′(x) = eˣ", expText)),
+                                d2: Factored(display: .exp(x), solve: S.never("f″(x) = eˣ", expText)))
+        case .lnShift:
+            let (a, k) = (q[0], q[1])
+            let shiftText = a == 0 ? "x" : "x \(a > 0 ? "+" : "−") \(Swift.abs(a))"
+            var z = Solved()
+            let r0 = exp(Double(-k)) - Double(a)
+            let eLabel = k == 0 ? "1" : (k == 1 ? "1/e" : "e")
+            let label = a == 0 ? eLabel : (k == 0 ? Solver.minus("\(1 - a)") : "\(eLabel) \(a > 0 ? "−" : "+") \(Swift.abs(a))")
+            z.say("ln(\(shiftText)) = \(Solver.minus("\(-k)"))  ⇒  \(shiftText) = \(eLabel)  ⇒  x = \(label)  (\(Solver.approx(r0)))")
+            z.roots = [AlgebraRoot(x: r0, label: label)]
+            let D = Expr.sum([x, .n(a)])
+            inv = Investigation(zeros: z,
+                                d1: Factored(display: .div(1, D), solve: S.never("f′(x) = 1/(\(shiftText))", "the top is 1")),
+                                d2: Factored(display: .neg(.div(1, .p(D, 2))), solve: S.never("f″(x) = −1/(\(shiftText))²", "the top is −1")))
+        case .sqrtShift:
+            let (a, k) = (q[0], q[1])
+            let shiftText = a == 0 ? "x" : "x \(a > 0 ? "+" : "−") \(Swift.abs(a))"
+            var z = Solved()
+            z.say("√(\(shiftText)) = \(k)  ⇒  \(shiftText) = \(k * k)  ⇒  x = \(Solver.minus("\(k * k - a)"))")
+            z.roots = [AlgebraRoot(x: Double(k * k - a), label: Solver.minus("\(k * k - a)"))]
+            let D = Expr.sum([x, .n(a)])
+            inv = Investigation(zeros: z,
+                                d1: Factored(display: .div(1, .scaled(2, 1, .sqrt(D))), solve: S.never("f′(x) = 1/(2√(\(shiftText)))", "the top is 1")),
+                                d2: Factored(display: .neg(.div(1, .mul(4, .pow(D, .q(3, 2))))), solve: S.never("f″(x) = −1/(4(\(shiftText))^(3/2))", "the top is −1")))
         case .tanX:
             inv = Investigation(
                 zeros: S.trig(.tan, 1, 1, 0, "0"),
