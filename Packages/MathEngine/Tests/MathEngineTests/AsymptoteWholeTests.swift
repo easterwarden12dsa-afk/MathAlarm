@@ -99,6 +99,8 @@ final class AsymptoteWholeTests: XCTestCase {
         XCTAssertTrue(q.isWhole)
         // Everything drawn: passes.
         let all = SketchChecker.checkWhole(perfect(q), for: q, view: q.viewport, mode: .standard)
+        print("SAMPLE whole \(q.function) [\(q.xMin), \(q.xMax)] y[\(q.yMin), \(q.yMax)] checked [\(all.checked.xMin), \(all.checked.xMax)]")
+        print("SAMPLE raw: \(SketchChecker.rawCheck(perfect(q), for: all.checked, tolerance: SketchMode.standard.tolerance).hints)")
         XCTAssertTrue(all.result.passed, all.result.hints.joined(separator: " | "))
         // Only the left half drawn: the peak/inflection to the right are missing.
         let half = SketchChecker.checkWhole(perfect(q, to: q.xMin + 0.3 * (q.xMax - q.xMin)), for: q, view: q.viewport, mode: .standard)
