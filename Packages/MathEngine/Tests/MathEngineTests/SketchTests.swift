@@ -225,7 +225,7 @@ final class GraphStepsTests: XCTestCase {
         XCTAssertTrue(text.contains("maximum"), text)
         XCTAssertTrue(text.contains("minimum"), text)
         XCTAssertTrue(text.contains("π/6"), text)
-        XCTAssertTrue(text.contains("Inflection"), text)
+        XCTAssertTrue(text.contains("inflection point"), text)
     }
 
     func testRootsFindsCrossingsAndTouches() {

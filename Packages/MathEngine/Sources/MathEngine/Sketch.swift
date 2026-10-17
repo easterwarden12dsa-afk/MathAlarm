@@ -14,6 +14,8 @@ public struct SketchProblem: Codable, Hashable, Sendable {
     public var piBased: Bool
     public var level: Level
     public var seed: UInt64
+    /// Which generator family made it (lets the solution solve f′ = 0 exactly).
+    public var family: SketchFamily? = nil
 
     public var signature: String { "sketch:\(function.description):\(xMin):\(xMax)" }
 
@@ -680,6 +682,27 @@ public enum SketchFormat {
 
 // MARK: - Generator
 
+/// The generator family of a sketch problem and its parameters, so the
+/// worked solution can solve f′(x) = 0 and f″(x) = 0 by algebra.
+public struct SketchFamily: Codable, Hashable, Sendable {
+    public enum Kind: String, Codable, Sendable {
+        case quadRoots, trigSin, trigCos, bell, cubicAx, vertex, shiftSin
+        case cubic3, sinCos, xExp, rational1, quartic, linExp, bump
+        case sinSin, quadGauss, sin2cos, powExp, sinExpDecay, quartic3, ratQuad, xSin
+        case x2Ln, lnQuad, xPlusInv, expLin, powLn, lnOverPow, sqrtLin, expOverQuad, cubicK, xGauss
+    }
+    public var kind: Kind
+    public var p: [Int]
+    /// Vertical factor the whole function was multiplied by.
+    public var factor: Int
+
+    public init(_ kind: Kind, _ p: [Int], factor: Int = 1) {
+        self.kind = kind
+        self.p = p
+        self.factor = factor
+    }
+}
+
 public enum SketchFactory {
     public static func make(level: Level, seed: UInt64, avoiding: Set<String> = []) -> SketchProblem {
         var s = seed
@@ -700,7 +723,8 @@ public enum SketchFactory {
 
     /// The reference example: sin²(x)·cos(2x) on [−π/4, π/4].
     public static func testCase(seed: UInt64 = 1) -> SketchProblem {
-        finish(.mul(.p(.sin(.x), 2), .cos(.mul(2, .x))), -Double.pi / 4, Double.pi / 4, piBased: true, level: .hard, seed: seed)!
+        finish(.mul(.p(.sin(.x), 2), .cos(.mul(2, .x))), -Double.pi / 4, Double.pi / 4, piBased: true, level: .hard, seed: seed,
+               family: SketchFamily(.sin2cos, [2]))!
     }
 
     /// Families of functions with random parameters (coefficients, roots,
@@ -711,8 +735,10 @@ public enum SketchFactory {
         func lin(_ k: Int) -> Expr { .scaled(k, 1, x) }
         // Hard levels also get a random vertical factor, so values differ too.
         let factor = (level == .hard || level == .bagrut) ? r.pick([1, 1, 2, 3, -1, -2]) : 1
-        func done(_ f: Expr, _ a: Double, _ b: Double, pi isPi: Bool = false) -> SketchProblem? {
-            finish(factor == 1 ? f : .scaled(factor, 1, f), a, b, piBased: isPi, level: level, seed: seed)
+        func done(_ f: Expr, _ a: Double, _ b: Double, pi isPi: Bool = false,
+                  _ kind: SketchFamily.Kind, _ params: [Int]) -> SketchProblem? {
+            finish(factor == 1 ? f : .scaled(factor, 1, f), a, b, piBased: isPi, level: level, seed: seed,
+                   family: SketchFamily(kind, params, factor: factor))
         }
         switch level {
         case .easy:
@@ -720,24 +746,28 @@ public enum SketchFactory {
             case 0: // a(x − r1)(x − r2)
                 let r1 = r.int(-4...2), r2 = r1 + r.int(1...5), a = r.pick([1, -1, 2, -2])
                 let f = Expr.scaled(a, 1, .mul(.sum([x, .n(-r1)]), .sum([x, .n(-r2)])))
-                return done(f, Double(r1 - r.int(1...2)), Double(r2 + r.int(1...2)))
+                return done(f, Double(r1 - r.int(1...2)), Double(r2 + r.int(1...2)), .quadRoots, [a, r1, r2])
             case 1: // k·sin(mx) or k·cos(mx)
                 let k = r.int(1...4), m = r.int(1...2)
-                let f: Expr = r.bool() ? .sin(lin(m)) : .cos(lin(m))
-                return r.bool() ? done(.scaled(k, 1, f), -pi, pi, pi: true) : done(.scaled(k, 1, f), 0, 2 * pi, pi: true)
+                let isSin = r.bool()
+                let f: Expr = isSin ? .sin(lin(m)) : .cos(lin(m))
+                let fam: SketchFamily.Kind = isSin ? .trigSin : .trigCos
+                return r.bool() ? done(.scaled(k, 1, f), -pi, pi, pi: true, fam, [k, m])
+                                : done(.scaled(k, 1, f), 0, 2 * pi, pi: true, fam, [k, m])
             case 2: // bell curve e^(−x²/c)
                 let c = r.int(1...3)
-                return done(.exp(.neg(.div(.p(x, 2), .n(c)))), -Double(c) - 1.5, Double(c) + 1.5)
+                return done(.exp(.neg(.div(.p(x, 2), .n(c)))), -Double(c) - 1.5, Double(c) + 1.5, .bell, [c])
             case 3: // x³ − a·x
                 let a = r.int(1...6)
                 let w = Double(a).squareRoot() + Double(r.int(1...2)) * 0.5
-                return done(.sub(.p(x, 3), .scaled(a, 1, x)), -w, w)
+                return done(.sub(.p(x, 3), .scaled(a, 1, x)), -w, w, .cubicAx, [a])
             case 4: // vertex form a(x − h)² + k
                 let h = r.int(-3...3), k = r.int(-4...4), a = r.pick([1, -1])
-                return done(.sum([.scaled(a, 1, .p(.sum([x, .n(-h)]), 2)), .n(k)]), Double(h - 3), Double(h + r.int(2...3)))
+                return done(.sum([.scaled(a, 1, .p(.sum([x, .n(-h)]), 2)), .n(k)]), Double(h - 3), Double(h + r.int(2...3)),
+                            .vertex, [a, h, k])
             default: // k + sin(x)
                 let k = r.nonZero(-2...2)
-                return done(.sum([.n(k), .sin(x)]), -pi, pi, pi: true)
+                return done(.sum([.n(k), .sin(x)]), -pi, pi, pi: true, .shiftSin, [k])
             }
         case .medium:
             switch r.int(0...6) {
@@ -747,98 +777,98 @@ public enum SketchFactory {
                 let rs = roots.sorted()
                 let sign = r.pick([1, -1])
                 let f = Expr.scaled(sign, 1, .mul(.mul(.sum([x, .n(-rs[0])]), .sum([x, .n(-rs[1])])), .sum([x, .n(-rs[2])])))
-                return done(f, Double(rs[0]) - 0.5, Double(rs[2]) + 0.5)
-            case 1: // sin(mx) + c·cos(nx)
+                return done(f, Double(rs[0]) - 0.5, Double(rs[2]) + 0.5, .cubic3, [sign] + rs)
+            case 1: // sin(mx) + (c/2)·cos(nx)
                 let m = r.int(1...2), n = r.int(1...3), c = r.pick([1, -1])
-                return done(.sum([.sin(lin(m)), .scaled(c, 2, .cos(lin(n)))]), -pi, pi, pi: true)
+                return done(.sum([.sin(lin(m)), .scaled(c, 2, .cos(lin(n)))]), -pi, pi, pi: true, .sinCos, [m, n, c])
             case 2: // x·e^(−x/c)
                 let c = r.int(1...3)
-                return done(.mul(x, .exp(.neg(.div(x, .n(c))))), 0, 5 * Double(c))
-            case 3: // x/(x² + c)
-                let c = r.int(1...4)
+                return done(.mul(x, .exp(.neg(.div(x, .n(c))))), 0, 5 * Double(c), .xExp, [c])
+            case 3: // s·x/(x² + c)
+                let c = r.int(1...4), s = r.pick([1, 2, -1])
                 let w = 2 * Double(c).squareRoot() + 1.5
-                return done(.div(.scaled(r.pick([1, 2, -1]), 1, x), .sum([.p(x, 2), .n(c)])), -w, w)
-            case 4: // a·x⁴ − b·x²
+                return done(.div(.scaled(s, 1, x), .sum([.p(x, 2), .n(c)])), -w, w, .rational1, [s, c])
+            case 4: // x⁴ − 2b·x²
                 let b = r.int(1...4)
                 let w = (Double(b)).squareRoot() * 1.25
-                return done(.sub(.p(x, 4), .scaled(2 * b, 1, .p(x, 2))), -w, w)
+                return done(.sub(.p(x, 4), .scaled(2 * b, 1, .p(x, 2))), -w, w, .quartic, [b])
             case 5: // (x − a)·e^x
                 let a = r.int(-1...2)
-                return done(.mul(.sum([x, .n(-a)]), .exp(x)), Double(a) - 4, Double(a) + 1)
-            default: // c/(x² + 1) style bump with offset
+                return done(.mul(.sum([x, .n(-a)]), .exp(x)), Double(a) - 4, Double(a) + 1, .linExp, [a])
+            default: // c/(x² + 1) + k
                 let c = r.int(2...5), k = r.int(-2...1)
-                return done(.sum([.div(.n(c), .sum([.p(x, 2), 1])), .n(k)]), -3, 3)
+                return done(.sum([.div(.n(c), .sum([.p(x, 2), 1])), .n(k)]), -3, 3, .bump, [c, k])
             }
         case .hard:
             switch r.int(0...8) {
             case 7: // sin(x) + sin(kx)/k
                 let k = r.int(2...3)
-                return done(.sum([.sin(x), .div(.sin(lin(k)), .n(k))]), -pi, pi, pi: true)
+                return done(.sum([.sin(x), .div(.sin(lin(k)), .n(k))]), -pi, pi, pi: true, .sinSin, [k])
             case 8: // (x² − a)·e^(−x²/2)
                 let a = r.int(1...3)
-                return done(.mul(.sum([.p(x, 2), .n(-a)]), .exp(.neg(.div(.p(x, 2), 2)))), -3.5, 3.5)
-            case 0: return testCase(seed: seed)
-            case 1: // sin²(x)·cos(kx)
+                return done(.mul(.sum([.p(x, 2), .n(-a)]), .exp(.neg(.div(.p(x, 2), 2)))), -3.5, 3.5, .quadGauss, [a])
+            case 0, 1: // sin²(x)·cos(kx)
                 let k = r.int(2...3)
                 let w = pi / Double(2 * k)
-                return done(.mul(.p(.sin(x), 2), .cos(lin(k))), -w, w, pi: true)
+                return done(.mul(.p(.sin(x), 2), .cos(lin(k))), -w, w, pi: true, .sin2cos, [k])
             case 2: // xⁿ·e^(−x)
                 let n = r.int(2...3)
-                return done(.mul(.p(x, n), .exp(.neg(x))), 0, Double(n) + 4)
+                return done(.mul(.p(x, n), .exp(.neg(x))), 0, Double(n) + 4, .powExp, [n])
             case 3: // sin(kx)·e^(−x/c)
                 let k = r.int(1...2), c = r.int(2...4)
-                return done(.mul(.sin(lin(k)), .exp(.neg(.div(x, .n(c))))), 0, 2 * pi, pi: true)
+                return done(.mul(.sin(lin(k)), .exp(.neg(.div(x, .n(c))))), 0, 2 * pi, pi: true, .sinExpDecay, [k, c])
             case 4: // x⁴ − a·x² + b·x
                 let a = r.int(2...5), b = r.nonZero(-2...2)
                 let w = Double(a).squareRoot() * 1.15
-                return done(.sum([.p(x, 4), .scaled(-a, 1, .p(x, 2)), .scaled(b, 1, x)]), -w, w)
+                return done(.sum([.p(x, 4), .scaled(-a, 1, .p(x, 2)), .scaled(b, 1, x)]), -w, w, .quartic3, [a, b])
             case 5: // (x² − a)/(x² + b)
                 let a = r.int(1...4), b = r.int(1...3)
-                return done(.div(.sum([.p(x, 2), .n(-a)]), .sum([.p(x, 2), .n(b)])), -4, 4)
+                return done(.div(.sum([.p(x, 2), .n(-a)]), .sum([.p(x, 2), .n(b)])), -4, 4, .ratQuad, [a, b])
             default: // x·sin(x)
-                return done(.mul(x, .sin(x)), -2 * pi, 2 * pi, pi: true)
+                return done(.mul(x, .sin(x)), -2 * pi, 2 * pi, pi: true, .xSin, [])
             }
         case .bagrut:
             switch r.int(0...10) {
             case 7: // x² − a·ln x
                 let a = r.int(1...4)
-                return done(.sub(.p(x, 2), .scaled(a, 1, .ln(x))), 0.2, 2.5 + Double(a) * 0.2)
+                return done(.sub(.p(x, 2), .scaled(a, 1, .ln(x))), 0.2, 2.5 + Double(a) * 0.2, .x2Ln, [a])
             case 8: // ln(x² + a)
                 let a = r.int(1...4), w = Double(r.int(2...4))
-                return done(.ln(.sum([.p(x, 2), .n(a)])), -w, w)
+                return done(.ln(.sum([.p(x, 2), .n(a)])), -w, w, .lnQuad, [a])
             case 9: // x + a/x
                 let a = r.int(1...4)
-                return done(.sum([x, .div(.n(a), x)]), 0.3, 2.5 * Double(a).squareRoot() + 0.5)
+                return done(.sum([x, .div(.n(a), x)]), 0.3, 2.5 * Double(a).squareRoot() + 0.5, .xPlusInv, [a])
             case 10: // eˣ − a·x
                 let a = r.int(1...4)
-                return done(.sub(.exp(x), .scaled(a, 1, x)), -2, log(Double(a)) + 1.8)
+                return done(.sub(.exp(x), .scaled(a, 1, x)), -2, log(Double(a)) + 1.8, .expLin, [a])
             case 0: // xⁿ·ln x
                 let n = r.int(1...2)
-                return done(.mul(n == 1 ? x : .p(x, 2), .ln(x)), 0.1, n == 1 ? 3 : 2)
+                return done(.mul(n == 1 ? x : .p(x, 2), .ln(x)), 0.1, n == 1 ? 3 : 2, .powLn, [n])
             case 1: // ln(x)/xⁿ
                 let n = r.int(1...2)
-                return done(.div(.ln(x), n == 1 ? x : .p(x, 2)), 0.5, n == 1 ? 8 : 5)
+                return done(.div(.ln(x), n == 1 ? x : .p(x, 2)), 0.5, n == 1 ? 8 : 5, .lnOverPow, [n])
             case 2: // √x·(x − a)
                 let a = r.int(2...5)
-                return done(.mul(.sqrt(x), .sum([x, .n(-a)])), 0, Double(a) + 1.5)
+                return done(.mul(.sqrt(x), .sum([x, .n(-a)])), 0, Double(a) + 1.5, .sqrtLin, [a])
             case 3: // eˣ/(x² + c)
                 let c = r.int(1...3)
-                return done(.div(.exp(x), .sum([.p(x, 2), .n(c)])), -3, 2.5)
+                return done(.div(.exp(x), .sum([.p(x, 2), .n(c)])), -3, 2.5, .expOverQuad, [c])
             case 4: // x³ − 3k²x
                 let k = r.int(1...3)
-                return done(.sub(.p(x, 3), .mul(.n(3 * k * k), x)), -2.2 * Double(k), 2.2 * Double(k))
+                return done(.sub(.p(x, 3), .mul(.n(3 * k * k), x)), -2.2 * Double(k), 2.2 * Double(k), .cubicK, [k])
             case 5: // x·e^(−x²/c)
                 let c = r.int(1...3)
                 let w = 2.5 * Double(c).squareRoot()
-                return done(.mul(x, .exp(.neg(.div(.p(x, 2), .n(c))))), -w, w)
-            default: // (x² − a)/(x² + 1)·k  — rational without asymptotes
+                return done(.mul(x, .exp(.neg(.div(.p(x, 2), .n(c))))), -w, w, .xGauss, [c])
+            default: // (x² − a)/(x² + 1) — rational without asymptotes
                 let a = r.int(1...4)
-                return done(.div(.sum([.p(x, 2), .n(-a)]), .sum([.p(x, 2), 1])), -4, 4)
+                return done(.div(.sum([.p(x, 2), .n(-a)]), .sum([.p(x, 2), 1])), -4, 4, .ratQuad, [a, 1])
             }
         }
     }
 
-    static func finish(_ f: Expr, _ a: Double, _ b: Double, piBased: Bool, level: Level, seed: UInt64) -> SketchProblem? {
+    static func finish(_ f: Expr, _ a: Double, _ b: Double, piBased: Bool, level: Level, seed: UInt64,
+                       family: SketchFamily? = nil) -> SketchProblem? {
         let xs = (0...200).map { a + (b - a) * Double($0) / 200 }
         let ys = xs.map { f.evaluate(at: $0) }
         guard ys.allSatisfy({ $0.isFinite }) else { return nil }
@@ -849,7 +879,7 @@ public enum SketchFactory {
         if hi < 0 && -hi < 0.4 * range { hi = 0 }
         let margin = 0.15 * (hi - lo)
         return SketchProblem(function: f, xMin: a, xMax: b, yMin: lo - margin, yMax: hi + margin,
-                             piBased: piBased, level: level, seed: seed)
+                             piBased: piBased, level: level, seed: seed, family: family)
     }
 
     static func valid(_ p: SketchProblem) -> Bool {
@@ -1031,5 +1061,80 @@ public enum ChangeFactory {
         target.yMin = Swift.min(target.yMin, base.yMin)
         target.yMax = Swift.max(target.yMax, base.yMax)
         return ChangeProblem(base: base, transform: transform, target: target, level: level, seed: seed)
+    }
+}
+
+// MARK: - Zone guide
+
+/// "Show the correct graph in this zone", fitted to the user's own drawing:
+/// the true shape, scaled and shifted like the parts they drew, and bent so
+/// it joins their strokes at both edges of the zone — no floating pieces.
+public enum SketchGuide {
+    public static func continuation(of strokes: [SketchStroke], for p: SketchProblem, in zone: ClosedRange<Double>,
+                                    flagged: [ClosedRange<Double>] = []) -> SketchStroke {
+        let a = p.xMin, b = p.xMax, w = b - a
+        let n = 120
+        let colW = w / Double(n)
+        let xs = (0..<n).map { a + w * (Double($0) + 0.5) / Double(n) }
+        let drawn = SketchChecker.sampleDrawing(strokes, xs: xs, columnWidth: colW)
+        func isFlagged(_ x: Double) -> Bool {
+            (flagged + [zone]).contains { x >= $0.lowerBound - colW && x <= $0.upperBound + colW }
+        }
+
+        // How the user's drawing relates to the true graph where it was right: u ≈ α·f + β.
+        var pairs: [(f: Double, u: Double)] = []
+        for (i, x) in xs.enumerated() {
+            guard let u = drawn[i], !isFlagged(x) else { continue }
+            let fv = p.value(at: x)
+            if fv.isFinite { pairs.append((fv, u)) }
+        }
+        var alpha = 1.0, beta = 0.0
+        if pairs.count >= 6 {
+            let fm = pairs.reduce(0) { $0 + $1.f } / Double(pairs.count)
+            let um = pairs.reduce(0) { $0 + $1.u } / Double(pairs.count)
+            let cov = pairs.reduce(0) { $0 + ($1.f - fm) * ($1.u - um) }
+            let varF = pairs.reduce(0) { $0 + ($1.f - fm) * ($1.f - fm) }
+            if varF > 1e-12 { alpha = cov / varF }
+            if !(0.25...4).contains(alpha) { alpha = 1 }
+            beta = um - alpha * fm
+        } else if !pairs.isEmpty {
+            beta = pairs.reduce(0) { $0 + ($1.u - $1.f) } / Double(pairs.count)
+        }
+        func fitted(_ x: Double) -> Double { alpha * p.value(at: x) + beta }
+
+        // Where the drawing meets the zone edges (searching outwards a little).
+        func anchor(_ edge: Double, step: Double) -> (x: Double, gap: Double)? {
+            var x = edge + step * colW / 2
+            for _ in 0..<12 {
+                guard x > a, x < b else { return nil }
+                let i = Int(((x - a) / colW).rounded(.down))
+                if i >= 0, i < n, let u = drawn[i], !zone.contains(xs[i]) {
+                    let fx = fitted(xs[i])
+                    if fx.isFinite { return (xs[i], u - fx) }
+                }
+                x += step * colW
+            }
+            return nil
+        }
+        let left = anchor(zone.lowerBound, step: -1)
+        let right = anchor(zone.upperBound, step: 1)
+        func correction(_ x: Double) -> Double {
+            switch (left, right) {
+            case let (l?, r?):
+                let t = Swift.max(0, Swift.min(1, (x - l.x) / Swift.max(r.x - l.x, 1e-12)))
+                return l.gap + t * (r.gap - l.gap)
+            case let (l?, nil): return l.gap
+            case let (nil, r?): return r.gap
+            default: return 0
+            }
+        }
+
+        let lo = Swift.max(a, left?.x ?? zone.lowerBound), hi = Swift.min(b, right?.x ?? zone.upperBound)
+        guard hi > lo else { return [] }
+        return (0...100).compactMap { i in
+            let x = lo + (hi - lo) * Double(i) / 100
+            let y = fitted(x) + correction(x)
+            return y.isFinite ? SketchPoint(x: x, y: y) : nil
+        }
     }
 }

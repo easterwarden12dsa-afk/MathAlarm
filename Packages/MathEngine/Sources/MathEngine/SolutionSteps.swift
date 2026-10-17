@@ -11,14 +11,31 @@ public struct SolutionStep: Codable, Hashable, Sendable {
     public var math: Expr?
     /// Nesting level (sub-steps of the chain/product/quotient rule are indented).
     public var depth: Int
+    /// Headings split long solutions into sections ("Step 3 · Extreme points").
+    public var style: Style?
 
-    public init(_ text: String, label: String? = nil, prime: Expr? = nil, math: Expr? = nil, depth: Int = 0) {
+    public enum Style: String, Codable, Hashable, Sendable {
+        /// Starts a new section.
+        case heading
+        /// A titled part inside a section.
+        case subheading
+        /// A conclusion, drawn highlighted.
+        case result
+    }
+
+    public init(_ text: String, label: String? = nil, prime: Expr? = nil, math: Expr? = nil, depth: Int = 0,
+                style: Style? = nil) {
         self.text = text
         self.label = label
         self.prime = prime
         self.math = math
         self.depth = depth
+        self.style = style
     }
+
+    public static func heading(_ text: String) -> SolutionStep { SolutionStep(text, style: .heading) }
+    public static func subheading(_ text: String) -> SolutionStep { SolutionStep(text, style: .subheading) }
+    public static func result(_ text: String, depth: Int = 0) -> SolutionStep { SolutionStep(text, depth: depth, style: .result) }
 }
 
 // MARK: - Step-by-step differentiation
