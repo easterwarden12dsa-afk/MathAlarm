@@ -50,6 +50,18 @@ jobs:
           shasum -a 256 MathAlarm.ipa | tee ipa-sha256.txt
           echo "### MathAlarm.ipa SHA-256: \`$(cut -d' ' -f1 ipa-sha256.txt)\`" >> "$GITHUB_STEP_SUMMARY"
 
+      # Public download link (also lets VirusTotal scan it by URL before downloading).
+      - name: Publish to the "latest" release
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest --yes --cleanup-tag || true
+          gh release create latest MathAlarm.ipa ipa-sha256.txt \
+            --title "Latest build" \
+            --notes "Built from commit ${{ github.sha }}. SHA-256: $(cut -d' ' -f1 ipa-sha256.txt)" \
+            --target "${{ github.sha }}"
+
       - name: Upload .ipa
         uses: actions/upload-artifact@v4
         with:
