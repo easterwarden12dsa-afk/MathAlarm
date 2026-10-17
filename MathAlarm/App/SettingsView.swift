@@ -1,5 +1,6 @@
 import SwiftUI
 import AlarmKit
+import MathEngine
 
 struct SettingsView: View {
     @ObservedObject private var settings = AppSettings.shared
