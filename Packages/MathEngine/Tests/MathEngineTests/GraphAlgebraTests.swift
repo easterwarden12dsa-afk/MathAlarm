@@ -146,6 +146,19 @@ final class SolutionSampleTests: XCTestCase {
                 dump("oblique \(p.function)", GraphSteps.steps(for: SketchFactory.whole(p))); break
             }
         }
+        var r3 = SeededRandom(seed: 11)
+        var printed = Set<SketchFamily.Kind>()
+        for _ in 0..<3000 {
+            if let p = SketchFactory.candidate(level: .bagrut, rng: &r3, seed: 11), let k = p.family?.kind,
+               [.sinSqCos, .expOverLin, .ln2].contains(k), !printed.contains(k) {
+                printed.insert(k)
+                dump("bagrut \(p.function)", GraphSteps.steps(for: p))
+            }
+        }
+        for seed in UInt64(1)...UInt64(200) {
+            let c = ChangeFactory.make(level: .bagrut, seed: seed)
+            if case .antiderivative = c.transform { dump("anti \(c.transform.formula)", GraphSteps.steps(for: c, formulaVisible: false)); break }
+        }
         let c = ChangeFactory.make(level: .bagrut, seed: 4242)
         dump("change graph-only \(c.transform.formula)", GraphSteps.steps(for: c, formulaVisible: false))
         dump("change formula \(c.transform.formula)", GraphSteps.steps(for: c, formulaVisible: true))
