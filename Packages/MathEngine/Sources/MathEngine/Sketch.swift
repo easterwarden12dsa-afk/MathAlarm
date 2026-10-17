@@ -513,9 +513,12 @@ public enum SketchChecker {
                 if features.contains(where: { x0 >= $0.lo && x0 <= $0.hi }) { continue }
                 if nearOff(column(x0), 1) { continue }
                 let u0 = interpolate(user, xs: xs, at: x0)
-                if Swift.abs(u0) / range > t.zeroError {
+                // Compared with the (equally smoothed) true graph, not with 0:
+                // at the edge of the box smoothing shifts both the same way.
+                let t0 = interpolate(truth, xs: xs, at: x0)
+                if Swift.abs(u0 - t0) / range > t.zeroError {
                     features.append(SketchRegion(lo: x0 - shift * 0.7, hi: x0 + shift * 0.7, issue: .missingFeature,
-                                                 hint: "The graph should reach y = 0 at x = \(lbl(x0)) (yours is \(u0 > 0 ? "above" : "below") it)."))
+                                                 hint: "The graph should reach y = 0 at x = \(lbl(x0)) (yours is \(u0 > t0 ? "above" : "below") it)."))
                 }
             }
         }
