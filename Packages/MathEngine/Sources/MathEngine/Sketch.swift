@@ -186,7 +186,7 @@ public struct SketchTolerance: Hashable, Sendable {
 
     public static let standard: SketchTolerance = {
         var t = SketchTolerance()
-        t.minCoverage = 0.8; t.segmentError = 0.17; t.endpointError = 0.18; t.zeroError = 0.11
+        t.minCoverage = 0.8; t.segmentError = 0.19; t.endpointError = 0.18; t.zeroError = 0.11
         t.extremumShift = 0.08; t.prominence = 0.12; t.trendThreshold = 0.2; t.extremeValueError = 0.18
         t.maxExtraExtrema = 1
         return t
@@ -702,32 +702,43 @@ public enum SketchChecker {
         return SketchResult(passed: regions.isEmpty, regions: regions.sorted { $0.lo < $1.lo }, coverage: coverage)
     }
 
-    /// Much more up-and-down than the graph (total variation) in some stretch
-    /// of the drawing: wiggles on a steep part don't make new peaks, but they
-    /// do make the line go up and down a lot.
+    /// Wiggles the graph doesn't have. Each point of the drawing is matched to
+    /// the nearest part of the graph a few columns either way (so a slight
+    /// sideways shift doesn't count), and the leftover difference is
+    /// measured: a wrong height or scale leaves a smooth difference, extra
+    /// bumps leave a wavy one — even on a steep part where they make no new peaks.
     static func wiggleRegion(user: [Double], truth: [Double], xs: [Double], range: Double, visible: [Bool],
                              half: Double, label: (Double) -> String) -> SketchRegion? {
         let n = xs.count
-        let win = Swift.max(6, n / 5)
-        var worst: (excess: Double, lo: Int, hi: Int)?
+        let lateral = 3
+        var residual = [Double](repeating: 0, count: n)
+        for i in 0..<n where visible[i] {
+            var best = Double.infinity
+            for j in Swift.max(0, i - lateral)...Swift.min(n - 1, i + lateral) where visible[j] {
+                let d = user[i] - truth[j]
+                if Swift.abs(d) < Swift.abs(best) { best = d }
+            }
+            residual[i] = best.isFinite ? best : 0
+        }
+        let win = Swift.max(8, n / 4)
+        var worst: (wave: Double, lo: Int, hi: Int)?
         var s = 0
         while s + win <= n {
             let idx = Array(s..<(s + win))
             if idx.allSatisfy({ visible[$0] }) {
-                var tvU = 0.0, tvT = 0.0
-                for (i, j) in zip(idx, idx.dropFirst()) {
-                    tvU += Swift.abs(user[j] - user[i])
-                    tvT += Swift.abs(truth[j] - truth[i])
-                }
-                let excess = (tvU - 1.4 * tvT) / range
-                if excess > 0.3, worst == nil || excess > worst!.excess { worst = (excess, idx.first!, idx.last!) }
+                var tv = 0.0
+                for (i, j) in zip(idx, idx.dropFirst()) { tv += Swift.abs(residual[j] - residual[i]) }
+                // A smooth error goes one way (tv ≈ its net change); waves go back and forth.
+                let net = Swift.abs(residual[idx.last!] - residual[idx.first!])
+                let wave = (tv - net) / range
+                if wave > 0.35, worst == nil || wave > worst!.wave { worst = (wave, idx.first!, idx.last!) }
             }
             s += win / 2
         }
         guard let w = worst else { return nil }
         let lo = xs[w.lo] - half, hi = xs[w.hi] + half
         return SketchRegion(lo: lo, hi: hi, issue: .missingFeature,
-                            hint: "From x = \(label(lo)) to x = \(label(hi)) your line goes up and down much more than the graph — smooth it out.")
+                            hint: "From x = \(label(lo)) to x = \(label(hi)) your line goes up and down where the graph doesn't — smooth it out.")
     }
 
     /// Joins neighbouring strips with the same issue into one band and

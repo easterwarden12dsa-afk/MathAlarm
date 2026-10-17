@@ -119,6 +119,7 @@ final class SketchTests: XCTestCase {
         }
         let r = check(wrong, .standard)
         XCTAssertFalse(r.passed)
+        print("SAMPLE eachregion raw: \(SketchChecker.rawCheck(drawing(wrong, for: problem), for: problem, tolerance: SketchMode.standard.tolerance).hints)")
         XCTAssertGreaterThanOrEqual(r.regions.count, 2, "\(r.regions)")
         XCTAssertEqual(Set(r.hints).count, r.hints.count, "hints should differ: \(r.hints)")
         XCTAssertLessThanOrEqual(r.regions.count, 4)
