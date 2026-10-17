@@ -178,23 +178,26 @@ public struct SketchTolerance: Hashable, Sendable {
 
     public static let precision: SketchTolerance = {
         var t = SketchTolerance()
-        t.minCoverage = 0.9; t.segmentError = 0.12; t.endpointError = 0.1; t.zeroError = 0.07
+        t.minCoverage = 0.9; t.segmentError = 0.1; t.endpointError = 0.1; t.zeroError = 0.07
         t.extremumShift = 0.05; t.prominence = 0.1; t.trendThreshold = 0.15; t.extremeValueError = 0.08
+        t.maxExtraExtrema = 1
         return t
     }()
 
     public static let standard: SketchTolerance = {
         var t = SketchTolerance()
-        t.minCoverage = 0.8; t.segmentError = 0.22; t.endpointError = 0.22; t.zeroError = 0.14
-        t.extremumShift = 0.09; t.prominence = 0.12; t.trendThreshold = 0.2; t.extremeValueError = 0.2
+        t.minCoverage = 0.8; t.segmentError = 0.16; t.endpointError = 0.18; t.zeroError = 0.11
+        t.extremumShift = 0.08; t.prominence = 0.12; t.trendThreshold = 0.2; t.extremeValueError = 0.14
+        t.maxExtraExtrema = 1
         return t
     }()
 
     public static let proportions: SketchTolerance = {
         var t = SketchTolerance()
         t.normalization = .scale
-        t.minCoverage = 0.72; t.segmentError = 0.28; t.endpointError = 0.32; t.zeroError = 0.2
-        t.extremumShift = 0.12; t.trendThreshold = 0.25; t.extremeValueError = 0.28
+        t.minCoverage = 0.72; t.segmentError = 0.2; t.endpointError = 0.24; t.zeroError = 0.15
+        t.extremumShift = 0.1; t.trendThreshold = 0.22; t.extremeValueError = 0.2
+        t.maxExtraExtrema = 1
         return t
     }()
 
@@ -203,6 +206,8 @@ public struct SketchTolerance: Hashable, Sendable {
         t.normalization = .minMax
         t.visual = true
         t.minCoverage = 0.6
+        t.visualMeanTolerance = 0.07
+        t.visualLocalTolerance = 0.17
         return t
     }()
 }
@@ -653,6 +658,27 @@ public enum SketchChecker {
                                                 hint: "From x = \(label(lo)) to x = \(label(hi)) it doesn't look like the graph — it should be \(high ? "lower" : "higher") there."))
                 }
                 start = nil
+            }
+        }
+        // The eye also counts turns: extra bumps, or a turn that isn't there.
+        if regions.isEmpty {
+            let shown = visible ?? Array(repeating: true, count: n)
+            func clear(_ x: Double) -> Bool {
+                let c = Swift.max(0, Swift.min(n - 1, Int(((x - a) / (b - a) * Double(n)).rounded(.down))))
+                return (Swift.max(0, c - 3)...Swift.min(n - 1, c + 3)).allSatisfy { shown[$0] }
+            }
+            let span = Swift.max((truth.max() ?? 1) - (truth.min() ?? 0), 1e-9)
+            let trueTurns = extrema(xs: xs, ys: truth, range: span, minProminence: 0.12).filter { clear($0.x) }
+            let userTurns = extrema(xs: xs, ys: smoothed(user, radius: 3), range: span, minProminence: 0.2).filter { clear($0.x) }
+            let near = 0.1 * (b - a)
+            let extra = userTurns.filter { u in !trueTurns.contains { $0.isMax == u.isMax && Swift.abs($0.x - u.x) <= near } }
+            let missing = trueTurns.filter { tt in tt.prominence >= 0.25 && !userTurns.contains { $0.isMax == tt.isMax && Swift.abs($0.x - tt.x) <= 1.2 * near } }
+            if extra.count > 1, let e = extra.first {
+                regions.append(SketchRegion(lo: e.x - near, hi: e.x + near, issue: .missingFeature,
+                                            hint: "Your drawing has extra bumps (near x = \(label(e.x))) that the graph doesn't have."))
+            } else if let m = missing.first {
+                regions.append(SketchRegion(lo: m.x - near, hi: m.x + near, issue: .missingFeature,
+                                            hint: "The graph has a \(m.isMax ? "peak" : "dip") near x = \(label(m.x)) — your drawing doesn't turn there."))
             }
         }
         if regions.isEmpty && mean > t.visualMeanTolerance {
