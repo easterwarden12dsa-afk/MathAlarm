@@ -85,9 +85,12 @@ final class ProblemHistory {
     private static let limit = 400
 
     private var recent: [String]
+    /// Families and shapes of recent graphs, so new ones look different.
+    private var shapes: ShapeMemory
 
     private init() {
         recent = Persistence.load([String].self, from: Self.fileName) ?? []
+        shapes = Persistence.load(ShapeMemory.self, from: "shapeMemory.json") ?? ShapeMemory()
     }
 
     var avoid: Set<String> { Set(recent) }
@@ -100,15 +103,19 @@ final class ProblemHistory {
     }
 
     func freshChange(level: Level) -> ChangeProblem {
-        let p = ChangeFactory.make(level: level, seed: ProblemFactory.randomSeed(), avoiding: avoid)
+        let p = ChangeFactory.make(level: level, seed: ProblemFactory.randomSeed(), avoiding: avoid, memory: shapes)
         remember(p.signature)
+        shapes.remember(shape: ShapeKey.of(p.target), kind: p.kindName)
+        Persistence.save(shapes, to: "shapeMemory.json")
         return p
     }
 
     /// `whole`: draw the whole graph (non-periodic functions), from Settings by default.
     func freshSketch(level: Level, whole: Bool = UserDefaults.standard.bool(forKey: "wholeGraph")) -> SketchProblem {
-        let p = SketchFactory.make(level: level, seed: ProblemFactory.randomSeed(), avoiding: avoid, wholeDomain: whole)
+        let p = SketchFactory.make(level: level, seed: ProblemFactory.randomSeed(), avoiding: avoid, wholeDomain: whole, memory: shapes)
         remember(p.signature)
+        shapes.remember(shape: ShapeKey.of(p), kind: p.family?.kind.rawValue ?? "other")
+        Persistence.save(shapes, to: "shapeMemory.json")
         return p
     }
 

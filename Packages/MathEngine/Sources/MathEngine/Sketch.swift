@@ -867,6 +867,49 @@ public enum SketchFormat {
     }
 }
 
+// MARK: - Variety
+
+/// What recent problems looked like, so a new one doesn't look the same
+/// (same family, or the same shape with different numbers).
+public struct ShapeMemory: Codable, Sendable {
+    public var shapes: [[Double]] = []
+    public var kinds: [String] = []
+    public init() {}
+
+    public mutating func remember(shape: [Double], kind: String) {
+        shapes.append(shape)
+        if shapes.count > 40 { shapes.removeFirst(shapes.count - 40) }
+        kinds.append(kind)
+        if kinds.count > 12 { kinds.removeFirst(kinds.count - 12) }
+    }
+
+    func looksLikeRecent(_ shape: [Double]) -> Bool {
+        shapes.contains { ShapeKey.distance($0, shape) < 0.09 }
+    }
+
+    func usedRecently(_ kind: String, depth: Int) -> Bool { kinds.suffix(depth).contains(kind) }
+}
+
+/// A graph's look: 32 heights scaled to the box (0 = bottom, 1 = top).
+public enum ShapeKey {
+    public static func of(_ p: SketchProblem) -> [Double] {
+        (0..<32).map { i in
+            let x = p.xMin + (p.xMax - p.xMin) * (Double(i) + 0.5) / 32
+            let y = p.value(at: x)
+            guard y.isFinite else { return -0.5 }
+            return Swift.max(-0.2, Swift.min(1.2, (y - p.yMin) / Swift.max(p.yMax - p.yMin, 1e-9)))
+        }
+    }
+
+    /// Mean difference, also against the mirror image and the upside-down
+    /// version (those look "the same" too).
+    public static func distance(_ a: [Double], _ b: [Double]) -> Double {
+        guard a.count == b.count, !a.isEmpty else { return 1 }
+        func d(_ u: [Double]) -> Double { zip(u, b).reduce(0) { $0 + Swift.abs($1.0 - $1.1) } / Double(a.count) }
+        return Swift.min(d(a), d(a.reversed()), d(a.map { 1 - $0 }), d(a.reversed().map { 1 - $0 }))
+    }
+}
+
 // MARK: - Generator
 
 /// The generator family of a sketch problem and its parameters, so the
@@ -913,20 +956,30 @@ public struct SketchFamily: Codable, Hashable, Sendable {
 }
 
 public enum SketchFactory {
-    public static func make(level: Level, seed: UInt64, avoiding: Set<String> = [], wholeDomain: Bool = false) -> SketchProblem {
+    public static func make(level: Level, seed: UInt64, avoiding: Set<String> = [], wholeDomain: Bool = false,
+                            memory: ShapeMemory = ShapeMemory()) -> SketchProblem {
         var s = seed
         var anyValid: SketchProblem?
-        for _ in 0..<80 {
+        var notSeen: SketchProblem?
+        for attempt in 0..<80 {
             var rng = SeededRandom(seed: s)
-            for _ in 0..<50 {
+            for _ in 0..<12 {
                 if var p = candidate(level: level, rng: &rng, seed: s), valid(p) {
                     if wholeDomain { p = whole(p) }
-                    if !avoiding.contains(p.signature) { return p }
                     if anyValid == nil { anyValid = p }
+                    guard !avoiding.contains(p.signature) else { continue }
+                    if notSeen == nil { notSeen = p }
+                    // A different family from the last few, and a different look.
+                    let kind = p.family?.kind.rawValue ?? "other"
+                    let strict = attempt < 50
+                    if strict && memory.usedRecently(kind, depth: 3) { continue }
+                    if memory.looksLikeRecent(ShapeKey.of(p)) { continue }
+                    return p
                 }
             }
             s = s &* 6_364_136_223_846_793_005 &+ 1_442_695_040_888_963_407
         }
+        if let notSeen { return notSeen }
         // Everything was seen recently: repeat a random one rather than always the same.
         return anyValid ?? testCase(seed: seed)
     }
@@ -1262,6 +1315,9 @@ public struct ChangeProblem: Codable, Hashable, Sendable {
     public var seed: UInt64
 
     public var signature: String { "change:\(base.function.description):\(transform.formula)" }
+
+    /// The kind of rule, e.g. "reciprocal" (for variety between problems).
+    public var kindName: String { String(String(describing: transform).prefix { $0 != "(" }) }
 }
 
 public extension Expr {
@@ -1282,15 +1338,19 @@ public extension Expr {
 }
 
 public enum ChangeFactory {
-    public static func make(level: Level, seed: UInt64, avoiding: Set<String> = []) -> ChangeProblem {
+    public static func make(level: Level, seed: UInt64, avoiding: Set<String> = [], memory: ShapeMemory = ShapeMemory()) -> ChangeProblem {
         var s = seed
-        for _ in 0..<80 {
+        var notSeen: ChangeProblem?
+        for attempt in 0..<160 {
             var rng = SeededRandom(seed: s)
-            if let p = candidate(level: level, rng: &rng, seed: s), !avoiding.contains(p.signature) {
-                return p
-            }
             s = s &* 6_364_136_223_846_793_005 &+ 1_442_695_040_888_963_407
+            guard let p = candidate(level: level, rng: &rng, seed: s), !avoiding.contains(p.signature) else { continue }
+            if notSeen == nil { notSeen = p }
+            if attempt < 120 && memory.usedRecently(p.kindName, depth: 2) { continue }
+            if memory.looksLikeRecent(ShapeKey.of(p.target)) || memory.looksLikeRecent(ShapeKey.of(p.base)) { continue }
+            return p
         }
+        if let notSeen { return notSeen }
         // Always-valid fallback: 1/f² for f = x² + 1.
         let base = SketchFactory.finish(.sum([.p(.x, 2), 1]), -2, 2, piBased: false, level: level, seed: seed)!
         return build(base: base, transform: .reciprocalSquare, level: level, seed: seed)!
@@ -1299,13 +1359,22 @@ public enum ChangeFactory {
     /// Graphs that stay well away from zero (safe for 1/f, 1/f², √f).
     static func positiveBase(_ r: inout SeededRandom, level: Level, seed: UInt64) -> SketchProblem? {
         let x = Expr.x, pi = Double.pi
-        switch r.int(0...5) {
-        case 0: return SketchFactory.finish(.sum([.p(x, 2), .n(r.int(1...3))]), -2, 2, piBased: false, level: level, seed: seed)
-        case 1: return SketchFactory.finish(.sum([.n(2), .sin(x)]), -pi, pi, piBased: true, level: level, seed: seed)
-        case 2: return SketchFactory.finish(.sum([.exp(.neg(.p(x, 2))), .q(1, 2)]), -2, 2, piBased: false, level: level, seed: seed)
-        case 3: return SketchFactory.finish(.sum([.p(.sub(x, 1), 2), 1]), -1, 3, piBased: false, level: level, seed: seed)
-        case 4: return SketchFactory.finish(.sum([.n(3), .cos(.mul(2, x))]), -pi, pi, piBased: true, level: level, seed: seed)
-        default: return SketchFactory.finish(.div(.sum([.p(x, 2), 4]), 4), -3, 3, piBased: false, level: level, seed: seed)
+        func fin(_ f: Expr, _ a: Double, _ b: Double, _ isPi: Bool = false) -> SketchProblem? {
+            SketchFactory.finish(f, a, b, piBased: isPi, level: level, seed: seed)
+        }
+        switch r.int(0...9) {
+        case 0: return fin(.sum([.p(x, 2), .n(r.int(1...3))]), -2, 2)
+        case 1: return fin(.sum([.n(r.int(2...3)), .sin(.scaled(r.int(1...2), 1, x))]), -pi, pi, true)
+        case 2: return fin(.sum([.exp(.neg(.p(x, 2))), .q(1, r.int(2...4))]), -2.5, 2.5)
+        case 3:
+            let h = r.int(-1...2)
+            return fin(.sum([.p(.sum([x, .n(-h)]), 2), .n(r.int(1...2))]), Double(h) - 2, Double(h) + 2)
+        case 4: return fin(.sum([.n(r.int(2...4)), .cos(.scaled(r.int(1...2), 1, x))]), -pi, pi, true)
+        case 5: return fin(.div(.sum([.p(x, 2), .n(4)]), .n(r.int(2...4))), -3, 3)
+        case 6: return fin(.div(.sum([.exp(x), .exp(.neg(x))]), 2), -2, 2)        // cosh x
+        case 7: return fin(.sum([.p(x, 3), .scaled(-3, 1, x), .n(r.int(3...5))]), -2, 2)
+        case 8: return fin(.sum([.exp(.scaled(1, 2, x)), .q(1, 2)]), -3, 2.5)
+        default: return fin(.div(.n(r.int(4...8)), .sum([.p(x, 2), 2])), -3, 3)
         }
     }
 

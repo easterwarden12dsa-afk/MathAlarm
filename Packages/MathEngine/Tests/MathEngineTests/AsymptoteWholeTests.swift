@@ -139,3 +139,48 @@ final class AsymptoteWholeTests: XCTestCase {
         XCTAssertTrue(r.isEmpty, "\(r)")
     }
 }
+
+final class VarietyTests: XCTestCase {
+    func testConsecutiveSketchesLookDifferent() {
+        for level in Level.allCases {
+            var memory = ShapeMemory()
+            var seen = Set<String>()
+            var kinds: [String] = []
+            var lookalikes = 0
+            for i in 1...30 {
+                let p = SketchFactory.make(level: level, seed: UInt64(i) &* 2_654_435_761, avoiding: seen, memory: memory)
+                let key = ShapeKey.of(p)
+                if memory.shapes.suffix(10).contains(where: { ShapeKey.distance($0, key) < 0.09 }) { lookalikes += 1 }
+                seen.insert(p.signature)
+                let kind = p.family?.kind.rawValue ?? "other"
+                kinds.append(kind)
+                memory.remember(shape: key, kind: kind)
+            }
+            XCTAssertLessThanOrEqual(lookalikes, 2, "\(level): \(lookalikes) look-alikes")
+            for i in 3..<kinds.count {
+                XCTAssertFalse(kinds[i - 3..<i].contains(kinds[i]), "\(level): family \(kinds[i]) repeated within 3: \(kinds)")
+            }
+        }
+    }
+
+    func testConsecutiveChangesLookDifferent() {
+        for level in Level.allCases {
+            var memory = ShapeMemory()
+            var seen = Set<String>()
+            var lookalikes = 0
+            var sameKindInARow = 0
+            var last = ""
+            for i in 1...25 {
+                let c = ChangeFactory.make(level: level, seed: UInt64(i) &* 40_503, avoiding: seen, memory: memory)
+                let key = ShapeKey.of(c.target)
+                if memory.shapes.suffix(10).contains(where: { ShapeKey.distance($0, key) < 0.09 }) { lookalikes += 1 }
+                if c.kindName == last { sameKindInARow += 1 }
+                last = c.kindName
+                seen.insert(c.signature)
+                memory.remember(shape: key, kind: c.kindName)
+            }
+            XCTAssertLessThanOrEqual(lookalikes, 3, "\(level)")
+            XCTAssertLessThanOrEqual(sameKindInARow, 2, "\(level)")
+        }
+    }
+}
