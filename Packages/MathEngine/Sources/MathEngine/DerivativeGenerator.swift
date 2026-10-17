@@ -9,11 +9,15 @@ enum DerivativeGenerator {
 
     static func candidate(level: Level, rng r: inout SeededRandom, seed: UInt64) -> CalculusProblem? {
         // Each piece is built in its own statement (never two `&r` in one call).
-        func w(_ u: Expr) -> Expr { wrap(u, &r) }
+        // Bagrut 5 units: hardest structures, but only syllabus functions.
+        let syllabus = level == .bagrut
+        func w(_ u: Expr) -> Expr { wrap(u, &r, syllabus: syllabus) }
+        func inner(_ r: inout SeededRandom) -> Expr { Self.inner(&r, syllabus: syllabus) }
+        func factor(_ r: inout SeededRandom) -> Expr { Self.factor(&r, syllabus: syllabus) }
         let f: Expr
         let technique: String
         let shape = r.int(0...2)
-        switch (level, shape) {
+        switch (syllabus ? .hard : level, shape) {
         case (.easy, 0):
             let g = inner(&r)
             f = w(g)
@@ -60,7 +64,7 @@ enum DerivativeGenerator {
             let right = w(g2)
             f = .mul(left, right)
             technique = "Product + nested chain rule"
-        case (.hard, _):
+        case (_, _):
             let t = factor(&r)
             let g = inner(&r)
             let top = Expr.mul(t, w(g))
@@ -77,7 +81,7 @@ enum DerivativeGenerator {
     // MARK: Building blocks
 
     /// Innermost layer g(x).
-    static func inner(_ r: inout SeededRandom) -> Expr {
+    static func inner(_ r: inout SeededRandom, syllabus: Bool = false) -> Expr {
         switch r.int(0...5) {
         case 0: return .sum([.scaled(r.int(1...3), 1, .p(x, 2)), .n(r.int(1...5))])        // a x² + b
         case 1: return .sum([lin(r.nonZero(-4...4)), .n(r.int(-3...3))])                   // a x + b
@@ -98,8 +102,10 @@ enum DerivativeGenerator {
 
     /// Wraps u in an outer function. ln and √ are only used where they can be
     /// defined; anything undefined on the interval is rejected later anyway.
-    static func wrap(_ u: Expr, _ r: inout SeededRandom) -> Expr {
-        switch r.int(0...7) {
+    static func wrap(_ u: Expr, _ r: inout SeededRandom, syllabus: Bool = false) -> Expr {
+        // Bagrut syllabus: sin, cos, e^u, ln, √, powers (no arctan).
+        let choice = r.int(0...7)
+        switch syllabus && choice == 6 ? 0 : choice {
         case 0: return .sin(u)
         case 1: return .cos(u)
         case 2: return .exp(u)
@@ -123,7 +129,7 @@ enum DerivativeGenerator {
         return n == 1 ? x : .p(x, n)
     }
 
-    static func factor(_ r: inout SeededRandom) -> Expr {
+    static func factor(_ r: inout SeededRandom, syllabus: Bool = false) -> Expr {
         switch r.int(0...3) {
         case 0: return power(&r)
         case 1: return .exp(lin(r.pick([1, -1, 2])))

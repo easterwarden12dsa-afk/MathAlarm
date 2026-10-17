@@ -293,6 +293,19 @@ public struct MathEditor: Codable, Hashable, Sendable {
         cursor = Cursor(path: [], index: row.atoms.count)
     }
 
+    /// Moves the cursor to a tapped position (ignored if it isn't valid).
+    public mutating func placeCursor(_ target: Cursor) {
+        var row = root
+        for step in target.path {
+            guard step.atom >= 0, step.atom < row.atoms.count else { return }
+            let kids = row.atoms[step.atom].children
+            guard step.child >= 0, step.child < kids.count else { return }
+            row = kids[step.child]
+        }
+        guard target.index >= 0, target.index <= row.atoms.count else { return }
+        cursor = target
+    }
+
     /// Cursor position check used by views to draw the caret.
     public func cursorIsIn(path: [Cursor.Step]) -> Bool { cursor.path == path }
 }

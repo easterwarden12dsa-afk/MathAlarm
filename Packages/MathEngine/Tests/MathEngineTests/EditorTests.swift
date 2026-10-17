@@ -124,3 +124,27 @@ final class EditorTests: XCTestCase {
         XCTAssertEqual(back, ed)
     }
 }
+
+final class EditorM3Tests: XCTestCase {
+    func testDivideGrabsLastTerm() throws {
+        // 1 + x² + 2x then a/b → 1 + x² + (2x)/□
+        var ed = MathEditor()
+        ed.insert(.d1); ed.insert(.plus); ed.insert(.x); ed.insertSquare(); ed.insert(.plus)
+        ed.insert(.d2); ed.insert(.x)
+        ed.divide(); ed.insert(.d3)
+        XCTAssertEqual(try RowParser.parse(ed).evaluate(at: 2), 1 + 4 + 4.0 / 3.0, accuracy: 1e-12)
+        // x then a/b → x/□
+        var ed2 = MathEditor()
+        ed2.insert(.x); ed2.divide()
+        XCTAssertEqual(ed2.root, Row([.fraction(Row([.token(.x)]), Row())]))
+    }
+
+    func testPlaceCursor() {
+        var ed = MathEditor()
+        ed.insertFraction(); ed.insert(.d1); ed.moveRight(); ed.insert(.d2); ed.moveRight()
+        ed.placeCursor(Cursor(path: [.init(atom: 0, child: 0)], index: 0))
+        XCTAssertEqual(ed.cursor, Cursor(path: [.init(atom: 0, child: 0)], index: 0))
+        ed.placeCursor(Cursor(path: [.init(atom: 5, child: 0)], index: 0))   // invalid: ignored
+        XCTAssertEqual(ed.cursor, Cursor(path: [.init(atom: 0, child: 0)], index: 0))
+    }
+}
