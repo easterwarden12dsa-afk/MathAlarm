@@ -39,10 +39,15 @@ struct PracticeView: View {
                     ForEach(Kind.allCases) { Text($0.title).tag($0) }
                 }
                 .pickerStyle(.segmented)
+                .zIndex(2)   // always on top: nothing below can steal its taps
 
                 controls
+                    .zIndex(2)
 
                 content
+                    .frame(maxHeight: .infinity, alignment: .top)
+                    .clipped()
+                    .zIndex(0)
             }
             .padding(.horizontal, 12)
             .padding(.bottom, 6)

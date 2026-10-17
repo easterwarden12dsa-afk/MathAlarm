@@ -80,38 +80,17 @@ struct ChallengeView: View {
             }
             .padding(.horizontal, 2)
         }
-        .frame(height: 44)
+        .frame(height: 38)
     }
 
     var body: some View {
-        VStack(spacing: 8) {
-            if let note {
-                Text(note)
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.yellow)
-                    .multilineTextAlignment(.center)
-            }
-
-            problemCard
-
-            answerCard
-                .modifier(Shake(animatableData: shakes))
-
-            feedbackLine
-
-            copyStrip
-
-            MathKeypad(editor: $editor, allowConstantC: problem.kind == .integral, keyHeight: 44)
-
-            Button(action: check) {
-                Label(solved ? "Correct!" : "Check answer", systemImage: solved ? "checkmark" : "checkmark.circle")
-                    .font(.title3.bold())
-                    .foregroundStyle(.black)
-                    .frame(maxWidth: .infinity, minHeight: 56)
-                    .background(solved ? Color.green : Color.white, in: RoundedRectangle(cornerRadius: 16))
-            }
-            .buttonStyle(PressableStyle())
-            .disabled(solved)
+        // Shrink the keypad (not the problem) until everything fits, so the
+        // screen never spills over the controls above it.
+        ViewThatFits(in: .vertical) {
+            layout(keyHeight: 44, spacing: 8)
+            layout(keyHeight: 38, spacing: 6)
+            layout(keyHeight: 33, spacing: 5)
+            layout(keyHeight: 29, spacing: 4)
         }
         .onChange(of: editor) { _, _ in
             if feedback != .correct && feedback != .wrong && feedback != .undefined { feedback = nil }
@@ -132,6 +111,38 @@ struct ChallengeView: View {
             Button("Keep trying", role: .cancel) {}
         } message: {
             Text("The alarm still needs a solved problem, so you'll get a fresh one afterwards.")
+        }
+    }
+
+    private func layout(keyHeight: CGFloat, spacing: CGFloat) -> some View {
+        VStack(spacing: spacing) {
+            if let note {
+                Text(note)
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.yellow)
+                    .multilineTextAlignment(.center)
+            }
+
+            problemCard
+
+            answerCard
+                .modifier(Shake(animatableData: shakes))
+
+            feedbackLine
+
+            copyStrip
+
+            MathKeypad(editor: $editor, allowConstantC: problem.kind == .integral, keyHeight: keyHeight)
+
+            Button(action: check) {
+                Label(solved ? "Correct!" : "Check answer", systemImage: solved ? "checkmark" : "checkmark.circle")
+                    .font(.title3.bold())
+                    .foregroundStyle(.black)
+                    .frame(maxWidth: .infinity, minHeight: keyHeight + 6)
+                    .background(solved ? Color.green : Color.white, in: RoundedRectangle(cornerRadius: 16))
+            }
+            .buttonStyle(PressableStyle())
+            .disabled(solved)
         }
     }
 
@@ -158,7 +169,7 @@ struct ChallengeView: View {
                 ProblemFormula(problem: problem, size: size)
             }
             .frame(maxWidth: .infinity)
-            .frame(minHeight: 64)
+            .frame(minHeight: 52)
             if problem.hasRestrictedDomain {
                 Text("for \(format(problem.domainLow)) ≤ x ≤ \(format(problem.domainHigh))")
                     .font(.footnote)
@@ -197,7 +208,7 @@ struct ChallengeView: View {
     private var borderColor: Color {
         switch feedback {
         case .some(let f): f.color
-        case .none: Color.orange.opacity(0.6)
+        case .none: Color.white.opacity(0.12)
         }
     }
 

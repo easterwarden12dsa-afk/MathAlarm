@@ -12,6 +12,7 @@ struct RingingView: View {
             let now = timeline.date
             VStack(spacing: 8) {
                 topBar(now: now)
+                    .zIndex(2)   // Mute and Surrender must always get their taps
 
                 if ring.sound.outputVolume < 0.5, !(ring.session?.isMuted(at: now) ?? false) {
                     Label("Volume is low — press the volume-up button", systemImage: "speaker.wave.1.fill")
