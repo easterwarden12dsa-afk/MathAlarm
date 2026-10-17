@@ -172,19 +172,34 @@ public enum SketchChecker {
             }
         }
 
-        // 5. Peaks and dips must be there, at about the right place.
+        // 5. Peaks and dips must be there, at about the right place. Compared
+        // against how much the true curve itself rises/falls in the same window,
+        // using a lightly smoothed drawing so finger jitter isn't a "peak".
+        let smooth = smoothed(user, radius: 2)
         for e in extrema(xs: xs, ys: truth, range: range, minProminence: t.prominence) {
             let window = xs.indices.filter { Swift.abs(xs[$0] - e.x) <= 2 * shift }
-            guard window.count >= 3 else { continue }
-            let values = window.map { user[$0] }
-            let best = e.isMax ? values.indices.max { values[$0] < values[$1] }! : values.indices.min { values[$0] < values[$1] }!
-            let bestX = xs[window[best]]
-            let edgeL = values.first!, edgeR = values.last!, peak = values[best]
-            let drop = e.isMax ? Swift.min(peak - edgeL, peak - edgeR) : Swift.min(edgeL - peak, edgeR - peak)
-            let needDrop = 0.25 * Swift.min(e.prominence, Swift.abs(e.y - (e.isMax ? fMin : fMax)))
-            let atEdgeOfInterval = e.x - a < shift || b - e.x < shift
-            let shapeOK = atEdgeOfInterval || drop >= needDrop
-            if Swift.abs(bestX - e.x) > shift || !shapeOK {
+            guard window.count >= 5 else { continue }
+            let tv = window.map { truth[$0] }, uv = window.map { smooth[$0] }
+            func drop(_ v: [Double], _ isMax: Bool) -> Double {
+                let extreme = isMax ? v.max()! : v.min()!
+                return isMax ? Swift.min(extreme - v.first!, extreme - v.last!)
+                             : Swift.min(v.first! - extreme, v.last! - extreme)
+            }
+            let trueDrop = drop(tv, e.isMax)
+            let atEdgeOfInterval = e.x - a < 2 * shift || b - e.x < 2 * shift
+            guard trueDrop > 0.04 * range || atEdgeOfInterval else { continue }
+            let userDrop = drop(uv, e.isMax)
+            // Where the drawing's peak/dip is: centre of its top (or bottom) part.
+            let extreme = e.isMax ? uv.max()! : uv.min()!
+            let cutoff = 0.5 * Swift.max(userDrop, 1e-12)
+            var wSum = 0.0, xSum = 0.0
+            for (k, i) in window.enumerated() {
+                let w = Swift.max(0, cutoff - Swift.abs(uv[k] - extreme))
+                wSum += w; xSum += w * xs[i]
+            }
+            let centre = wSum > 0 ? xSum / wSum : xs[window[uv.firstIndex(of: extreme)!]]
+            let shapeOK = atEdgeOfInterval ? true : userDrop >= 0.35 * trueDrop
+            if !shapeOK || Swift.abs(centre - e.x) > shift {
                 regions.append(SketchRegion(lo: e.x - shift, hi: e.x + shift, issue: .missingFeature))
                 addHint(e.isMax ? "Missing the peak near x = \(problem.xLabel(e.x))."
                                 : "Missing the dip near x = \(problem.xLabel(e.x)).")
@@ -237,6 +252,13 @@ public enum SketchChecker {
             out[i] = values[l]! + t * (values[r]! - values[l]!)
         }
         return out
+    }
+
+    static func smoothed(_ ys: [Double], radius: Int) -> [Double] {
+        ys.indices.map { i in
+            let lo = Swift.max(0, i - radius), hi = Swift.min(ys.count - 1, i + radius)
+            return ys[lo...hi].reduce(0, +) / Double(hi - lo + 1)
+        }
     }
 
     static func interpolate(_ ys: [Double], xs: [Double], at x: Double) -> Double {
