@@ -100,14 +100,14 @@ final class ProblemHistory {
     }
 
     func freshChange(level: Level) -> ChangeProblem {
-        let p = ChangeFactory.make(level: level, seed: ProblemFactory.randomSeed(), avoiding: Set(recent.suffix(6)))
+        let p = ChangeFactory.make(level: level, seed: ProblemFactory.randomSeed(), avoiding: avoid)
         remember(p.signature)
         return p
     }
 
     func freshSketch(level: Level) -> SketchProblem {
         // Sketch functions are a smaller set, so only avoid the last few.
-        let p = SketchFactory.make(level: level, seed: ProblemFactory.randomSeed(), avoiding: Set(recent.suffix(4)))
+        let p = SketchFactory.make(level: level, seed: ProblemFactory.randomSeed(), avoiding: avoid)
         remember(p.signature)
         return p
     }

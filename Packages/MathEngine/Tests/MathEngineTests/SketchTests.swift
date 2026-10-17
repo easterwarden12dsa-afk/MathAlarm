@@ -206,3 +206,42 @@ final class SketchTests: XCTestCase {
         }
     }
 }
+
+final class GraphStepsTests: XCTestCase {
+    func testReferenceCaseSteps() {
+        let p = SketchFactory.testCase()
+        let steps = GraphSteps.steps(for: p)
+        let text = steps.map(\.text).joined(separator: "\n")
+        // Peaks near ±π/6 and a dip at 0 must be found.
+        XCTAssertTrue(text.contains("maximum"), text)
+        XCTAssertTrue(text.contains("minimum"), text)
+        XCTAssertTrue(text.contains("π/6"), text)
+        XCTAssertTrue(text.contains("Inflection"), text)
+    }
+
+    func testRootsFindsCrossingsAndTouches() {
+        let r = GraphSteps.roots(of: .mul(.sub(.x, 1), .p(.x, 2)), in: -2...3)   // (x−1)·x²
+        XCTAssertEqual(r.count, 2)
+        XCTAssertEqual(r[0], 0, accuracy: 1e-3)
+        XCTAssertEqual(r[1], 1, accuracy: 1e-6)
+    }
+
+    func testEveryProblemHasSteps() {
+        for level in Level.allCases {
+            for seed in UInt64(1)...UInt64(15) {
+                let p = SketchFactory.make(level: level, seed: seed &* 104_729)
+                XCTAssertGreaterThan(GraphSteps.steps(for: p).count, 6)
+                let c = ChangeFactory.make(level: level, seed: seed &* 7_919)
+                XCTAssertGreaterThan(GraphSteps.steps(for: c).count, 8)
+            }
+        }
+    }
+
+    func testSketchVariety() {
+        // Fresh problems should rarely repeat.
+        for level in Level.allCases {
+            let sigs = (1...40).map { SketchFactory.make(level: level, seed: UInt64($0) &* 2_654_435_761).signature }
+            XCTAssertGreaterThan(Set(sigs).count, 20, "too many repeats at \(level)")
+        }
+    }
+}

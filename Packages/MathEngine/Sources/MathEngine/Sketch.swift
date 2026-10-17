@@ -593,54 +593,117 @@ public enum SketchFactory {
         finish(.mul(.p(.sin(.x), 2), .cos(.mul(2, .x))), -Double.pi / 4, Double.pi / 4, piBased: true, level: .hard, seed: seed)!
     }
 
+    /// Families of functions with random parameters (coefficients, roots,
+    /// frequencies, intervals), so the same graph rarely comes back.
     static func candidate(level: Level, rng r: inout SeededRandom, seed: UInt64) -> SketchProblem? {
         let x = Expr.x
         let pi = Double.pi
+        func lin(_ k: Int) -> Expr { .scaled(k, 1, x) }
+        func done(_ f: Expr, _ a: Double, _ b: Double, pi isPi: Bool = false) -> SketchProblem? {
+            finish(f, a, b, piBased: isPi, level: level, seed: seed)
+        }
         switch level {
         case .easy:
-            switch r.int(0...2) {
-            case 0:
-                let r1 = r.int(-3...1), r2 = r1 + r.int(2...4), a = r.pick([1, -1])
+            switch r.int(0...5) {
+            case 0: // a(x − r1)(x − r2)
+                let r1 = r.int(-4...2), r2 = r1 + r.int(1...5), a = r.pick([1, -1, 2, -2])
                 let f = Expr.scaled(a, 1, .mul(.sum([x, .n(-r1)]), .sum([x, .n(-r2)])))
-                return finish(f, Double(r1 - 1), Double(r2 + 1), piBased: false, level: level, seed: seed)
-            case 1:
-                let f: Expr = r.bool() ? .sin(x) : .cos(x)
-                return finish(.scaled(r.int(1...3), 1, f), -pi, pi, piBased: true, level: level, seed: seed)
-            default:
-                return finish(.exp(.neg(.p(x, 2))), -2, 2, piBased: false, level: level, seed: seed)
+                return done(f, Double(r1 - r.int(1...2)), Double(r2 + r.int(1...2)))
+            case 1: // k·sin(mx) or k·cos(mx)
+                let k = r.int(1...4), m = r.int(1...2)
+                let f: Expr = r.bool() ? .sin(lin(m)) : .cos(lin(m))
+                return r.bool() ? done(.scaled(k, 1, f), -pi, pi, pi: true) : done(.scaled(k, 1, f), 0, 2 * pi, pi: true)
+            case 2: // bell curve e^(−x²/c)
+                let c = r.int(1...3)
+                return done(.exp(.neg(.div(.p(x, 2), .n(c)))), -Double(c) - 1.5, Double(c) + 1.5)
+            case 3: // x³ − a·x
+                let a = r.int(1...6)
+                let w = Double(a).squareRoot() + Double(r.int(1...2)) * 0.5
+                return done(.sub(.p(x, 3), .scaled(a, 1, x)), -w, w)
+            case 4: // vertex form a(x − h)² + k
+                let h = r.int(-3...3), k = r.int(-4...4), a = r.pick([1, -1])
+                return done(.sum([.scaled(a, 1, .p(.sum([x, .n(-h)]), 2)), .n(k)]), Double(h - 3), Double(h + r.int(2...3)))
+            default: // k + sin(x)
+                let k = r.nonZero(-2...2)
+                return done(.sum([.n(k), .sin(x)]), -pi, pi, pi: true)
             }
         case .medium:
-            switch r.int(0...3) {
-            case 0:
+            switch r.int(0...6) {
+            case 0: // cubic with three roots
                 var roots = Set<Int>()
-                while roots.count < 3 { roots.insert(r.int(-3...3)) }
+                while roots.count < 3 { roots.insert(r.int(-4...4)) }
                 let rs = roots.sorted()
-                let f = Expr.mul(.mul(.sum([x, .n(-rs[0])]), .sum([x, .n(-rs[1])])), .sum([x, .n(-rs[2])]))
-                return finish(f, Double(rs[0]) - 0.5, Double(rs[2]) + 0.5, piBased: false, level: level, seed: seed)
-            case 1:
-                return finish(.sin(.mul(2, x)), 0, pi, piBased: true, level: level, seed: seed)
-            case 2:
-                return finish(.mul(x, .exp(.neg(x))), 0, 4, piBased: false, level: level, seed: seed)
-            default:
-                return finish(.div(x, .sum([.p(x, 2), 1])), -3, 3, piBased: false, level: level, seed: seed)
+                let sign = r.pick([1, -1])
+                let f = Expr.scaled(sign, 1, .mul(.mul(.sum([x, .n(-rs[0])]), .sum([x, .n(-rs[1])])), .sum([x, .n(-rs[2])])))
+                return done(f, Double(rs[0]) - 0.5, Double(rs[2]) + 0.5)
+            case 1: // sin(mx) + c·cos(nx)
+                let m = r.int(1...2), n = r.int(1...3), c = r.pick([1, -1])
+                return done(.sum([.sin(lin(m)), .scaled(c, 2, .cos(lin(n)))]), -pi, pi, pi: true)
+            case 2: // x·e^(−x/c)
+                let c = r.int(1...3)
+                return done(.mul(x, .exp(.neg(.div(x, .n(c))))), 0, 5 * Double(c))
+            case 3: // x/(x² + c)
+                let c = r.int(1...4)
+                let w = 2 * Double(c).squareRoot() + 1.5
+                return done(.div(.scaled(r.pick([1, 2, -1]), 1, x), .sum([.p(x, 2), .n(c)])), -w, w)
+            case 4: // a·x⁴ − b·x²
+                let b = r.int(1...4)
+                let w = (Double(b)).squareRoot() * 1.25
+                return done(.sub(.p(x, 4), .scaled(2 * b, 1, .p(x, 2))), -w, w)
+            case 5: // (x − a)·e^x
+                let a = r.int(-1...2)
+                return done(.mul(.sum([x, .n(-a)]), .exp(x)), Double(a) - 4, Double(a) + 1)
+            default: // c/(x² + 1) style bump with offset
+                let c = r.int(2...5), k = r.int(-2...1)
+                return done(.sum([.div(.n(c), .sum([.p(x, 2), 1])), .n(k)]), -3, 3)
             }
         case .hard:
-            switch r.int(0...4) {
+            switch r.int(0...6) {
             case 0: return testCase(seed: seed)
-            case 1: return finish(.mul(.p(.sin(x), 2), .cos(x)), -pi / 2, pi / 2, piBased: true, level: level, seed: seed)
-            case 2: return finish(.mul(.p(x, 2), .exp(.neg(x))), 0, 5, piBased: false, level: level, seed: seed)
-            case 3: return finish(.mul(.sin(x), .exp(.neg(.div(x, 3)))), 0, 2 * pi, piBased: true, level: level, seed: seed)
-            default: return finish(.sub(.p(x, 4), .mul(2, .p(x, 2))), -1.7, 1.7, piBased: false, level: level, seed: seed)
+            case 1: // sin²(x)·cos(kx)
+                let k = r.int(2...3)
+                let w = pi / Double(2 * k)
+                return done(.mul(.p(.sin(x), 2), .cos(lin(k))), -w, w, pi: true)
+            case 2: // xⁿ·e^(−x)
+                let n = r.int(2...3)
+                return done(.mul(.p(x, n), .exp(.neg(x))), 0, Double(n) + 4)
+            case 3: // sin(kx)·e^(−x/c)
+                let k = r.int(1...2), c = r.int(2...4)
+                return done(.mul(.sin(lin(k)), .exp(.neg(.div(x, .n(c))))), 0, 2 * pi, pi: true)
+            case 4: // x⁴ − a·x² + b·x
+                let a = r.int(2...5), b = r.nonZero(-2...2)
+                let w = Double(a).squareRoot() * 1.15
+                return done(.sum([.p(x, 4), .scaled(-a, 1, .p(x, 2)), .scaled(b, 1, x)]), -w, w)
+            case 5: // (x² − a)/(x² + b)
+                let a = r.int(1...4), b = r.int(1...3)
+                return done(.div(.sum([.p(x, 2), .n(-a)]), .sum([.p(x, 2), .n(b)])), -4, 4)
+            default: // x·sin(x)
+                return done(.mul(x, .sin(x)), -2 * pi, 2 * pi, pi: true)
             }
         case .bagrut:
-            switch r.int(0...4) {
-            case 0: return finish(.mul(x, .ln(x)), 0.1, 3, piBased: false, level: level, seed: seed)
-            case 1: return finish(.div(.ln(x), x), 0.5, 7, piBased: false, level: level, seed: seed)
-            case 2: return finish(.mul(.sqrt(x), .sub(x, 3)), 0, 4.5, piBased: false, level: level, seed: seed)
-            case 3: return finish(.div(.exp(x), .sum([.p(x, 2), 1])), -3, 2, piBased: false, level: level, seed: seed)
-            default:
+            switch r.int(0...6) {
+            case 0: // xⁿ·ln x
+                let n = r.int(1...2)
+                return done(.mul(n == 1 ? x : .p(x, 2), .ln(x)), 0.1, n == 1 ? 3 : 2)
+            case 1: // ln(x)/xⁿ
+                let n = r.int(1...2)
+                return done(.div(.ln(x), n == 1 ? x : .p(x, 2)), 0.5, n == 1 ? 8 : 5)
+            case 2: // √x·(x − a)
+                let a = r.int(2...5)
+                return done(.mul(.sqrt(x), .sum([x, .n(-a)])), 0, Double(a) + 1.5)
+            case 3: // eˣ/(x² + c)
+                let c = r.int(1...3)
+                return done(.div(.exp(x), .sum([.p(x, 2), .n(c)])), -3, 2.5)
+            case 4: // x³ − 3k²x
                 let k = r.int(1...3)
-                return finish(.sub(.p(x, 3), .mul(.n(3 * k * k), x)), -2.2 * Double(k), 2.2 * Double(k), piBased: false, level: level, seed: seed)
+                return done(.sub(.p(x, 3), .mul(.n(3 * k * k), x)), -2.2 * Double(k), 2.2 * Double(k))
+            case 5: // x·e^(−x²/c)
+                let c = r.int(1...3)
+                let w = 2.5 * Double(c).squareRoot()
+                return done(.mul(x, .exp(.neg(.div(.p(x, 2), .n(c))))), -w, w)
+            default: // (x² − a)/(x² + 1)·k  — rational without asymptotes
+                let a = r.int(1...4)
+                return done(.div(.sum([.p(x, 2), .n(-a)]), .sum([.p(x, 2), 1])), -4, 4)
             }
         }
     }
