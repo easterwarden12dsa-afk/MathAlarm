@@ -76,17 +76,19 @@ public enum QuizKind: String, Codable, CaseIterable, Identifiable, Sendable {
             return [v("derivative", "f → f′", "chart.line.downtrend.xyaxis", [0]), v("formula", "Formula → graph", "function", [1]),
                     v("absolute", "|f|", "chart.line.flattrend.xyaxis", [2]), v("antiderivative", "f → F", "chart.line.uptrend.xyaxis", [3])]
         case .parameter:
-            return [v("extremum", "Extreme points", "arrow.up.and.down", [0, 1, 3, 5, 6, 7, 9]),
-                    v("other", "Asymptotes, tangents, points", "point.topleft.down.to.point.bottomright.curvepath", [2, 4, 8])]
+            return [v("extremum", "Extreme points", "arrow.up.and.down", [0, 1, 3, 5, 6, 7, 9, 10, 12]),
+                    v("tangents", "Tangents & slopes", "line.diagonal", [4, 14, 15]),
+                    v("other", "Asymptotes, points, areas", "point.topleft.down.to.point.bottomright.curvepath", [2, 8, 11, 13])]
         case .area:
-            return [v("under", "Under a curve", "square.bottomhalf.filled", [1, 3, 4, 6, 7]),
-                    v("between", "Between two curves", "square.split.1x2", [5]),
+            return [v("under", "Under a curve", "square.bottomhalf.filled", [1, 3, 4, 6, 7, 10, 11, 12]),
+                    v("between", "Between two curves", "square.split.1x2", [5, 9]),
                     v("sign", "Arches & sign changes", "waveform", [0, 2, 8])]
         case .limit:
-            return [v("factor", "0/0 by factoring", "divide", [0, 1]), v("infinity", "x → ∞", "infinity", [2, 5, 8]),
-                    v("onesided", "One-sided (±∞)", "arrow.right.to.line", [4]), v("special", "Special limits", "sparkles", [3, 6, 7])]
+            return [v("factor", "0/0 by factoring", "divide", [0]), v("infinity", "x → ±∞", "infinity", [1, 9]),
+                    v("roots", "Square roots (conjugate)", "x.squareroot", [2, 3]), v("onesided", "At an asymptote (±∞)", "arrow.right.to.line", [4]),
+                    v("special", "Special limits (sin, e, ln, 1^∞)", "sparkles", [5, 6, 7]), v("lhopital", "L'Hôpital", "function", [8])]
         case .equation:
-            return [v("exp", "Exponential", "x.squareroot", [0, 4]), v("log", "Logarithms", "l.circle", [2, 3, 6]),
+            return [v("exp", "Exponential", "x.squareroot", [0, 4, 8]), v("log", "Logarithms", "l.circle", [2, 3, 6]),
                     v("trig", "Trigonometric", "waveform.path", [1, 7]), v("root", "Square roots", "checkmark.shield", [5])]
         case .probability:
             return [v("independent", "Independent events", "circle.grid.2x1", [0]), v("draws", "Without replacement", "bag", [1]),
@@ -101,7 +103,10 @@ public enum QuizKind: String, Codable, CaseIterable, Identifiable, Sendable {
             return [v("numbers", "Numbers", "number", [0, 3]), v("fence", "Fences & boxes", "shippingbox", [1, 2]),
                     v("rectangles", "Rectangles in graphs", "rectangle.dashed", [4, 6, 7]), v("distance", "Shortest distance", "ruler", [5]),
                     v("classics", "Bagrut classics", "graduationcap", [8, 9, 10])]
-        case .tangent, .solutions, .signTable:
+        case .tangent:
+            return [v("point", "Tangent at a point", "line.diagonal", [0]), v("normal", "Normal line", "arrow.up.right.and.arrow.down.left", [1]),
+                    v("slope", "Tangent with a given slope", "angle", [2])]
+        case .solutions, .signTable:
             return []
         }
     }
@@ -214,22 +219,35 @@ public enum QuizChecker {
 // MARK: - Generators
 
 public enum QuizFactory {
-    public static func make(_ kind: QuizKind, level: Level, seed: UInt64, avoiding: Set<String> = [], variant: String? = nil) -> QuizProblem {
+    /// `avoidTopics`: sub-types shown recently ("limit:factor"); a different one is preferred.
+    public static func make(_ kind: QuizKind, level: Level, seed: UInt64, avoiding: Set<String> = [], variant: String? = nil,
+                            avoidTopics: Set<String> = []) -> QuizProblem {
         let cases = kind.variants.first { $0.id == variant }?.cases
         var s = seed
-        var first: QuizProblem?
-        for _ in 0..<60 {
+        var first: QuizProblem?, fresh: QuizProblem?
+        for i in 0..<80 {
             var r = SeededRandom(seed: s)
             if var q = candidate(kind, level: level, rng: &r, seed: s, cases: cases) {
                 if cases != nil { q.variant = variant }
                 q.steps = numbered(q.steps)
-                if !avoiding.contains(q.signature) { return q }
+                if !avoiding.contains(q.signature) {
+                    if !avoidTopics.contains(q.topic) || i >= 40 { return q }
+                    if fresh == nil { fresh = q }
+                }
                 if first == nil { first = q }
             }
             s = s &* 6_364_136_223_846_793_005 &+ 1_442_695_040_888_963_407
         }
-        var fallback = SeededRandom(seed: seed)
-        return first ?? candidate(.limit, level: .easy, rng: &fallback, seed: seed, cases: nil)!
+        if let q = fresh ?? first { return q }
+        // Never fails: keep trying seeds, then any easy limit.
+        for k in UInt64(1)...2_000 {
+            var r = SeededRandom(seed: seed &+ k)
+            if var q = candidate(kind, level: level, rng: &r, seed: seed &+ k, cases: nil) ?? candidate(.limit, level: .easy, rng: &r, seed: seed &+ k, cases: nil) {
+                q.steps = numbered(q.steps)
+                return q
+            }
+        }
+        fatalError("no quiz question could be made")
     }
 
     static func candidate(_ kind: QuizKind, level: Level, rng r: inout SeededRandom, seed: UInt64, cases: [Int]?) -> QuizProblem? {
@@ -238,7 +256,7 @@ public enum QuizFactory {
         case .parameter: return parameter(level, &r, seed, cases)
         case .area: return area(level, &r, seed, cases)
         case .limit: return limit(level, &r, seed, cases)
-        case .tangent: return tangent(level, &r, seed)
+        case .tangent: return tangent(level, &r, seed, cases)
         case .solutions: return solutions(level, &r, seed)
         case .signTable: return signTable(level, &r, seed)
         case .equation: return equation(level, &r, seed, cases)
@@ -368,6 +386,11 @@ public enum QuizFactory {
         return mid
     }
 
+    /// " + 3x", " − x²/2" or "" for a coefficient and a term.
+    static func signedTerm(_ c: Int, _ body: String) -> String {
+        c == 0 ? "" : (c < 0 ? " − " : " + ") + (Swift.abs(c) == 1 ? "" : "\(Swift.abs(c))") + body
+    }
+
     static func list(_ items: [String]) -> String { items.isEmpty ? "nowhere" : items.joined(separator: ",  ") }
 
     // MARK: Choose the graph
@@ -468,10 +491,10 @@ public enum QuizFactory {
     static func parameter(_ level: Level, _ r: inout SeededRandom, _ seed: UInt64, _ cases: [Int]? = nil) -> QuizProblem? {
         let pool: [Int]
         switch level {
-        case .easy: pool = [2, 4, 8]
-        case .medium: pool = [0, 6, 7, 3, 4]
-        case .hard: pool = [1, 5, 9, 3, 7]
-        case .bagrut: pool = [1, 5, 9, 7, 3]
+        case .easy: pool = [2, 4, 8, 11, 13]
+        case .medium: pool = [0, 6, 7, 3, 4, 10, 12, 14]
+        case .hard: pool = [1, 5, 9, 3, 7, 10, 13, 14]
+        case .bagrut: pool = [1, 5, 9, 7, 3, 11, 12, 15]
         }
         func ask(_ text: String, _ cond: String, _ a: Double, _ aText: String, _ steps: [SolutionStep], _ topic: String) -> QuizProblem {
             var q = blank(.parameter, level, seed, "\(cond) Find a.", .number(a), topic: "parameter:\(topic)")
@@ -563,6 +586,50 @@ public enum QuizFactory {
                         H("Step 2 · Solve for a"), S("a/\(x0 - 1) = \(y0) − \(k) = \(y0 - k)"), S("a = \(y0 - k)·\(x0 - 1) = \(a)"),
                         H("Step 3 · Check"), S("\(a)/\(x0 - 1) + \(k) = \(a / (x0 - 1)) + \(k) = \(y0) ✓")],
                        "point on graph")
+        case 10:
+            let k = r.int(2...6)
+            return ask("f(x) = a·eˣ + x", "f has an extremum at x = ln \(k).", -1 / Double(k), "−1/\(k)",
+                       [H("Differentiate"), S("f′(x) = a·eˣ + 1"),
+                        H("Use the condition"), S("f′(ln \(k)) = 0:   a·e^(ln \(k)) + 1 = 0   ⇒   \(k)a + 1 = 0"),
+                        H("Solve for a"), S("a = −1/\(k)"),
+                        H("Check"), S("f′(x) = 1 − eˣ/\(k) changes from + to − at x = ln \(k): a maximum ✓")], "exp extremum")
+        case 11:
+            let c = r.int(2...7)
+            return ask("f(x) = x² − a·x + \(c * c),  a > 0", "The graph of f touches the x-axis at exactly one point.", Double(2 * c), "\(2 * c)",
+                       [H("One point on the axis"), S("f(x) = 0 has exactly one solution ⇔ the discriminant is 0."),
+                        H("The discriminant"), S("Δ = a² − 4·1·\(c * c) = a² − \(4 * c * c)"),
+                        H("Solve"), S("a² = \(4 * c * c)  ⇒  a = ±\(2 * c)"), S("a > 0, so a = \(2 * c); a = −\(2 * c) is rejected ✗"),
+                        H("Check"), S("x² − \(2 * c)x + \(c * c) = (x − \(c))² touches the axis at x = \(c) ✓")], "discriminant")
+        case 12:
+            let k = r.int(1...5)
+            return ask("f(x) = x + a/x", "f has an extremum at x = \(k).", Double(k * k), "\(k * k)",
+                       [H("Differentiate"), S("f′(x) = 1 − a/x²"),
+                        H("Use the condition"), S("f′(\(k)) = 0:   1 − a/\(k * k) = 0"),
+                        H("Solve for a"), S("a = \(k * k)"),
+                        H("Check"), S("f′(x) = (x² − \(k * k))/x² changes from − to + at x = \(k): a minimum ✓")], "rational extremum")
+        case 13:
+            let h = r.int(1...3), a = r.int(1...4)
+            let area = a * h * h * h
+            return ask("f(x) = a·x²,  a > 0", "The area under f from x = 0 to x = \(h) is \(frac(area, 3)).", Double(a), "\(a)",
+                       [H("Write the area as an integral"), S("∫₀^\(h) a·x² dx = a·[x³/3]₀^\(h) = a·\(frac(h * h * h, 3))"),
+                        H("Use the condition"), S("a·\(frac(h * h * h, 3)) = \(frac(area, 3))"),
+                        H("Solve for a"), S("a = \(frac(area, 3)) ÷ \(frac(h * h * h, 3)) = \(a)")], "area condition")
+        case 14:
+            let k = r.pick([1, 2, -1, 3]), m = r.int(-3...5)
+            // f(x) = x³ + a x has slope m at x = k: 3k² + a = m.
+            let a = m - 3 * k * k
+            return ask("f(x) = x³ + a·x", "The tangent to f at x = \(iv(k)) has slope \(iv(m)).", Double(a), iv(a),
+                       [H("Differentiate"), S("f′(x) = 3x² + a"),
+                        H("The slope at x = \(iv(k))"), S("f′(\(iv(k))) = 3·\(k * k) + a = \(3 * k * k) + a"),
+                        H("Solve for a"), S("\(3 * k * k) + a = \(iv(m))  ⇒  a = \(iv(a))")], "tangent slope")
+        case 15:
+            let p = r.int(1...3)
+            // f′(x) = a/x + x = 0 at x = p  ⇒  a = −p².
+            return ask("f(x) = a·ln x + x²/2", "The tangent to f at x = \(p) is horizontal.", Double(-p * p), iv(-p * p),
+                       [H("Domain"), S("ln x needs x > 0."),
+                        H("Differentiate"), S("f′(x) = a/x + x"),
+                        H("Horizontal tangent ⇔ slope 0"), S("f′(\(p)) = 0:   a/\(p) + \(p) = 0"),
+                        H("Solve for a"), S("a = −\(p * p)")], "horizontal tangent")
         default:
             let k = r.pick([1, 2, -1, -2])
             return ask("f(x) = ln(x² + a·x + 5)", "f has an extremum at x = \(iv(k)).", Double(-2 * k), iv(-2 * k),
@@ -580,10 +647,10 @@ public enum QuizFactory {
     static func area(_ level: Level, _ r: inout SeededRandom, _ seed: UInt64, _ cases: [Int]? = nil) -> QuizProblem? {
         let pool: [Int]
         switch level {
-        case .easy: pool = [0, 1, 2]
-        case .medium: pool = [0, 1, 2, 3, 4]
-        case .hard: pool = [3, 4, 5, 6, 8]
-        case .bagrut: pool = [5, 6, 7, 8, 4]
+        case .easy: pool = [0, 1, 2, 10, 10]
+        case .medium: pool = [0, 1, 2, 3, 4, 9, 10, 11]
+        case .hard: pool = [3, 4, 5, 6, 8, 9, 11, 12]
+        case .bagrut: pool = [5, 6, 7, 8, 4, 9, 12]
         }
         let x = Expr.x
         var f: Expr, lo: Double, hi: Double, value: Double, steps: [SolutionStep], g: Expr? = nil, piBased = false, topic: String
@@ -677,6 +744,66 @@ public enum QuizFactory {
                      H("Step 2 · An antiderivative"), S("(e^(x²))′ = 2x·e^(x²), so F(x) = ½e^(x²)"),
                      H("Step 3 · F(1) − F(0)"), S("½e¹ − ½e⁰ = e/2 − 1/2")]
             topic = "area:substitution"
+        case 9:
+            // A line above a parabola: top − bottom = k(x − r1)(r2 − x).
+            let r1 = r.int(-3...1), r2 = r1 + r.int(1...4), k = r.int(1...2)
+            let m = r.int(-3...3), c = r.int(-2...4)
+            let line = [m, c]
+            let gap = polyMul([k], polyMul([1, -r1], [1, -r2]))          // k(x − r1)(x − r2) ≥ 0 outside
+            let para = [gap[0], gap[1] + m, gap[2] + c]                   // the parabola = line + k(x − r1)(x − r2)
+            f = Solver.polyExpr(line); g = Solver.polyExpr(para); lo = Double(r1); hi = Double(r2)
+            let w = r2 - r1
+            value = Double(k * w * w * w) / 6
+            prompt = "Find the area between the line y = \(Solver.polyText(line)) and the parabola y = \(Solver.polyText(para))."
+            answer = frac(k * w * w * w, 6)
+            let F = { (t: Int) -> String in frac(-2 * k * t * t * t + 3 * k * (r1 + r2) * t * t - 6 * k * r1 * r2 * t, 6) }
+            steps = [H("Where they meet"), S("\(Solver.polyText(para)) = \(Solver.polyText(line))  ⇒  \(Solver.polyText(gap)) = 0"),
+                     S("\(k == 1 ? "" : "\(k)")(\(xm(r1)))(\(xm(r2))) = 0  ⇒  x = \(iv(r1)) or x = \(iv(r2))", 2),
+                     H("Which one is on top"), S("Between \(iv(r1)) and \(iv(r2)) the factor (\(xm(r1)))(\(xm(r2))) is negative, so the parabola is below the line."),
+                     H("Integrate top − bottom"), S("line − parabola = \(Solver.polyText(gap.map { -$0 }))"),
+                     S("F(x) = −\(k == 1 ? "" : "\(k)")x³/3\(signedTerm(k * (r1 + r2), "x²/2"))\(signedTerm(-k * r1 * r2, "x"))"),
+                     H("F(\(iv(r2))) − F(\(iv(r1)))"), S("F(\(iv(r2))) = \(F(r2)),   F(\(iv(r1))) = \(F(r1))"), S("\(F(r2)) − (\(F(r1)))")]
+            topic = "area:line and parabola"
+        case 10:
+            // Under a quadratic that stays positive on [lo, hi].
+            let a = r.int(1...3), b = r.int(-4...4), c = r.int(1...8)
+            let l = r.int(-2...1), h = l + r.int(1...3)
+            let P = [a, b, c]
+            guard (0...20).allSatisfy({ i in Double(a) * pow(Double(l) + Double(h - l) * Double(i) / 20, 2) + Double(b) * (Double(l) + Double(h - l) * Double(i) / 20) + Double(c) > 0 }) else { return nil }
+            func F6(_ t: Int) -> Int { 2 * a * t * t * t + 3 * b * t * t + 6 * c * t }      // 6·F(t)
+            f = Solver.polyExpr(P); lo = Double(l); hi = Double(h)
+            value = Double(F6(h) - F6(l)) / 6
+            prompt = "Find the shaded area under f from x = \(iv(l)) to x = \(iv(h))."
+            answer = frac(F6(h) - F6(l), 6)
+            steps = [H("Check the sign"), S("f stays above the x-axis between \(iv(l)) and \(iv(h)) (e.g. f(\(iv(l))) = \(polyEval(P, l)), f(\(iv(h))) = \(polyEval(P, h))), so the area is the integral."),
+                     H("An antiderivative"), S("F(x) = \(a == 1 ? "" : "\(a)")x³/3\(b == 0 ? "" : (b < 0 ? " − " : " + ") + "\(Swift.abs(b))x²/2")\(sg(c))x"),
+                     H("F(\(iv(h))) − F(\(iv(l)))"), S("F(\(iv(h))) = \(frac(F6(h), 6)),   F(\(iv(l))) = \(frac(F6(l), 6))"),
+                     S("\(frac(F6(h), 6)) − (\(frac(F6(l), 6)))")]
+            topic = "area:quadratic"
+        case 11:
+            // Under 1/(ax + b): a logarithm.
+            let a = r.int(1...3), b = r.int(1...4), l = 0, h = r.int(1...4)
+            f = .div(1, .sum([.scaled(a, 1, x), .n(b)])); lo = Double(l); hi = Double(h)
+            value = log(Double(a * h + b) / Double(b)) / Double(a)
+            let ratio = frac(a * h + b, b)
+            prompt = "Find the shaded area under f from x = 0 to x = \(h)."
+            answer = a == 1 ? "ln(\(ratio))" : "(1/\(a))·ln(\(ratio))"
+            steps = [H("Check the sign"), S("For x ≥ 0, \(a == 1 ? "" : "\(a)")x + \(b) > 0, so f > 0."),
+                     H("An antiderivative"), S("Inner function \(a == 1 ? "" : "\(a)")x + \(b) with derivative \(a):  F(x) = \(a == 1 ? "" : "(1/\(a))·")ln(\(a == 1 ? "" : "\(a)")x + \(b))"),
+                     H("F(\(h)) − F(0)"), S("\(a == 1 ? "" : "(1/\(a))·")[ln \(a * h + b) − ln \(b)] = \(a == 1 ? "" : "(1/\(a))·")ln(\(a * h + b)/\(b))")]
+            topic = "area:linear ln"
+        case 12:
+            // e^(kx) from 0 to n: (e^(kn) − 1)/k.
+            let k = r.pick([1, 2, -1]), n = r.int(1...2)
+            f = .exp(.scaled(k, 1, x)); lo = 0; hi = Double(n)
+            value = (exp(Double(k * n)) - 1) / Double(k)
+            let ek = k * n == 1 ? "e" : "e^(\(iv(k * n)))"
+            prompt = "Find the shaded area under f from x = 0 to x = \(n). (Type it exactly, with e.)"
+            answer = k == 1 ? "\(ek) − 1" : (k < 0 ? "1 − \(ek)" : "(\(ek) − 1)/\(k)")
+            steps = [H("Check the sign"), S("e to any power is positive."),
+                     H("An antiderivative"), S("F(x) = e^(\(iv(k))x)\(k == 1 ? "" : "/\(iv(k))")"),
+                     H("F(\(n)) − F(0)"), S("(\(ek) − e⁰)\(k == 1 ? "" : "/\(iv(k))")")]
+            topic = "area:exp exact"
         default:
             let c = r.int(1...2)
             f = .sub(.p(x, 3), .scaled(c * c, 1, x)); lo = -Double(c); hi = Double(c)
@@ -703,146 +830,6 @@ public enum QuizFactory {
         q.graph = graph; q.shade = lo...hi
         q.formulaLabel = "f(x) ="; q.formula = f
         q.steps = steps + [R("Area = \(answer)")]
-        return q
-    }
-
-    // MARK: Limits
-
-    static func limit(_ level: Level, _ r: inout SeededRandom, _ seed: UInt64, _ cases: [Int]? = nil) -> QuizProblem? {
-        let x = Expr.x
-        let pool: [Int]
-        switch level {
-        case .easy: pool = [0, 2, 4]
-        case .medium: pool = [0, 1, 2, 3, 4]
-        case .hard: pool = [1, 3, 4, 5, 6, 8]
-        case .bagrut: pool = [1, 4, 5, 6, 7, 8]
-        }
-        func q(_ label: String, _ e: Expr, _ answer: QuizAnswer, _ steps: [SolutionStep], _ result: String, _ topic: String) -> QuizProblem {
-            var p = blank(.limit, level, seed, "Find the limit.", answer, topic: "limit:\(topic)")
-            p.formulaLabel = label
-            p.formula = e
-            p.steps = steps + [R(result)]
-            return p
-        }
-        switch choose(pool, cases, &r) {
-        case 0:
-            let p = r.pick([1, 2, 3, -2])
-            return q("lim x→\(iv(p))", .div(.sum([.p(x, 2), .n(-p * p)]), .sum([x, .n(-p)])), .number(Double(2 * p)),
-                     [H("Step 1 · Substitute"), S("x = \(iv(p)):  (\(p * p) − \(p * p)) / (\(iv(p)) − \(p < 0 ? "(\(iv(p)))" : iv(p))) = 0/0, which isn't a number yet."),
-                      H("Step 2 · Factor and cancel"), S("x² − \(p * p) = (\(xm(p)))(\(xm(-p)))"),
-                      S("(\(xm(p)))(\(xm(-p))) / (\(xm(p))) = \(xm(-p))   (x ≠ \(iv(p)), so cancelling is allowed)"),
-                      H("Step 3 · Substitute again"), S("\(iv(p)) + \(p < 0 ? "(\(iv(p)))" : iv(p)) = \(iv(2 * p))")],
-                     "The limit is \(iv(2 * p))", "removable")
-        case 1:
-            let rr = r.pick([1, 2, -1, 3]), b = r.int(-3...3)
-            let c = -rr * rr - b * rr
-            let top = Solver.polyText([1, b, c])
-            return q("lim x→\(iv(rr))", .div(Solver.polyExpr([1, b, c]), .sum([x, .n(-rr)])), .number(Double(2 * rr + b)),
-                     [H("Step 1 · Substitute"), S("The top at x = \(iv(rr)): \(rr * rr)\(sg(b * rr))\(sg(c)) = 0, and the bottom is 0: the form 0/0."),
-                      H("Step 2 · Factor the top"), S("x = \(iv(rr)) is a root of the top, so (\(xm(rr))) is a factor:"),
-                      S("\(top) = (\(xm(rr)))(\(xm(-(rr + b))))", 2),
-                      S("Cancel (\(xm(rr))):  the fraction equals \(xm(-(rr + b))) for x ≠ \(iv(rr))"),
-                      H("Step 3 · Substitute again"), S("\(iv(rr))\(sg(rr + b)) = \(iv(2 * rr + b))")],
-                     "The limit is \(iv(2 * rr + b))", "factor")
-        case 2:
-            let a = r.int(1...5), b = r.int(1...3)
-            return q("lim x→∞", .div(.sum([.scaled(a, 1, .p(x, 2)), 1]), .sum([.scaled(b, 1, .p(x, 2)), .neg(x)])), .number(Double(a) / Double(b)),
-                     [H("Step 1 · The form"), S("Top and bottom both → ∞: the form ∞/∞."),
-                      H("Step 2 · Divide by the highest power, x²"), S("(\(a == 1 ? "" : "\(a)")x² + 1)/(\(b == 1 ? "" : "\(b)")x² − x) = (\(a) + 1/x²)/(\(b) − 1/x)"),
-                      H("Step 3 · Let x → ∞"), S("1/x² → 0 and 1/x → 0, leaving \(a)/\(b)")],
-                     "The limit is \(frac(a, b))", "infinity")
-        case 3:
-            let k = r.int(2...5)
-            return q("lim x→0", .div(.sin(.scaled(k, 1, x)), x), .number(Double(k)),
-                     [H("Step 1 · The form"), S("sin 0 = 0, so the form is 0/0."),
-                      H("Step 2 · Make the special limit appear"), S("The special limit: sin u / u → 1 as u → 0."),
-                      S("sin(\(k)x)/x = \(k) · sin(\(k)x)/(\(k)x)   (multiply and divide by \(k))"),
-                      H("Step 3 · Let x → 0"), S("u = \(k)x → 0, so sin(\(k)x)/(\(k)x) → 1, and the whole thing → \(k)·1")],
-                     "The limit is \(k)", "trig")
-        case 4:
-            let p = r.int(-2...3), c = r.pick([1, 2, -1, -3])
-            let right = r.bool()
-            let up = (c > 0) == right
-            let options = ["+∞", "−∞", "0", "doesn't exist"].map { QuizOption(text: $0) }
-            return q("lim x→\(iv(p))\(right ? "⁺" : "⁻")", .div(.n(c), .sum([x, .n(-p)])), .choice(options, correct: up ? 0 : 1),
-                     [H("Step 1 · Substitute"), S("The top is \(iv(c)) and the bottom → 0: the form \(iv(c))/0, so the limit is +∞ or −∞."),
-                      H("Step 2 · The sign of the bottom"), S("x → \(iv(p))\(right ? "⁺" : "⁻") means x is a little \(right ? "more" : "less") than \(iv(p)), so \(xm(p)) is a tiny \(right ? "positive" : "negative") number."),
-                      H("Step 3 · The sign of the fraction"), S("\(c > 0 ? "positive" : "negative") ÷ \(right ? "positive" : "negative") = \(up ? "positive" : "negative"), and it grows without bound.")],
-                     "The limit is \(up ? "+∞" : "−∞")", "one-sided")
-        case 5:
-            let k = r.int(1...3)
-            return q("lim x→∞", .pow(.sum([1, .div(.n(k), x)]), x), .number(exp(Double(k))),
-                     [H("Step 1 · The form"), S("1 + \(k)/x → 1 and the power → ∞: the form 1^∞ (not simply 1!)."),
-                      H("Step 2 · Use the special limit"), S("(1 + 1/n)ⁿ → e. Put n = x/\(k):"),
-                      S("(1 + \(k)/x)ˣ = [(1 + 1/n)ⁿ]^\(k)", 2),
-                      H("Step 3 · Let x → ∞"), S("n → ∞, so the bracket → e and the whole thing → e^\(k)")],
-                     "The limit is e\(k == 1 ? "" : Solver.sup(k))", "e")
-        case 6:
-            let k = r.int(1...4)
-            return q("lim x→0", .div(.sum([.exp(.scaled(k, 1, x)), .n(-1)]), x), .number(Double(k)),
-                     [H("Step 1 · The form"), S("e⁰ − 1 = 0, so the form is 0/0."),
-                      H("Step 2 · Recognise a derivative"), S("(e^(\(k)x) − e⁰)/(x − 0) is the slope from 0 to x of g(x) = e^(\(k)x)."),
-                      S("As x → 0 it becomes g′(0)."),
-                      H("Step 3 · Compute g′(0)"), S("g′(x) = \(k)e^(\(k)x), so g′(0) = \(k)·1 = \(k)")],
-                     "The limit is \(k)", "exp")
-        case 7:
-            return q("lim x→0⁺", .mul(x, .ln(x)), .number(0),
-                     [H("Step 1 · The form"), S("x → 0 and ln x → −∞: the form 0·(−∞)."),
-                      H("Step 2 · Rewrite as a fraction"), S("x·ln x = ln x / (1/x): now the form −∞/∞."),
-                      H("Step 3 · L'Hôpital"), S("(ln x)′/(1/x)′ = (1/x)/(−1/x²) = −x"),
-                      S("−x → 0 as x → 0⁺")],
-                     "The limit is 0", "x ln x")
-        default:
-            let k = r.pick([2, 4, 6])
-            return q("lim x→∞", .sub(.sqrt(.sum([.p(x, 2), .scaled(k, 1, x)])), x), .number(Double(k) / 2),
-                     [H("Step 1 · The form"), S("Both terms → ∞: the form ∞ − ∞."),
-                      H("Step 2 · Multiply by the conjugate"), S("(√(x² + \(k)x) − x)·(√(x² + \(k)x) + x)/(√(x² + \(k)x) + x)"),
-                      S("= (x² + \(k)x − x²)/(√(x² + \(k)x) + x) = \(k)x/(√(x² + \(k)x) + x)", 2),
-                      H("Step 3 · Divide by x"), S("= \(k)/(√(1 + \(k)/x) + 1)"), S("\(k)/x → 0, so this → \(k)/(1 + 1)")],
-                     "The limit is \(k / 2)", "conjugate")
-        }
-    }
-
-    // MARK: Tangent
-
-    static func tangent(_ level: Level, _ r: inout SeededRandom, _ seed: UInt64) -> QuizProblem? {
-        let x = Expr.x
-        let pick: (Expr, Double, String)
-        switch level {
-        case .easy:
-            let b = r.int(-3...3), c = r.int(-2...4), p = r.int(-1...2)
-            pick = (Solver.polyExpr([1, b, c]), Double(p), iv(p))
-        case .medium:
-            switch r.int(0...2) {
-            case 0:
-                let k = r.int(1...4), p = r.int(1...2)
-                pick = (.sub(.p(x, 3), .scaled(k, 1, x)), Double(p), "\(p)")
-            case 1: pick = (.exp(x), 0, "0")
-            default: pick = (.ln(x), 1, "1")
-            }
-        default:
-            switch r.int(0...3) {
-            case 0: pick = (.mul(x, .exp(x)), 0, "0")
-            case 1: pick = (.ln(.sum([.p(x, 2), 1])), 1, "1")
-            case 2: pick = (.div(1, x), 2, "2")
-            default: pick = (.sin(x), 0, "0")
-            }
-        }
-        let (f, x0, label) = pick
-        let m = f.derivative().evaluate(at: x0), y0 = f.evaluate(at: x0)
-        let b = y0 - m * x0
-        guard m.isFinite, b.isFinite else { return nil }
-        let line = Expr.sum([.mul(.num(m), x), .num(b)]).simplified()
-        var q = blank(.tangent, level, seed, "Find the tangent line to f at x = \(label). Type the right side of y = …", .function(line), topic: "tangent")
-        q.formulaLabel = "f(x) ="
-        q.formula = f
-        let lineText = (m == 0 ? "" : "\(num(m) == "1" ? "" : (num(m) == "−1" ? "−" : num(m)))x") + (b == 0 && m != 0 ? "" : (m == 0 ? num(b) : (b < 0 ? " − \(num(-b))" : " + \(num(b))")))
-        q.steps = [H("Step 1 · The point of tangency"), S("f(\(label)) = \(num(y0)), so the point is (\(label), \(num(y0)))."),
-                   H("Step 2 · The slope"), SolutionStep("Differentiate:", label: "f′(x) =", math: f.derivative().simplified(), depth: 1),
-                   S("m = f′(\(label)) = \(num(m))"),
-                   H("Step 3 · The line through the point"), S("y − y₀ = m(x − x₀):   y − \(y0 < 0 ? "(\(num(y0)))" : num(y0)) = \(num(m))(x − \(x0 < 0 ? "(\(label))" : label))"),
-                   S("Open the brackets and move \(num(y0)) to the right."),
-                   R("y = \(lineText.isEmpty ? "0" : lineText)")]
         return q
     }
 
@@ -956,10 +943,10 @@ public enum QuizFactory {
         }
         let pool: [Int]
         switch level {
-        case .easy: pool = [1, 4, 2, 4]
-        case .medium: pool = [0, 1, 2, 4, 6]
-        case .hard: pool = [0, 3, 5, 6, 7]
-        case .bagrut: pool = [0, 3, 5, 6, 7, 2]
+        case .easy: pool = [1, 4, 2, 4, 8]
+        case .medium: pool = [0, 1, 2, 4, 6, 8]
+        case .hard: pool = [0, 3, 5, 6, 7, 8]
+        case .bagrut: pool = [0, 3, 5, 6, 7, 2, 8]
         }
         let range = "   for 0 ≤ x ≤ 2π"
         switch choose(pool, cases, &r) {
@@ -1047,6 +1034,16 @@ public enum QuizFactory {
                         H("Step 2 · Equal bases ⇒ equal exponents"), S("\(exponent) = \(n)"),
                         H("Step 3 · Solve"), S("\(m == 1 ? "" : "\(m)")x = \(n)\(sg(-s)) = \(iv(n - s))"),
                         H("Check"), S("Exponential equations like this have exactly one solution; nothing to reject.")], "same base")
+        case 8:
+            // 4ˣ − (2^p + 2^q)·2ˣ + 2^(p+q) = 0 with t = 2ˣ.
+            let p = r.int(0...2), qq = p + r.int(1...2)
+            let P = 1 << p, Q = 1 << qq
+            return ask("4ˣ − \(P + Q)·2ˣ + \(P * Q) = 0", "x = \(p),  x = \(qq)", ["x = \(P),  x = \(Q)", "x = \(qq) only", "x = \(p + qq)"],
+                       [H("Write 4ˣ with base 2"), S("4ˣ = (2²)ˣ = (2ˣ)²"),
+                        H("Substitute t = 2ˣ (t > 0)"), S("t² − \(P + Q)t + \(P * Q) = 0"),
+                        H("Solve the quadratic"), S("(t − \(P))(t − \(Q)) = 0   ⇒   t = \(P) or t = \(Q)"),
+                        H("Check t > 0"), S("Both are positive ✓"),
+                        H("Back to x"), S("2ˣ = \(P) = 2\(Solver.sup(p))  ⇒  x = \(p)"), S("2ˣ = \(Q) = 2\(Solver.sup(qq))  ⇒  x = \(qq)")], "base 2")
         case 5:
             // √(x + a) = x − c: squaring adds a false root, which the check removes.
             let c = r.int(1...3), r1 = c + r.int(2...4)

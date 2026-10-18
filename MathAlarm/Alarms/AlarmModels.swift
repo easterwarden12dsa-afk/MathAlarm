@@ -113,10 +113,17 @@ final class ProblemHistory {
         return p
     }
 
+    /// Sub-types of recent quick questions ("limit:factor"), so the next one is a different kind of question.
+    private lazy var quizTopics: [String] = Persistence.load([String].self, from: "quizTopics.json") ?? []
+
     func freshQuiz(level: Level, kind: QuizKind? = nil, variant: String? = nil) -> QuizProblem {
         let k = kind ?? QuizKind.allCases.randomElement()!
-        let q = QuizFactory.make(k, level: level, seed: ProblemFactory.randomSeed(), avoiding: avoid, variant: variant)
+        let q = QuizFactory.make(k, level: level, seed: ProblemFactory.randomSeed(), avoiding: avoid, variant: variant,
+                                 avoidTopics: Set(quizTopics.suffix(6)))
         remember(q.signature)
+        quizTopics.append(q.topic)
+        if quizTopics.count > 30 { quizTopics.removeFirst(quizTopics.count - 30) }
+        Persistence.save(quizTopics, to: "quizTopics.json")
         return q
     }
 
