@@ -1,0 +1,2 @@
+866:warning: All interface orientations must be supported unless the app requires full screen. (in target 'MathAlarm' from project 'MathAlarm')
+872:** BUILD SUCCEEDED **
