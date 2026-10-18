@@ -51,15 +51,20 @@ jobs:
           echo "### MathAlarm.ipa SHA-256: \`$(cut -d' ' -f1 ipa-sha256.txt)\`" >> "$GITHUB_STEP_SUMMARY"
 
       # Public download link (also lets VirusTotal scan it by URL before downloading).
-      - name: Publish to the "latest" release
-        if: github.ref == 'refs/heads/main'
+      - name: Publish the release for this branch
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/prototype' || github.ref == 'refs/heads/original'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release delete latest --yes --cleanup-tag || true
-          gh release create latest MathAlarm.ipa ipa-sha256.txt \
-            --title "Latest build" \
-            --notes "Built from commit ${{ github.sha }}. SHA-256: $(cut -d' ' -f1 ipa-sha256.txt)" \
+          case "${GITHUB_REF_NAME}" in
+            main) TAG=latest; TITLE="Latest build" ;;
+            prototype) TAG=prototype; TITLE="Prototype (Math Alarm β)" ;;
+            original) TAG=original-v1; TITLE="Original v1 (before the prototype)" ;;
+          esac
+          gh release delete "$TAG" --yes --cleanup-tag || true
+          gh release create "$TAG" MathAlarm.ipa ipa-sha256.txt \
+            --title "$TITLE" \
+            --notes "Built from commit ${{ github.sha }} (branch ${GITHUB_REF_NAME}). SHA-256: $(cut -d' ' -f1 ipa-sha256.txt)" \
             --target "${{ github.sha }}"
 
       - name: Upload .ipa
