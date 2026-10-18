@@ -61,7 +61,7 @@ extension QuizFactory {
 
     // MARK: - Probability
 
-    static func probability(_ level: Level, _ r: inout SeededRandom, _ seed: UInt64) -> QuizProblem? {
+    static func probability(_ level: Level, _ r: inout SeededRandom, _ seed: UInt64, _ cases: [Int]? = nil) -> QuizProblem? {
         let pool: [Int]
         switch level {
         case .easy: pool = [0, 1, 2]
@@ -73,7 +73,7 @@ extension QuizFactory {
         let tol3 = 0.0006
         let H = SolutionStep.heading, S = { (t: String) in SolutionStep(t, depth: 1) }, R = { (t: String) in SolutionStep.result(t) }
 
-        switch r.pick(pool) {
+        switch choose(pool, cases, &r) {
         case 0:
             // Two independent events.
             let ps = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
@@ -99,7 +99,7 @@ extension QuizFactory {
             default:
                 value = a * b
                 what = "both happen"
-                steps = [H("Independent events multiply"), R("P(both) = \(dec(a))·\(dec(b)) = \(dec(value))")]
+                steps = [H("Independent events multiply"), S("For independent events, P(A and B) = P(A)·P(B)."), R("P(both) = \(dec(a))·\(dec(b)) = \(dec(value))")]
             }
             return number(.probability, level, seed,
                           "The probability that \(names.0) is \(dec(a)); the probability that \(names.1) is \(dec(b)), independently. Find the probability that \(what).",
@@ -162,13 +162,14 @@ extension QuizFactory {
                 let lo = (0..<k).map(term).reduce(0, +)
                 let useComplement = k <= n / 2 + 1
                 let value = 1 - lo
-                var steps = [H("Binomial: n = \(n), p = \(pn)/\(pd)"), S("P(X = i) = C(\(n), i)·(\(pn)/\(pd))ⁱ·(\(pd - pn)/\(pd))^(\(n) − i)")]
+                var steps = [H("Is it binomial?"), S("\(n) independent tries with the same p: X ~ B(\(n), \(pn)/\(pd))."), S("P(X = i) = C(\(n), i)·(\(pn)/\(pd))ⁱ·(\(pd - pn)/\(pd))^(\(n) − i)")]
                 if useComplement {
                     steps.append(SolutionStep.heading("Complement: 1 − P(X ≤ \(k - 1))"))
                     for i in 0..<k { steps.append(S("P(X = \(i)) = \(binomial(n, i))·(\(pn)/\(pd))^\(i)·(\(pd - pn)/\(pd))^\(n - i) ≈ \(dp(term(i), 4))")) }
                     steps.append(R("P(X ≥ \(k)) = 1 − \(dp(lo, 4)) ≈ \(dp(value, 3))"))
                 } else {
-                    for i in k...n { steps.append(S("P(X = \(i)) ≈ \(dp(term(i), 4))")) }
+                    steps.append(SolutionStep.heading("Add P(X = \(k)) up to P(X = \(n))"))
+                    for i in k...n { steps.append(S("P(X = \(i)) = \(binomial(n, i))·(\(pn)/\(pd))^\(i)·(\(pd - pn)/\(pd))^\(n - i) ≈ \(dp(term(i), 4))")) }
                     steps.append(R("P(X ≥ \(k)) ≈ \(dp(value, 3))"))
                 }
                 return number(.probability, level, seed, "\(context) In \(n) independent tries, find the probability of at least \(k) successes. \(threeDP)",
@@ -177,9 +178,10 @@ extension QuizFactory {
             let value = term(k)
             return number(.probability, level, seed, "\(context) In \(n) independent tries, find the probability of exactly \(k) successes. \(threeDP)",
                           value, topic: "probability:binomial",
-                          steps: [H("Binomial: n = \(n), p = \(pn)/\(pd), k = \(k)"),
-                                  S("P(X = k) = C(n, k)·pᵏ·(1 − p)ⁿ⁻ᵏ"),
+                          steps: [H("Is it binomial?"), S("\(n) independent tries with the same p = \(pn)/\(pd) each time: X ~ B(\(n), \(pn)/\(pd))."),
+                                  H("The formula"), S("P(X = k) = C(n, k)·pᵏ·(1 − p)ⁿ⁻ᵏ"),
                                   S("C(\(n), \(k)) = \(binomial(n, k)) ways to choose which tries succeed"),
+                                  H("Substitute k = \(k)"),
                                   R("P = \(binomial(n, k))·(\(pn)/\(pd))^\(k)·(\(pd - pn)/\(pd))^\(n - k) ≈ \(dp(value, 3))")],
                           tolerance: tol3)
         case 4, 8:
@@ -225,8 +227,8 @@ extension QuizFactory {
                           (atMost ? "it takes at most \(k) tries. " : "the first success is on try \(k). ") + threeDP,
                           value, topic: "probability:first success",
                           steps: atMost
-                            ? [H("Opposite: all \(k) fail"), S("P(all fail) = (\(pd - pn)/\(pd))^\(k)"), R("P = 1 − (\(pd - pn)/\(pd))^\(k) ≈ \(dp(value, 3))")]
-                            : [H("Fail \(k - 1) times, then succeed"), R("P = (\(pd - pn)/\(pd))^\(k - 1)·\(pn)/\(pd) ≈ \(dp(value, 3))")],
+                            ? [H("Opposite: all \(k) fail"), S("\"At most \(k) tries\" means a success somewhere in the first \(k); its opposite is \(k) failures in a row."), S("P(all fail) = (\(pd - pn)/\(pd))^\(k)"), R("P = 1 − (\(pd - pn)/\(pd))^\(k) ≈ \(dp(value, 3))")]
+                            : [H("Fail \(k - 1) times, then succeed"), S("The tries are independent: multiply (1 − p) for each failure, then p for the success."), R("P = (\(pd - pn)/\(pd))^\(k - 1)·\(pn)/\(pd) ≈ \(dp(value, 3))")],
                           tolerance: tol3)
         default:
             // Conditional on "at least one".
@@ -264,7 +266,7 @@ extension QuizFactory {
 
     static func deg(_ d: Double) -> Double { d * .pi / 180 }
 
-    static func triangle(_ level: Level, _ r: inout SeededRandom, _ seed: UInt64) -> QuizProblem? {
+    static func triangle(_ level: Level, _ r: inout SeededRandom, _ seed: UInt64, _ cases: [Int]? = nil) -> QuizProblem? {
         let pool: [Int]
         switch level {
         case .easy: pool = [0, 1, 0, 1]
@@ -281,7 +283,7 @@ extension QuizFactory {
             return q
         }
 
-        switch r.pick(pool) {
+        switch choose(pool, cases, &r) {
         case 0:
             // Law of cosines with 60°, 90° or 120°.
             let A = r.pick([60, 120, 90]), b = r.int(2...9), c = r.int(2...9)
@@ -290,7 +292,8 @@ extension QuizFactory {
             let a = Double(a2).squareRoot()
             let cosText = A == 60 ? "1/2" : (A == 120 ? "−1/2" : "0")
             return make("In triangle ABC, AB = \(c), AC = \(b) and ∠A = \(A)°. Find BC.", a, "law of cosines",
-                        [H("Law of cosines"), S("BC² = AB² + AC² − 2·AB·AC·cos A"),
+                        [H("What is given"), S("Two sides and the angle between them (SAS): the law of cosines finds the third side."),
+                         H("Law of cosines"), S("BC² = AB² + AC² − 2·AB·AC·cos A"),
                          S("BC² = \(c * c) + \(b * b) − 2·\(c)·\(b)·(\(cosText)) = \(a2)"), R("BC = \(sqrtText(a2))")],
                         figure(a: a, b: Double(b), c: Double(c), sides: ["\(c)", "?", "\(b)"], angles: ["\(A)°", nil, nil]))
         case 1:
@@ -300,7 +303,8 @@ extension QuizFactory {
             let area = exact(b * c * s.k, rad: s.m, den: 4)
             let aSide = (Double(b * b + c * c) - 2 * Double(b * c) * cos(deg(Double(A)))).squareRoot()
             return make("In triangle ABC, AB = \(c), AC = \(b) and ∠A = \(A)°. Find the area of the triangle.", area.value, "area",
-                        [H("Area with two sides and the angle between them"), S("S = ½·AB·AC·sin A"),
+                        [H("What is given"), S("Two sides and the angle between them: the area is ½·(side)·(side)·sin(angle between)."),
+                         H("Area formula"), S("S = ½·AB·AC·sin A"),
                          S("sin \(A)° = \(s.text)"), R("S = ½·\(c)·\(b)·\(s.text) = \(area.text)")],
                         figure(a: aSide, b: Double(b), c: Double(c), sides: ["\(c)", nil, "\(b)"], angles: ["\(A)°", nil, nil]))
         case 2:
@@ -314,7 +318,8 @@ extension QuizFactory {
             let C = 180 - A - B
             let cSide = Double(a) * sin(deg(Double(C))) / sin(deg(Double(A)))
             return make("In triangle ABC, BC = \(a), ∠A = \(A)° and ∠B = \(B)°. Find AC.", b.value, "law of sines",
-                        [H("Law of sines"), S("BC / sin A = AC / sin B"),
+                        [H("What is given"), S("Two angles and a side opposite one of them: the law of sines."),
+                         H("Law of sines"), S("BC / sin A = AC / sin B"),
                          S("AC = BC·sin B / sin A = \(a)·(\(sb.text)) / (\(sa.text))"), R("AC = \(b.text)")],
                         figure(a: Double(a), b: b.value, c: cSide, sides: [nil, "\(a)", "?"], angles: ["\(A)°", "\(B)°", nil]))
         case 3:
@@ -328,7 +333,8 @@ extension QuizFactory {
             let cosText = Solver.frac(P * P + Q * Q - Sd * Sd, 2 * P * Q)
             // ∠C is opposite AB = s; CA = p, BC = q.
             return make("In triangle ABC, CA = \(P), BC = \(Q) and AB = \(Sd). Find ∠C in degrees.", Double(angle), "angle from sides",
-                        [H("Law of cosines, solved for the angle"), S("AB² = CA² + BC² − 2·CA·BC·cos C"),
+                        [H("What is given"), S("All three sides (SSS): the law of cosines gives any angle."),
+                         H("Law of cosines, solved for the angle"), S("AB² = CA² + BC² − 2·CA·BC·cos C"),
                          S("cos C = (\(P * P) + \(Q * Q) − \(Sd * Sd)) / (2·\(P)·\(Q)) = \(cosText)"), R("∠C = \(angle)°")],
                         figure(a: Double(Q), b: Double(P), c: Double(Sd), sides: ["\(Sd)", "\(Q)", "\(P)"], angles: [nil, nil, "?"]))
         case 4:
@@ -340,7 +346,8 @@ extension QuizFactory {
             let B = Double(r.int(10...(170 - A) / 2 + 5)), C = 180 - Double(A) - B
             let scale = Double(a) / sin(deg(Double(A)))
             return make("In triangle ABC, BC = \(a) and ∠A = \(A)°. Find the radius R of the circle through A, B and C.", R0.value, "circumradius",
-                        [H("Extended law of sines"), S("BC / sin A = 2R"), S("2R = \(a) / (\(s.text))"), R("R = \(R0.text)")],
+                        [H("What is given"), S("A side and the angle opposite it: that is exactly what the extended law of sines needs."),
+                         H("Extended law of sines"), S("BC / sin A = 2R"), S("2R = \(a) / (\(s.text))"), R("R = \(R0.text)")],
                         figure(a: Double(a), b: scale * sin(deg(B)), c: scale * sin(deg(C)), sides: [nil, "\(a)", nil], angles: ["\(A)°", nil, nil]))
         case 5:
             // Any angle: law of cosines, 2 decimal places.
@@ -348,7 +355,8 @@ extension QuizFactory {
             let a2 = b * b + c * c - 2 * b * c * cos(deg(A))
             let a = a2.squareRoot()
             return make("In triangle ABC, AB = \(dec(c)), AC = \(dec(b)) and ∠A = \(dec(A))°. Find BC. \(twoDP)", a, "law of cosines",
-                        [H("Law of cosines"), S("BC² = \(dec(c * c)) + \(dec(b * b)) − 2·\(dec(c))·\(dec(b))·cos \(dec(A))° ≈ \(dp(a2, 3))"),
+                        [H("What is given"), S("Two sides and the angle between them (SAS): the law of cosines."),
+                         H("Law of cosines"), S("BC² = AB² + AC² − 2·AB·AC·cos A"), S("BC² = \(dec(c * c)) + \(dec(b * b)) − 2·\(dec(c))·\(dec(b))·cos \(dec(A))° ≈ \(dp(a2, 3))"),
                          R("BC ≈ \(dp(a))")],
                         figure(a: a, b: b, c: c, sides: [dec(c), "?", dec(b)], angles: ["\(dec(A))°", nil, nil]), tol: 0.006)
         case 6:
@@ -413,7 +421,7 @@ extension QuizFactory {
 
     // MARK: - Min and max problems
 
-    static func optimization(_ level: Level, _ r: inout SeededRandom, _ seed: UInt64) -> QuizProblem? {
+    static func optimization(_ level: Level, _ r: inout SeededRandom, _ seed: UInt64, _ cases: [Int]? = nil) -> QuizProblem? {
         let pool: [Int]
         switch level {
         case .easy: pool = [0, 1, 0, 1]
@@ -428,7 +436,7 @@ extension QuizFactory {
         let maxCheck = { (fn: String, at: String) in S("\(fn) changes from + to − at \(at), so it is a maximum.") }
         let minCheck = { (fn: String, at: String) in S("\(fn) changes from − to + at \(at), so it is a minimum.") }
 
-        switch r.pick(pool) {
+        switch choose(pool, cases, &r) {
         case 0:
             let Sm = 2 * r.int(3...15)
             let askX = r.bool()

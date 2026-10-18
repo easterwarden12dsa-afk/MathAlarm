@@ -94,4 +94,63 @@ final class TopicTests: XCTestCase {
         XCTAssertEqual(QuizFactory.exact(3 * 16, rad: 3, den: 4).value,
                        stride(from: 0.0, to: .pi / 2, by: 1e-5).map { 16 * (1 + cos($0)) * sin($0) }.max()!, accuracy: 1e-6)
     }
+
+    func testEveryVariantGeneratesItsOwnKind() {
+        for kind in QuizKind.allCases {
+            for v in kind.variants {
+                for level in Level.allCases {
+                    var topics = Set<String>()
+                    for seed in UInt64(1)...6 {
+                        let q = QuizFactory.make(kind, level: level, seed: seed &* 104_729, variant: v.id)
+                        XCTAssertEqual(q.kind, kind, "\(kind) \(v.id) \(level)")
+                        XCTAssertEqual(q.variant, v.id)
+                        topics.insert(q.topic)
+                    }
+                    XCTAssertFalse(topics.isEmpty)
+                }
+            }
+        }
+    }
+
+    /// Every worked solution is split into headed steps and ends with the answer.
+    func testSolutionsAreStructured() {
+        for kind in QuizKind.allCases {
+            for level in Level.allCases {
+                for seed in UInt64(1)...12 {
+                    let q = QuizFactory.make(kind, level: level, seed: seed &* 7_331)
+                    XCTAssertGreaterThanOrEqual(q.steps.filter { $0.style == .heading }.count, 2, "\(kind) \(q.prompt)")
+                    XCTAssertTrue(q.steps.contains { $0.style == .result }, "\(kind) \(q.prompt)")
+                    XCTAssertFalse(q.steps.contains { $0.text.contains("Optional(") || $0.text.contains("nan") }, "\(kind) \(q.steps.map(\.text))")
+                }
+            }
+        }
+    }
+
+    /// Equations that need a check really reject something.
+    func testEquationChecksRejectFalseRoots() {
+        for seed in UInt64(1)...30 {
+            for v in ["root", "log"] {
+                let q = QuizFactory.make(.equation, level: .hard, seed: seed, variant: v)
+                if q.topic == "equation:square root" || q.topic == "equation:ln domain" || q.topic == "equation:ln" {
+                    XCTAssertTrue(q.steps.contains { $0.text.contains("Rejected") }, q.prompt)
+                }
+                guard case .choice(let options, _) = q.answer else { return XCTFail() }
+                XCTAssertEqual(Set(options.compactMap(\.text)).count, options.count, q.prompt)
+            }
+        }
+    }
+
+    func testSquareRootEquationAnswerSolvesIt() {
+        for seed in UInt64(1)...30 {
+            let q = QuizFactory.make(.equation, level: .hard, seed: seed, variant: "root")
+            guard case .choice(let options, let c) = q.answer, let t = options[c].text,
+                  let x = Double(t.replacingOccurrences(of: "x = ", with: "").replacingOccurrences(of: "−", with: "-")) else { continue }
+            // "Solve: √(x + a) = x − c"
+            let body = q.prompt.replacingOccurrences(of: "Solve: √(x", with: "").replacingOccurrences(of: "−", with: "-")
+            let parts = body.components(separatedBy: ") = x")
+            guard parts.count == 2, let a = Double(parts[0].replacingOccurrences(of: " ", with: "")),
+                  let c = Double(parts[1].replacingOccurrences(of: " ", with: "")) else { continue }
+            XCTAssertEqual((x + a).squareRoot(), x + c, accuracy: 1e-9, q.prompt)
+        }
+    }
 }

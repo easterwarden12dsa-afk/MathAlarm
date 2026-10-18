@@ -113,9 +113,9 @@ final class ProblemHistory {
         return p
     }
 
-    func freshQuiz(level: Level, kind: QuizKind? = nil) -> QuizProblem {
+    func freshQuiz(level: Level, kind: QuizKind? = nil, variant: String? = nil) -> QuizProblem {
         let k = kind ?? QuizKind.allCases.randomElement()!
-        let q = QuizFactory.make(k, level: level, seed: ProblemFactory.randomSeed(), avoiding: avoid)
+        let q = QuizFactory.make(k, level: level, seed: ProblemFactory.randomSeed(), avoiding: avoid, variant: variant)
         remember(q.signature)
         return q
     }

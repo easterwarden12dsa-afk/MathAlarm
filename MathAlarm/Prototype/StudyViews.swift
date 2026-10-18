@@ -348,7 +348,7 @@ struct WeakSpotsView: View {
         case "Derivative": return .derivative
         case "Sketch": return .sketch
         case "Change": return .change
-        default: return QuizKind.allCases.first { $0.title == head }.map { .quiz($0) }
+        default: return QuizKind.allCases.first { $0.title == head }.map { .quiz($0, nil) }
         }
     }
 }

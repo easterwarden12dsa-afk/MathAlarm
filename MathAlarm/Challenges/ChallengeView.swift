@@ -198,7 +198,7 @@ struct ChallengeView: View {
                 .foregroundStyle(.cyan)
         }
         if hintLevel >= 2 {
-            let steps = problem.solutionSteps.filter { $0.style == nil }
+            let steps = problem.solutionSteps.filter { $0.style == nil && !$0.text.hasPrefix("Technique:") }
             ScrollView {
                 StepsList(steps: Array(steps.prefix(hintLevel == 2 ? 1 : 3)))
                     .frame(maxWidth: .infinity, alignment: .leading)

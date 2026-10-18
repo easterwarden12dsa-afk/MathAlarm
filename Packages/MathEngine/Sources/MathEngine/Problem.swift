@@ -66,11 +66,20 @@ public struct CalculusProblem: Codable, Hashable, Sendable {
     public var solutionSteps: [SolutionStep] {
         switch kind {
         case .derivative:
-            return DerivativeSteps.explain(display)
+            let explained = DerivativeSteps.explain(display)
+            var all: [SolutionStep] = [.heading("Step 1 · What kind of function"), SolutionStep("Technique: \(technique)", depth: 1),
+                                       .heading("Step 2 · Differentiate part by part")]
+            all += explained.dropLast()
+            all.append(.heading("Answer"))
+            if let last = explained.last { all.append(last) }
+            return all
         case .integral:
-            var all = steps
+            var all: [SolutionStep] = [.heading("Step 1 · Technique: \(technique)")]
+            all += steps
+            all.append(.heading("Answer"))
             all.append(SolutionStep("Result (any constant C can be added):", label: "∫ f dx =", math: reference))
-            all.append(SolutionStep("Check: differentiating the result gives back the integrand.", prime: reference, math: display))
+            all.append(.heading("Check"))
+            all.append(SolutionStep("Differentiating the result gives back the integrand.", prime: reference, math: display))
             return all
         }
     }

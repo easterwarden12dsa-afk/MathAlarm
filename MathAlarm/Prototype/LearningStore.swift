@@ -34,7 +34,8 @@ enum PracticeItem: Codable, Hashable {
         case .calculus(let p): p.kind == .integral ? "Integral" : "Derivative"
         case .sketch: "Graph Sketch"
         case .change(let c): "Change: \(c.transform.formula)"
-        case .quiz(let q): q.kind.title
+        case .quiz(let q):
+            if let v = q.variant, let variant = q.kind.variants.first(where: { $0.id == v }) { "\(q.kind.title) · \(variant.title)" } else { q.kind.title }
         }
     }
 
@@ -256,7 +257,9 @@ enum ShareCode {
         case .calculus(let p): return "MA-\(p.kind == .integral ? "i" : "d")-\(levelIndex(p.level))-\(p.seed)"
         case .sketch(let p): return "MA-s-\(levelIndex(p.level))-\(p.seed)"
         case .change(let c): return "MA-c-\(levelIndex(c.level))-\(c.seed)"
-        case .quiz(let q): return "MA-q\(QuizKind.allCases.firstIndex(of: q.kind) ?? 0)-\(levelIndex(q.level))-\(q.seed)"
+        case .quiz(let q):
+            let v = q.variant.map { ".\($0)" } ?? ""
+            return "MA-q\(QuizKind.allCases.firstIndex(of: q.kind) ?? 0)\(v)-\(levelIndex(q.level))-\(q.seed)"
         }
     }
 
@@ -271,8 +274,11 @@ enum ShareCode {
         case "S": return .sketch(SketchFactory.make(level: level, seed: seed))
         case "C": return .change(ChangeFactory.make(level: level, seed: seed))
         default:
-            guard parts[1].hasPrefix("Q"), let k = Int(parts[1].dropFirst()), QuizKind.allCases.indices.contains(k) else { return nil }
-            return .quiz(QuizFactory.make(QuizKind.allCases[k], level: level, seed: seed))
+            // "Q8" or "Q8.BINOMIAL" (a sub-type).
+            let kindPart = parts[1].dropFirst().split(separator: ".", maxSplits: 1)
+            guard parts[1].hasPrefix("Q"), let first = kindPart.first, let k = Int(first), QuizKind.allCases.indices.contains(k) else { return nil }
+            let variant = kindPart.count > 1 ? String(kindPart[1]).lowercased() : nil
+            return .quiz(QuizFactory.make(QuizKind.allCases[k], level: level, seed: seed, variant: variant))
         }
     }
 

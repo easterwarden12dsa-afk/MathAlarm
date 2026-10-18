@@ -7,12 +7,20 @@ import MathEngine
 struct PracticeView: View {
     enum Mode: Hashable, Identifiable {
         case integral, derivative, sketch, change
-        /// One quick-question type, or nil for a mix of all of them.
-        case quiz(QuizKind?)
+        /// A question type (nil = a mix of the function questions), optionally one of its sub-types.
+        case quiz(QuizKind?, String?)
 
-        var id: String { title }
+        var id: String {
+            switch self {
+            case .quiz(let k, let v): "quiz:\(k?.rawValue ?? "mix"):\(v ?? "all")"
+            default: title
+            }
+        }
 
-        static var all: [Mode] { [.integral, .derivative, .sketch, .change, .quiz(nil)] + QuizKind.allCases.map { .quiz($0) } }
+        /// Whole subjects whose sub-types get their own row (Probability → Binomial…).
+        static let topicKinds: [QuizKind] = [.probability, .triangle, .optimization]
+        /// The "Functions" mix.
+        static let functionKinds: [QuizKind] = [.parameter, .limit, .tangent, .area, .equation]
 
         var title: String {
             switch self {
@@ -20,8 +28,11 @@ struct PracticeView: View {
             case .derivative: "Derivative"
             case .sketch: "Sketch"
             case .change: "Change"
-            case .quiz(nil): "Quiz mix"
-            case .quiz(let k?): k.title
+            case .quiz(nil, _): "Mix"
+            case .quiz(let k?, let v):
+                if let v, let variant = k.variants.first(where: { $0.id == v }) { variant.title }
+                else if Self.topicKinds.contains(k) { "Mix" }
+                else { k.title }
             }
         }
 
@@ -31,19 +42,41 @@ struct PracticeView: View {
             case .derivative: "function"
             case .sketch: "scribble.variable"
             case .change: "arrow.triangle.swap"
-            case .quiz(nil): "questionmark.bubble"
-            case .quiz(let k?): k.symbol
+            case .quiz(nil, _): "shuffle"
+            case .quiz(let k?, let v):
+                if let v, let variant = k.variants.first(where: { $0.id == v }) { variant.symbol }
+                else if Self.topicKinds.contains(k) { "shuffle" }
+                else { k.symbol }
             }
         }
 
         var isDrawing: Bool { self == .sketch || self == .change }
 
-        var category: Category { Category.allCases.first { $0.modes.contains(self) } ?? .calculus }
+        var kind: QuizKind? { if case .quiz(let k, _) = self { k } else { nil } }
+
+        var category: Category {
+            switch self {
+            case .integral, .derivative: return .calculus
+            case .sketch, .change: return .graphs
+            case .quiz(nil, _): return .functions
+            case .quiz(let k?, _):
+                switch k {
+                case .chooseGraph, .signTable, .solutions: return .graphs
+                case .probability: return .probability
+                case .triangle: return .triangles
+                case .optimization: return .minmax
+                default: return .functions
+                }
+            }
+        }
+
+        /// The mode that shows a given question (sub-types of the function questions go in the Type menu).
+        static func of(_ q: QuizProblem) -> Mode { topicKinds.contains(q.kind) ? .quiz(q.kind, q.variant) : .quiz(q.kind, nil) }
     }
 
-    /// The top row: subjects. Each has one or more modes (the second row).
+    /// The big modes. Each has its own modes in the second row.
     enum Category: String, CaseIterable, Identifiable {
-        case calculus, graphs, questions, probability, triangles, minmax
+        case calculus, graphs, functions, probability, triangles, minmax
 
         var id: String { rawValue }
 
@@ -51,7 +84,7 @@ struct PracticeView: View {
             switch self {
             case .calculus: "Calculus"
             case .graphs: "Graphs"
-            case .questions: "Questions"
+            case .functions: "Functions"
             case .probability: "Probability"
             case .triangles: "Triangles"
             case .minmax: "Min & max"
@@ -62,23 +95,37 @@ struct PracticeView: View {
             switch self {
             case .calculus: "function"
             case .graphs: "scribble.variable"
-            case .questions: "questionmark.bubble"
+            case .functions: "x.squareroot"
             case .probability: "dice"
             case .triangles: "triangle"
             case .minmax: "arrow.up.and.down"
             }
         }
 
+        /// One line about what is inside, shown under the rows.
+        var blurb: String {
+            switch self {
+            case .calculus: "Integrals and derivatives, typed as formulas"
+            case .graphs: "Draw graphs, or read them: f′, sign tables, solutions"
+            case .functions: "Parameters, limits, tangents, areas and equations"
+            case .probability: "Independent events, tables, binomial, trees and Bayes"
+            case .triangles: "Trigonometry in the plane: sines, cosines, areas"
+            case .minmax: "Word problems: set up a function, then f′ = 0"
+            }
+        }
+
         var modes: [Mode] {
             switch self {
             case .calculus: [.integral, .derivative]
-            case .graphs: [.sketch, .change]
-            case .questions: [.quiz(nil)] + QuizKind.quickCalculus.map { .quiz($0) }
-            case .probability: [.quiz(.probability)]
-            case .triangles: [.quiz(.triangle)]
-            case .minmax: [.quiz(.optimization)]
+            case .graphs: [.sketch, .change, .quiz(.chooseGraph, nil), .quiz(.signTable, nil), .quiz(.solutions, nil)]
+            case .functions: [Mode.quiz(nil, nil)] + Mode.functionKinds.map { Mode.quiz($0, nil) }
+            case .probability: Self.topic(.probability)
+            case .triangles: Self.topic(.triangle)
+            case .minmax: Self.topic(.optimization)
             }
         }
+
+        private static func topic(_ k: QuizKind) -> [Mode] { [Mode.quiz(k, nil)] + k.variants.map { Mode.quiz(k, $0.id) } }
     }
 
     @ObservedObject private var settings = AppSettings.shared
@@ -114,6 +161,8 @@ struct PracticeView: View {
     /// Opened after the Study hub closes (one sheet at a time).
     @State private var pendingSheet: Sheet?
     @State private var pendingCode = false
+    /// For question types whose sub-types are in the Type menu (nil = all).
+    @State private var subVariant: String?
 
     var body: some View {
         NavigationStack {
@@ -121,6 +170,12 @@ struct PracticeView: View {
                 VStack(spacing: 6) {
                     categoryBar
                     if mode.category.modes.count > 1 { modeBar }
+                    Text(mode.category.blurb)
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.5))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                 }
                 .zIndex(2)   // always on top: nothing below can steal its taps
                 controls
@@ -306,6 +361,15 @@ struct PracticeView: View {
                 } label: {
                     chip(drawMode.title, "pencil.and.ruler")
                 }
+            } else if let k = mode.kind, !Mode.topicKinds.contains(k), !k.variants.isEmpty {
+                Menu {
+                    Picker("Type", selection: Binding(get: { subVariant }, set: { subVariant = $0; newProblem() })) {
+                        Text("All types").tag(String?.none)
+                        ForEach(k.variants) { v in Label(v.title, systemImage: v.symbol).tag(String?.some(v.id)) }
+                    }
+                } label: {
+                    chip(k.variants.first { $0.id == subVariant }?.title ?? "All types", "line.3.horizontal.decrease.circle")
+                }
             } else if mode == .integral || mode == .derivative {
                 Button {
                     Haptics.tap()
@@ -401,6 +465,7 @@ struct PracticeView: View {
     private func select(_ m: Mode) {
         guard m != mode || reviewing else { return }
         mode = m
+        subVariant = nil
         newProblem()
     }
 
@@ -437,7 +502,8 @@ struct PracticeView: View {
             mode = .change
             change = c
         case .quiz(let q):
-            mode = .quiz(q.kind)
+            mode = Mode.of(q)
+            subVariant = Mode.topicKinds.contains(q.kind) ? nil : q.variant
             quiz = q
         }
         generation += 1
@@ -456,8 +522,9 @@ struct PracticeView: View {
         case .change:
             change = ProblemHistory.shared.freshChange(level: difficulty.level)
             strokes = []
-        case .quiz(let k):
-            quiz = ProblemHistory.shared.freshQuiz(level: difficulty.level, kind: k ?? QuizKind.quickCalculus.randomElement())
+        case .quiz(let k, let v):
+            let kind = k ?? Mode.functionKinds.randomElement()!
+            quiz = ProblemHistory.shared.freshQuiz(level: difficulty.level, kind: kind, variant: v ?? (k == nil ? nil : subVariant))
             editor = MathEditor()
         case .integral, .derivative:
             problem = ProblemHistory.shared.fresh(mode == .integral ? .integral : .derivative, level: difficulty.level)
