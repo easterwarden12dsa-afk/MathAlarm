@@ -298,7 +298,11 @@ enum DailyProblem {
         let stamp = (c.year ?? 2026) * 10_000 + (c.month ?? 1) * 100 + (c.day ?? 1)
         let seed = UInt64(stamp) &* 2_654_435_761
         let day = Calendar.current.ordinality(of: .day, in: .year, for: date) ?? 1
-        switch day % 8 {
+        switch day % 12 {
+        case 8: return .quiz(QuizFactory.make(.sequence, level: .hard, seed: seed))
+        case 9: return .quiz(QuizFactory.make(.vectors, level: .hard, seed: seed))
+        case 10: return .quiz(QuizFactory.make(.complex, level: .hard, seed: seed))
+        case 11: return .quiz(QuizFactory.make(.geometry, level: .hard, seed: seed))
         case 0: return .calculus(ProblemFactory.make(.derivative, level: .hard, seed: seed))
         case 1: return .sketch(SketchFactory.make(level: .hard, seed: seed))
         case 2: return .quiz(QuizFactory.make(.triangle, level: .hard, seed: seed))

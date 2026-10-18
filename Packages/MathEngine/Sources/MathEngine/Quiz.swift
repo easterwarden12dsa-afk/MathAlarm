@@ -31,6 +31,7 @@ public enum QuizKind: String, Codable, CaseIterable, Identifiable, Sendable {
     case chooseGraph, parameter, area, limit, tangent, solutions, signTable, equation
     // Added later: keep them last so share codes stay the same.
     case probability, triangle, optimization
+    case sequence, induction, geometry, trigIdentity, vectors, conics, complex, growth, antiderivative
 
     public var id: String { rawValue }
 
@@ -47,6 +48,15 @@ public enum QuizKind: String, Codable, CaseIterable, Identifiable, Sendable {
         case .probability: "Probability"
         case .triangle: "Triangles"
         case .optimization: "Min & max"
+        case .sequence: "Sequences"
+        case .induction: "Induction"
+        case .geometry: "Circles & similarity"
+        case .trigIdentity: "Trig identities"
+        case .vectors: "Vectors in space"
+        case .conics: "Analytic geometry"
+        case .complex: "Complex numbers"
+        case .growth: "Growth & decay"
+        case .antiderivative: "Find f from f′"
         }
     }
 
@@ -63,6 +73,15 @@ public enum QuizKind: String, Codable, CaseIterable, Identifiable, Sendable {
         case .probability: "dice"
         case .triangle: "triangle"
         case .optimization: "arrow.up.and.down"
+        case .sequence: "list.number"
+        case .induction: "arrow.down.forward.and.arrow.up.backward"
+        case .geometry: "circle.dashed"
+        case .trigIdentity: "waveform"
+        case .vectors: "cube"
+        case .conics: "oval"
+        case .complex: "i.circle"
+        case .growth: "chart.line.uptrend.xyaxis"
+        case .antiderivative: "arrow.uturn.backward"
         }
     }
 
@@ -82,19 +101,22 @@ public enum QuizKind: String, Codable, CaseIterable, Identifiable, Sendable {
         case .area:
             return [v("under", "Under a curve", "square.bottomhalf.filled", [1, 3, 4, 6, 7, 10, 11, 12]),
                     v("between", "Between two curves", "square.split.1x2", [5, 9]),
-                    v("sign", "Arches & sign changes", "waveform", [0, 2, 8])]
+                    v("sign", "Arches & sign changes", "waveform", [0, 2, 8]),
+                    v("volume", "Volume of revolution", "rotate.3d", [13])]
         case .limit:
             return [v("factor", "0/0 by factoring", "divide", [0]), v("infinity", "x → ±∞", "infinity", [1, 9]),
                     v("roots", "Square roots (conjugate)", "x.squareroot", [2, 3]), v("onesided", "At an asymptote (±∞)", "arrow.right.to.line", [4]),
                     v("special", "Special limits (sin, e, ln, 1^∞)", "sparkles", [5, 6, 7]), v("lhopital", "L'Hôpital", "function", [8])]
         case .equation:
             return [v("exp", "Exponential", "x.squareroot", [0, 4, 8]), v("log", "Logarithms", "l.circle", [2, 3, 6]),
-                    v("trig", "Trigonometric", "waveform.path", [1, 7]), v("root", "Square roots", "checkmark.shield", [5])]
+                    v("trig", "Trigonometric", "waveform.path", [1, 7]), v("root", "Square roots", "checkmark.shield", [5]),
+                    v("base", "Logs in any base", "textformat.subscript", [9, 10]), v("powers", "Rational powers", "textformat.superscript", [11, 12])]
         case .probability:
             return [v("independent", "Independent events", "circle.grid.2x1", [0]), v("draws", "Without replacement", "bag", [1]),
                     v("table", "Two-way tables", "tablecells", [2]), v("binomial", "Binomial", "chart.bar", [3, 5]),
                     v("tree", "Trees & Bayes", "arrow.triangle.branch", [4, 8]), v("tries", "Repeated tries", "repeat", [6, 7]),
-                    v("conditional", "Conditional binomial", "line.3.horizontal.decrease.circle", [9])]
+                    v("conditional", "Conditional binomial", "line.3.horizontal.decrease.circle", [9]),
+                    v("counting", "Counting", "number.square", [10, 11])]
         case .triangle:
             return [v("cosines", "Law of cosines", "triangle", [0, 5]), v("sines", "Law of sines", "triangle.lefthalf.filled", [2]),
                     v("area", "Area", "triangle.fill", [1]), v("angle", "Find an angle", "angle", [3, 6]),
@@ -106,8 +128,48 @@ public enum QuizKind: String, Codable, CaseIterable, Identifiable, Sendable {
         case .tangent:
             return [v("point", "Tangent at a point", "line.diagonal", [0]), v("normal", "Normal line", "arrow.up.right.and.arrow.down.left", [1]),
                     v("slope", "Tangent with a given slope", "angle", [2])]
+        case .sequence:
+            return [v("arithmetic", "Arithmetic", "plus.forwardslash.minus", [0, 1, 10]), v("geometric", "Geometric", "multiply", [2, 3]),
+                    v("infinite", "Infinite series", "infinity", [4, 5]), v("recursive", "Recursive", "arrow.clockwise", [6, 7]),
+                    v("words", "Word problems", "text.bubble", [8, 9])]
+        case .induction:
+            return [v("equality", "Sum formulas", "equal.square", [0, 1, 2]), v("divisibility", "Divisibility", "divide.square", [3]),
+                    v("inequality", "Inequalities", "lessthan.square", [4])]
+        case .geometry:
+            return [v("angles", "Angles in a circle", "circle.dashed", [0, 1, 2]), v("chords", "Chords, tangents, secants", "circle.and.line.horizontal", [3, 4]),
+                    v("similar", "Similar triangles", "triangle", [5, 6, 9]), v("bisector", "Bisectors & tangent lengths", "angle", [7, 8])]
+        case .trigIdentity:
+            return [v("exact", "Exact values", "number", [0]), v("double", "Double angle", "2.circle", [1]),
+                    v("sum", "sin/cos/tan(α ± β)", "plus.forwardslash.minus", [2, 3]), v("simplify", "Simplify", "wand.and.stars", [4]),
+                    v("equations", "Equations with identities", "equal", [5])]
+        case .vectors:
+            return [v("dot", "Length, dot product, angle", "arrow.up.right", [0, 1, 2]), v("lines", "Lines in space", "line.diagonal", [3, 4]),
+                    v("planes", "Planes", "square.on.square.dashed", [5, 6]), v("angles", "Angles", "angle", [7, 8]),
+                    v("distance", "Distances", "ruler", [9, 10])]
+        case .conics:
+            return [v("circle", "Circles", "circle", [0, 1, 2]), v("parabola", "Parabola", "point.topleft.down.to.point.bottomright.curvepath", [3]),
+                    v("ellipse", "Ellipse", "oval", [4]), v("hyperbola", "Hyperbola", "arrow.left.and.right", [5]),
+                    v("loci", "Loci", "location", [6, 7])]
+        case .complex:
+            return [v("algebraic", "Algebraic form", "i.circle", [0, 1, 2]), v("polar", "Polar form, De Moivre", "circle.and.line.horizontal", [3, 4]),
+                    v("roots", "Roots & polygons", "hexagon", [5, 6]), v("loci", "Loci", "location.circle", [7])]
+        case .growth:
+            return [v("growth", "Growth", "chart.line.uptrend.xyaxis", [0, 1]), v("decay", "Decay & half-life", "chart.line.downtrend.xyaxis", [2]),
+                    v("time", "How long?", "clock", [3, 4]), v("model", "Find the model", "function", [5])]
+        case .antiderivative:
+            return [v("polynomial", "Polynomials", "x.squareroot", [0, 3]), v("exp", "eˣ and 1/x", "e.circle", [1]),
+                    v("trig", "Trigonometric", "waveform", [2])]
         case .solutions, .signTable:
             return []
+        }
+    }
+
+    /// Sub-types used only by the full exams (not shown in Practice).
+    var examVariants: [QuizVariant] {
+        switch self {
+        case .area: [QuizVariant(id: "explog", title: "eˣ and ln", symbol: "e.circle", cases: [3, 11, 12])]
+        case .parameter: [QuizVariant(id: "explog", title: "eˣ and ln", symbol: "e.circle", cases: [3, 7, 9, 10])]
+        default: []
         }
     }
 
@@ -117,8 +179,8 @@ public enum QuizKind: String, Codable, CaseIterable, Identifiable, Sendable {
     /// Calculus questions about a function, as opposed to the other Bagrut topics.
     public var isCalculus: Bool {
         switch self {
-        case .probability, .triangle: false
-        default: true
+        case .chooseGraph, .parameter, .area, .limit, .tangent, .solutions, .signTable, .equation, .optimization, .antiderivative, .growth: true
+        default: false
         }
     }
 }
@@ -165,6 +227,8 @@ public struct QuizProblem: Codable, Hashable, Sendable {
     public var variant: String? = nil
     /// A picture of the situation (fence, box, tree diagram…).
     public var diagram: QuizDiagram? = nil
+    /// A geometry drawing: circles, solids in space, conics, the complex plane.
+    public var figure: GeoFigure? = nil
 
     public var signature: String {
         "quiz:\(kind.rawValue):\(prompt):\(formula?.description ?? formulaText ?? ""):\(graph?.function.description ?? "")"
@@ -255,7 +319,7 @@ public enum QuizFactory {
     /// `avoidTopics`: sub-types shown recently ("limit:factor"); a different one is preferred.
     public static func make(_ kind: QuizKind, level: Level, seed: UInt64, avoiding: Set<String> = [], variant: String? = nil,
                             avoidTopics: Set<String> = []) -> QuizProblem {
-        let cases = kind.variants.first { $0.id == variant }?.cases
+        let cases = (kind.variants + kind.examVariants).first { $0.id == variant }?.cases
         var s = seed
         var first: QuizProblem?, fresh: QuizProblem?
         for i in 0..<80 {
@@ -296,6 +360,15 @@ public enum QuizFactory {
         case .probability: return probability(level, &r, seed, cases)
         case .triangle: return triangle(level, &r, seed, cases)
         case .optimization: return optimization(level, &r, seed, cases)
+        case .sequence: return sequence(level, &r, seed, cases)
+        case .induction: return induction(level, &r, seed, cases)
+        case .geometry: return geometry(level, &r, seed, cases)
+        case .trigIdentity: return trigIdentity(level, &r, seed, cases)
+        case .vectors: return vectors(level, &r, seed, cases)
+        case .conics: return conics(level, &r, seed, cases)
+        case .complex: return complex(level, &r, seed, cases)
+        case .growth: return growth(level, &r, seed, cases)
+        case .antiderivative: return antiderivative(level, &r, seed, cases)
         }
     }
 
@@ -682,12 +755,13 @@ public enum QuizFactory {
         switch level {
         case .easy: pool = [0, 1, 2, 10, 10]
         case .medium: pool = [0, 1, 2, 3, 4, 9, 10, 11]
-        case .hard: pool = [3, 4, 5, 6, 8, 9, 11, 12]
-        case .bagrut: pool = [5, 6, 7, 8, 4, 9, 12]
+        case .hard: pool = [3, 4, 5, 6, 8, 9, 11, 12, 13]
+        case .bagrut: pool = [5, 6, 7, 8, 4, 9, 12, 13]
         }
         let x = Expr.x
         var f: Expr, lo: Double, hi: Double, value: Double, steps: [SolutionStep], g: Expr? = nil, piBased = false, topic: String
         var prompt: String, answer: String
+        var resultName = "Area"
         switch choose(pool, cases, &r) {
         case 0:
             let c = r.pick([1, 4, 9]), rc = Int(Double(c).squareRoot())
@@ -802,7 +876,12 @@ public enum QuizFactory {
             let a = r.int(1...3), b = r.int(-4...4), c = r.int(1...8)
             let l = r.int(-2...1), h = l + r.int(1...3)
             let P = [a, b, c]
-            guard (0...20).allSatisfy({ i in Double(a) * pow(Double(l) + Double(h - l) * Double(i) / 20, 2) + Double(b) * (Double(l) + Double(h - l) * Double(i) / 20) + Double(c) > 0 }) else { return nil }
+            func positive(_ i: Int) -> Bool {
+                let x: Double = Double(l) + Double(h - l) * Double(i) / 20
+                let y: Double = Double(a) * x * x + Double(b) * x + Double(c)
+                return y > 0
+            }
+            guard (0...20).allSatisfy(positive) else { return nil }
             func F6(_ t: Int) -> Int { 2 * a * t * t * t + 3 * b * t * t + 6 * c * t }      // 6·F(t)
             f = Solver.polyExpr(P); lo = Double(l); hi = Double(h)
             value = Double(F6(h) - F6(l)) / 6
@@ -837,6 +916,53 @@ public enum QuizFactory {
                      H("An antiderivative"), S("F(x) = e^(\(iv(k))x)\(k == 1 ? "" : "/\(iv(k))")"),
                      H("F(\(n)) − F(0)"), S("(\(ek) − e⁰)\(k == 1 ? "" : "/\(iv(k))")")]
             topic = "area:exp exact"
+        case 13:
+            // Volume of revolution: V = π∫f²dx.
+            resultName = "Volume"
+            let pi = "π"
+            switch r.int(0...4) {
+            case 0:
+                let b = r.int(1...4)
+                f = .sqrt(x); lo = 0; hi = Double(b)
+                value = .pi * Double(b * b) / 2
+                answer = "\(frac(b * b, 2))\(pi)"
+                steps = [H("The volume formula"), S("V = π∫ f(x)² dx  from \(0) to \(b)"), S("f(x)² = (√x)² = x"),
+                         H("Integrate"), S("π∫ x dx = π·[x²/2]  from 0 to \(b) = π·\(frac(b * b, 2))")]
+                topic = "volume:root"
+            case 1:
+                let b = r.int(1...2)
+                f = .p(x, 2); lo = 0; hi = Double(b)
+                value = .pi * pow(Double(b), 5) / 5
+                answer = "\(frac(b * b * b * b * b, 5))\(pi)"
+                steps = [H("The volume formula"), S("V = π∫ f(x)² dx  from 0 to \(b)"), S("f(x)² = x⁴"),
+                         H("Integrate"), S("π·[x⁵/5]  from 0 to \(b) = π·\(frac(b * b * b * b * b, 5))")]
+                topic = "volume:polynomial"
+            case 2:
+                let b = r.int(2...5)
+                f = .div(1, x); lo = 1; hi = Double(b)
+                value = .pi * Double(b - 1) / Double(b)
+                answer = "\(frac(b - 1, b))\(pi)"
+                steps = [H("The volume formula"), S("V = π∫ f(x)² dx  from 1 to \(b)"), S("f(x)² = 1/x²"),
+                         H("Integrate"), S("π·[−1/x]  from 1 to \(b) = π·(−1/\(b) + 1)")]
+                topic = "volume:hyperbola"
+            case 3:
+                let k = r.int(1...3)
+                f = .sqrt(.sub(.n(k * k), .p(x, 2))); lo = -Double(k); hi = Double(k)
+                value = 4 * .pi * pow(Double(k), 3) / 3
+                answer = "\(frac(4 * k * k * k, 3))\(pi)"
+                steps = [H("A half-circle turns into a ball"), S("y = √(\(k * k) − x²) is the upper half of a circle of radius \(k)."),
+                         H("The volume formula"), S("V = π∫ (\(k * k) − x²) dx  from −\(k) to \(k)"),
+                         H("Integrate"), S("π·[\(k * k)x − x³/3]  from −\(k) to \(k) = π·(\(frac(2 * k * k * k, 3)) + \(frac(2 * k * k * k, 3)))")]
+                topic = "volume:sphere"
+            default:
+                f = .exp(x); lo = 0; hi = 1
+                value = .pi * (exp(2) - 1) / 2
+                answer = "π(e² − 1)/2"
+                steps = [H("The volume formula"), S("V = π∫ (eˣ)² dx = π∫ e^(2x) dx  from 0 to 1"),
+                         H("Integrate"), S("π·[e^(2x)/2]  from 0 to 1 = π·(e² − 1)/2")]
+                topic = "volume:exp"
+            }
+            prompt = "The shaded region is turned around the x-axis. Find the volume of the solid (exactly, with π)."
         default:
             let c = r.int(1...2)
             f = .sub(.p(x, 3), .scaled(c * c, 1, x)); lo = -Double(c); hi = Double(c)
@@ -862,7 +988,7 @@ public enum QuizFactory {
         }
         q.graph = graph; q.shade = lo...hi
         q.formulaLabel = "f(x) ="; q.formula = f
-        q.steps = steps + [R("Area = \(answer)")]
+        q.steps = steps + [R("\(resultName) = \(answer)")]
         return q
     }
 
@@ -978,8 +1104,8 @@ public enum QuizFactory {
         switch level {
         case .easy: pool = [1, 4, 2, 4, 8]
         case .medium: pool = [0, 1, 2, 4, 6, 8]
-        case .hard: pool = [0, 3, 5, 6, 7, 8]
-        case .bagrut: pool = [0, 3, 5, 6, 7, 2, 8]
+        case .hard: pool = [0, 3, 5, 6, 7, 8, 9, 11]
+        case .bagrut: pool = [0, 3, 5, 6, 7, 2, 8, 10, 12]
         }
         let range = "   for 0 ≤ x ≤ 2π"
         switch choose(pool, cases, &r) {
@@ -1105,6 +1231,64 @@ public enum QuizFactory {
                         H("Step 4 · Check the domain"),
                         S("x = \(t):  \(t * t) − \(k) = \(t * t - k) > 0 and \(t) + \(m) = \(t + m) > 0 ✓"),
                         S("x = \(iv(bad)):  x + \(m) = \(iv(bad + m)) ≤ 0, so ln(x + \(m)) is undefined. Rejected ✗")], "ln domain")
+        case 9:
+            // log_a x + log_a(x − k) = n: one root breaks the domain.
+            let (a, n, p, q) = r.pick([(2, 3, 8, 1), (2, 3, 4, 2), (2, 4, 8, 2), (2, 4, 16, 1), (3, 2, 9, 1), (2, 5, 8, 4), (5, 2, 25, 1), (2, 2, 4, 1), (3, 3, 9, 3), (2, 5, 16, 2)])
+            let k = p - q
+            let la = "log\(sub(a))"
+            return ask("\(la) x + \(la)(x − \(k)) = \(n)", "x = \(p)", ["x = \(p),  x = \(iv(-q))", "x = \(q)", "No solution"],
+                       [H("Domain"), S("x > 0 and x − \(k) > 0, so x > \(k)."),
+                        H("Combine the logs"), S("\(la) x + \(la)(x − \(k)) = \(la)(x(x − \(k)))"),
+                        S("\(la)(x² − \(k)x) = \(n)   ⇒   x² − \(k)x = \(a)^\(n) = \(p * q)"),
+                        H("Solve"), S("x² − \(k)x − \(p * q) = 0   ⇒   (x − \(p))(x + \(q)) = 0"),
+                        H("Check the domain"), S("x = \(p) > \(k) ✓"), S("x = \(iv(-q)) is not > \(k). Rejected ✗")], "log any base")
+        case 10:
+            let a = r.pick([2, 3])
+            if r.bool() {
+                // log_a x + log_(a²) x = 3L/2.
+                let L = r.int(1...4)
+                let x = Int(pow(Double(a), Double(L)))
+                return ask("log\(sub(a)) x + log\(sub(a * a)) x = \(fr(3 * L, 2))", "x = \(x)", ["x = \(a * L)", "x = \(Int(pow(Double(a), Double(3 * L))))", "x = \(Int(pow(Double(a * a), Double(L))))"],
+                           [H("Change the base"), S("log\(sub(a * a)) x = log\(sub(a)) x / log\(sub(a)) \(a * a) = ½·log\(sub(a)) x"),
+                            H("Solve for t = log\(sub(a)) x"), S("t + ½t = \(fr(3 * L, 2))   ⇒   (3/2)t = \(fr(3 * L, 2))   ⇒   t = \(L)"),
+                            H("Back to x"), S("log\(sub(a)) x = \(L)   ⇒   x = \(a)^\(L)")], "change of base")
+            }
+            // log_a x − 2·log_x a = 1: t − 2/t = 1.
+            let x1 = a * a
+            return ask("log\(sub(a)) x − 2·logₓ \(a) = 1", "x = \(x1),  x = 1/\(a)", ["x = \(x1) only", "x = \(x1),  x = \(iv(-a))", "x = 1/\(a) only"],
+                       [H("Domain"), S("x > 0 and x ≠ 1 (x is a base)."),
+                        H("Change the base"), S("logₓ \(a) = 1 / log\(sub(a)) x.  Let t = log\(sub(a)) x:  t − 2/t = 1"),
+                        H("Solve"), S("t² − t − 2 = 0   ⇒   (t − 2)(t + 1) = 0   ⇒   t = 2 or t = −1"),
+                        H("Back to x"), S("t = 2:  x = \(a)² = \(x1) ✓"), S("t = −1:  x = \(a)⁻¹ = 1/\(a) ✓ (positive, not 1)")], "log of a base")
+        case 11:
+            // x^(p/q) = b^p  ⇒  x = b^q.
+            let (pp, qq) = r.pick([(3, 2), (2, 3), (3, 4), (4, 3), (5, 2), (2, 5)])
+            let b = r.pick([2, 3, 2])
+            let rhs = Int(pow(Double(b), Double(pp))), x = Int(pow(Double(b), Double(qq)))
+            return ask("x^(\(pp)/\(qq)) = \(rhs)", "x = \(x)", ["x = \(Int(pow(Double(rhs), Double(pp) / Double(qq)).rounded()))", "x = ±\(x)", "x = \(b)"],
+                       [H("Domain"), S("A rational power x^(\(pp)/\(qq)) is defined for x ≥ 0."),
+                        H("Raise both sides to the power \(qq)/\(pp)"), S("(x^(\(pp)/\(qq)))^(\(qq)/\(pp)) = x"),
+                        S("\(rhs) = \(b)^\(pp),  so  \(rhs)^(\(qq)/\(pp)) = \(b)^\(qq) = \(x)"),
+                        H("Check"), S("x = \(x) ≥ 0 ✓")], "rational power")
+        case 12:
+            // x^(2/k) − (m + n)x^(1/k) + mn = 0 with t = x^(1/k) ≥ 0.
+            let k = r.pick([2, 3])
+            let m = r.int(1...4), n = r.pick([r.int(m + 1...6), -r.int(1...4)])
+            let root = k == 2 ? "√x" : "x^(1/3)"
+            let sq = k == 2 ? "x" : "x^(2/3)"
+            func power(_ t: Int) -> Int { Int(pow(Double(t), Double(k))) }
+            let eq = "\(sq)\(signedTerm(-(m + n), root))\(sg(m * n)) = 0"
+            if n < 0 {
+                return ask(eq, "x = \(power(m))", ["x = \(power(m)),  x = \(power(-n))", "x = \(m)", "No solution"],
+                           [H("Substitute t = \(root)"), S("t ≥ 0, and \(sq) = t²:  t²\(signedTerm(-(m + n), "t"))\(sg(m * n)) = 0"),
+                            H("Solve"), S("(t − \(m))(t + \(-n)) = 0   ⇒   t = \(m) or t = \(iv(n))"),
+                            H("Check t ≥ 0"), S("t = \(iv(n)) < 0 is impossible. Rejected ✗"),
+                            H("Back to x"), S("\(root) = \(m)   ⇒   x = \(m)^\(k) = \(power(m))")], "power substitution")
+            }
+            return ask(eq, "x = \(power(m)),  x = \(power(n))", ["x = \(m),  x = \(n)", "x = \(power(n)) only", "x = \(power(m)),  x = \(power(m + n))"],
+                       [H("Substitute t = \(root)"), S("t ≥ 0, and \(sq) = t²:  t²\(signedTerm(-(m + n), "t")) + \(m * n) = 0"),
+                        H("Solve"), S("(t − \(m))(t − \(n)) = 0   ⇒   t = \(m) or t = \(n), both ≥ 0 ✓"),
+                        H("Back to x"), S("x = t^\(k):  x = \(power(m)) or x = \(power(n))")], "power substitution")
         default:
             let options: [(String, String, [String], [SolutionStep])] = [
                 ("sin²x + sin x − 2 = 0", "x = π/2", ["x = π/2,  x = 3π/2", "No solution", "x = π/2,  x = π/6"],

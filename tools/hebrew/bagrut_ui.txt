@@ -1,0 +1,165 @@
+# Bagrut map, full exams, the new Practice categories and question types.
+Trigonometry ⟹ טריגונומטריה
+Sequences ⟹ סדרות
+Geometry ⟹ גאומטריה
+Vectors ⟹ וקטורים
+Analytic geometry ⟹ גאומטריה אנליטית
+Complex ⟹ מרוכבים
+Growth & decay ⟹ גדילה ודעיכה
+Integrals, derivatives and finding f from f′ ⟹ אינטגרלים, נגזרות ומציאת f מתוך f′
+Sines, cosines, areas and trig identities ⟹ סינוסים, קוסינוסים, שטחים וזהויות טריגונומטריות
+Arithmetic, geometric, infinite, recursive · induction ⟹ חשבונית, הנדסית, אינסופית, רקורסיבית · אינדוקציה
+Circle angles, chords, tangents, similar triangles ⟹ זוויות במעגל, מיתרים, משיקים, משולשים דומים
+Vectors in space: lines, planes, angles, distances ⟹ וקטורים במרחב: ישרים, מישורים, זוויות, מרחקים
+Circles, parabola, ellipse, hyperbola, loci ⟹ מעגלים, פרבולה, אליפסה, היפרבולה, מקומות גאומטריים
+Algebraic and polar form, De Moivre, roots, loci ⟹ הצגה אלגברית וקוטבית, דה-מואבר, שורשים, מקומות גאומטריים
+Growth, decay, half-life and models ⟹ גדילה, דעיכה, זמן מחצית חיים ומודלים
+option ⟹ אפשרות
+Drawing of the question ⟹ שרטוט השאלה
+Bagrut map ⟹ מפת הבגרות
+All {} question types of the 5-unit Bagrut ⟹ כל {} סוגי השאלות בבגרות 5 יח״ל
+A full 571 or 572 paper, timed and scored ⟹ שאלון 571 או 572 מלא, עם זמן וציון
+Bagrut exam ⟹ בחינת בגרות
+Induction ⟹ אינדוקציה
+Circles & similarity ⟹ מעגלים ודמיון
+Trig identities ⟹ זהויות טריגונומטריות
+Vectors in space ⟹ וקטורים במרחב
+Complex numbers ⟹ מספרים מרוכבים
+Find f from f′ ⟹ מציאת f מתוך f′
+Volume of revolution ⟹ נפח גוף סיבוב
+Logs in any base ⟹ לוגריתמים בכל בסיס
+Rational powers ⟹ חזקות רציונליות
+Counting ⟹ קומבינטוריקה
+Arithmetic ⟹ חשבונית
+Geometric ⟹ הנדסית
+Infinite series ⟹ טור אינסופי
+Recursive ⟹ נוסחת נסיגה
+Word problems ⟹ בעיות מילוליות
+Sum formulas ⟹ נוסחאות סכום
+Divisibility ⟹ התחלקות
+Inequalities ⟹ אי-שוויונים
+Angles in a circle ⟹ זוויות במעגל
+Chords, tangents, secants ⟹ מיתרים, משיקים, חותכים
+Similar triangles ⟹ משולשים דומים
+Bisectors & tangent lengths ⟹ חוצי זווית ואורכי משיקים
+Exact values ⟹ ערכים מדויקים
+Double angle ⟹ זווית כפולה
+Simplify ⟹ פישוט
+Equations with identities ⟹ משוואות עם זהויות
+Length, dot product, angle ⟹ אורך, מכפלה סקלרית, זווית
+Lines in space ⟹ ישרים במרחב
+Planes ⟹ מישורים
+Angles ⟹ זוויות
+Distances ⟹ מרחקים
+Circles ⟹ מעגלים
+Parabola ⟹ פרבולה
+Ellipse ⟹ אליפסה
+Hyperbola ⟹ היפרבולה
+Loci ⟹ מקומות גאומטריים
+Algebraic form ⟹ הצגה אלגברית
+Polar form, De Moivre ⟹ הצגה קוטבית, דה-מואבר
+Roots & polygons ⟹ שורשים ומצולעים
+Growth ⟹ גדילה
+Decay & half-life ⟹ דעיכה ומחצית חיים
+How long? ⟹ כמה זמן?
+Find the model ⟹ מציאת המודל
+Polynomials ⟹ פולינומים
+eˣ and 1/x ⟹ eˣ ו-1/x
+eˣ and ln ⟹ eˣ ו-ln
+Chapter 1 · Short questions ⟹ פרק ראשון · שאלות קצרות
+Chapter 2 · Sequences, induction, probability ⟹ פרק שני · סדרות, אינדוקציה, הסתברות
+Chapter 2 · Sequences and probability ⟹ פרק שני · סדרות והסתברות
+Chapter 3 · Geometry and trigonometry in the plane ⟹ פרק שלישי · גאומטריה וטריגונומטריה במישור
+Chapter 4 · Calculus ⟹ פרק רביעי · חשבון דיפרנציאלי ואינטגרלי
+Chapter 1 · Vectors, analytic geometry, complex numbers ⟹ פרק ראשון · וקטורים, גאומטריה אנליטית, מספרים מרוכבים
+Chapter 1 · Analytic geometry, vectors, complex numbers ⟹ פרק ראשון · גאומטריה אנליטית, וקטורים, מספרים מרוכבים
+Chapter 2 · Growth and decay, exponential and log functions ⟹ פרק שני · גדילה ודעיכה, פונקציות מעריכיות ולוגריתמיות
+Full exams ⟹ בחינות מלאות
+Short mixed questions ⟹ שאלות קצרות מעורבות
+Arithmetic sequence: a term, a₁ or d, sums ⟹ סדרה חשבונית: איבר, a₁ או d, סכומים
+Geometric sequence: a term, the ratio, sums ⟹ סדרה הנדסית: איבר, המנה, סכומים
+Infinite geometric series: sum, convergence, finding q ⟹ טור הנדסי אינסופי: סכום, התכנסות, מציאת q
+Recursive sequences: aₙ₊₁ = f(aₙ) ⟹ סדרות בנוסחת נסיגה: aₙ₊₁ = f(aₙ)
+Sequence word problems: savings, a bouncing ball ⟹ בעיות מילוליות בסדרות: חיסכון, כדור קופץ
+Induction: equalities (sum formulas) ⟹ אינדוקציה: שוויונים (נוסחאות סכום)
+Induction: divisibility ⟹ אינדוקציה: התחלקות
+Induction: inequalities ⟹ אינדוקציה: אי-שוויונים
+Probability: counting (groups, arrangements) ⟹ הסתברות: קומבינטוריקה (קבוצות, סידורים)
+Probability: independent events, complement ⟹ הסתברות: מאורעות בלתי תלויים, משלים
+Probability: without replacement ⟹ הסתברות: בלי החזרה
+Probability: two-way tables, conditional ⟹ הסתברות: טבלה דו-ממדית, הסתברות מותנית
+Probability: tree diagrams, Bayes ⟹ הסתברות: דיאגרמת עץ, בייס
+Probability: binomial, at least / exactly ⟹ הסתברות: התפלגות בינומית, לפחות / בדיוק
+Probability: repeated tries, first success, how many tries ⟹ הסתברות: ניסיונות חוזרים, הצלחה ראשונה, כמה ניסיונות
+Probability: conditional binomial ⟹ הסתברות: בינומית מותנית
+Circle angles: inscribed, central, cyclic quadrilateral ⟹ זוויות במעגל: היקפית, מרכזית, מרובע חסום
+Similar triangles, area ratios ⟹ משולשים דומים, יחס שטחים
+Angle bisector theorem, tangent lengths ⟹ משפט חוצה הזווית, אורכי משיקים
+Law of cosines ⟹ משפט הקוסינוסים
+Law of sines and the circumradius ⟹ משפט הסינוסים ורדיוס המעגל החוסם
+Triangle area ½ab·sin C ⟹ שטח משולש ½ab·sin C
+An angle from three sides ⟹ זווית משלוש צלעות
+Medians, heights, multi-step triangles ⟹ תיכונים, גבהים, משולשים בכמה שלבים
+Trig identities: sin/cos(α ± β), double angle, exact values ⟹ זהויות טריגונומטריות: sin/cos(α ± β), זווית כפולה, ערכים מדויקים
+Derivatives ⟹ נגזרות
+Integrals ⟹ אינטגרלים
+Full investigation and sketch ⟹ חקירה מלאה ושרטוט
+Reading graphs of f, f′ and F ⟹ קריאת גרפים של f, f′ ו-F
+Transformations (|f|, 1/f, f², √f…) ⟹ טרנספורמציות (|f|, 1/f, f², √f…)
+Sign tables ⟹ טבלאות סימנים
+Number of solutions ⟹ מספר פתרונות
+Parameters ⟹ פרמטרים
+Limits and asymptotes ⟹ גבולות ואסימפטוטות
+Tangent and normal ⟹ משיק ונורמל
+Areas ⟹ שטחים
+Antiderivative through a point ⟹ פונקציה קדומה העוברת בנקודה
+Min and max problems ⟹ בעיות קיצון
+Vectors: length, dot product, angle, perpendicular ⟹ וקטורים: אורך, מכפלה סקלרית, זווית, ניצבות
+Lines in space: meeting, parallel or skew ⟹ ישרים במרחב: נחתכים, מקבילים או מצטלבים
+Planes: a point on a plane, a line meets a plane ⟹ מישורים: נקודה על מישור, ישר חותך מישור
+Angles: line and plane, two planes ⟹ זוויות: ישר ומישור, שני מישורים
+Distances: point to plane, parallel planes ⟹ מרחקים: נקודה ממישור, מישורים מקבילים
+Circles: centre and radius, tangent, line and circle ⟹ מעגלים: מרכז ורדיוס, משיק, ישר ומעגל
+Parabola: focus, directrix ⟹ פרבולה: מוקד, מדריך
+Ellipse: axes, foci ⟹ אליפסה: צירים, מוקדים
+Hyperbola: foci, asymptotes ⟹ היפרבולה: מוקדים, אסימפטוטות
+Complex numbers: algebraic form, equations ⟹ מספרים מרוכבים: הצגה אלגברית, משוואות
+Roots of complex numbers and their polygon ⟹ שורשים של מספרים מרוכבים והמצולע שלהם
+Loci in the complex plane ⟹ מקומות גאומטריים במישור המרוכב
+Growth and decay word problems ⟹ בעיות גדילה ודעיכה
+Exponential and log equations (base e) ⟹ משוואות מעריכיות ולוגריתמיות (בסיס e)
+Exponential and log investigation and sketch ⟹ חקירה ושרטוט של פונקציות מעריכיות ולוגריתמיות
+Exponential and log derivatives and integrals ⟹ נגזרות ואינטגרלים של פונקציות מעריכיות ולוגריתמיות
+Graphs of ln f, e^f and 1/f ⟹ גרפים של ln f, e^f ו-1/f
+Full Bagrut exams (571 / 572 style), timed and scored ⟹ בחינות בגרות מלאות (בסגנון 571 / 572), עם זמן וציון
+Every question type of the 5-unit Bagrut (papers 571 and 572). Tap one to practise it. ⟹ כל סוגי השאלות בבגרות 5 יח״ל (שאלונים 571 ו-572). הקישו על אחד כדי להתאמן בו.
+Paper ⟹ שאלון
+Paper 571 (35571) ⟹ שאלון 571 (35571)
+Paper 572 (35572) ⟹ שאלון 572 (35572)
+Short questions · sequences & probability · geometry & trigonometry · calculus ⟹ שאלות קצרות · סדרות והסתברות · גאומטריה וטריגונומטריה · חשבון דיפרנציאלי ואינטגרלי
+Vectors, analytic geometry & complex numbers · growth, exponents & logarithms ⟹ וקטורים, גאומטריה אנליטית ומספרים מרוכבים · גדילה, חזקות ולוגריתמים
+Answer 4 of the 8 questions: at least one from chapter 1 or 2, and at least one from each of chapters 3 and 4. In question 1, answer 2 of the 4 parts. ⟹ ענו על 4 מתוך 8 השאלות: לפחות אחת מהפרק הראשון או השני, ולפחות אחת מכל אחד מהפרקים השלישי והרביעי. בשאלה 1 ענו על 2 מתוך 4 הסעיפים.
+Answer 3 of the 5 questions. ⟹ ענו על 3 מתוך 5 השאלות.
+Short questions — answer 2 of the 4 ⟹ שאלות קצרות — ענו על 2 מתוך 4
+Trigonometry in the plane ⟹ טריגונומטריה במישור
+Investigating a function ⟹ חקירת פונקציה
+Tangents, areas and antiderivatives ⟹ משיקים, שטחים ופונקציות קדומות
+Extreme-value problem ⟹ בעיית קיצון
+Exponential and log functions ⟹ פונקציות מעריכיות ולוגריתמיות
+Growth, decay and logarithms ⟹ גדילה, דעיכה ולוגריתמים
+Bagrut {} ⟹ בגרות {}
+Finish ⟹ סיום
+Finish the exam and see your score? ⟹ לסיים את הבחינה ולראות את הציון?
+Keep going ⟹ להמשיך
+{} h {} ⟹ {} שעות {}
+{} min ⟹ {} דקות
+Scoring: right the first time = full marks for that part; right after a mistake = half. Only your best {} questions count. ⟹ ניקוד: תשובה נכונה בפעם הראשונה = ניקוד מלא לסעיף; נכונה אחרי טעות = חצי. רק {} השאלות הטובות ביותר שלכם נספרות.
+Summer 2026: the Ministry lifted the chapter limits and published a focus list for this session only — check the official notice with your teacher. ⟹ קיץ תשפ״ו: משרד החינוך ביטל את הגבלת הפרקים ופרסם הכוונה ממוקדת למועד זה בלבד — בדקו את ההודעה הרשמית עם המורה.
+Difficulty ⟹ רמת קושי
+Start the exam ⟹ התחלת הבחינה
+{} parts solved ⟹ {} סעיפים נפתרו
+Question {} · {} ⟹ שאלה {} · {}
+out of 100 · {} used ⟹ מתוך 100 · נוצלו {}
+Your best {} questions count. Tap a part to see its full solution. ⟹ {} השאלות הטובות ביותר שלכם נספרות. הקישו על סעיף כדי לראות את הפתרון המלא.
+Another exam ⟹ בחינה נוספת
+Back to the paper ⟹ חזרה לשאלון

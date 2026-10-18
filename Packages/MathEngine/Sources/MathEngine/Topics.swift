@@ -65,8 +65,8 @@ extension QuizFactory {
         let pool: [Int]
         switch level {
         case .easy: pool = [0, 1, 2]
-        case .medium: pool = [2, 3, 4, 1]
-        case .hard: pool = [4, 5, 6, 7]
+        case .medium: pool = [2, 3, 4, 1, 10]
+        case .hard: pool = [4, 5, 6, 7, 11]
         case .bagrut: pool = [5, 6, 7, 8, 9]
         }
         let threeDP = "Give the answer exactly or to 3 decimal places."
@@ -234,6 +234,49 @@ extension QuizFactory {
                             ? [H("Opposite: all \(k) fail"), S("\"At most \(k) tries\" means a success somewhere in the first \(k); its opposite is \(k) failures in a row."), S("P(all fail) = (\(pd - pn)/\(pd))^\(k)"), R("P = 1 − (\(pd - pn)/\(pd))^\(k) ≈ \(dp(value, 3))")]
                             : [H("Fail \(k - 1) times, then succeed"), S("The tries are independent: multiply (1 − p) for each failure, then p for the success."), R("P = (\(pd - pn)/\(pd))^\(k - 1)·\(pn)/\(pd) ≈ \(dp(value, 3))")],
                           tolerance: tol3)
+        case 10:
+            // Counting: choose a group at random.
+            let boys = r.int(3...7), girls = r.int(3...6), k = r.int(2...4)
+            let g = r.int(1...Swift.min(k, girls))
+            guard k - g <= boys else { return nil }
+            let ways = binomial(girls, g) * binomial(boys, k - g), all = binomial(boys + girls, k)
+            return number(.probability, level, seed,
+                          "A group of \(k) is chosen at random from \(boys) boys and \(girls) girls. Find the probability that it has exactly \(g) girl\(g == 1 ? "" : "s").",
+                          Double(ways) / Double(all), topic: "probability:counting",
+                          steps: [H("Count all groups"), S("Any \(k) of the \(boys + girls): C(\(boys + girls), \(k)) = \(all) (order doesn't matter)"),
+                                  H("Count the good groups"), S("\(g) of the \(girls) girls: C(\(girls), \(g)) = \(binomial(girls, g))"),
+                                  S("\(k - g) of the \(boys) boys: C(\(boys), \(k - g)) = \(binomial(boys, k - g))"),
+                                  S("Together: \(binomial(girls, g))·\(binomial(boys, k - g)) = \(ways)"),
+                                  R("P = \(ways)/\(all) = \(Solver.frac(ways, all))")])
+        case 11:
+            // Arrangements in a row.
+            let n = r.int(4...8)
+            let fact = (1...n).reduce(1, *)
+            switch r.int(0...2) {
+            case 0:
+                return number(.probability, level, seed,
+                              "\(n) friends, including Dana and Yossi, sit in a row in a random order. Find the probability that Dana and Yossi sit next to each other.",
+                              2 / Double(n), topic: "probability:arrangements",
+                              steps: [H("All orders"), S("\(n)! = \(fact)"),
+                                      H("Glue Dana and Yossi together"), S("Treat the pair as one block: \(n - 1) blocks in \(n - 1)! ways, and the pair inside in 2 ways."),
+                                      S("Good orders: 2·\(n - 1)! = \(2 * fact / n)"), R("P = \(2 * fact / n)/\(fact) = \(Solver.frac(2, n))")])
+            case 1:
+                return number(.probability, level, seed,
+                              "\(n) friends, including Dana and Yossi, sit in a row in a random order. Find the probability that Dana and Yossi sit at the two ends.",
+                              2 / Double(n * (n - 1)), topic: "probability:arrangements",
+                              steps: [H("All orders"), S("\(n)! = \(fact)"),
+                                      H("Good orders"), S("Dana and Yossi at the ends: 2 ways; the other \(n - 2) in the middle: \(n - 2)! ways"),
+                                      S("2·\(n - 2)! = \(2 * fact / (n * (n - 1)))"), R("P = \(Solver.frac(2, n * (n - 1)))")])
+            default:
+                let digits = r.int(3...5), pool = r.int(digits + 1...9)
+                var count = 1
+                for i in 0..<digits { count *= pool - i }
+                return number(.probability, level, seed,
+                              "How many \(digits)-digit codes can be made from the digits 1 to \(pool) if no digit repeats?", Double(count),
+                              topic: "probability:counting",
+                              steps: [H("Fill the places one by one"), S("First place: \(pool) choices, then \(pool - 1), then \(pool - 2)…"),
+                                      R("\((0..<digits).map { "\(pool - $0)" }.joined(separator: "·")) = \(count)")])
+            }
         default:
             // Conditional on "at least one".
             let (pn, pd) = r.pick([(1, 2), (1, 3), (2, 3), (1, 4)])

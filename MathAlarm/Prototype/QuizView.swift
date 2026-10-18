@@ -68,7 +68,7 @@ struct QuizView: View {
 
     /// Pictures matter in geometry: never hide a triangle or a sketch completely.
     private func pictureHeight(_ h: CGFloat) -> CGFloat {
-        quiz.triangle != nil || (quiz.diagram != nil && quiz.graph == nil) ? Swift.max(h, 104) : h
+        quiz.triangle != nil || quiz.figure != nil || (quiz.diagram != nil && quiz.graph == nil) ? Swift.max(h, 104) : h
     }
 
     private func typedLayout(keyHeight: CGFloat, graphHeight: CGFloat) -> some View {
@@ -92,7 +92,13 @@ struct QuizView: View {
     }
 
     private var answerCaption: String {
-        if case .function = quiz.answer { return quiz.kind == .tangent ? "y =" : "Your answer (a function of x)" }
+        if case .function = quiz.answer {
+            switch quiz.kind {
+            case .tangent, .conics: return "y ="
+            case .antiderivative: return "f(x) ="
+            default: return "Your answer (a function of x)"
+            }
+        }
         if quiz.tolerance != nil { return "Your answer — a decimal is fine (or an exact form)" }
         return "Your answer — exact forms like ln 3, √2, 3/10 are fine"
     }
@@ -127,6 +133,12 @@ struct QuizView: View {
             }
             if let d = quiz.diagram, quiz.graph == nil {
                 QuizDiagramView(diagram: d)
+                    .frame(height: pictureHeight(graphHeight))
+                    .contentShape(Rectangle())
+                    .onTapGesture { showPicture = true }
+            }
+            if let f = quiz.figure {
+                GeoFigureView(figure: f)
                     .frame(height: pictureHeight(graphHeight))
                     .contentShape(Rectangle())
                     .onTapGesture { showPicture = true }
@@ -415,6 +427,7 @@ struct QuizStepsSheet: View {
                     if let t = quiz.table { QuizTableView(table: t) }
                     if let f = quiz.triangle { TriangleView(figure: f).frame(height: 220) }
                     if let d = quiz.diagram, quiz.graph == nil { QuizDiagramView(diagram: d).frame(height: 200) }
+                    if let f = quiz.figure { GeoFigureView(figure: f).frame(height: 240) }
                     if let g = quiz.graph {
                         QuizGraph(problem: g, shade: quiz.shade, lower: quiz.lower, hline: quiz.level_k, diagram: quiz.diagram).frame(height: 200)
                     }
@@ -437,7 +450,7 @@ struct QuizStepsSheet: View {
         switch quiz.answer {
         case .choice(let o, let c): return "option " + ("ABCD".map(String.init)[safe: c] ?? "?") + (o[safe: c]?.text.map { " (\($0))" } ?? "")
         case .number(let v): return SketchFormat.number(v)
-        case .function(let f): return "y = \(f.description)"
+        case .function(let f): return quiz.steps.last(where: { $0.style == .result })?.text ?? "y = \(f.description)"
         case .signs(let iv, let p): return zip(iv, p).map { "\($0): \($1 ? "+" : "−")" }.joined(separator: ", ")
         }
     }
@@ -560,6 +573,7 @@ struct QuizPictureSheet: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 if let f = quiz.triangle { TriangleView(figure: f).frame(maxHeight: .infinity) }
                 if let d = quiz.diagram, quiz.graph == nil { QuizDiagramView(diagram: d).frame(maxHeight: .infinity) }
+                if let f = quiz.figure { GeoFigureView(figure: f).frame(maxHeight: .infinity) }
             }
             .padding()
             .background(Color.black)
@@ -691,5 +705,152 @@ struct QuizDiagramView: View {
             }
         }
         .accessibilityLabel("Sketch of the situation")
+    }
+}
+
+/// Geometry drawings: circles with chords and tangents, solids in space
+/// (already projected), conics on axes and the complex plane. Same scale on
+/// both axes so angles and circles look right.
+struct GeoFigureView: View {
+    let figure: GeoFigure
+
+    var body: some View { mathBody.mathDirection() }
+
+    private func color(_ s: GeoFigure.Style) -> Color {
+        switch s {
+        case .solid: .white
+        case .dashed: .white.opacity(0.75)
+        case .arrow: .cyan
+        case .highlight: .yellow
+        case .faint: .gray.opacity(0.55)
+        }
+    }
+
+    private var bounds: CGRect {
+        if let w = figure.window, w.count == 4 { return CGRect(x: w[0], y: w[2], width: w[1] - w[0], height: w[3] - w[2]) }
+        var xs = figure.points.map(\.x), ys = figure.points.map(\.y)
+        for c in figure.circles { xs += [c.cx - c.r, c.cx + c.r]; ys += [c.cy - c.r, c.cy + c.r] }
+        for c in figure.curves {
+            for i in stride(from: 0, to: c.xy.count - 1, by: 2) { xs.append(c.xy[i]); ys.append(c.xy[i + 1]) }
+        }
+        if figure.axes != nil { xs.append(0); ys.append(0) }
+        guard let x0 = xs.min(), let x1 = xs.max(), let y0 = ys.min(), let y1 = ys.max() else { return CGRect(x: -1, y: -1, width: 2, height: 2) }
+        let w = max(x1 - x0, 1e-3), h = max(y1 - y0, 1e-3)
+        return CGRect(x: x0 - 0.08 * w, y: y0 - 0.08 * h, width: w * 1.16, height: h * 1.16)
+    }
+
+    @ViewBuilder
+    private var mathBody: some View {
+        Canvas { ctx, size in
+            let b = bounds
+            let pad: CGFloat = 22
+            let scale = min((size.width - 2 * pad) / b.width, (size.height - 2 * pad) / b.height)
+            let ox = (size.width - b.width * scale) / 2, oy = (size.height - b.height * scale) / 2
+            func map(_ x: Double, _ y: Double) -> CGPoint { CGPoint(x: ox + (x - b.minX) * scale, y: size.height - oy - (y - b.minY) * scale) }
+            let pts = figure.points.map { map($0.x, $0.y) }
+            let centre = pts.isEmpty ? CGPoint(x: size.width / 2, y: size.height / 2)
+                : CGPoint(x: pts.map(\.x).reduce(0, +) / CGFloat(pts.count), y: pts.map(\.y).reduce(0, +) / CGFloat(pts.count))
+            func away(_ q: CGPoint, from c: CGPoint, by d: CGFloat) -> CGPoint {
+                let dx = q.x - c.x, dy = q.y - c.y, l = hypot(dx, dy)
+                guard l > 1e-3 else { return CGPoint(x: q.x + d * 0.7, y: q.y - d * 0.7) }
+                return CGPoint(x: q.x + dx / l * d, y: q.y + dy / l * d)
+            }
+            func text(_ s: String, _ at: CGPoint, _ c: Color, size: CGFloat = 14, bold: Bool = true) {
+                ctx.draw(ctx.resolve(Text(verbatim: s).font(.system(size: size, weight: bold ? .bold : .semibold, design: .serif)).foregroundColor(c)), at: at)
+            }
+            func stroke(_ path: Path, _ s: GeoFigure.Style, width: CGFloat = 2) {
+                let dash: [CGFloat] = s == .dashed || s == .faint ? [6, 4] : []
+                ctx.stroke(path, with: .color(color(s)), style: StrokeStyle(lineWidth: s == .faint ? 1.2 : width, lineCap: .round, lineJoin: .round, dash: dash))
+            }
+            func arrowHead(_ from: CGPoint, _ to: CGPoint, _ c: Color) {
+                let a = atan2(to.y - from.y, to.x - from.x), l: CGFloat = 10
+                var head = Path()
+                head.move(to: to)
+                head.addLine(to: CGPoint(x: to.x - l * cos(a - 0.4), y: to.y - l * sin(a - 0.4)))
+                head.addLine(to: CGPoint(x: to.x - l * cos(a + 0.4), y: to.y - l * sin(a + 0.4)))
+                head.closeSubpath()
+                ctx.fill(head, with: .color(c))
+            }
+
+            // Axes.
+            if let names = figure.axes {
+                let gray = Color.white.opacity(0.35)
+                let left = map(b.minX, 0), right = map(b.maxX, 0), bottom = map(0, b.minY), top = map(0, b.maxY)
+                ctx.stroke(Path { $0.move(to: left); $0.addLine(to: right) }, with: .color(gray), lineWidth: 1)
+                ctx.stroke(Path { $0.move(to: bottom); $0.addLine(to: top) }, with: .color(gray), lineWidth: 1)
+                arrowHead(left, right, gray); arrowHead(bottom, top, gray)
+                text(names[safe: 0] ?? "x", CGPoint(x: right.x - 10, y: right.y + 12), gray, size: 12)
+                text(names[safe: 1] ?? "y", CGPoint(x: top.x + 14, y: top.y + 8), gray, size: 12)
+                // Unit ticks when they are not too dense.
+                let unit = scale
+                if unit >= 9 {
+                    var t = ceil(b.minX)
+                    while t <= b.maxX { if t != 0 { let p = map(t, 0); ctx.stroke(Path { $0.move(to: CGPoint(x: p.x, y: p.y - 3)); $0.addLine(to: CGPoint(x: p.x, y: p.y + 3)) }, with: .color(gray), lineWidth: 1) }; t += 1 }
+                    t = ceil(b.minY)
+                    while t <= b.maxY { if t != 0 { let p = map(0, t); ctx.stroke(Path { $0.move(to: CGPoint(x: p.x - 3, y: p.y)); $0.addLine(to: CGPoint(x: p.x + 3, y: p.y)) }, with: .color(gray), lineWidth: 1) }; t += 1 }
+                }
+            }
+            // Filled regions first, then curves.
+            for c in figure.curves where c.xy.count >= 4 {
+                var path = Path()
+                path.move(to: map(c.xy[0], c.xy[1]))
+                for i in stride(from: 2, to: c.xy.count - 1, by: 2) { path.addLine(to: map(c.xy[i], c.xy[i + 1])) }
+                if c.fill {
+                    path.closeSubpath()
+                    ctx.fill(path, with: .color(.orange.opacity(0.22)))
+                } else {
+                    stroke(path, c.style, width: c.style == .highlight ? 2.4 : 2)
+                    if let l = c.label { text(l, map(c.xy[c.xy.count - 2], c.xy[c.xy.count - 1]), color(c.style), size: 12) }
+                }
+            }
+            for c in figure.circles {
+                let p = map(c.cx, c.cy), r = c.r * scale
+                stroke(Path(ellipseIn: CGRect(x: p.x - r, y: p.y - r, width: 2 * r, height: 2 * r)), c.style, width: 2.2)
+            }
+            for s in figure.segments {
+                guard let a = pts[safe: s.a], let e = pts[safe: s.b] else { continue }
+                stroke(Path { $0.move(to: a); $0.addLine(to: e) }, s.style, width: s.style == .highlight ? 3 : 2.2)
+                if s.style == .arrow { arrowHead(a, e, color(.arrow)) }
+                if let l = s.label {
+                    let mid = CGPoint(x: (a.x + e.x) / 2, y: (a.y + e.y) / 2)
+                    // Beside the segment, on the side away from the middle of the drawing.
+                    let nx = -(e.y - a.y), ny = e.x - a.x, nl = max(hypot(nx, ny), 1e-3)
+                    var off = CGPoint(x: nx / nl * 13, y: ny / nl * 13)
+                    if (mid.x + off.x - centre.x) * off.x + (mid.y + off.y - centre.y) * off.y < 0 { off = CGPoint(x: -off.x, y: -off.y) }
+                    text(l, CGPoint(x: mid.x + off.x, y: mid.y + off.y), l == "?" ? .yellow : .white)
+                }
+            }
+            for a in figure.angles {
+                guard let v = pts[safe: a.vertex], let p1 = pts[safe: a.from], let p2 = pts[safe: a.to] else { continue }
+                let a1 = atan2(p1.y - v.y, p1.x - v.x), a2 = atan2(p2.y - v.y, p2.x - v.x)
+                var d = a2 - a1
+                while d > .pi { d -= 2 * .pi }
+                while d <= -.pi { d += 2 * .pi }
+                let r: CGFloat = min(20, 0.4 * min(hypot(p1.x - v.x, p1.y - v.y), hypot(p2.x - v.x, p2.y - v.y)))
+                let c: Color = a.label == "?" ? .yellow : .orange
+                if a.label == "90°" {
+                    let u1 = CGPoint(x: cos(a1) * 10, y: sin(a1) * 10), u2 = CGPoint(x: cos(a2) * 10, y: sin(a2) * 10)
+                    ctx.stroke(Path { $0.move(to: CGPoint(x: v.x + u1.x, y: v.y + u1.y)); $0.addLine(to: CGPoint(x: v.x + u1.x + u2.x, y: v.y + u1.y + u2.y)); $0.addLine(to: CGPoint(x: v.x + u2.x, y: v.y + u2.y)) },
+                               with: .color(c), lineWidth: 1.6)
+                    continue
+                }
+                var arc = Path()
+                for i in 0...16 {
+                    let t = a1 + d * Double(i) / 16
+                    let q = CGPoint(x: v.x + r * cos(t), y: v.y + r * sin(t))
+                    if i == 0 { arc.move(to: q) } else { arc.addLine(to: q) }
+                }
+                ctx.stroke(arc, with: .color(c), lineWidth: 1.8)
+                let mid = a1 + d / 2
+                text(a.label, CGPoint(x: v.x + (r + 14) * cos(mid), y: v.y + (r + 14) * sin(mid)), c, size: 13)
+            }
+            for (i, p) in figure.points.enumerated() {
+                let q = pts[i]
+                let c: Color = p.highlight ? .yellow : .white
+                if p.dot { ctx.fill(Path(ellipseIn: CGRect(x: q.x - 3.5, y: q.y - 3.5, width: 7, height: 7)), with: .color(c)) }
+                if !p.label.isEmpty { text(p.label, away(q, from: centre, by: 14), p.dot ? c : .gray, size: p.dot ? 15 : 12) }
+            }
+        }
+        .accessibilityLabel("Drawing of the question")
     }
 }

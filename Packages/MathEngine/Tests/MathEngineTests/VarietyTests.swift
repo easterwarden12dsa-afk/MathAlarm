@@ -98,7 +98,8 @@ final class QuizVarietyTests: XCTestCase {
                 for i in 0..<n {
                     let t = shade.lowerBound + (Double(i) + 0.5) * h
                     let top = g.value(at: t), bottom = q.lower?.value(at: t) ?? 0
-                    sum += abs(top - bottom) * h
+                    // Volumes of revolution: π∫f².
+                    sum += q.topic.hasPrefix("volume:") ? Double.pi * top * top * h : abs(top - bottom) * h
                 }
                 XCTAssertEqual(sum, v, accuracy: 1e-3 * max(1, v), "\(q.topic) \(q.prompt)")
             }

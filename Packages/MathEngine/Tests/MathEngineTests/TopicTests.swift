@@ -86,8 +86,10 @@ final class TopicTests: XCTestCase {
             let q = QuizFactory.make(.optimization, level: .easy, seed: seed)
             guard q.topic == "optimization:fence", case .number(let v) = q.answer,
                   let L = Double(q.prompt.components(separatedBy: " m of fence").first?.components(separatedBy: " ").last ?? "") else { continue }
-            let best = stride(from: 0.0, through: L / 2, by: L / 20000).map { $0 * (L - 2 * $0) }.max()!
-            let x = stride(from: 0.0, through: L / 2, by: L / 20000).max { $0 * (L - 2 * $0) < $1 * (L - 2 * $1) }!
+            func fenced(_ t: Double) -> Double { t * (L - 2 * t) }
+            let xs = Array(stride(from: 0.0, through: L / 2, by: L / 20000))
+            let best = xs.map(fenced).max()!
+            let x = xs.max { fenced($0) < fenced($1) }!
             XCTAssertTrue(abs(v - best) < 1e-3 * best || abs(v - x) < 1e-3 * L, q.prompt)
         }
         // Trapezoid and tangent triangle: closed forms.

@@ -1,0 +1,60 @@
+# Additions to existing question types: volumes, logs in any base, rational powers, counting.
+The volume formula ⟹ נוסחת הנפח
+V = π∫ f(x)² dx  from {} to {} ⟹ V = π∫ f(x)² dx  מ-{} עד {}
+V = π∫ f(x)² dx  from 0 to {} ⟹ V = π∫ f(x)² dx  מ-0 עד {}
+V = π∫ f(x)² dx  from 1 to {} ⟹ V = π∫ f(x)² dx  מ-1 עד {}
+π∫ x dx = π·[x²/2]  from 0 to {} = π·{} ⟹ π∫ x dx = π·[x²/2]  מ-0 עד {} = π·{}
+π·[x⁵/5]  from 0 to {} = π·{} ⟹ π·[x⁵/5]  מ-0 עד {} = π·{}
+π·[−1/x]  from 1 to {} = π·(−1/{} + 1) ⟹ π·[−1/x]  מ-1 עד {} = π·(−1/{} + 1)
+A half-circle turns into a ball ⟹ חצי מעגל מסתובב לכדור
+y = √({} − x²) is the upper half of a circle of radius {}. ⟹ y = √({} − x²) הוא החצי העליון של מעגל ברדיוס {}.
+V = π∫ ({} − x²) dx  from −{} to {} ⟹ V = π∫ ({} − x²) dx  מ-−{} עד {}
+π·[{}x − x³/3]  from −{} to {} = π·({} + {}) ⟹ π·[{}x − x³/3]  מ-−{} עד {} = π·({} + {})
+V = π∫ (eˣ)² dx = π∫ e^(2x) dx  from 0 to 1 ⟹ V = π∫ (eˣ)² dx = π∫ e^(2x) dx  מ-0 עד 1
+π·[e^(2x)/2]  from 0 to 1 = π·(e² − 1)/2 ⟹ π·[e^(2x)/2]  מ-0 עד 1 = π·(e² − 1)/2
+The shaded region is turned around the x-axis. Find the volume of the solid (exactly, with π). ⟹ השטח המקווקו מסתובב סביב ציר ה-x. מצאו את נפח הגוף שנוצר (במדויק, עם π).
+Volume = {} ⟹ נפח = {}
+Domain ⟹ תחום הגדרה
+x > 0 and x − {} > 0, so x > {}. ⟹ x > 0 ו-x − {} > 0, ולכן x > {}.
+Combine the logs ⟹ מאחדים את הלוגריתמים
+Check the domain ⟹ בודקים את תחום ההגדרה
+x = {} is not > {}. Rejected ✗ ⟹ x = {} אינו גדול מ-{}. נפסל ✗
+log any base ⟹ לוגריתם בכל בסיס
+Change the base ⟹ מעבר בסיס
+Solve for t = log{} x ⟹ פותרים עבור t = log{} x
+Back to x ⟹ חוזרים ל-x
+change of base ⟹ מעבר בסיס
+x > 0 and x ≠ 1 (x is a base). ⟹ x > 0 ו-x ≠ 1 (x הוא בסיס).
+logₓ {} = 1 / log{} x.  Let t = log{} x:  t − 2/t = 1 ⟹ logₓ {} = 1 / log{} x.  נסמן t = log{} x:  t − 2/t = 1
+t = −1:  x = {}⁻¹ = 1/{} ✓ (positive, not 1) ⟹ t = −1:  x = {}⁻¹ = 1/{} ✓ (חיובי, ולא 1)
+log of a base ⟹ לוגריתם שהבסיס שלו x
+A rational power x^({}/{}) is defined for x ≥ 0. ⟹ חזקה רציונלית x^({}/{}) מוגדרת עבור x ≥ 0.
+Raise both sides to the power {}/{} ⟹ מעלים את שני האגפים בחזקת {}/{}
+rational power ⟹ חזקה רציונלית
+Substitute t = {} ⟹ מציבים t = {}
+t ≥ 0, and {} = t²:  t²{}{} = 0 ⟹ t ≥ 0, ו-{} = t²:  t²{}{} = 0
+t ≥ 0, and {} = t²:  t²{} + {} = 0 ⟹ t ≥ 0, ו-{} = t²:  t²{} + {} = 0
+Check t ≥ 0 ⟹ בודקים t ≥ 0
+t = {} < 0 is impossible. Rejected ✗ ⟹ t = {} < 0 אינו אפשרי. נפסל ✗
+(t − {})(t − {}) = 0   ⇒   t = {} or t = {}, both ≥ 0 ✓ ⟹ (t − {})(t − {}) = 0   ⇒   t = {} או t = {}, שניהם ≥ 0 ✓
+power substitution ⟹ הצבה בחזקה
+A group of {} is chosen at random from {} boys and {} girls. Find the probability that it has exactly {} girl{}. ⟹ בוחרים באקראי קבוצה של {1} מתוך {2} בנים ו-{3} בנות. מצאו את ההסתברות שיש בה בדיוק {4} בנות.
+Count all groups ⟹ סופרים את כל הקבוצות
+Any {} of the {}: C({}, {}) = {} (order doesn't matter) ⟹ כל {} מתוך ה-{}: C({}, {}) = {} (הסדר לא חשוב)
+Count the good groups ⟹ סופרים את הקבוצות המתאימות
+{} of the {} girls: C({}, {}) = {} ⟹ {} מתוך {} הבנות: C({}, {}) = {}
+{} of the {} boys: C({}, {}) = {} ⟹ {} מתוך {} הבנים: C({}, {}) = {}
+Together: {}·{} = {} ⟹ יחד: {}·{} = {}
+counting ⟹ קומבינטוריקה
+{} friends, including Dana and Yossi, sit in a row in a random order. Find the probability that Dana and Yossi sit next to each other. ⟹ {} חברים, ביניהם דנה ויוסי, מתיישבים בשורה בסדר אקראי. מצאו את ההסתברות שדנה ויוסי ישבו זה ליד זה.
+{} friends, including Dana and Yossi, sit in a row in a random order. Find the probability that Dana and Yossi sit at the two ends. ⟹ {} חברים, ביניהם דנה ויוסי, מתיישבים בשורה בסדר אקראי. מצאו את ההסתברות שדנה ויוסי ישבו בשני הקצוות.
+arrangements ⟹ סידורים
+All orders ⟹ כל הסידורים
+Glue Dana and Yossi together ⟹ "מדביקים" את דנה ויוסי יחד
+Treat the pair as one block: {} blocks in {}! ways, and the pair inside in 2 ways. ⟹ מתייחסים לזוג כגוש אחד: {} גושים ב-{}! דרכים, והזוג עצמו ב-2 דרכים.
+Good orders: 2·{}! = {} ⟹ סידורים מתאימים: 2·{}! = {}
+Good orders ⟹ סידורים מתאימים
+Dana and Yossi at the ends: 2 ways; the other {} in the middle: {}! ways ⟹ דנה ויוסי בקצוות: 2 דרכים; {} האחרים באמצע: {}! דרכים
+How many {}-digit codes can be made from the digits 1 to {} if no digit repeats? ⟹ כמה קודים בני {} ספרות אפשר ליצור מהספרות 1 עד {} אם אף ספרה לא חוזרת?
+Fill the places one by one ⟹ ממלאים את המקומות אחד אחד
+First place: {} choices, then {}, then {}… ⟹ מקום ראשון: {} אפשרויות, אחר כך {}, אחר כך {}…

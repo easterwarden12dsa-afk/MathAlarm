@@ -18,7 +18,7 @@ struct PracticeView: View {
         }
 
         /// Whole subjects whose sub-types get their own row (Probability → Binomial…).
-        static let topicKinds: [QuizKind] = [.probability, .triangle, .optimization]
+        static let topicKinds: [QuizKind] = [.probability, .triangle, .optimization, .sequence, .geometry, .vectors, .conics, .complex, .growth]
         /// The "Functions" mix.
         static let functionKinds: [QuizKind] = [.parameter, .limit, .tangent, .area, .equation]
 
@@ -63,8 +63,15 @@ struct PracticeView: View {
                 switch k {
                 case .chooseGraph, .signTable, .solutions: return .graphs
                 case .probability: return .probability
-                case .triangle: return .triangles
+                case .triangle, .trigIdentity: return .triangles
                 case .optimization: return .minmax
+                case .sequence, .induction: return .sequences
+                case .geometry: return .geometry
+                case .vectors: return .vectors
+                case .conics: return .analytic
+                case .complex: return .complex
+                case .growth: return .growth
+                case .antiderivative: return .calculus
                 default: return .functions
                 }
             }
@@ -76,7 +83,7 @@ struct PracticeView: View {
 
     /// The big modes. Each has its own modes in the second row.
     enum Category: String, CaseIterable, Identifiable {
-        case calculus, graphs, functions, probability, triangles, minmax
+        case calculus, graphs, functions, minmax, sequences, probability, triangles, geometry, vectors, analytic, complex, growth
 
         var id: String { rawValue }
 
@@ -86,8 +93,14 @@ struct PracticeView: View {
             case .graphs: "Graphs"
             case .functions: "Functions"
             case .probability: "Probability"
-            case .triangles: "Triangles"
+            case .triangles: "Trigonometry"
             case .minmax: "Min & max"
+            case .sequences: "Sequences"
+            case .geometry: "Geometry"
+            case .vectors: "Vectors"
+            case .analytic: "Analytic geometry"
+            case .complex: "Complex"
+            case .growth: "Growth & decay"
             }
         }
 
@@ -99,29 +112,47 @@ struct PracticeView: View {
             case .probability: "dice"
             case .triangles: "triangle"
             case .minmax: "arrow.up.and.down"
+            case .sequences: "list.number"
+            case .geometry: "circle.dashed"
+            case .vectors: "cube"
+            case .analytic: "oval"
+            case .complex: "i.circle"
+            case .growth: "chart.line.uptrend.xyaxis"
             }
         }
 
         /// One line about what is inside, shown under the rows.
         var blurb: String {
             switch self {
-            case .calculus: "Integrals and derivatives, typed as formulas"
+            case .calculus: "Integrals, derivatives and finding f from f′"
             case .graphs: "Draw graphs, or read them: f′, sign tables, solutions"
             case .functions: "Parameters, limits, tangents, areas and equations"
             case .probability: "Independent events, tables, binomial, trees and Bayes"
-            case .triangles: "Trigonometry in the plane: sines, cosines, areas"
+            case .triangles: "Sines, cosines, areas and trig identities"
             case .minmax: "Word problems: set up a function, then f′ = 0"
+            case .sequences: "Arithmetic, geometric, infinite, recursive · induction"
+            case .geometry: "Circle angles, chords, tangents, similar triangles"
+            case .vectors: "Vectors in space: lines, planes, angles, distances"
+            case .analytic: "Circles, parabola, ellipse, hyperbola, loci"
+            case .complex: "Algebraic and polar form, De Moivre, roots, loci"
+            case .growth: "Growth, decay, half-life and models"
             }
         }
 
         var modes: [Mode] {
             switch self {
-            case .calculus: [.integral, .derivative]
+            case .calculus: [.integral, .derivative, .quiz(.antiderivative, nil)]
             case .graphs: [.sketch, .change, .quiz(.chooseGraph, nil), .quiz(.signTable, nil), .quiz(.solutions, nil)]
             case .functions: [Mode.quiz(nil, nil)] + Mode.functionKinds.map { Mode.quiz($0, nil) }
             case .probability: Self.topic(.probability)
-            case .triangles: Self.topic(.triangle)
+            case .triangles: Self.topic(.triangle) + [.quiz(.trigIdentity, nil)]
             case .minmax: Self.topic(.optimization)
+            case .sequences: Self.topic(.sequence) + [.quiz(.induction, nil)]
+            case .geometry: Self.topic(.geometry)
+            case .vectors: Self.topic(.vectors)
+            case .analytic: Self.topic(.conics)
+            case .complex: Self.topic(.complex)
+            case .growth: Self.topic(.growth)
             }
         }
 
@@ -155,7 +186,7 @@ struct PracticeView: View {
     @State private var generation = 0
 
     enum Sheet: String, Identifiable {
-        case hub, speed, exam, review, weak, history
+        case hub, speed, exam, review, weak, history, map, bagrut
         var id: String { rawValue }
     }
     /// Opened after the Study hub closes (one sheet at a time).
@@ -222,6 +253,17 @@ struct PracticeView: View {
                 case .review: ReviewListView { item in load(item, fromReview: true) }
                 case .weak: WeakSpotsView { m in sheet = nil; select(m) }
                 case .history: HistoryView { item in load(item, fromReview: false) }
+                case .map:
+                    BagrutMapView { target in
+                        switch target {
+                        case .exam:
+                            pendingSheet = .bagrut
+                        case .mode(let m, let v):
+                            open(m, variant: v)
+                        }
+                        sheet = nil
+                    }
+                case .bagrut: BagrutExamView()
                 }
             }
             .alert("Enter a share code", isPresented: $showCodeEntry) {
@@ -466,6 +508,14 @@ struct PracticeView: View {
         guard m != mode || reviewing else { return }
         mode = m
         subVariant = nil
+        newProblem()
+    }
+
+    /// From the Bagrut map: a mode, and a sub-type for the Type menu.
+    private func open(_ m: Mode, variant: String?) {
+        mode = m
+        subVariant = variant
+        reviewing = false
         newProblem()
     }
 

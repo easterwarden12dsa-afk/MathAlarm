@@ -491,6 +491,10 @@ struct StudyHubView: View {
             ScrollView {
                 VStack(spacing: 12) {
                     dailyCard
+                    HStack(spacing: 12) {
+                        tile("Bagrut map", "map.fill", .mint, "All \(BagrutMap.topics.count) question types of the 5-unit Bagrut") { choose(.sheet(.map)) }
+                        tile("Bagrut exam", "graduationcap.fill", .pink, "A full 571 or 572 paper, timed and scored") { choose(.sheet(.bagrut)) }
+                    }
                     LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
                         tile("Speed round", "stopwatch.fill", .orange,
                              store.data.bestSpeedRound.map { String(format: "Best %.0f s", $0) } ?? "10 derivatives, against the clock") { choose(.sheet(.speed)) }

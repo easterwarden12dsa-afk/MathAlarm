@@ -155,7 +155,7 @@
 "Drawing mode": "מצב ציור",
 "Timers and the test ring": "טיימרים וצלצול הבדיקה",
 "Study": "לימוד",
-"Bagrut exam": "מבחן הבגרות",
+"Bagrut exam": "בחינת בגרות",
 "Clear exam date": "נקה את תאריך המבחן",
 "Test my setup": "בדיקת ההגדרות שלי",
 "Action needed": "נדרשת פעולה",
@@ -214,7 +214,7 @@
 "Keep trying": "ממשיכים לנסות",
 "The alarm still needs a solved problem, so you'll get a fresh one afterwards.": "השעון עדיין צריך בעיה פתורה, לכן אחר כך תקבלו בעיה חדשה.",
 "Check answer": "בדיקת תשובה",
-"Integrate": "אינטגרל של ",
+"Integrate": "מוצאים פונקציה קדומה",
 "Differentiate": "גזירה",
 "Steps": "שלבים",
 "Technique:": "שיטה:",
@@ -415,7 +415,7 @@
 "Extreme point": "נקודת קיצון",
 "Exam complete": "המבחן הושלם",
 "No mistakes — Bagrut ready.": "בלי טעויות — מוכנים לבגרות.",
-"Another exam": "עוד מבחן",
+"Another exam": "בחינה נוספת",
 "Nothing to review": "אין מה לחזור עליו",
 "Problems you get wrong come back after 1, 3 and 7 days.": "בעיות שטעיתם בהן חוזרות אחרי 1, 3 ו-7 ימים.",
 "Due now": "לחזרה עכשיו",
@@ -469,6 +469,472 @@
 "Medium": "בינוני",
 "Hard": "קשה",
 "Language": "שפה",
+"Give the answer in degrees to 2 decimal places.": "תנו את התשובה במעלות, עד 2 ספרות אחרי הנקודה.",
+"length": "אורך",
+"The vector AB": "הווקטור AB",
+"Its length": "אורכו",
+"angle between vectors": "זווית בין וקטורים",
+"Dot product": "מכפלה סקלרית",
+"Lengths": "אורכים",
+"The angle": "הזווית",
+"cos θ < 0, so the angle is obtuse.": "cos θ < 0, ולכן הזווית קהה.",
+"cos θ > 0, so the angle is acute.": "cos θ > 0, ולכן הזווית חדה.",
+"perpendicular": "ניצבות",
+"Perpendicular means u·v = 0": "ניצבים פירושו u·v = 0",
+"Are the directions parallel?": "האם הכיוונים מקבילים?",
+"Is B on the first line?": "האם B על הישר הראשון?",
+"Equate the points": "משווים את הנקודות",
+"lines meet": "ישרים נחתכים",
+"The meeting point": "נקודת החיתוך",
+"They meet at one point": "נחתכים בנקודה אחת",
+"They are parallel": "מקבילים",
+"They are skew": "מצטלבים",
+"They are the same line": "אותו ישר",
+"two lines": "שני ישרים",
+"plane": "מישור",
+"Two vectors in the plane": "שני וקטורים במישור",
+"A normal": "וקטור נורמל",
+"The plane's equation": "משוואת המישור",
+"Put D in": "מציבים את D",
+"line meets plane": "ישר חותך מישור",
+"A general point of the line": "נקודה כללית על הישר",
+"Put it into the plane": "מציבים במשוואת המישור",
+"The point": "הנקודה",
+"line and plane": "ישר ומישור",
+"Direction and normal": "כיוון ונורמל",
+"The line makes 90° − (angle with the normal)": "הזווית עם המישור היא 90° פחות הזווית עם הנורמל",
+"two planes": "שני מישורים",
+"The normals": "הנורמלים",
+"Angle between the normals": "הזווית בין הנורמלים",
+"point to plane": "נקודה ממישור",
+"Distance formula": "נוסחת המרחק",
+"parallel planes": "מישורים מקבילים",
+"Same normal": "אותו נורמל",
+"radius": "הרדיוס",
+"x-coordinate of the centre": "שיעור ה-x של המרכז",
+"circle": "מעגל",
+"Complete the squares": "משלימים לריבוע",
+"Read it off": "קוראים מהמשוואה",
+"tangent": "משיק",
+"The radius to P": "הרדיוס ל-P",
+"MP is vertical": "MP אנכי",
+"The tangent is perpendicular to the radius": "המשיק ניצב לרדיוס",
+"So the tangent is horizontal: slope 0": "לכן המשיק אופקי: שיפוע 0",
+"Line through P": "ישר דרך P",
+"line and circle": "ישר ומעגל",
+"Distance from the centre to the line": "המרחק מהמרכז לישר",
+"Compare with R²": "משווים ל-R²",
+"d < R: the line cuts the circle.": "d < R: הישר חותך את המעגל.",
+"d = R: the line is a tangent.": "d = R: הישר משיק.",
+"d > R: the line misses the circle.": "d > R: הישר אינו פוגש את המעגל.",
+"Compare with y² = 2px": "משווים ל-y² = 2px",
+"parabola focus": "מוקד הפרבולה",
+"parabola directrix": "מדריך הפרבולה",
+"parabola distance": "מרחק מהמוקד",
+"Focus = directrix distance": "מרחק מהמוקד = מרחק מהמדריך",
+"Every point of a parabola is as far from the focus as from the directrix.": "כל נקודה על הפרבולה נמצאת באותו מרחק מהמוקד ומהמדריך.",
+"Read a and b": "קוראים את a ו-b",
+"ellipse foci": "מוקדי אליפסה",
+"ellipse triangle": "משולש באליפסה",
+"The defining property": "התכונה המגדירה",
+"ellipse b": "הציר b באליפסה",
+"Foci of an ellipse": "מוקדי אליפסה",
+"hyperbola foci": "מוקדי היפרבולה",
+"hyperbola asymptotes": "אסימפטוטות של היפרבולה",
+"The asymptotes of x²/a² − y²/b² = 1 are y = ±(b/a)x": "האסימפטוטות של x²/a² − y²/b² = 1 הן y = ±(b/a)x",
+"hyperbola property": "תכונת ההיפרבולה",
+"For every point of a hyperbola, |PF₁ − PF₂| = 2a": "לכל נקודה על ההיפרבולה, |PF₁ − PF₂| = 2a",
+"centre's x-coordinate": "שיעור ה-x של מרכזו",
+"apollonius": "מעגל אפולוניוס",
+"Write the condition": "כותבים את התנאי",
+"Expand and collect": "פותחים סוגריים ומכנסים",
+"Complete the square": "משלימים לריבוע",
+"midpoint locus": "מקום גאומטרי של אמצעים",
+"Write Q with M": "מבטאים את Q בעזרת M",
+"Q is on the circle": "Q על המעגל",
+"divide": "חילוק",
+"Multiply by the conjugate of the denominator": "כופלים בצמוד של המכנה",
+"multiply": "כפל",
+"Multiply out (i² = −1)": "פותחים סוגריים (i² = −1)",
+"conjugate equation": "משוואה עם צמוד",
+"Write z = x + yi": "כותבים z = x + yi",
+"Compare real and imaginary parts": "משווים חלק ממשי וחלק מדומה",
+"quadratic": "משוואה ריבועית",
+"The quadratic formula": "נוסחת השורשים",
+"its argument θ in degrees (0° ≤ θ < 360°)": "הארגומנט θ במעלות (0° ≤ θ < 360°)",
+"polar form": "הצגה קוטבית",
+"Modulus": "ערך מוחלט",
+"Argument": "ארגומנט",
+"de moivre": "דה-מואבר",
+"Polar form": "הצגה קוטבית",
+"De Moivre": "דה-מואבר",
+"Polar form of the right side": "הצגה קוטבית של אגף ימין",
+"The roots": "השורשים",
+"roots argument": "ארגומנט של שורש",
+"roots quadrant": "שורשים ברביע",
+"roots polygon": "מצולע השורשים",
+"largest": "הגדול ביותר",
+"smallest": "הקטן ביותר",
+"loci": "מקומות גאומטריים",
+"What the equation means": "מה המשוואה אומרת",
+"Distance from the origin": "המרחק מראשית הצירים",
+"compound": "ריבית דריבית",
+"Each year multiplies by the same factor": "בכל שנה כופלים באותו גורם",
+"After t years": "אחרי t שנים",
+"rate": "קצב גדילה",
+"Set up": "בניית הפונקציה",
+"decay constant": "קבוע הדעיכה",
+"Take ln": "לוקחים ln",
+"half-life": "מחצית חיים",
+"decay time": "זמן דעיכה",
+"time": "זמן",
+"two populations": "שתי אוכלוסיות",
+"find k": "מציאת k",
+"Use both values": "משתמשים בשני הנתונים",
+"predict": "חיזוי",
+"Twice the time": "פי 2 זמן",
+"polynomial": "פולינום",
+"Integrate term by term": "מוצאים פונקציה קדומה איבר-איבר",
+"Use the point": "משתמשים בנקודה",
+"second derivative": "נגזרת שנייה",
+"Integrate once: f′": "פונקציה קדומה פעם אחת: f′",
+"Integrate again: f": "ושוב: f",
+"Same arc AB": "אותה קשת AB",
+"∠ACB is an inscribed angle and ∠AOB is the central angle on the same arc AB.": "∠ACB היא זווית היקפית ו-∠AOB היא הזווית המרכזית הנשענות על אותה קשת AB.",
+"A central angle is twice the inscribed angle on the same arc.": "זווית מרכזית גדולה פי 2 מזווית היקפית הנשענת על אותה קשת.",
+"∠ACB is inscribed on arc AB; ∠AOB is the central angle on it.": "∠ACB היא זווית היקפית על הקשת AB; ∠AOB היא הזווית המרכזית עליה.",
+"Inscribed angle = half the central angle.": "זווית היקפית = חצי מהזווית המרכזית.",
+"The central angle": "הזווית המרכזית",
+"Triangle AOB is isosceles": "המשולש AOB שווה-שוקיים",
+"OA = OB (radii), so ∠OAB = ∠OBA.": "OA = OB (רדיוסים), ולכן ∠OAB = ∠OBA.",
+"inscribed angle": "זווית היקפית",
+"cyclic quadrilateral": "מרובע חסום במעגל",
+"Opposite angles": "זוויות נגדיות",
+"The exterior angle": "הזווית החיצונית",
+"Opposite angles of a cyclic quadrilateral": "זוויות נגדיות במרובע חסום",
+"They add up to 180° (together they stand on the whole circle).": "סכומן 180° (יחד הן נשענות על המעגל כולו).",
+"the central angle ∠AOB": "הזווית המרכזית ∠AOB",
+"the inscribed angle ∠ACB": "הזווית ההיקפית ∠ACB",
+"tangent and chord": "משיק ומיתר",
+"Tangent–chord angle": "זווית בין משיק למיתר",
+"The angle between a tangent and a chord equals the inscribed angle on the other side of the chord.": "הזווית בין משיק למיתר שווה לזווית ההיקפית הנשענת על המיתר מהצד השני.",
+"Central angle": "זווית מרכזית",
+"Intersecting chords": "מיתרים נחתכים",
+"The products of the pieces are equal: AE·EB = CE·ED (triangles AEC and DEB are similar).": "מכפלות הקטעים שוות: AE·EB = CE·ED (המשולשים AEC ו-DEB דומים).",
+"chords": "מיתרים",
+"tangent and secant": "משיק וחותך",
+"Tangent–secant theorem": "משפט המשיק והחותך",
+"The chord": "המיתר",
+"PT² = PA·PB (triangles PTA and PBT are similar).": "PT² = PA·PB (המשולשים PTA ו-PBT דומים).",
+"similar triangles": "משולשים דומים",
+"DE ∥ BC, so ∠ADE = ∠ABC and ∠AED = ∠ACB (corresponding angles): △ADE ∼ △ABC.": "DE ∥ BC, ולכן ∠ADE = ∠ABC ו-∠AED = ∠ACB (זוויות מתאימות): △ADE ∼ △ABC.",
+"Ratio of similarity": "יחס הדמיון",
+"area ratio": "יחס שטחים",
+"Areas go with the square of the ratio": "יחס השטחים שווה לריבוע יחס הדמיון",
+"angle bisector": "חוצה זווית",
+"Angle bisector theorem": "משפט חוצה הזווית",
+"tangent lengths": "אורכי משיקים",
+"Equal tangents": "משיקים שווים",
+"Two tangents from the same point to a circle are equal. Call them x (from A), y (from B), z (from C).": "שני משיקים למעגל מאותה נקודה שווים. נסמן אותם x (מ-A), y (מ-B), z (מ-C).",
+"tangential quadrilateral": "מרובע חוסם מעגל",
+"From each corner the two tangents to the circle are equal; each side is made of two of them.": "מכל קדקוד שני המשיקים למעגל שווים; כל צלע מורכבת משניים מהם.",
+"So AB + CD and BC + DA use each tangent length once: AB + CD = BC + DA.": "לכן ב-AB + CD וב-BC + DA כל אורך משיק מופיע פעם אחת: AB + CD = BC + DA.",
+"right triangle height": "גובה ליתר",
+"The height splits ABC into two triangles similar to it: △ACD ∼ △CBD.": "הגובה מחלק את ABC לשני משולשים הדומים לו: △ACD ∼ △CBD.",
+"right triangle leg": "ניצב במשולש ישר-זווית",
+"△ACD ∼ △ABC (they share ∠A and both have a right angle).": "△ACD ∼ △ABC (יש להם זווית A משותפת ושניהם ישרי-זווית).",
+"exact value": "ערך מדויק",
+"Use the formula": "משתמשים בנוסחה",
+"double angle": "זווית כפולה",
+"Find cos α": "מוצאים את cos α",
+"negative in the second quadrant": "שלילי ברביע השני",
+"positive in the first quadrant": "חיובי ברביע הראשון",
+"between 90° and 180°": "בין 90° ל-180°",
+"between 0° and 90°": "בין 0° ל-90°",
+"sum formula": "נוסחת סכום",
+"The missing values": "הערכים החסרים",
+"Both positive: the angles are acute.": "שניהם חיוביים: הזוויות חדות.",
+"The formula": "הנוסחה",
+"tan sum angle": "זווית מסכום טנגנסים",
+"tan of the sum": "טנגנס של סכום",
+"Which angle?": "איזו זווית?",
+"tan sum": "טנגנס של סכום",
+"So it is 2 sin x cos x / 2cos²x = sin x / cos x": "לכן זה 2 sin x cos x / 2cos²x = sin x / cos x",
+"So it is 2sin²x / (2 sin x cos x) = sin x / cos x": "לכן זה 2sin²x / (2 sin x cos x) = sin x / cos x",
+"Difference of squares: (cos²x − sin²x)(cos²x + sin²x)": "הפרש ריבועים: (cos²x − sin²x)(cos²x + sin²x)",
+"cos²x + sin²x = 1, and cos²x − sin²x = cos 2x": "cos²x + sin²x = 1, ו-cos²x − sin²x = cos 2x",
+"So 2cos²x − (2cos²x − 1) = 1": "לכן 2cos²x − (2cos²x − 1) = 1",
+"Common denominator: (sin 3x cos x − cos 3x sin x)/(sin x cos x)": "מכנה משותף: (sin 3x cos x − cos 3x sin x)/(sin x cos x)",
+"Use identities": "משתמשים בזהויות",
+"simplify": "פישוט",
+"sin x = 0  or  cos x = ½": "sin x = 0  או  cos x = ½",
+"cos x = 1  or  cos x = −½": "cos x = 1  או  cos x = −½",
+"cos x = 0  or  sin x = ½": "cos x = 0  או  sin x = ½",
+"sin x = 0  or  cos x = √3/2": "sin x = 0  או  cos x = √3/2",
+"Type the largest solution (in degrees).": "הקלידו את הפתרון הגדול ביותר (במעלות).",
+"How many solutions are there?": "כמה פתרונות יש?",
+"identity equation": "משוואה עם זהות",
+"Use a double-angle identity": "משתמשים בזהות של זווית כפולה",
+"All solutions in [0°, 360°)": "כל הפתרונות ב-[0°, 360°)",
+"The volume formula": "נוסחת הנפח",
+"A half-circle turns into a ball": "חצי מעגל מסתובב לכדור",
+"V = π∫ (eˣ)² dx = π∫ e^(2x) dx  from 0 to 1": "V = π∫ (eˣ)² dx = π∫ e^(2x) dx  מ-0 עד 1",
+"π·[e^(2x)/2]  from 0 to 1 = π·(e² − 1)/2": "π·[e^(2x)/2]  מ-0 עד 1 = π·(e² − 1)/2",
+"The shaded region is turned around the x-axis. Find the volume of the solid (exactly, with π).": "השטח המקווקו מסתובב סביב ציר ה-x. מצאו את נפח הגוף שנוצר (במדויק, עם π).",
+"Domain": "תחום הגדרה",
+"Combine the logs": "איחוד הלוגריתמים",
+"Check the domain": "בדיקת תחום ההגדרה",
+"log any base": "לוגריתם בכל בסיס",
+"Change the base": "מעבר בסיס",
+"Back to x": "חזרה ל-x",
+"change of base": "מעבר בסיס",
+"x > 0 and x ≠ 1 (x is a base).": "x > 0 ו-x ≠ 1 (x הוא בסיס).",
+"log of a base": "לוגריתם שהבסיס שלו x",
+"rational power": "חזקה רציונלית",
+"Check t ≥ 0": "בודקים t ≥ 0",
+"power substitution": "הצבה בחזקה",
+"Count all groups": "סופרים את כל הקבוצות",
+"Count the good groups": "סופרים את הקבוצות המתאימות",
+"counting": "קומבינטוריקה",
+"arrangements": "סידורים",
+"All orders": "כל הסידורים",
+"Glue Dana and Yossi together": "\"מדביקים\" את דנה ויוסי יחד",
+"Good orders": "סידורים מתאימים",
+"Fill the places one by one": "ממלאים את המקומות אחד אחד",
+"the first term a₁": "האיבר הראשון a₁",
+"the difference d": "ההפרש d",
+"the ratio q": "המנה q",
+"Write both terms with a₁ and d": "כותבים את שני האיברים בעזרת a₁ ו-d",
+"Subtract the equations": "מחסרים את המשוואות",
+"Find a₁": "מוצאים את a₁",
+"The term asked for": "האיבר המבוקש",
+"The sum formula": "נוסחת הסכום",
+"Set up the equation": "בונים משוואה",
+"Solve the quadratic": "פתרון המשוואה הריבועית",
+"Two sequences inside one": "שתי סדרות בתוך אחת",
+"Each even-place term is the odd-place term before it plus d: a₂ = a₁ + d, a₄ = a₃ + d, …": "כל איבר במקום זוגי שווה לאיבר שלפניו (במקום אי-זוגי) ועוד d: a₂ = a₁ + d, a₄ = a₃ + d, …",
+"Subtract the sums": "מחסרים את הסכומים",
+"Find a₁ from the odd-place sum": "מוצאים את a₁ מסכום המקומות האי-זוגיים",
+"Write both terms with a₁ and q": "כותבים את שני האיברים בעזרת a₁ ו-q",
+"Divide the equations": "מחלקים את המשוואות",
+"Solve for n": "פותרים עבור n",
+"Find q": "מוצאים את q",
+"Does it converge?": "האם הטור מתכנס?",
+"Solve for q": "פותרים עבור q",
+"|q| < 1, so the series really converges.": "|q| < 1, ולכן הטור אכן מתכנס.",
+"Check": "בדיקה",
+"Odd and even places": "מקומות זוגיים ואי-זוגיים",
+"Odd places: a₁ + a₁q² + a₁q⁴ + …  = a₁/(1 − q²)": "מקומות אי-זוגיים: a₁ + a₁q² + a₁q⁴ + …  = a₁/(1 − q²)",
+"Even places: a₁q + a₁q³ + …  = a₁q/(1 − q²)": "מקומות זוגיים: a₁q + a₁q³ + …  = a₁q/(1 − q²)",
+"Divide": "מחלקים",
+"Find q.": "מצאו את q.",
+"It is geometric": "זה טור הנדסי",
+"Check convergence": "בודקים התכנסות",
+"Apply the rule step by step": "מפעילים את הכלל שלב אחר שלב",
+"Put n = 1, 2, 3, … into the rule; each term is built from the one before.": "מציבים n = 1, 2, 3, … בכלל; כל איבר נבנה מהאיבר שלפניו.",
+"Find a sequence that is geometric": "מוצאים סדרה הנדסית",
+"A formula for aₙ": "נוסחה ל-aₙ",
+"It is an arithmetic sequence": "זו סדרה חשבונית",
+"The last row": "השורה האחרונה",
+"Add them up": "מחברים",
+"Down and up": "למטה ולמעלה",
+"Add the infinite series": "מחברים את הטור האינסופי",
+"first": "ראשונה",
+"second": "שנייה",
+"third": "שלישית",
+"fourth": "רביעית",
+"A geometric sequence": "סדרה הנדסית",
+"Yearly pay is geometric": "השכר השנתי הוא סדרה הנדסית",
+"Check n = 1": "בדיקה עבור n = 1",
+"Assume it is true for n = k": "מניחים שהטענה נכונה עבור n = k",
+"Prove it for n = k + 1": "מוכיחים עבור n = k + 1",
+"Conclusion": "מסקנה",
+"True for n = 1, and true for k + 1 whenever true for k: true for every n ≥ 1.": "נכון עבור n = 1, ונכון עבור k + 1 בכל פעם שנכון עבור k: נכון לכל n ≥ 1.",
+"Assume for n = k": "מניחים עבור n = k",
+"Prove for n = k + 1": "מוכיחים עבור n = k + 1",
+"We prove that 4ⁿ + 15n − 1 is divisible by 9. Which expression equals 4^(k + 1) + 15(k + 1) − 1?": "מוכיחים ש-4ⁿ + 15n − 1 מתחלק ב-9. איזה ביטוי שווה ל-4^(k + 1) + 15(k + 1) − 1?",
+"We prove that 3^(2n + 1) + 2^(n + 2) is divisible by 7. Which expression equals 3^(2k + 3) + 2^(k + 3)?": "מוכיחים ש-3^(2n + 1) + 2^(n + 2) מתחלק ב-7. איזה ביטוי שווה ל-3^(2k + 3) + 2^(k + 3)?",
+"2k² ≥ (k + 1)²  ⇔  k² − 2k − 1 ≥ 0, true for k ≥ 3": "2k² ≥ (k + 1)²  ⇔  k² − 2k − 1 ≥ 0, נכון עבור k ≥ 3",
+"3k³ ≥ (k + 1)³  ⇔  (1 + 1/k)³ ≤ 3, true for k ≥ 3": "3k³ ≥ (k + 1)³  ⇔  (1 + 1/k)³ ≤ 3, נכון עבור k ≥ 3",
+"k + 1 > 2 for k ≥ 2": "k + 1 > 2 עבור k ≥ 2",
+"k + 1 > 3 for k ≥ 3": "k + 1 > 3 עבור k ≥ 3",
+"Try small values": "מנסים ערכים קטנים",
+"for a whole number m": "עבור m שלם",
+"arithmetic term": "איבר בסדרה חשבונית",
+"arithmetic sum": "סכום סדרה חשבונית",
+"arithmetic n": "מספר איברים בסדרה חשבונית",
+"odd and even places": "מקומות זוגיים ואי-זוגיים",
+"geometric term": "איבר בסדרה הנדסית",
+"geometric sum": "סכום סדרה הנדסית",
+"geometric n": "מספר איברים בסדרה הנדסית",
+"infinite sum": "סכום טור אינסופי",
+"find q": "מציאת q",
+"odd and even series": "טור במקומות זוגיים ואי-זוגיים",
+"series in x": "טור עם x",
+"recursive terms": "איברים בנוסחת נסיגה",
+"recursive formula": "נוסחה מפורשת לנסיגה",
+"savings": "חיסכון",
+"seats": "מושבים",
+"bouncing ball": "כדור קופץ",
+"bounce height": "גובה קפיצה",
+"salary": "משכורת",
+"added term": "האיבר שמתווסף",
+"target": "יעד הצעד",
+"check": "בדיקה",
+"divisibility": "התחלקות",
+"inequality": "אי-שוויון",
+"Trigonometry": "טריגונומטריה",
+"Sequences": "סדרות",
+"Geometry": "גאומטריה",
+"Vectors": "וקטורים",
+"Analytic geometry": "גאומטריה אנליטית",
+"Complex": "מרוכבים",
+"Growth & decay": "גדילה ודעיכה",
+"Integrals, derivatives and finding f from f′": "אינטגרלים, נגזרות ומציאת f מתוך f′",
+"Sines, cosines, areas and trig identities": "סינוסים, קוסינוסים, שטחים וזהויות טריגונומטריות",
+"Arithmetic, geometric, infinite, recursive · induction": "חשבונית, הנדסית, אינסופית, רקורסיבית · אינדוקציה",
+"Circle angles, chords, tangents, similar triangles": "זוויות במעגל, מיתרים, משיקים, משולשים דומים",
+"Vectors in space: lines, planes, angles, distances": "וקטורים במרחב: ישרים, מישורים, זוויות, מרחקים",
+"Circles, parabola, ellipse, hyperbola, loci": "מעגלים, פרבולה, אליפסה, היפרבולה, מקומות גאומטריים",
+"Algebraic and polar form, De Moivre, roots, loci": "הצגה אלגברית וקוטבית, דה-מואבר, שורשים, מקומות גאומטריים",
+"Growth, decay, half-life and models": "גדילה, דעיכה, זמן מחצית חיים ומודלים",
+"option": "אפשרות",
+"Drawing of the question": "שרטוט השאלה",
+"Bagrut map": "מפת הבגרות",
+"A full 571 or 572 paper, timed and scored": "שאלון 571 או 572 מלא, עם זמן וציון",
+"Induction": "אינדוקציה",
+"Circles & similarity": "מעגלים ודמיון",
+"Trig identities": "זהויות טריגונומטריות",
+"Vectors in space": "וקטורים במרחב",
+"Complex numbers": "מספרים מרוכבים",
+"Find f from f′": "מציאת f מתוך f′",
+"Volume of revolution": "נפח גוף סיבוב",
+"Logs in any base": "לוגריתמים בכל בסיס",
+"Rational powers": "חזקות רציונליות",
+"Counting": "קומבינטוריקה",
+"Arithmetic": "חשבונית",
+"Geometric": "הנדסית",
+"Infinite series": "טור אינסופי",
+"Recursive": "נוסחת נסיגה",
+"Word problems": "בעיות מילוליות",
+"Sum formulas": "נוסחאות סכום",
+"Divisibility": "התחלקות",
+"Inequalities": "אי-שוויונים",
+"Angles in a circle": "זוויות במעגל",
+"Chords, tangents, secants": "מיתרים, משיקים, חותכים",
+"Similar triangles": "משולשים דומים",
+"Bisectors & tangent lengths": "חוצי זווית ואורכי משיקים",
+"Exact values": "ערכים מדויקים",
+"Double angle": "זווית כפולה",
+"Simplify": "פישוט",
+"Equations with identities": "משוואות עם זהויות",
+"Length, dot product, angle": "אורך, מכפלה סקלרית, זווית",
+"Lines in space": "ישרים במרחב",
+"Planes": "מישורים",
+"Angles": "זוויות",
+"Distances": "מרחקים",
+"Circles": "מעגלים",
+"Parabola": "פרבולה",
+"Ellipse": "אליפסה",
+"Hyperbola": "היפרבולה",
+"Loci": "מקומות גאומטריים",
+"Algebraic form": "הצגה אלגברית",
+"Polar form, De Moivre": "הצגה קוטבית, דה-מואבר",
+"Roots & polygons": "שורשים ומצולעים",
+"Growth": "גדילה",
+"Decay & half-life": "דעיכה ומחצית חיים",
+"How long?": "כמה זמן?",
+"Find the model": "מציאת המודל",
+"Polynomials": "פולינומים",
+"eˣ and 1/x": "eˣ ו-1/x",
+"eˣ and ln": "eˣ ו-ln",
+"Chapter 1 · Short questions": "פרק ראשון · שאלות קצרות",
+"Chapter 2 · Sequences, induction, probability": "פרק שני · סדרות, אינדוקציה, הסתברות",
+"Chapter 2 · Sequences and probability": "פרק שני · סדרות והסתברות",
+"Chapter 3 · Geometry and trigonometry in the plane": "פרק שלישי · גאומטריה וטריגונומטריה במישור",
+"Chapter 4 · Calculus": "פרק רביעי · חשבון דיפרנציאלי ואינטגרלי",
+"Chapter 1 · Vectors, analytic geometry, complex numbers": "פרק ראשון · וקטורים, גאומטריה אנליטית, מספרים מרוכבים",
+"Chapter 1 · Analytic geometry, vectors, complex numbers": "פרק ראשון · גאומטריה אנליטית, וקטורים, מספרים מרוכבים",
+"Chapter 2 · Growth and decay, exponential and log functions": "פרק שני · גדילה ודעיכה, פונקציות מעריכיות ולוגריתמיות",
+"Full exams": "בחינות מלאות",
+"Short mixed questions": "שאלות קצרות מעורבות",
+"Arithmetic sequence: a term, a₁ or d, sums": "סדרה חשבונית: איבר, a₁ או d, סכומים",
+"Geometric sequence: a term, the ratio, sums": "סדרה הנדסית: איבר, המנה, סכומים",
+"Infinite geometric series: sum, convergence, finding q": "טור הנדסי אינסופי: סכום, התכנסות, מציאת q",
+"Recursive sequences: aₙ₊₁ = f(aₙ)": "סדרות בנוסחת נסיגה: aₙ₊₁ = f(aₙ)",
+"Sequence word problems: savings, a bouncing ball": "בעיות מילוליות בסדרות: חיסכון, כדור קופץ",
+"Induction: equalities (sum formulas)": "אינדוקציה: שוויונים (נוסחאות סכום)",
+"Induction: divisibility": "אינדוקציה: התחלקות",
+"Induction: inequalities": "אינדוקציה: אי-שוויונים",
+"Probability: counting (groups, arrangements)": "הסתברות: קומבינטוריקה (קבוצות, סידורים)",
+"Probability: independent events, complement": "הסתברות: מאורעות בלתי תלויים, משלים",
+"Probability: without replacement": "הסתברות: בלי החזרה",
+"Probability: two-way tables, conditional": "הסתברות: טבלה דו-ממדית, הסתברות מותנית",
+"Probability: tree diagrams, Bayes": "הסתברות: דיאגרמת עץ, בייס",
+"Probability: binomial, at least / exactly": "הסתברות: התפלגות בינומית, לפחות / בדיוק",
+"Probability: repeated tries, first success, how many tries": "הסתברות: ניסיונות חוזרים, הצלחה ראשונה, כמה ניסיונות",
+"Probability: conditional binomial": "הסתברות: בינומית מותנית",
+"Circle angles: inscribed, central, cyclic quadrilateral": "זוויות במעגל: היקפית, מרכזית, מרובע חסום",
+"Similar triangles, area ratios": "משולשים דומים, יחס שטחים",
+"Angle bisector theorem, tangent lengths": "משפט חוצה הזווית, אורכי משיקים",
+"Law of cosines": "משפט הקוסינוסים",
+"Law of sines and the circumradius": "משפט הסינוסים ורדיוס המעגל החוסם",
+"Triangle area ½ab·sin C": "שטח משולש ½ab·sin C",
+"An angle from three sides": "זווית משלוש צלעות",
+"Medians, heights, multi-step triangles": "תיכונים, גבהים, משולשים בכמה שלבים",
+"Trig identities: sin/cos(α ± β), double angle, exact values": "זהויות טריגונומטריות: sin/cos(α ± β), זווית כפולה, ערכים מדויקים",
+"Derivatives": "נגזרות",
+"Integrals": "אינטגרלים",
+"Full investigation and sketch": "חקירה מלאה ושרטוט",
+"Reading graphs of f, f′ and F": "קריאת גרפים של f, f′ ו-F",
+"Transformations (|f|, 1/f, f², √f…)": "טרנספורמציות (|f|, 1/f, f², √f…)",
+"Sign tables": "טבלאות סימנים",
+"Number of solutions": "מספר פתרונות",
+"Parameters": "פרמטרים",
+"Limits and asymptotes": "גבולות ואסימפטוטות",
+"Tangent and normal": "משיק ונורמל",
+"Areas": "שטחים",
+"Antiderivative through a point": "פונקציה קדומה העוברת בנקודה",
+"Min and max problems": "בעיות קיצון",
+"Vectors: length, dot product, angle, perpendicular": "וקטורים: אורך, מכפלה סקלרית, זווית, ניצבות",
+"Lines in space: meeting, parallel or skew": "ישרים במרחב: נחתכים, מקבילים או מצטלבים",
+"Planes: a point on a plane, a line meets a plane": "מישורים: נקודה על מישור, ישר חותך מישור",
+"Angles: line and plane, two planes": "זוויות: ישר ומישור, שני מישורים",
+"Distances: point to plane, parallel planes": "מרחקים: נקודה ממישור, מישורים מקבילים",
+"Circles: centre and radius, tangent, line and circle": "מעגלים: מרכז ורדיוס, משיק, ישר ומעגל",
+"Parabola: focus, directrix": "פרבולה: מוקד, מדריך",
+"Ellipse: axes, foci": "אליפסה: צירים, מוקדים",
+"Hyperbola: foci, asymptotes": "היפרבולה: מוקדים, אסימפטוטות",
+"Complex numbers: algebraic form, equations": "מספרים מרוכבים: הצגה אלגברית, משוואות",
+"Roots of complex numbers and their polygon": "שורשים של מספרים מרוכבים והמצולע שלהם",
+"Loci in the complex plane": "מקומות גאומטריים במישור המרוכב",
+"Growth and decay word problems": "בעיות גדילה ודעיכה",
+"Exponential and log equations (base e)": "משוואות מעריכיות ולוגריתמיות (בסיס e)",
+"Exponential and log investigation and sketch": "חקירה ושרטוט של פונקציות מעריכיות ולוגריתמיות",
+"Exponential and log derivatives and integrals": "נגזרות ואינטגרלים של פונקציות מעריכיות ולוגריתמיות",
+"Graphs of ln f, e^f and 1/f": "גרפים של ln f, e^f ו-1/f",
+"Full Bagrut exams (571 / 572 style), timed and scored": "בחינות בגרות מלאות (בסגנון 571 / 572), עם זמן וציון",
+"Every question type of the 5-unit Bagrut (papers 571 and 572). Tap one to practise it.": "כל סוגי השאלות בבגרות 5 יח״ל (שאלונים 571 ו-572). הקישו על אחד כדי להתאמן בו.",
+"Paper": "שאלון",
+"Paper 571 (35571)": "שאלון 571 (35571)",
+"Paper 572 (35572)": "שאלון 572 (35572)",
+"Short questions · sequences & probability · geometry & trigonometry · calculus": "שאלות קצרות · סדרות והסתברות · גאומטריה וטריגונומטריה · חשבון דיפרנציאלי ואינטגרלי",
+"Vectors, analytic geometry & complex numbers · growth, exponents & logarithms": "וקטורים, גאומטריה אנליטית ומספרים מרוכבים · גדילה, חזקות ולוגריתמים",
+"Answer 4 of the 8 questions: at least one from chapter 1 or 2, and at least one from each of chapters 3 and 4. In question 1, answer 2 of the 4 parts.": "ענו על 4 מתוך 8 השאלות: לפחות אחת מהפרק הראשון או השני, ולפחות אחת מכל אחד מהפרקים השלישי והרביעי. בשאלה 1 ענו על 2 מתוך 4 הסעיפים.",
+"Answer 3 of the 5 questions.": "ענו על 3 מתוך 5 השאלות.",
+"Short questions — answer 2 of the 4": "שאלות קצרות — ענו על 2 מתוך 4",
+"Trigonometry in the plane": "טריגונומטריה במישור",
+"Investigating a function": "חקירת פונקציה",
+"Tangents, areas and antiderivatives": "משיקים, שטחים ופונקציות קדומות",
+"Extreme-value problem": "בעיית קיצון",
+"Exponential and log functions": "פונקציות מעריכיות ולוגריתמיות",
+"Growth, decay and logarithms": "גדילה, דעיכה ולוגריתמים",
+"Finish": "סיום",
+"Finish the exam and see your score?": "לסיים את הבחינה ולראות את הציון?",
+"Keep going": "להמשיך",
+"Summer 2026: the Ministry lifted the chapter limits and published a focus list for this session only — check the official notice with your teacher.": "קיץ תשפ״ו: משרד החינוך ביטל את הגבלת הפרקים ופרסם הכוונה ממוקדת למועד זה בלבד — בדקו את ההודעה הרשמית עם המורה.",
+"Start the exam": "התחלת הבחינה",
+"Back to the paper": "חזרה לשאלון",
 "Precision": "דיוק",
 "Standard": "רגיל",
 "Proportions": "פרופורציות",
@@ -540,7 +1006,6 @@
 "Step 2 · Differentiate part by part": "שלב 2 · גוזרים חלק אחר חלק",
 "Answer": "תשובה",
 "Result (any constant C can be added):": "תוצאה (אפשר להוסיף קבוע C כלשהו):",
-"Check": "בדיקה",
 "Differentiating the result gives back the integrand.": "גזירת התוצאה מחזירה את הפונקציה שמתחת לאינטגרל.",
 "It looks like you forgot the chain rule: after differentiating the outer function, multiply by the derivative of the inside.": "נראה ששכחתם את כלל השרשרת: אחרי גזירת הפונקציה החיצונית, כופלים בנגזרת של הפנימית.",
 "It looks like the quotient rule's subtraction is the wrong way round: it's (u′v − uv′)/v², u′v first.": "נראה שהחיסור בכלל המנה הפוך: זה (u′v − uv′)/v², קודם u′v.",
@@ -566,7 +1031,6 @@
 "its domain": "תחום ההגדרה שלה",
 "The function": "הפונקציה",
 "Draw the whole graph — every x where it is defined.": "שרטטו את כל הגרף — בכל x שבו הוא מוגדר.",
-"Domain": "תחום הגדרה",
 "Domain and asymptotes": "תחום הגדרה ואסימפטוטות",
 "So x ≠": "לכן x ≠",
 "Vertical asymptotes": "אסימפטוטות אנכיות",
@@ -578,7 +1042,6 @@
 "Differentiate and factor:": "גוזרים ומפרקים לגורמים:",
 "Differentiate (a long expression — only its sign matters below).": "גוזרים (ביטוי ארוך — בהמשך חשוב רק הסימן שלו).",
 "or undefined": "או לא מוגדרת",
-"Conclusion": "מסקנה",
 "increasing": "עולה",
 "decreasing": "יורדת",
 "Inflection points": "נקודות פיתול",
@@ -633,8 +1096,6 @@
 "stays (for x ≥ 0, g = f), and is copied to −x as its mirror image": "נשארת (עבור x ≥ 0, g = f), ומועתקת ל-−x כתמונת ראי",
 "dropped: for x < 0, g copies the right half instead": "נמחקת: עבור x < 0, g מעתיקה במקום זה את החצי הימני",
 "on the x-axis — f is flat there, its slope is 0": "על ציר x — f שטוחה שם, השיפוע שלה 0",
-"largest": "הגדול ביותר",
-"smallest": "הקטן ביותר",
 "like f (the rule keeps the order of heights)": "כמו f (הכלל שומר על סדר הגבהים)",
 "like f": "כמו f",
 "opposite to f (the minus flips it)": "הפוך מ-f (המינוס הופך)",
@@ -763,7 +1224,6 @@
 "Substitute u = cos x, du = −sin x dx: −∫(1 − u²) du = −u + u³/3.": "מציבים u = cos x, du = −sin x dx: −∫(1 − u²) du = −u + u³/3.",
 "Split off one cosine:": "מפרידים קוסינוס אחד:",
 "Substitute u = sin x, du = cos x dx: ∫(1 − u²) du = u − u³/3.": "מציבים u = sin x, du = cos x dx: ∫(1 − u²) du = u − u³/3.",
-"Trig identities": "זהויות טריגונומטריות",
 "sin x·cos x = sin(2x)/2, so the integrand is sin²(2x)/4.": "sin x·cos x = sin(2x)/2, לכן הפונקציה שמתחת לאינטגרל היא sin²(2x)/4.",
 "Then sin²(2x) = (1 − cos 4x)/2, giving": "אחר כך sin²(2x) = (1 − cos 4x)/2, ומתקבל",
 "Integrate: x/8 − sin(4x)/32.": "מחשבים: x/8 − sin(4x)/32.",
@@ -843,7 +1303,6 @@
 "Trees & Bayes": "עצים ובייס",
 "Repeated tries": "ניסיונות חוזרים",
 "Conditional binomial": "בינומי מותנה",
-"Law of cosines": "משפט הקוסינוסים",
 "Law of sines": "משפט הסינוסים",
 "Find an angle": "מציאת זווית",
 "Circle radius": "רדיוס המעגל",
@@ -943,10 +1402,8 @@
 "Test one point in each interval": "בודקים נקודה אחת בכל קטע",
 "Substitute t = eˣ": "הצבה t = eˣ",
 "e^(2x) = (eˣ)² = t², and t > 0 because eˣ is always positive.": "e^(2x) = (eˣ)² = t², ו-t > 0 כי eˣ תמיד חיובי.",
-"Solve the quadratic": "פתרון המשוואה הריבועית",
 "Check t > 0": "בדיקה t > 0",
 "Both are positive, so both are allowed ✓": "שניהם חיוביים, לכן שניהם מותרים ✓",
-"Back to x": "חזרה ל-x",
 "e quadratic": "ריבועית במעריכי",
 "No solution": "אין פתרון",
 "x = π/6 only": "רק x = π/6",
@@ -967,8 +1424,6 @@
 "x = 5π/6 only": "רק x = 5π/6",
 "cos(π/6) = √3/2, so the basic angle is π/6.": "cos(π/6) = √3/2, לכן הזווית הבסיסית היא π/6.",
 "Cosine is negative in the 2nd and 3rd quadrants:": "קוסינוס שלילי ברביע השני והשלישי:",
-"Combine the logs": "איחוד הלוגריתמים",
-"Check the domain": "בדיקת תחום ההגדרה",
 "Substitute u = ln x": "הצבה u = ln x",
 "Both are positive ✓": "שניהם חיוביים ✓",
 "ln quadratic": "ריבועית ב-ln",
@@ -1048,7 +1503,6 @@
 "Out of everyone": "מתוך כולם",
 "Conditional probability: shrink the sample": "הסתברות מותנית: מצמצמים את מרחב המדגם",
 "Is it binomial?": "האם זה בינומי?",
-"The formula": "הנוסחה",
 "defective": "פגומים",
 "late": "מאחרים",
 "made by machine A": "מתוצרת מכונה A",
@@ -1075,7 +1529,6 @@
 "Two sides and the angle between them (SAS): the law of cosines.": "שתי צלעות והזווית שביניהן (צ.ז.צ.): משפט הקוסינוסים.",
 "two steps": "שני שלבים",
 "The third side": "הצלע השלישית",
-"The angle": "הזווית",
 "Triangle ABM": "משולש ABM",
 "median": "תיכון",
 "AB by the law of sines": "‏AB ממשפט הסינוסים",
@@ -1087,7 +1540,6 @@
 "The base": "הבסיס",
 "Find the larger of the two numbers when their product is as large as possible.": "מצאו את הגדול מבין המספרים כשמכפלתם הגדולה ביותר.",
 "Find the largest possible product.": "מצאו את המכפלה הגדולה ביותר.",
-"Set up": "בניית הפונקציה",
 "Find the length of each side perpendicular to the wall for the largest area.": "מצאו את אורך כל צלע שמאונכת לקיר כשהשטח הגדול ביותר.",
 "Find the largest possible area (m²).": "מצאו את השטח הגדול ביותר (מ״ר).",
 "Find x for the largest volume.": "מצאו את x לנפח הגדול ביותר.",
@@ -1195,7 +1647,6 @@
 "The limit is +∞": "הגבול הוא +∞",
 "The limit is −∞": "הגבול הוא −∞",
 "growth exp over power": "מעריכי חלקי חזקה",
-"The point": "הנקודה",
 "The line": "הישר",
 "The slope of the tangent": "שיפוע המשיק",
 "The slope of the normal": "שיפוע האנך",
@@ -1215,6 +1666,18 @@
 "את המשוואה הזו אי אפשר לפתור במדויק ביד. {} רציפה (בין האסימפטוטות), לכן היא 0 בכל מקום שהיא מחליפה סימן (משפט ערך הביניים):"
 ],
 [
+"In an infinite geometric series with positive terms, the sum of the terms in the odd places is {} times the sum of the terms in the even places.",
+"בטור הנדסי אינסופי שאיבריו חיוביים, סכום האיברים במקומות האי-זוגיים גדול פי {} מסכום האיברים במקומות הזוגיים."
+],
+[
+"A ball is dropped from a height of {} m. After each bounce it rises to {} of the height before. What total distance does it travel until it stops?",
+"כדור נזרק מגובה {} מ׳. אחרי כל קפיצה הוא עולה ל-{} מהגובה הקודם. איזה מרחק כולל הוא עובר עד שהוא נעצר?"
+],
+[
+"A monthly salary of {} ₪ rises by {}% at the start of every year. How much is earned in total in {} years? Give the answer to the nearest shekel.",
+"משכורת חודשית של {} ₪ עולה ב-{}% בתחילת כל שנה. כמה מרוויחים בסך הכול ב-{} שנים? עגלו לשקל השלם."
+],
+[
 "Each try succeeds with probability {}/{}. What is the smallest number of tries so that the probability of at least one success is more than {}?",
 "כל ניסיון מצליח בהסתברות {}/{}. מהו מספר הניסיונות הקטן ביותר כך שההסתברות ללפחות הצלחה אחת תהיה יותר מ-{}?"
 ],
@@ -1223,32 +1686,108 @@
 "ב-{} ≤ x ≤ {} הפונקציה מוגדרת ורציפה, לכן אין כאן אסימפטוטות אנכיות (ובקטע סגור גם לא אופקיות)."
 ],
 [
+"An arithmetic sequence has {} terms. The sum of the terms in the odd places is {}, and the sum of the terms in the even places is {}. Find {}.",
+"בסדרה חשבונית יש {} איברים. סכום האיברים במקומות האי-זוגיים הוא {}, וסכום האיברים במקומות הזוגיים הוא {}. מצאו את {}."
+],
+[
+"{} friends, including Dana and Yossi, sit in a row in a random order. Find the probability that Dana and Yossi sit next to each other.",
+"{} חברים, ביניהם דנה ויוסי, מתיישבים בשורה בסדר אקראי. מצאו את ההסתברות שדנה ויוסי ישבו זה ליד זה."
+],
+[
+"A ball is dropped from a height of {} m. After each bounce it rises to {} of the height before. How high does it rise after the {} bounce?",
+"כדור נזרק מגובה {} מ׳. אחרי כל קפיצה הוא עולה ל-{} מהגובה הקודם. לאיזה גובה הוא עולה אחרי הקפיצה ה{}?"
+],
+[
+"{} friends, including Dana and Yossi, sit in a row in a random order. Find the probability that Dana and Yossi sit at the two ends.",
+"{} חברים, ביניהם דנה ויוסי, מתיישבים בשורה בסדר אקראי. מצאו את ההסתברות שדנה ויוסי ישבו בשני הקצוות."
+],
+[
+"The inequality {} is proved by induction for every n ≥ n₀. Find the smallest such whole number n₀ ≥ 1 (it must be true from n₀ on).",
+"את אי-השוויון {} מוכיחים באינדוקציה לכל n ≥ n₀. מצאו את המספר הטבעי הקטן ביותר n₀ ≥ 1 כזה (אי-השוויון חייב להתקיים מ-n₀ והלאה)."
+],
+[
 "A shot hits with probability {}/{}; {} independent shots are fired. Given that at least one hit, find the probability of exactly {} hits.",
 "יריה פוגעת בהסתברות {}/{}; יורים {} יריות בלתי תלויות. בהינתן שלפחות אחת פגעה, מצאו את ההסתברות לבדיוק {} פגיעות."
+],
+[
+"Noa saves {} ₪ in the first month, and every month she saves {} ₪ more than the month before. How much has she saved after {} months?",
+"נועה חוסכת {} ₪ בחודש הראשון, ובכל חודש היא חוסכת {} ₪ יותר מבחודש הקודם. כמה חסכה אחרי {} חודשים?"
 ],
 [
 "Quotient rule: f′(x) = [eˣ(eˣ − 4)² − (eˣ − {})·2(eˣ − 4)eˣ]/(eˣ − 4)⁴ = eˣ[(eˣ − 4) − 2(eˣ − {})]/(eˣ − 4)³ = eˣ({} − eˣ)/(eˣ − 4)³",
 "כלל המנה: f′(x) = [eˣ(eˣ − 4)² − (eˣ − {})·2(eˣ − 4)eˣ]/(eˣ − 4)⁴ = eˣ[(eˣ − 4) − 2(eˣ − {})]/(eˣ − 4)³ = eˣ({} − eˣ)/(eˣ − 4)³"
 ],
 [
+"A hall has {} rows. The first row has {} seats and each row has {} more seat{} than the row in front of it. How many seats are there?",
+"באולם {1} שורות. בשורה הראשונה {2} מושבים, ובכל שורה יש {3} מושבים יותר מבשורה שלפניה. כמה מושבים יש באולם?"
+],
+[
+"Town A has {} people and grows by {}% a year. Town B has {} people and grows by {}% a year. After how many years will they be equal?",
+"בעיירה A יש {} תושבים והיא גדלה ב-{}% בשנה. בעיירה B יש {} תושבים והיא גדלה ב-{}% בשנה. אחרי כמה שנים מספר התושבים יהיה שווה?"
+],
+[
+"In triangle ABC, DE ∥ BC with D on AB and AD : DB = {} : {}. The area of triangle ADE is {}. Find the area of the trapezoid DBCE.",
+"במשולש ABC, DE ∥ BC, הנקודה D על AB ו-AD : DB = {} : {}. שטח המשולש ADE הוא {}. מצאו את שטח הטרפז DBCE."
+],
+[
 "A rectangle has two vertices on the x-axis and two on the parabola y = {} − x² (above the axis), symmetric about the y-axis.",
 "למלבן שני קדקודים על ציר x ושניים על הפרבולה y = {} − x² (מעל הציר), סימטרי סביב ציר y."
+],
+[
+"We prove  {} = {}  by induction. In the step, assuming it for n = k, what must the left side for n = k + 1 be shown to equal?",
+"מוכיחים באינדוקציה ש-  {} = {}. בצעד האינדוקציה, בהנחה שהטענה נכונה עבור n = k, למה צריך להראות שאגף שמאל עבור n = k + 1 שווה?"
+],
+[
+"We prove by induction that {}ⁿ − 1 is divisible by {} for every n ≥ 1. Which way of writing {}^(k + 1) − 1 makes the step work?",
+"מוכיחים באינדוקציה ש-{}ⁿ − 1 מתחלק ב-{} לכל n ≥ 1. איזו כתיבה של {}^(k + 1) − 1 מאפשרת את צעד האינדוקציה?"
 ],
 [
 "A bag has {} red and {} blue balls. Two are taken out, one after the other, without putting back. Find the probability that {}.",
 "בשקית {} כדורים אדומים ו-{} כחולים. מוציאים שניים, בזה אחר זה, בלי להחזיר. מצאו את ההסתברות ש{}."
 ],
 [
+"ABCD is inscribed in a circle, with ∠A = {}° and ∠B = {}°. Find the exterior angle at C (between BC extended past C and CD).",
+"המרובע ABCD חסום במעגל, ∠A = {}° ו-∠B = {}°. מצאו את הזווית החיצונית ליד C (בין המשך BC מעבר ל-C לבין CD)."
+],
+[
+"Scoring: right the first time = full marks for that part; right after a mistake = half. Only your best {} questions count.",
+"ניקוד: תשובה נכונה בפעם הראשונה = ניקוד מלא לסעיף; נכונה אחרי טעות = חצי. רק {} השאלות הטובות ביותר שלכם נספרות."
+],
+[
 "From a square sheet of side {}, equal squares of side x are cut from the corners and the sides folded up into an open box.",
 "מריבוע של נייר בצלע {} חותכים בפינות ריבועים שווים בצלע x ומקפלים את הצדדים לקופסה פתוחה."
+],
+[
+"A substance has a half-life of {} years: N(t) = N₀e^(−kt). Find k. Give it exactly (e.g. ln 2/5) or to 4 decimal places.",
+"זמן מחצית החיים של חומר הוא {} שנים: N(t) = N₀e^(−kt). מצאו את k. תנו תשובה מדויקת (למשל ln 2/5) או עד 4 ספרות אחרי הנקודה."
+],
+[
+"We prove that {}ⁿ − {}ⁿ is divisible by {} for every n ≥ 1. Which expression equals {}^(k + 1) − {}^(k + 1) and shows the step?",
+"מוכיחים ש-{}ⁿ − {}ⁿ מתחלק ב-{} לכל n ≥ 1. איזה ביטוי שווה ל-{}^(k + 1) − {}^(k + 1) ומראה את הצעד?"
 ],
 [
 "Divide: ({})/({}) = {} + {}/({}). The last part → 0 as x → ±∞, so the graph approaches the line y = {}{}{} — an oblique asymptote.",
 "מחלקים: ({})/({}) = {} + {}/({}). החלק האחרון → 0 כש-x → ±∞, לכן הגרף מתקרב לישר y = {}{}{} — אסימפטוטה משופעת."
 ],
 [
+"From P outside a circle, PT is a tangent and a secant meets the circle at A and then B. PT = {} and PA = {}. Find AB.",
+"מהנקודה P שמחוץ למעגל יוצאים המשיק PT וחותך הפוגש את המעגל ב-A ואחר כך ב-B. PT = {} ו-PA = {}. מצאו את AB."
+],
+[
+"From P outside a circle, PT is a tangent and a secant meets the circle at A and then B. PA = {} and AB = {}. Find PT.",
+"מהנקודה P שמחוץ למעגל יוצאים המשיק PT וחותך הפוגש את המעגל ב-A ואחר כך ב-B. PA = {} ו-AB = {}. מצאו את PT."
+],
+[
 "f′(x) = [2x·√({}) − x²·x/√({})]/({}) = x(2({}) − x²)/({})^(3/2) = x({})/({})^(3/2). (x = 0 is outside the domain |x| > {}.)",
 "f′(x) = [2x·√({}) − x²·x/√({})]/({}) = x(2({}) − x²)/({})^(3/2) = x({})/({})^(3/2). (x = 0 מחוץ לתחום |x| > {}.)"
+],
+[
+"A culture follows N(t) = N₀e^(kt). N(0) = {} and N({}) = {}. Find k (exactly, e.g. ln {}/{}, or to 4 decimal places).",
+"תרבית מתפתחת לפי N(t) = N₀e^(kt). N(0) = {} ו-N({}) = {}. מצאו את k (במדויק, למשל ln {}/{}, או עד 4 ספרות אחרי הנקודה)."
+],
+[
+"A group of {} is chosen at random from {} boys and {} girls. Find the probability that it has exactly {} girl{}.",
+"בוחרים באקראי קבוצה של {1} מתוך {2} בנים ו-{3} בנות. מצאו את ההסתברות שיש בה בדיוק {4} בנות."
 ],
 [
 "f is 0 here, so x = {} is a vertical asymptote of g — next to it g shoots to ±∞ on the side where f is ±",
@@ -1259,20 +1798,52 @@
 "בטרפז בסיס ושתי שוקיים כולם באורך {}; השוקיים יוצרות זוויות שוות θ עם הבסיס הארוך."
 ],
 [
+"Q moves on the circle x² + y² = {}, and A = ({}, {}). M is the midpoint of AQ. Find the {} of the path of M.",
+"הנקודה Q נעה על המעגל x² + y² = {}, ו-A = ({}, {}). M אמצע הקטע AQ. מצאו את {} של המסלול של M."
+],
+[
+"Solve z^{} = {}. What is the argument (in degrees, 0° ≤ θ < 360°) of the root with the largest argument?",
+"פתרו z^{} = {}. מהו הארגומנט (במעלות, 0° ≤ θ < 360°) של השורש בעל הארגומנט הגדול ביותר?"
+],
+[
 "In isosceles triangle ABC, AB = AC = {} and ∠A = {}°. Find the radius of the circle through A, B and C.",
 "במשולש שווה שוקיים ABC, AB = AC = {} ו-∠A = {}°. מצאו את רדיוס המעגל החוסם (העובר דרך A, B ו-C)."
+],
+[
+"Quadrilateral ABCD is drawn around a circle (every side touches it). AB = {}, BC = {}, CD = {}. Find DA.",
+"המרובע ABCD חוסם מעגל (כל צלע משיקה לו). AB = {}, BC = {}, CD = {}. מצאו את DA."
+],
+[
+"The odd places a₁, a₃, a₅, … and the even places a₂, a₄, a₆, … each have {} terms and difference 2d.",
+"למקומות האי-זוגיים a₁, a₃, a₅, … ולמקומות הזוגיים a₂, a₄, a₆, … יש {} איברים לכל אחד, עם הפרש 2d."
 ],
 [
 "Find the normal to f at x = {} (the line perpendicular to the tangent). Type the right side of y = …",
 "מצאו את האנך (הנורמל) ל-f ב-x = {} (הישר המאונך למשיק). הקלידו את אגף ימין של y = …"
 ],
 [
+"We prove  {} = {}  by induction. Going from n = k to n = k + 1, which term is added to the left side?",
+"מוכיחים באינדוקציה ש-  {} = {}. במעבר מ-n = k ל-n = k + 1, איזה איבר מתווסף לאגף שמאל?"
+],
+[
 "This free install stops working {} ({}). Reinstall with iloader before then, or alarms may not ring.",
 "ההתקנה החינמית תפסיק לעבוד {} ({}). התקינו מחדש עם iloader לפני כן, אחרת השעונים עלולים לא לצלצל."
 ],
 [
+"The roots are equally spaced on the circle |z| = {}: {} triangles from the centre, each with angle {}°",
+"השורשים מפוזרים במרווחים שווים על המעגל |z| = {}: {} משולשים מהמרכז, בכל אחד זווית של {}°"
+],
+[
 "The probability that {} is {}; the probability that {} is {}, independently. Find the probability that {}.",
 "ההסתברות ש{} היא {}; ההסתברות ש{} היא {}, באופן בלתי תלוי. מצאו את ההסתברות ש{}."
+],
+[
+"In right triangle ABC (∠C = 90°), CD is the height to the hypotenuse. AD = {} and DB = {}. Find CD.",
+"במשולש ישר-זווית ABC (∠C = 90°), CD הוא הגובה ליתר. AD = {} ו-DB = {}. מצאו את CD."
+],
+[
+"In right triangle ABC (∠C = 90°), CD is the height to the hypotenuse. AD = {} and DB = {}. Find AC.",
+"במשולש ישר-זווית ABC (∠C = 90°), CD הוא הגובה ליתר. AD = {} ו-DB = {}. מצאו את AC."
 ],
 [
 "The shape is off from x = {} to x = {} — redraw this whole stretch (the eye shows the right shape).",
@@ -1291,12 +1862,28 @@
 "\"לכל היותר {} ניסיונות\" פירושו הצלחה כלשהי ב-{} הראשונים; המשלים הוא {} כישלונות ברצף."
 ],
 [
+"An amount grew from {} to {} in {} years, by the same percentage every year. Find that percentage.",
+"סכום גדל מ-{} ל-{} ב-{} שנים, באותו אחוז בכל שנה. מצאו את האחוז."
+],
+[
+"The bisector splits the opposite side in the ratio of the other two sides: BD/DC = AB/AC = {}/{}",
+"חוצה הזווית מחלק את הצלע שמולו ביחס שתי הצלעות האחרות: BD/DC = AB/AC = {}/{}"
+],
+[
+"A circle is inscribed in triangle ABC with AB = {}, BC = {}, CA = {}. It touches AB at K. Find AK.",
+"מעגל חסום במשולש ABC שבו AB = {}, BC = {}, CA = {}. המעגל משיק ל-AB בנקודה K. מצאו את AK."
+],
+[
 "Several things are off from x = {} to x = {} — redraw this part (the eye shows the right shape).",
 "כמה דברים לא נכונים מ-x = {} עד x = {} — שרטטו את החלק הזה מחדש (העין מראה את הצורה הנכונה)."
 ],
 [
 "{}′ can only change sign where it is 0{}, so one test point in each part decides the sign there:",
 "‏{}′ יכולה להחליף סימן רק איפה שהיא 0{}, לכן נקודת בדיקה אחת בכל חלק קובעת את הסימן שם:"
+],
+[
+"A car loses {}% of its value every year. After how many years is it worth {}% of the price new?",
+"מכונית מאבדת {}% מערכה בכל שנה. אחרי כמה שנים היא שווה {}% ממחירה כחדשה?"
 ],
 [
 "x = {} is not in the domain, and next to it |{}(x)| grows without bound — a vertical asymptote.",
@@ -1315,8 +1902,16 @@
 "סכום למכפלה: cos A + cos B = 2cos((A+B)/2)·cos((A−B)/2), לכן  f′(x) = cos x + cos {}x = 2{}·{}"
 ],
 [
+"In an arithmetic sequence a₁ = {} and d = {}. How many terms must be added for the sum to be {}?",
+"בסדרה חשבונית a₁ = {} ו-d = {}. כמה איברים צריך לחבר כדי שהסכום יהיה {}?"
+],
+[
 "f stays above the x-axis between {} and {} (e.g. f({}) = {}, f({}) = {}), so the area is the integral.",
 "f נשארת מעל ציר x בין {} ל-{} (למשל f({}) = {}, f({}) = {}), לכן השטח הוא האינטגרל."
+],
+[
+"In triangle ABC, D is on AB and E is on AC with DE ∥ BC. AD = {}, DB = {} and BC = {}. Find DE.",
+"במשולש ABC הנקודה D על AB והנקודה E על AC, ו-DE ∥ BC. AD = {}, DB = {} ו-BC = {}. מצאו את DE."
 ],
 [
 "Take ln (ln of a number below 1 is negative, so the inequality flips): n > ln {} / ln({}/{}) ≈ {}",
@@ -1327,8 +1922,16 @@
 "המשיק ל-y = {}e^(−x) בנקודה שבה x = t (t > 0) יוצר משולש עם הצירים."
 ],
 [
+"P is any point on the ellipse  {}, with foci F₁, F₂. Find the perimeter of triangle PF₁F₂.",
+"P נקודה כלשהי על האליפסה  {}, שמוקדיה F₁, F₂. מצאו את היקף המשולש PF₁F₂."
+],
+[
 "P(exactly {} | at least 1) = P(exactly {}) / P(at least 1) (exactly {} is inside \"at least 1\")",
 "P(בדיוק {} | לפחות 1) = P(בדיוק {}) / P(לפחות 1) (המאורע \"בדיוק {}\" כלול ב\"לפחות 1\")"
+],
+[
+"A substance has a half-life of {} years. There are {} g now. How much is left after {} years?",
+"זמן מחצית החיים של חומר הוא {} שנים. עכשיו יש {} גרם. כמה יישאר אחרי {} שנים?"
 ],
 [
 "The general shape from x = {} to x = {} is off — redraw it (the eye shows the right shape).",
@@ -1353,6 +1956,18 @@
 [
 "From x = {} to x = {} your line goes up and down where the graph doesn't — smooth it out.",
 "מ-x = {} עד x = {} הקו שלכם עולה ויורד במקום שהגרף לא — החליקו אותו."
+],
+[
+"A(0, 0) and B({}, 0). Point P moves so that PA = {}·PB. Its path is a circle; find its {}.",
+"A(0, 0) ו-B({}, 0). הנקודה P נעה כך ש-PA = {}·PB. המסלול שלה הוא מעגל; מצאו את {}."
+],
+[
+"A, B and C are on a circle with centre O, and ∠ACB = {}°. Find the central angle ∠AOB.",
+"הנקודות A, B ו-C נמצאות על מעגל שמרכזו O, ו-∠ACB = {}°. מצאו את הזווית המרכזית ∠AOB."
+],
+[
+"A, B and C are on a circle with centre O, and the central angle ∠AOB = {}°. Find ∠ACB.",
+"הנקודות A, B ו-C נמצאות על מעגל שמרכזו O, והזווית המרכזית ∠AOB = {}°. מצאו את ∠ACB."
 ],
 [
 "The numerator x²{}x{} has roots {} and {} (they add up to {}): different, so f′ changes sign ✓",
@@ -1383,8 +1998,20 @@
 "בין נקודות קיצון f רק עולה או רק יורדת, לכן היא יכולה לעבור את {} לכל היותר פעם אחת."
 ],
 [
+"In triangle ABC, AB = {}, AC = {} and BC = {}. AD bisects angle A (D on BC). Find BD.",
+"במשולש ABC, AB = {}, AC = {} ו-BC = {}. AD חוצה את הזווית A (D על BC). מצאו את BD."
+],
+[
 "Use sin 2x = 2 sin x cos x:  f′(x) = cos x {} 2 sin x cos x = cos x·(1 {} 2 sin x)",
 "משתמשים ב-sin 2x = 2 sin x cos x:  f′(x) = cos x {} 2 sin x cos x = cos x·(1 {} 2 sin x)"
+],
+[
+"A population grows by {}% a year. After how many years will it be {} times as big?",
+"אוכלוסייה גדלה ב-{}% בשנה. אחרי כמה שנים היא תהיה גדולה פי {}?"
+],
+[
+"Treat the pair as one block: {} blocks in {}! ways, and the pair inside in 2 ways.",
+"מתייחסים לזוג כגוש אחד: {} גושים ב-{}! דרכים, והזוג עצמו ב-2 דרכים."
 ],
 [
 "With a = {}: {}·{} + {} = {} ≠ 0, so f is not constant and y = {} really is an asymptote ✓",
@@ -1415,6 +2042,14 @@
 "כשהוא מגיע לאפס הוא מצלצל עם אתגר {} ({}). אפשר לשנות בהגדרות."
 ],
 [
+"How many {}-digit codes can be made from the digits 1 to {} if no digit repeats?",
+"כמה קודים בני {} ספרות אפשר ליצור מהספרות 1 עד {} אם אף ספרה לא חוזרת?"
+],
+[
+"An arithmetic sequence has a₁ = {} and d = {}. Find the sum of its first {} terms.",
+"בסדרה חשבונית a₁ = {} ו-d = {}. מצאו את סכום {} האיברים הראשונים שלה."
+],
+[
 "Try {} = {} (rational root test: ± divisors of {} over divisors of {}): it gives 0.",
 "מנסים {} = {} (בדיקת שורשים רציונליים: ± מחלקי {} חלקי מחלקי {}): מתקבל 0."
 ],
@@ -1425,6 +2060,10 @@
 [
 "f″(x) = 2cos 2x {} cos x, and cos 2x = 2cos²x − 1:  f″(x) = 4cos²x {} cos x − 2",
 "f″(x) = 2cos 2x {} cos x, ו-cos 2x = 2cos²x − 1:  f″(x) = 4cos²x {} cos x − 2"
+],
+[
+"In a cyclic quadrilateral opposite angles add up to 180°: ∠C = 180° − {}° = {}°",
+"במרובע חסום במעגל סכום הזוויות הנגדיות הוא 180°: ∠C = 180° − {}° = {}°"
 ],
 [
 "The {} at {} is off the screen {} — zoom out or move the view so you can draw it.",
@@ -1441,6 +2080,18 @@
 [
 "If cos({}) were 0, sin({}) would be ±1 and f′ ≠ 0 — so we may divide by cos({}):",
 "אילו cos({}) היה 0, sin({}) היה ±1 ו-f′ ≠ 0 — לכן מותר לחלק ב-cos({}):"
+],
+[
+"Solve z^{} = {}. How many of the roots are strictly inside the first quadrant?",
+"פתרו z^{} = {}. כמה מהשורשים נמצאים בתוך הרביע הראשון (לא על הצירים)?"
+],
+[
+"AT is tangent to the circle at A, and ∠TAB = {}° where AB is a chord. Find {}.",
+"AT משיק למעגל בנקודה A, ו-∠TAB = {}° כאשר AB מיתר. מצאו את {}."
+],
+[
+"A geometric sequence has a₁ = {} and q = {}. Find the sum of its first {} terms.",
+"בסדרה הנדסית a₁ = {} ו-q = {}. מצאו את סכום {} האיברים הראשונים שלה."
 ],
 [
 "The graph has a {} at {}, outside the view — move or zoom out and draw it too.",
@@ -1463,6 +2114,10 @@
 "המונה נשאר כפולה של e^({}x); החזקה במכנה יורדת עד קבוע."
 ],
 [
+"The line  {}  meets the plane  {}. Find the {}-coordinate of the meeting point.",
+"הישר  {}  חותך את המישור  {}. מצאו את שיעור ה-{} של נקודת החיתוך."
+],
+[
 "f″(x) = −a·sin x − cos x, and f″({}) = −1/cos({}) ≠ 0, so it is an extremum ✓",
 "f″(x) = −a·sin x − cos x, ו-f″({}) = −1/cos({}) ≠ 0, לכן זו נקודת קיצון ✓"
 ],
@@ -1483,6 +2138,22 @@
 "f″(x) = −{}(sin({}) {} ½cos({})). מחלקים ב-cos({}) מאותה סיבה:  tan({}) = {}"
 ],
 [
+"All points at distance {} from z₀ = {}: a circle with centre z₀ and radius {}.",
+"כל הנקודות במרחק {} מ-z₀ = {}: מעגל שמרכזו z₀ ורדיוסו {}."
+],
+[
+"Chords AB and CD of a circle meet at E. AE = {}, EB = {} and CE = {}. Find ED.",
+"המיתרים AB ו-CD במעגל נחתכים בנקודה E. AE = {}, EB = {} ו-CE = {}. מצאו את ED."
+],
+[
+"n counts terms, so it must be a positive whole number: n = {} is rejected.",
+"n סופר איברים, ולכן הוא חייב להיות מספר טבעי: n = {} נפסל."
+],
+[
+"An infinite geometric series has first term {} and sum {}. Find its ratio q.",
+"לטור הנדסי אינסופי האיבר הראשון {} והסכום {}. מצאו את המנה q."
+],
+[
 "Differentiate {}′ again (a long expression — only its sign matters below).",
 "גוזרים שוב את {}′ (ביטוי ארוך — בהמשך חשוב רק הסימן שלו)."
 ],
@@ -1493,6 +2164,14 @@
 [
 "The top → {}{} = {} and the bottom → 0: the fraction grows without bound (±∞).",
 "המונה → {}{} = {} והמכנה → 0: השבר גדל ללא גבול (±∞)."
+],
+[
+"{} and {} are not multiples of each other: the directions are not parallel.",
+"{} ו-{} אינם כפולה זה של זה: הכיוונים אינם מקבילים."
+],
+[
+"A geometric sequence has a₁ = {} and q = {}. How many terms give a sum of {}?",
+"בסדרה הנדסית a₁ = {} ו-q = {}. כמה איברים נותנים סכום של {}?"
 ],
 [
 "From x = {} to x = {} it doesn't look like the graph — it should be {} there.",
@@ -1511,8 +2190,48 @@
 "מצאו את המרחק הקצר ביותר מהנקודה ({}, 0) לגרף של y = √x."
 ],
 [
+"How many points do the line  {}  and the circle  {} + {} = {}  have in common?",
+"כמה נקודות משותפות יש לישר  {}  ולמעגל  {} + {} = {}?"
+],
+[
+"So n₀ = {} is the base case; the step shows it stays true from there on.",
+"לכן n₀ = {} הוא בסיס האינדוקציה; הצעד מראה שהטענה נשארת נכונה מכאן והלאה."
+],
+[
+"An ellipse x²/a² + y²/b² = 1 has a = {} and its foci at (±{}, 0). Find b.",
+"לאליפסה x²/a² + y²/b² = 1 יש a = {} ומוקדים ב-(±{}, 0). מצאו את b."
+],
+[
+"A sequence is defined by a₁ = {} and aₙ₊₁ = {}aₙ{}. For which n does aₙ = {}?",
+"סדרה מוגדרת על ידי a₁ = {} ו-aₙ₊₁ = {}aₙ{}. עבור איזה n מתקיים aₙ = {}?"
+],
+[
+"It falls {} m; then each bounce goes up and comes down the same height.",
+"הוא נופל {} מ׳; אחר כך בכל קפיצה הוא עולה ויורד את אותו גובה."
+],
+[
 "Your drawing has extra bumps (near x = {}) that the graph doesn't have.",
 "בשרטוט שלכם יש בליטות מיותרות (ליד x = {}) שאין בגרף."
+],
+[
+"P({}, {}) is on the circle  {} + {} = {}. Find the tangent to the circle at P.",
+"הנקודה P({}, {}) על המעגל  {} + {} = {}. מצאו את המשיק למעגל בנקודה P."
+],
+[
+"The solutions of z^{} = {} are the vertices of a polygon. Find its area.",
+"הפתרונות של z^{} = {} הם קדקודי מצולע. מצאו את שטחו."
+],
+[
+"α and β are acute with tan α = {} and tan β = {}. Find α + β in degrees.",
+"α ו-β זוויות חדות, tan α = {} ו-tan β = {}. מצאו את α + β במעלות."
+],
+[
+"Dana and Yossi at the ends: 2 ways; the other {} in the middle: {}! ways",
+"דנה ויוסי בקצוות: 2 דרכים; {} האחרים באמצע: {}! דרכים"
+],
+[
+"The series  1 + {}x + {}x² + {}x³ + …  converges, and its sum is {}. Find x.",
+"הטור  1 + {}x + {}x² + {}x³ + …  מתכנס, וסכומו {}. מצאו את x."
 ],
 [
 "Your sketch has extra bumps (near x = {}) that the graph doesn't have.",
@@ -1535,6 +2254,18 @@
 "הבדיקה נקבעה ל-{}. נעלו את הטלפון כדי לוודא שהוא מצלצל במסך הנעילה."
 ],
 [
+"z moves on the circle |z − ({})| = {}. Find the {} possible value of |z|.",
+"z נע על המעגל |z − ({})| = {}. מצאו את הערך ה{} האפשרי של |z|."
+],
+[
+"Heights after the bounces: {}·{}, {}·({})², …  a geometric series with q = {}",
+"הגבהים אחרי הקפיצות: {}·{}, {}·({})², …  טור הנדסי עם q = {}"
+],
+[
+"The left side for k + 1 is the left side for k plus one more term: {}",
+"אגף שמאל עבור k + 1 הוא אגף שמאל עבור k ועוד איבר אחד: {}"
+],
+[
 "For x > 0 only x = {} is a root, and f′ goes from − to +: a minimum ✓",
 "עבור x > 0 השורש היחיד הוא x = {}, ו-f′ עוברת מ-− ל-+: מינימום ✓"
 ],
@@ -1545,6 +2276,26 @@
 [
 "Find the tangent to f that has slope {}. Type the right side of y = …",
 "מצאו את המשיק ל-f שהשיפוע שלו {}. הקלידו את אגף ימין של y = …"
+],
+[
+"The farthest point is on the line through 0 and z₀, beyond z₀: {} + {}",
+"הנקודה הרחוקה ביותר על הישר דרך 0 ו-z₀, מעבר ל-z₀: {} + {}"
+],
+[
+"A, B and C are on a circle with centre O, and ∠ACB = {}°. Find ∠OAB.",
+"הנקודות A, B ו-C נמצאות על מעגל שמרכזו O, ו-∠ACB = {}°. מצאו את ∠OAB."
+],
+[
+"In a geometric sequence with a positive ratio, {} = {} and {} = {}. Find {}.",
+"בסדרה הנדסית שהמנה שלה חיובית, {} = {} ו-{} = {}. מצאו את {}."
+],
+[
+"In a geometric sequence with a negative ratio, {} = {} and {} = {}. Find {}.",
+"בסדרה הנדסית שהמנה שלה שלילית, {} = {} ו-{} = {}. מצאו את {}."
+],
+[
+"Check the formula  {} = n/(n + 1)  for n = {}: what is the right side?",
+"בדקו את הנוסחה  {} = n/(n + 1)  עבור n = {}: מהו אגף ימין?"
 ],
 [
 "never below the axis, equal to f on {} and the mirror image of f on {}",
@@ -1587,6 +2338,18 @@
 "כלל המנה: f″(x) = −[cos x({}) + sin²x]/({})² = −({}cos x + 1)/({})²"
 ],
 [
+"The origin is outside the circle; the nearest point is {} − {} away.",
+"הראשית מחוץ למעגל; הנקודה הקרובה ביותר במרחק {} − {}."
+],
+[
+"A culture follows N(t) = N₀e^(kt). N(0) = {} and N({}) = {}. Find N({}).",
+"תרבית מתפתחת לפי N(t) = N₀e^(kt). N(0) = {} ו-N({}) = {}. מצאו את N({})."
+],
+[
+"Your best {} questions count. Tap a part to see its full solution.",
+"{} השאלות הטובות ביותר שלכם נספרות. הקישו על סעיף כדי לראות את הפתרון המלא."
+],
+[
 "Find the total area between f and the x-axis from x = −{} to x = {}.",
 "מצאו את השטח הכולל בין f לציר x מ-x = −{} עד x = {}."
 ],
@@ -1595,8 +2358,24 @@
 "מצאו את המשיק ל-f ב-x = {}. הקלידו את אגף ימין של y = …"
 ],
 [
+"The origin is inside the circle; the nearest point is {} − {} away.",
+"הראשית בתוך המעגל; הנקודה הקרובה ביותר במרחק {} − {}."
+],
+[
 "Right vertices at x and the height is {} − x², so the width is 2x",
 "הקדקודים הימניים ב-x והגובה {} − x², לכן הרוחב 2x"
+],
+[
+"{} gives {} on the first line but {} on the second: they don't meet.",
+"ב-{} מתקבל {} בישר הראשון אבל {} בשני: הישרים אינם נחתכים."
+],
+[
+"Exterior angle at C = {}° (equal to the opposite inner angle ∠A)",
+"הזווית החיצונית ליד C = {}° (שווה לזווית הפנימית הנגדית ∠A)"
+],
+[
+"ABCD is inscribed in a circle, with ∠A = {}° and ∠B = {}°. Find ∠{}.",
+"המרובע ABCD חסום במעגל, ∠A = {}° ו-∠B = {}°. מצאו את ∠{}."
 ],
 [
 "Near x = {} the graph shoots {} of the box{} — take your line there.",
@@ -1609,6 +2388,22 @@
 [
 "f is already a product of three brackets:  x = {},  x = {},  x = {}",
 "‏f כבר מכפלה של שלושה סוגריים:  x = {},  x = {},  x = {}"
+],
+[
+"P({}, {}) is on the parabola  {}. Find its distance from the focus.",
+"הנקודה P({}, {}) על הפרבולה  {}. מצאו את מרחקה מהמוקד."
+],
+[
+"Find the positive x-coordinate of a focus of the hyperbola  {}.",
+"מצאו את שיעור ה-x החיובי של מוקד ההיפרבולה  {}."
+],
+[
+"α and β are acute angles with sin α = {}/{} and cos β = {}/{}. Find {}.",
+"α ו-β זוויות חדות, sin α = {}/{} ו-cos β = {}/{}. מצאו את {}."
+],
+[
+"Find the sum of the infinite geometric series  {} + ({}) + ({}) + …",
+"מצאו את סכום הטור ההנדסי האינסופי  {} + ({}) + ({}) + …"
 ],
 [
 "The graph has a {} near x = {} — your drawing doesn't turn there.",
@@ -1625,6 +2420,10 @@
 [
 "In triangle ABC, AB = {}, BC = {} and ∠B = {}°. Find ∠A in degrees.",
 "במשולש ABC, AB = {}, BC = {} ו-∠B = {}°. מצאו את ∠A במעלות."
+],
+[
+"P is on the hyperbola  {}  with foci F₁, F₂. Find |PF₁ − PF₂|.",
+"P על ההיפרבולה  {}  שמוקדיה F₁, F₂. מצאו את |PF₁ − PF₂|."
 ],
 [
 "The {} near x = {} is too {} compared with the rest of your graph.",
@@ -1647,6 +2446,26 @@
 "שטח מלבן הוא {}. מצאו את ההיקף הקטן ביותר שלו."
 ],
 [
+"Find k so that D({}, {}, k) is on the plane through A{}, B{} and C{}.",
+"מצאו את k כך ש-D({}, {}, k) תהיה על המישור העובר דרך A{}, B{} ו-C{}."
+],
+[
+"Find the positive x-coordinate of a focus of the ellipse  {}.",
+"מצאו את שיעור ה-x החיובי של מוקד האליפסה  {}."
+],
+[
+"A bank deposit of {} ₪ earns {}% a year (added to the deposit).",
+"פיקדון בנקאי של {} ₪ מקבל ריבית של {}% בשנה (שמצטרפת לפיקדון)."
+],
+[
+"A sequence is defined by a₁ = {} and {} for every n ≥ 1. Find {}.",
+"סדרה מוגדרת על ידי a₁ = {} ו-{} לכל n ≥ 1. מצאו את {}."
+],
+[
+"Check the formula  {} = {}  for n = {}: what do both sides equal?",
+"בדקו את הנוסחה  {} = {}  עבור n = {}: למה שווים שני האגפים?"
+],
+[
 "No turning points: {}′ only changes sign across an asymptote.",
 "אין נקודות קיצון: {}′ מחליפה סימן רק מעבר לאסימפטוטה."
 ],
@@ -1667,6 +2486,18 @@
 "משתמשים ב-cos 2x = 1 − 2sin²x:  f″(x) = −sin x {} 2(1 − 2sin²x) = {}"
 ],
 [
+"The lines  {}  and  {}  meet at a point. Find its {}-coordinate.",
+"הישרים  {}  ו-  {}  נחתכים בנקודה. מצאו את שיעור ה-{} שלה."
+],
+[
+"For x > 0, the graph of f passes through (1, {}). Find f(x).",
+"עבור x > 0, הגרף של f עובר דרך (1, {}). מצאו את f(x)."
+],
+[
+"f′({}) = {} and the graph of f passes through ({}, {}). Find f(x).",
+"f′({}) = {} והגרף של f עובר דרך ({}, {}). מצאו את f(x)."
+],
+[
 "End points: {} is an end {} (the graph {} from it), {} is an end {}.",
 "נקודות קצה: {} היא קצה {} (הגרף {} ממנה), {} היא קצה {}."
 ],
@@ -1681,6 +2512,18 @@
 [
 "1 + {}/x → 1 and the power → ∞: the form 1^∞ (not simply 1).",
 "‏1 + {}/x → 1 והחזקה → ∞: הצורה 1^∞ (לא פשוט 1)."
+],
+[
+"Centre ({}, {}),  R² = {};  the line as mx − y + c = 0: {}− y{} = 0",
+"מרכז ({}, {}),  R² = {};  הישר בצורה mx − y + c = 0: {}− y{} = 0"
+],
+[
+"Which expression is equal to  {}  (wherever it is defined)?",
+"איזה ביטוי שווה ל-  {}  (בכל מקום שבו הוא מוגדר)?"
+],
+[
+"True for n = {}, and true for k + 1 whenever true for k ≥ {}.",
+"נכון עבור n = {}, ונכון עבור k + 1 בכל פעם שנכון עבור k ≥ {}."
 ],
 [
 "f {} here, so g is steepest here — an inflection point of g",
@@ -1701,6 +2544,10 @@
 [
 "ln x needs x > 0 and ln(x − {}) needs x > {}. Together: x > {}.",
 "‏ln x דורש x > 0 ו-ln(x − {}) דורש x > {}. יחד: x > {}."
+],
+[
+"It is not a multiple of {}, so B is not on the first line.",
+"זו אינה כפולה של {}, ולכן B אינה על הישר הראשון."
 ],
 [
 "x → {}:  {}(x) → {} — no horizontal asymptote on this side ({}).",
@@ -1731,6 +2578,14 @@
 "x{} → ∞ ו-e^(−{}x) → 0: כותבים x{}/e^({}x), הצורה ∞/∞."
 ],
 [
+"Find the distance between the parallel planes  {}  and  {}.",
+"מצאו את המרחק בין המישורים המקבילים  {}  ו-  {}."
+],
+[
+"The asymptotes of the hyperbola  {}  are y = ±mx. Find m.",
+"האסימפטוטות של ההיפרבולה  {}  הן y = ±mx. מצאו את m."
+],
+[
 "f is steepest here, so g reaches its {} value around here",
 "‏f הכי תלולה כאן, לכן g מגיעה כאן לערך ה{} שלה"
 ],
@@ -1749,6 +2604,10 @@
 [
 "x → {}{} means x is a little {} than {}, so {} is a tiny {} number.",
 "x → {}{} פירושו ש-x {} במעט מ-{}, לכן {} מספר {} קטן מאוד."
+],
+[
+"y = √({} − x²) is the upper half of a circle of radius {}.",
+"y = √({} − x²) הוא החצי העליון של מעגל ברדיוס {}."
 ],
 [
 "Your {} is in the wrong place — move it {}, to about x = {}.",
@@ -1775,6 +2634,10 @@
 "בלתי אפשרי: {} תמיד בין −1 ל-1. אין פתרון."
 ],
 [
+"Find the x-coordinate of the focus of the parabola  {}.",
+"מצאו את שיעור ה-x של מוקד הפרבולה  {}."
+],
+[
 "{}: {}″ = 0 but keeps its sign — not an inflection point.",
 "{}: {}″ = 0 אבל שומרת על הסימן — זו לא נקודת פיתול."
 ],
@@ -1789,6 +2652,14 @@
 [
 "From the right, {} is a tiny positive number:  {}/(+0) → {}",
 "מימין, {} מספר חיובי קטן מאוד:  {}/(+0) → {}"
+],
+[
+"Find the angle between the line  {}  and the plane  {}. {}",
+"מצאו את הזווית בין הישר  {}  למישור  {}. {}"
+],
+[
+"Find the (acute) angle between the planes  {}  and  {}. {}",
+"מצאו את הזווית (החדה) בין המישורים  {}  ו-  {}. {}"
 ],
 [
 "The graph should reach y = 0 at x = {} (yours is {} it).",
@@ -1809,6 +2680,10 @@
 [
 "r² + h² = {},  V = (π/3)r²h = (π/3)({} − h²)h,  0 < h < {}",
 "r² + h² = {},  V = (π/3)r²h = (π/3)({} − h²)h,  0 < h < {}"
+],
+[
+"∠AOB = 2·∠ACB = {}° (central and inscribed on arc AB)",
+"∠AOB = 2·∠ACB = {}° (מרכזית והיקפית על הקשת AB)"
 ],
 [
 "ln is one-to-one, so x(x − {}) = {}   ⇒   x² − {}x − {} = 0",
@@ -1833,6 +2708,10 @@
 [
 "(The factor {} in front doesn't change where {} is 0.)",
 "(הגורם {} בהתחלה לא משנה איפה ש-{} מתאפס.)"
+],
+[
+"The directrix of the parabola  {}  is x = c. Find c.",
+"המדריך של הפרבולה  {}  הוא x = c. מצאו את c."
 ],
 [
 "Find the probability that it takes at most {} tries.",
@@ -1875,6 +2754,14 @@
 "‏ln(u) = 0 בדיוק כש-u = 1:  {} = 1  ⇒  cos x = {}"
 ],
 [
+"It is a multiple of {}, so B is on the first line.",
+"זו כפולה של {}, ולכן B על הישר הראשון."
+],
+[
+"PF₁ + PF₂ = 2a = {} for every point of the ellipse",
+"PF₁ + PF₂ = 2a = {} לכל נקודה על האליפסה"
+],
+[
 "x → {}⁺:  {}(x) → {}  ⇒  x = {} is a vertical asymptote.",
 "x → {}⁺:  {}(x) → {}  ⇒  x = {} היא אסימפטוטה אנכית."
 ],
@@ -1897,6 +2784,26 @@
 [
 "Quotient rule: f′(x) = [2x({}) − ({})]/({})² = ({})/({})²",
 "כלל המנה: f′(x) = [2x({}) − ({})]/({})² = ({})/({})²"
+],
+[
+"u = {} and v = {}. Find the angle between u and v. {}",
+"u = {} ו-v = {}. מצאו את הזווית בין u ל-v. {}"
+],
+[
+"Focus F(p/2, 0) = ({}, 0);  directrix x = −p/2 = {}",
+"מוקד F(p/2, 0) = ({}, 0);  מדריך x = −p/2 = {}"
+],
+[
+"It sits next to ∠C on a straight line: 180° − {}°",
+"היא צמודה ל-∠C: 180° − {}°"
+],
+[
+"logₓ {} = 1 / log{} x.  Let t = log{} x:  t − 2/t = 1",
+"logₓ {} = 1 / log{} x.  נסמן t = log{} x:  t − 2/t = 1"
+],
+[
+"(t − {})(t − {}) = 0   ⇒   t = {} or t = {}, both ≥ 0 ✓",
+"(t − {})(t − {}) = 0   ⇒   t = {} או t = {}, שניהם ≥ 0 ✓"
 ],
 [
 "f′({}) = 0  ⇒  the numerator is 0:   2·({}) + a = 0",
@@ -1927,6 +2834,22 @@
 "(1 + {}x)^(1/({}x)) = [(1 + u)^(1/u)]^({}) כאשר u = {}x"
 ],
 [
+"Solve:  z + {}z̄ = {}   (z̄ is the conjugate of z)",
+"פתרו:  z + {}z̄ = {}   (z̄ הוא הצמוד של z)"
+],
+[
+"The graph of f passes through ({}, {}). Find f(x).",
+"הגרף של f עובר דרך ({}, {}). מצאו את f(x)."
+],
+[
+"Find the exact value of {} {}° (e.g. (√6 + √2)/4).",
+"מצאו את הערך המדויק של {} {}° (למשל (√6 + √2)/4)."
+],
+[
+"Left side: the first term, {}.  Right side: {}.  ✓",
+"אגף שמאל: האיבר הראשון, {}.  אגף ימין: {}.  ✓"
+],
+[
 "both ends: close to the oblique asymptote y = {}{}{}",
 "בשני הקצוות: קרוב לאסימפטוטה המשופעת y = {}{}{}"
 ],
@@ -1937,6 +2860,22 @@
 [
 "x² − {}x + {} = (x − {})² touches the axis at x = {} ✓",
 "x² − {}x + {} = (x − {})² נוגע בציר ב-x = {} ✓"
+],
+[
+"DE ∥ BC, so △ADE ∼ △ABC with ratio AD/AB = {}/{}.",
+"DE ∥ BC, ולכן △ADE ∼ △ABC ביחס AD/AB = {}/{}."
+],
+[
+"Add all three: 2(x + y + z) = {},  x + y + z = {}",
+"מחברים את שלושתן: 2(x + y + z) = {},  x + y + z = {}"
+],
+[
+"Any {} of the {}: C({}, {}) = {} (order doesn't matter)",
+"כל {} מתוך ה-{}: C({}, {}) = {} (הסדר לא חשוב)"
+],
+[
+"In an arithmetic sequence {} = {} and {} = {}. Find {}.",
+"בסדרה חשבונית {} = {} ו-{} = {}. מצאו את {}."
 ],
 [
 "— f {} there, and 1/… turns bigger into smaller",
@@ -1957,6 +2896,18 @@
 [
 "Out of view: this line passes {} the whole box",
 "מחוץ לתצוגה: הקו הזה עובר {} כל המסגרת"
+],
+[
+"{}° is the same direction as {}°: cos = {}, sin = {}",
+"{}° זה אותו כיוון כמו {}°: cos = {}, sin = {}"
+],
+[
+"A rational power x^({}/{}) is defined for x ≥ 0.",
+"חזקה רציונלית x^({}/{}) מוגדרת עבור x ≥ 0."
+],
+[
+"Try bₙ = aₙ − L, where L solves L = {}L{}:  L = {}",
+"ננסה bₙ = aₙ − L, כאשר L פותר את L = {}L{}:  L = {}"
 ],
 [
 "One is found {}. Find the probability it was {}.",
@@ -1981,6 +2932,14 @@
 [
 "Out of view: the box only shows y from {} to {}",
 "מחוץ לתצוגה: המסגרת מראה רק y מ-{} עד {}"
+],
+[
+"M = (x, y) is the midpoint, so Q = (2x{}, 2y{})",
+"M = (x, y) היא נקודת האמצע, ולכן Q = (2x{}, 2y{})"
+],
+[
+"In a geometric sequence {} = {} and {} = {}. Find {}.",
+"בסדרה הנדסית {} = {} ו-{} = {}. מצאו את {}."
 ],
 [
 "Too high from x = {} to x = {} — bring it down.",
@@ -2011,6 +2970,18 @@
 "‏{} > 0, לכן f′(x) = 0  ⇔  {}cos({}) = (1/{})·sin({})."
 ],
 [
+"u = ({}) and v = {} are perpendicular. Find t.",
+"u = ({}) ו-v = {} ניצבים. מצאו את t."
+],
+[
+"The point is in quadrant {} (or on an axis).",
+"הנקודה ברביע {} (או על ציר)."
+],
+[
+"So bₙ is geometric with q = {} and b₁ = {}{} = {}.",
+"לכן bₙ הנדסית עם q = {} ו-b₁ = {}{} = {}."
+],
+[
 "mirror it in the x-axis, then move it {} by {}",
 "משקפים בציר x, ואז מזיזים {} ב-{}"
 ],
@@ -2025,6 +2996,18 @@
 [
 "Only even powers: substitute t = {}²:  {} = 0",
 "רק חזקות זוגיות: מציבים t = {}²:  {} = 0"
+],
+[
+"The sum of the whole series is {}. Find a₁.",
+"סכום הטור כולו הוא {}. מצאו את a₁."
+],
+[
+"The heights after each bounce: {}·{}, {}·({})², …",
+"הגבהים אחרי כל קפיצה: {}·{}, {}·({})², …"
+],
+[
+"This is the right side for n = k + 1: {}  ✓",
+"זה אגף ימין עבור n = k + 1: {}  ✓"
 ],
 [
 "No inflection points: {} bends {} everywhere.",
@@ -2047,6 +3030,26 @@
 "{} שעונים · {} כניעות · ממוצע {} דק׳ {} שנ׳"
 ],
 [
+"Find the distance from P{} to the plane  {}.",
+"מצאו את המרחק של P{} מהמישור  {}."
+],
+[
+"A town of {} people grows by {}% every year.",
+"עיירה של {} תושבים גדלה ב-{}% בכל שנה."
+],
+[
+"t = −1:  x = {}⁻¹ = 1/{} ✓ (positive, not 1)",
+"t = −1:  x = {}⁻¹ = 1/{} ✓ (חיובי, ולא 1)"
+],
+[
+"Year 1: 12·{} = {},  then ×{} every year: q = {}",
+"שנה 1: 12·{} = {},  ואז ×{} בכל שנה: q = {}"
+],
+[
+"All {} question types of the 5-unit Bagrut",
+"כל {} סוגי השאלות בבגרות 5 יח״ל"
+],
+[
 "Too low from x = {} to x = {} — bring it up.",
 "נמוך מדי מ-x = {} עד x = {} — העלו."
 ],
@@ -2065,6 +3068,18 @@
 [
 "The area under f from x = 0 to x = {} is {}.",
 "השטח מתחת ל-f מ-x = 0 עד x = {} הוא {}."
+],
+[
+"tan α = {} and tan β = {}. Find tan(α + β).",
+"tan α = {} ו-tan β = {}. מצאו את tan(α + β)."
+],
+[
+"|q| = {} < 1, so the infinite sum exists.",
+"|q| = {} < 1, ולכן הסכום האינסופי קיים."
+],
+[
+"Monthly amounts: {}, {}, {}, …   a₁ = {},  d = {}",
+"הסכומים החודשיים: {}, {}, {}, …   a₁ = {},  d = {}"
 ],
 [
 "The graph should go {} from x = {} to x = {}.",
@@ -2103,6 +3118,14 @@
 "צלעות x ו-{}/x,  P(x) = 2x + {}/x,  x > 0"
 ],
 [
+"Line direction u = {}, plane normal n = {}",
+"וקטור הכיוון של הישר u = {}, הנורמל למישור n = {}"
+],
+[
+"Discriminant = ({})² + 8·({})·({}) = {},  √{} = {}",
+"דיסקרימיננטה = ({})² + 8·({})·({}) = {},  √{} = {}"
+],
+[
 "The tangent's slope is f′(0), so a = {}.",
 "שיפוע המשיק הוא f′(0), לכן a = {}."
 ],
@@ -2131,6 +3154,18 @@
 "x {}:  {} {} מעט לפני ו{} מעט אחרי"
 ],
 [
+"A = {} and B = {}. Find the length of AB.",
+"A = {} ו-B = {}. מצאו את אורך AB."
+],
+[
+"For an ellipse c² = a² − b² = {},  c = {}",
+"באליפסה c² = a² − b² = {},  c = {}"
+],
+[
+"q = ±{}, and the question says q {}: q = {}",
+"q = ±{}, ולפי הנתון q {}: q = {}"
+],
+[
 "The tangent to f at x = 0 has slope {}.",
 "למשיק ל-f ב-x = 0 יש שיפוע {}."
 ],
@@ -2141,6 +3176,18 @@
 [
 "x{}·ln x = ln x / x^(−{}): the form −∞/∞.",
 "x{}·ln x = ln x / x^(−{}): הצורה −∞/∞."
+],
+[
+"How much will there be after {} years?",
+"כמה יהיה אחרי {} שנים?"
+],
+[
+"0° < α + β < 180°, and tan(α + β) = {}",
+"0° < α + β < 180°, ו-tan(α + β) = {}"
+],
+[
+"First place: {} choices, then {}, then {}…",
+"מקום ראשון: {} אפשרויות, אחר כך {}, אחר כך {}…"
 ],
 [
 "At x = {} the graph should {} near y = {}.",
@@ -2165,6 +3212,14 @@
 [
 "ln(u) = 0 exactly when u = 1:  {} = 1",
 "‏ln(u) = 0 בדיוק כש-u = 1:  {} = 1"
+],
+[
+"How are the lines  {}  and  {}  placed?",
+"מה המצב ההדדי של הישרים  {}  ו-  {}?"
+],
+[
+"π∫ x dx = π·[x²/2]  from 0 to {} = π·{}",
+"π∫ x dx = π·[x²/2]  מ-0 עד {} = π·{}"
 ],
 [
 "An extremum at x = {} means f′({}) = 0:",
@@ -2199,6 +3254,26 @@
 "החזיקו 2 שנ׳ · הרצף של {} ימים יתאפס"
 ],
 [
+"{} = {}·{}: the directions are parallel.",
+"{} = {}·{}: הכיוונים מקבילים."
+],
+[
+"π·[−1/x]  from 1 to {} = π·(−1/{} + 1)",
+"π·[−1/x]  מ-1 עד {} = π·(−1/{} + 1)"
+],
+[
+"π·[{}x − x³/3]  from −{} to {} = π·({} + {})",
+"π·[{}x − x³/3]  מ-−{} עד {} = π·({} + {})"
+],
+[
+"t = {} < 0 is impossible. Rejected ✗",
+"t = {} < 0 אינו אפשרי. נפסל ✗"
+],
+[
+"S(odd)/S(even) = 1/q = {}  ⇒  q = 1/{}",
+"S(אי-זוגיים)/S(זוגיים) = 1/q = {}  ⇒  q = 1/{}"
+],
+[
 "x → {}: the graph gets close to y = {}",
 "x → {}: הגרף מתקרב ל-y = {}"
 ],
@@ -2231,6 +3306,10 @@
 "({})² חיובי משני הצדדים של {}."
 ],
 [
+"S(even) − S(odd) = {}·d  ⇒  {} − {} = {}d",
+"S(זוגיים) − S(אי-זוגיים) = {}·d  ⇒  {} − {} = {}d"
+],
+[
 "|f| = 0 exactly where f = 0: x = {}",
 "‏|f| = 0 בדיוק איפה ש-f = 0: x = {}"
 ],
@@ -2245,6 +3324,30 @@
 [
 "f(x) = {}({})({}) is already factored:",
 "f(x) = {}({})({}) כבר מפורק לגורמים:"
+],
+[
+"Divide the second equation by {}: {}",
+"מחלקים את המשוואה השנייה ב-{}: {}"
+],
+[
+"t/{} = {} (the number of half-lives)",
+"t/{} = {} (מספר זמני מחצית החיים)"
+],
+[
+"AD/AB = DE/BC,  with AB = {} + {} = {}",
+"AD/AB = DE/BC,  כאשר AB = {} + {} = {}"
+],
+[
+"Up-and-down part: 2·({})/(1 − {}) = {}",
+"החלק של העליות והירידות: 2·({})/(1 − {}) = {}"
+],
+[
+"By the assumption it equals  {} + {}",
+"לפי ההנחה הוא שווה  {} + {}"
+],
+[
+"Add the first {} terms of the sum.",
+"מחברים את {} האיברים הראשונים של הסכום."
 ],
 [
 "{} < x < {}:   {}″({}) {} > 0   ∪ bends up",
@@ -2273,6 +3376,26 @@
 [
 "t = {} {} is outside [−1, 1]: no x.",
 "t = {} {} מחוץ ל-[−1, 1]: אין x."
+],
+[
+"Slope of the tangent = −1 ÷ {} = {}",
+"שיפוע המשיק = −1 ÷ {} = {}"
+],
+[
+"For a hyperbola c² = a² + b² = {}",
+"בהיפרבולה c² = a² + b² = {}"
+],
+[
+"Half of it is left after {} years",
+"אחרי {} שנים נשאר חצי"
+],
+[
+"Raise both sides to the power {}/{}",
+"מעלים את שני האגפים בחזקת {}/{}"
+],
+[
+"{}^k − 1 = {}m for a whole number m",
+"{}^k − 1 = {}m עבור m שלם"
 ],
 [
 "stays put — at height {}, 1/f = f",
@@ -2347,6 +3470,18 @@
 "אפור = f · שרטטו את g עבור {} ≤ x ≤ {}"
 ],
 [
+"Centre M({}, {}); slope of MP = {}/{}",
+"מרכז M({}, {}); שיפוע MP = {}/{}"
+],
+[
+"Strictly between 0° and 90°: {}",
+"ממש בין 0° ל-90°: {}"
+],
+[
+"V = π∫ ({} − x²) dx  from −{} to {}",
+"V = π∫ ({} − x²) dx  מ-−{} עד {}"
+],
+[
 "There should be a {} near x = {}.",
 "צריכה להיות {} ליד x = {}."
 ],
@@ -2389,6 +3524,30 @@
 [
 "{} × Graph Sketch at Bagrut 5U",
 "{} × סקיצת גרף ברמת בגרות 5 יח״ל"
+],
+[
+"Discriminant = {}² − 4·{} = {} < 0",
+"דיסקרימיננטה = {}² − 4·{} = {} < 0"
+],
+[
+"Growth of {}%: q = 1 + {}/100 = {}",
+"גדילה של {}%: q = 1 + {}/100 = {}"
+],
+[
+"After t years: N = {}·(½)^(t/{})",
+"אחרי t שנים: N = {}·(½)^(t/{})"
+],
+[
+"Split BC = {} in the ratio {} : {}",
+"מחלקים את BC = {} ביחס {} : {}"
+],
+[
+"x > 0 and x − {} > 0, so x > {}.",
+"x > 0 ו-x − {} > 0, ולכן x > {}."
+],
+[
+"t ≥ 0, and {} = t²:  t²{} + {} = 0",
+"t ≥ 0, ו-{} = t²:  t²{} + {} = 0"
 ],
 [
 "Something is missing after {}.",
@@ -2435,6 +3594,30 @@
 "הגרף המוגמר (בירוק{}):"
 ],
 [
+"{} agrees, so the lines meet.",
+"גם {} מתאים, ולכן הישרים נחתכים."
+],
+[
+"Put t into the first line: {}",
+"מציבים את t בישר הראשון: {}"
+],
+[
+"n = AB × AC = {},  or simply {}",
+"n = AB × AC = {},  או פשוט {}"
+],
+[
+"sin α = {}/{} and α is {}. Find {}.",
+"sin α = {}/{} ו-α {}. מצאו את {}."
+],
+[
+"V = π∫ f(x)² dx  from 0 to {}",
+"V = π∫ f(x)² dx  מ-0 עד {}"
+],
+[
+"V = π∫ f(x)² dx  from 1 to {}",
+"V = π∫ f(x)² dx  מ-1 עד {}"
+],
+[
 "At x = {} the graph should {} {}.",
 "ב-x = {} הגרף צריך {} {}."
 ],
@@ -2465,6 +3648,30 @@
 [
 "Couldn't start the timer: {}",
 "לא ניתן להפעיל את הטיימר: {}"
+],
+[
+"Find the {} of the circle  {}.",
+"מצאו את {} של המעגל  {}."
+],
+[
+"V = π∫ f(x)² dx  from {} to {}",
+"V = π∫ f(x)² dx  מ-{} עד {}"
+],
+[
+"x = {} is not > {}. Rejected ✗",
+"x = {} אינו גדול מ-{}. נפסל ✗"
+],
+[
+"S(odd) = {}/2·(2a₁ + {}·2d) = {}",
+"S(אי-זוגיים) = {}/2·(2a₁ + {}·2d) = {}"
+],
+[
+"Put n = {} into the formula.",
+"מציבים n = {} בנוסחה."
+],
+[
+"{}¹ − 1 = {}, divisible by {}  ✓",
+"{}¹ − 1 = {}, מתחלק ב-{}  ✓"
 ],
 [
 "Too high {} — bring it down.",
@@ -2505,6 +3712,22 @@
 [
 "3x² + {} is always positive",
 "3x² + {} תמיד חיובי"
+],
+[
+"Write {}° with known angles",
+"כותבים את {}° בעזרת זוויות מוכרות"
+],
+[
+"Solve {} for 0° ≤ x < 360°.",
+"פתרו את {} עבור 0° ≤ x < 360°."
+],
+[
+"π·[x⁵/5]  from 0 to {} = π·{}",
+"π·[x⁵/5]  מ-0 עד {} = π·{}"
+],
+[
+"t ≥ 0, and {} = t²:  t²{}{} = 0",
+"t ≥ 0, ו-{} = t²:  t²{}{} = 0"
 ],
 [
 "(vertical asymptote x = {})",
@@ -2555,6 +3778,18 @@
 "x² + {} תמיד חיובי"
 ],
 [
+"{} of the {} girls: C({}, {}) = {}",
+"{} מתוך {} הבנות: C({}, {}) = {}"
+],
+[
+"S = a₁/(1 − 1/{}) = {}a₁/{} = {}",
+"S = a₁/(1 − 1/{}) = {}a₁/{} = {}"
+],
+[
+"After bounce {}: {}·({})^{} = {} m",
+"אחרי קפיצה {}: {}·({})^{} = {} מ׳"
+],
+[
 "The graph should go up {}.",
 "הגרף צריך לעלות {}."
 ],
@@ -2603,6 +3838,18 @@
 "נפתרו {} מתוך {} — לבאה!"
 ],
 [
+"{} of the {} boys: C({}, {}) = {}",
+"{} מתוך {} הבנים: C({}, {}) = {}"
+],
+[
+"{} = {}^{} (or n = ln {} / ln {})",
+"{} = {}^{} (או n = ln {} / ln {})"
+],
+[
+"q = {}x = {}, and |q| < 1 ✓",
+"q = {}x = {}, ו-|q| < 1 ✓"
+],
+[
 "Too low {} — bring it up.",
 "נמוך מדי {} — העלו."
 ],
@@ -2621,6 +3868,22 @@
 [
 "Couldn't schedule \"{}\": {}",
 "לא ניתן לקבוע את \"{}\": {}"
+],
+[
+"Distance to x = {}:  {} + {}",
+"המרחק ל-x = {}:  {} + {}"
+],
+[
+"Top: {},  bottom: {} + {} = {}",
+"מונה: {},  מכנה: {} + {} = {}"
+],
+[
+"t = ln {} / ln {} ≈ {} years",
+"t = ln {} / ln {} ≈ {} שנים"
+],
+[
+"Add and take away {}·{}^k:",
+"מוסיפים ומחסירים {}·{}^k:"
 ],
 [
 "Differentiate {}′ again:",
@@ -2683,6 +3946,18 @@
 "מושתק, נותרו {} שניות"
 ],
 [
+"Solving: t = {},  s = {}",
+"פתרון: t = {},  s = {}"
+],
+[
+"Denominator: 1 − {} = {}",
+"מכנה: 1 − {} = {}"
+],
+[
+"Add the first {} terms",
+"מחברים את {} האיברים הראשונים"
+],
+[
 "Step 1 · Technique: {}",
 "שלב 1 · שיטה: {}"
 ],
@@ -2717,6 +3992,38 @@
 [
 "Where is the slope {}?",
 "איפה השיפוע {}?"
+],
+[
+"Check the {} equation",
+"בודקים את המשוואה של {}"
+],
+[
+"Centre ({}, {}),  R² = {}",
+"מרכז ({}, {}),  R² = {}"
+],
+[
+"Divide by 4: {} + {} = {}",
+"מחלקים ב-4: {} + {} = {}"
+],
+[
+"cos α is {}: cos α = {}",
+"cos α {}: cos α = {}"
+],
+[
+"Solve for t = log{} x",
+"פותרים עבור t = log{} x"
+],
+[
+"Good orders: 2·{}! = {}",
+"סידורים מתאימים: 2·{}! = {}"
+],
+[
+"Right side for n = {}",
+"אגף ימין עבור n = {}"
+],
+[
+"Assume for n = k ≥ {}",
+"מניחים עבור n = k ≥ {}"
 ],
 [
 "{} → {}′: {}  →  {}′ = ({}, {})",
@@ -2755,6 +4062,30 @@
 "{} נגזרות מהירות"
 ],
 [
+"The centre's x is {}",
+"שיעור ה-x של המרכז הוא {}"
+],
+[
+"Halve every {} years",
+"חצי כל {} שנים"
+],
+[
+"Each year ×{}:  {}ᵗ = {}",
+"בכל שנה ×{}:  {}ᵗ = {}"
+],
+[
+"The added term is {}",
+"האיבר שמתווסף הוא {}"
+],
+[
+"Left side for n = {}",
+"אגף שמאל עבור n = {}"
+],
+[
+"out of 100 · {} used",
+"מתוך 100 · נוצלו {}"
+],
+[
 "line − parabola = {}",
 "ישר − פרבולה = {}"
 ],
@@ -2765,6 +4096,30 @@
 [
 "P(all fail) = ({}/{})^{}",
 "P(כולם נכשלים) = ({}/{})^{}"
+],
+[
+"Perimeter = {} + 2·{}",
+"היקף = {} + 2·{}"
+],
+[
+"z = ({})/({}). Find {}.",
+"z = ({})/({}). מצאו את {}."
+],
+[
+"Area = {}·½·{}²·sin {}°",
+"שטח = {}·½·{}²·sin {}°"
+],
+[
+"Take the {}-th root",
+"מוציאים שורש מסדר {}"
+],
+[
+"Numerator: {} + {} = {}",
+"מונה: {} + {} = {}"
+],
+[
+"Both sides equal {}",
+"שני האגפים שווים ל-{}"
 ],
 [
 "from x = {} to x = {}",
@@ -2815,12 +4170,40 @@
 "הגבול הוא e^({})"
 ],
 [
+"z = ({})({}). Find {}.",
+"z = ({})({}). מצאו את {}."
+],
+[
+"z = {}. Find {}(z^{}).",
+"z = {}. מצאו את {}(z^{})."
+],
+[
+"{}·qᵗ = {} with t = {}",
+"{}·qᵗ = {} כאשר t = {}"
+],
+[
+"Total = {} + {} = {} m",
+"סך הכול = {} + {} = {} מ׳"
+],
+[
 "{} isn't a number.",
 "{} אינו מספר."
 ],
 [
 "goes to height 1{}",
 "עוברת לגובה 1{}"
+],
+[
+"Substitute t = {}",
+"מציבים t = {}"
+],
+[
+"Substitute n = {}",
+"מציבים n = {}"
+],
+[
+"Show it equals {}",
+"צריך להראות שהוא שווה {}"
 ],
 [
 "Nothing drawn {}.",
@@ -2857,6 +4240,14 @@
 [
 "{} problems · {} ★",
 "{} בעיות · {} ★"
+],
+[
+"A regular {}-gon",
+"מצולע משוכלל בן {} צלעות"
+],
+[
+"Together: {}·{} = {}",
+"יחד: {}·{} = {}"
 ],
 [
 "Solve {}′(x) = 0",
@@ -2897,6 +4288,14 @@
 [
 "{} wrong answer{}",
 "{1} תשובות שגויות"
+],
+[
+"{} common point{}",
+"{} נקודות משותפות"
+],
+[
+"{} parts solved",
+"{} סעיפים נפתרו"
 ],
 [
 "straight {} by {}",
@@ -2947,6 +4346,18 @@
 "מבחן קצר · {}"
 ],
 [
+"Centre ({}, 0)",
+"מרכז ({}, 0)"
+],
+[
+"z = {}. Find {}.",
+"z = {}. מצאו את {}."
+],
+[
+"Question {} · {}",
+"שאלה {} · {}"
+],
+[
 "passes {} once",
 "עוברת את {} פעם אחת"
 ],
@@ -2991,6 +4402,10 @@
 "{} פעילים · הבא {}"
 ],
 [
+"Centre ({}, {})",
+"מרכז ({}, {})"
+],
+[
 "Total = {} + {}",
 "סה״כ = {} + {}"
 ],
@@ -3017,6 +4432,22 @@
 [
 "{} days left",
 "נותרו {} ימים"
+],
+[
+"t ≈ {} years",
+"t ≈ {} שנים"
+],
+[
+"{} solutions",
+"{} פתרונות"
+],
+[
+"S = {} seats",
+"S = {} מושבים"
+],
+[
+"Add {} years",
+"מחברים {} שנים"
 ],
 [
 "F({}) − F(−{})",
@@ -3055,6 +4486,10 @@
 "{} · מושהה"
 ],
 [
+"Volume = {}",
+"נפח = {}"
+],
+[
 "Sign of {}″",
 "הסימן של {}″"
 ],
@@ -3087,6 +4522,10 @@
 "{} לחזרה עכשיו"
 ],
 [
+"Solve:  {}",
+"פתרו:  {}"
+],
+[
 "{} to {}: g {}{}",
 "{} עד {}: g {}{}"
 ],
@@ -3113,6 +4552,10 @@
 [
 "option {}",
 "אפשרות {}"
+],
+[
+"Bagrut {}",
+"בגרות {}"
 ],
 [
 "f′ {} on {}",
@@ -3149,6 +4592,10 @@
 [
 "Best: {}",
 "שיא: {}"
+],
+[
+"S ≈ {} ₪",
+"S ≈ {} ₪"
 ],
 [
 "Task: {}",
@@ -3191,6 +4638,10 @@
 "{} הושלמו"
 ],
 [
+"{} root{}",
+"{} שורשים"
+],
+[
 "f′:  {}",
 "f′:  {}"
 ],
@@ -3200,7 +4651,7 @@
 ],
 [
 "{} min",
-"{} דק׳"
+"{} דקות"
 ],
 [
 "On {}:",
@@ -3263,6 +4714,14 @@
 [
 "f′(x) = (ln x)² − 2 ln x + 2 + x·(2 ln x − 2)/x = (ln x)².  (ln x)² = 0  ⇒  ln x = 0  ⇒  x = 1 — a double zero, so f′ ≥ 0 and doesn't change sign there.",
 "f′(x) = (ln x)² − 2 ln x + 2 + x·(2 ln x − 2)/x = (ln x)².  (ln x)² = 0  ⇒  ln x = 0  ⇒  x = 1 — אפס כפול, לכן f′ ≥ 0 ולא מחליפה שם סימן."
+],
+[
+"Answer 4 of the 8 questions: at least one from chapter 1 or 2, and at least one from each of chapters 3 and 4. In question 1, answer 2 of the 4 parts.",
+"ענו על 4 מתוך 8 השאלות: לפחות אחת מהפרק הראשון או השני, ולפחות אחת מכל אחד מהפרקים השלישי והרביעי. בשאלה 1 ענו על 2 מתוך 4 הסעיפים."
+],
+[
+"Summer 2026: the Ministry lifted the chapter limits and published a focus list for this session only — check the official notice with your teacher.",
+"קיץ תשפ״ו: משרד החינוך ביטל את הגבלת הפרקים ופרסם הכוונה ממוקדת למועד זה בלבד — בדקו את ההודעה הרשמית עם המורה."
 ],
 [
 "tan x = −x mixes x with tan x, so algebra can't solve it — the solutions are where y = tan x meets y = −x. From sign changes of f′:",
@@ -3333,8 +4792,16 @@
 "פונקציה קדומה נכונה כשהנגזרת שלה שווה לפונקציה שמתחת לאינטגרל. הנה התשובה שלכם אחרי גזירה:"
 ],
 [
+"We prove that 3^(2n + 1) + 2^(n + 2) is divisible by 7. Which expression equals 3^(2k + 3) + 2^(k + 3)?",
+"מוכיחים ש-3^(2n + 1) + 2^(n + 2) מתחלק ב-7. איזה ביטוי שווה ל-3^(2k + 3) + 2^(k + 3)?"
+],
+[
 "The overall shape is upside down or flat — compare with where the graph is above and below the x-axis.",
 "הצורה הכללית הפוכה או שטוחה — השוו לאן הגרף מעל ומתחת לציר x."
+],
+[
+"Two tangents from the same point to a circle are equal. Call them x (from A), y (from B), z (from C).",
+"שני משיקים למעגל מאותה נקודה שווים. נסמן אותם x (מ-A), y (מ-B), z (מ-C)."
 ],
 [
 "It looks like the quotient rule's subtraction is the wrong way round: it's (u′v − uv′)/v², u′v first.",
@@ -3353,8 +4820,16 @@
 "לתשובה שלכם סימן הפוך בכל מקום — בדקו מינוס (למשל (cos x)′ = −sin x, (1/x)′ = −1/x²)."
 ],
 [
+"The angle between a tangent and a chord equals the inscribed angle on the other side of the chord.",
+"הזווית בין משיק למיתר שווה לזווית ההיקפית הנשענת על המיתר מהצד השני."
+],
+[
 "Big becomes small and small becomes big: a peak of f becomes a dip of g, and a dip becomes a peak.",
 "גדול הופך לקטן וקטן לגדול: מקסימום של f הופך למינימום של g, ומינימום למקסימום."
+],
+[
+"We prove that 4ⁿ + 15n − 1 is divisible by 9. Which expression equals 4^(k + 1) + 15(k + 1) − 1?",
+"מוכיחים ש-4ⁿ + 15n − 1 מתחלק ב-9. איזה ביטוי שווה ל-4^(k + 1) + 15(k + 1) − 1?"
 ],
 [
 "Quotient rule: f′(x) = [cos x(sin x + 1) − (sin x − 1)cos x]/(sin x + 1)² = 2cos x/(sin x + 1)²",
@@ -3363,6 +4838,10 @@
 [
 "Integrate term by term with the power rule ∫xⁿ dx = xⁿ⁺¹/(n+1); a constant c integrates to c·x.",
 "מחשבים אינטגרל איבר-איבר עם כלל החזקה ∫xⁿ dx = xⁿ⁺¹/(n+1); האינטגרל של קבוע c הוא c·x."
+],
+[
+"The shaded region is turned around the x-axis. Find the volume of the solid (exactly, with π).",
+"השטח המקווקו מסתובב סביב ציר ה-x. מצאו את נפח הגוף שנוצר (במדויק, עם π)."
 ],
 [
 "Where f crosses the x-axis g turns: a maximum if f goes from + to −, a minimum if from − to +.",
@@ -3381,12 +4860,24 @@
 "קווי עזר מקווקווים לשרטוט — למשל האסימפטוטות שמצאתם. הם לא נבדקים."
 ],
 [
+"From each corner the two tangents to the circle are equal; each side is made of two of them.",
+"מכל קדקוד שני המשיקים למעגל שווים; כל צלע מורכבת משניים מהם."
+],
+[
 "Tap a sound to hear it. The alarm plays at your Alarm volume (Settings › Sounds & Haptics).",
 "הקישו על צליל כדי לשמוע אותו. השעון מנגן בעוצמת השעון המעורר (הגדרות › צלילים ורטט)."
 ],
 [
 "Judged by eye: does your drawing look like the graph? Scale and exact values don't matter.",
 "לפי העין: האם השרטוט נראה כמו הגרף? קנה מידה וערכים מדויקים לא משנים."
+],
+[
+"The products of the pieces are equal: AE·EB = CE·ED (triangles AEC and DEB are similar).",
+"מכפלות הקטעים שוות: AE·EB = CE·ED (המשולשים AEC ו-DEB דומים)."
+],
+[
+"Each even-place term is the odd-place term before it plus d: a₂ = a₁ + d, a₄ = a₃ + d, …",
+"כל איבר במקום זוגי שווה לאיבר שלפניו (במקום אי-זוגי) ועוד d: a₂ = a₁ + d, a₄ = a₃ + d, …"
 ],
 [
 "Put a letter on every point where something happens (they're marked on the graph below):",
@@ -3399,6 +4890,10 @@
 [
 "Bagrut-style questions: limits, areas, sign tables, probability, triangles, min & max…",
 "שאלות בסגנון בגרות: גבולות, שטחים, טבלאות סימנים, הסתברות, משולשים, בעיות קיצון…"
+],
+[
+"Every question type of the 5-unit Bagrut (papers 571 and 572). Tap one to practise it.",
+"כל סוגי השאלות בבגרות 5 יח״ל (שאלונים 571 ו-572). הקישו על אחד כדי להתאמן בו."
 ],
 [
 "∫ f′·f^(1/2) dx = (2/3)·f^(3/2); with the ½ and the factor k this gives (k/3)·f^(3/2).",
@@ -3473,6 +4968,10 @@
 "השעון שלך משתתק רק כשפותרים בעיה במתמטיקה — או לוחצים על \"כניעה\"."
 ],
 [
+"Short questions · sequences & probability · geometry & trigonometry · calculus",
+"שאלות קצרות · סדרות והסתברות · גאומטריה וטריגונומטריה · חשבון דיפרנציאלי ואינטגרלי"
+],
+[
 "The second time, the original integral I appears again on the right-hand side.",
 "בפעם השנייה האינטגרל המקורי I מופיע שוב באגף ימין."
 ],
@@ -3483,6 +4982,14 @@
 [
 "The alarm still needs a solved problem, so you'll get a fresh one afterwards.",
 "השעון עדיין צריך בעיה פתורה, לכן אחר כך תקבלו בעיה חדשה."
+],
+[
+"True for n = 1, and true for k + 1 whenever true for k: true for every n ≥ 1.",
+"נכון עבור n = 1, ונכון עבור k + 1 בכל פעם שנכון עבור k: נכון לכל n ≥ 1."
+],
+[
+"Vectors, analytic geometry & complex numbers · growth, exponents & logarithms",
+"וקטורים, גאומטריה אנליטית ומספרים מרוכבים · גדילה, חזקות ולוגריתמים"
 ],
 [
 "Like pen and paper: peaks, dips, zeros and end values must be close to exact.",
@@ -3499,6 +5006,14 @@
 [
 "Exponential equations like this have exactly one solution; nothing to reject.",
 "למשוואה מעריכית כזו יש פתרון אחד בדיוק; אין מה לפסול."
+],
+[
+"∠ACB is an inscribed angle and ∠AOB is the central angle on the same arc AB.",
+"∠ACB היא זווית היקפית ו-∠AOB היא הזווית המרכזית הנשענות על אותה קשת AB."
+],
+[
+"DE ∥ BC, so ∠ADE = ∠ABC and ∠AED = ∠ACB (corresponding angles): △ADE ∼ △ABC.",
+"DE ∥ BC, ולכן ∠ADE = ∠ABC ו-∠AED = ∠ACB (זוויות מתאימות): △ADE ∼ △ABC."
 ],
 [
 "Where f crosses the x-axis, g just touches it — usually with a sharp corner.",
@@ -3531,6 +5046,14 @@
 [
 "After you close this, you'll get a new problem of the same kind to solve.",
 "אחרי שתסגרו, תקבלו בעיה חדשה מאותו סוג לפתרון."
+],
+[
+"Every point of a parabola is as far from the focus as from the directrix.",
+"כל נקודה על הפרבולה נמצאת באותו מרחק מהמוקד ומהמדריך."
+],
+[
+"Put n = 1, 2, 3, … into the rule; each term is built from the one before.",
+"מציבים n = 1, 2, 3, … בכלל; כל איבר נבנה מהאיבר שלפניו."
 ],
 [
 "Variable base and exponent: write uᵛ = e^(v·ln u) and use the chain rule.",
@@ -3579,6 +5102,10 @@
 [
 "After a few problems of each type, the ones you miss most show up here.",
 "אחרי כמה בעיות מכל סוג, אלה שאתם מפספסים הכי הרבה יופיעו כאן."
+],
+[
+"So AB + CD and BC + DA use each tangent length once: AB + CD = BC + DA.",
+"לכן ב-AB + CD וב-BC + DA כל אורך משיק מופיע פעם אחת: AB + CD = BC + DA."
 ],
 [
 "Same x, height ln(height of f); f > 0 here, so g is defined everywhere.",
@@ -3651,6 +5178,10 @@
 [
 "For a linear inside ax + b:  ∫(ax + b)ⁿ dx = (ax + b)ⁿ⁺¹ / (a·(n+1)).",
 "לפונקציה פנימית ליניארית ax + b:  ∫(ax + b)ⁿ dx = (ax + b)ⁿ⁺¹ / (a·(n+1))."
+],
+[
+"The height splits ABC into two triangles similar to it: △ACD ∼ △CBD.",
+"הגובה מחלק את ABC לשני משולשים הדומים לו: △ACD ∼ △CBD."
 ],
 [
 "ln keeps the order: peaks stay peaks, dips stay dips, at the same x.",
@@ -3761,6 +5292,10 @@
 "לא זו — התשובה הנכונה מסומנת. שאלה חדשה בדרך…"
 ],
 [
+"Common denominator: (sin 3x cos x − cos 3x sin x)/(sin x cos x)",
+"מכנה משותף: (sin 3x cos x − cos 3x sin x)/(sin x cos x)"
+],
+[
 "Dividing by a constant: differentiate the top, keep the bottom.",
 "חלוקה בקבוע: גוזרים את המונה ומשאירים את המכנה."
 ],
@@ -3797,6 +5332,10 @@
 "שני הצדדים שונים, לכן הגבול (הדו-צדדי) לא קיים."
 ],
 [
+"They add up to 180° (together they stand on the whole circle).",
+"סכומן 180° (יחד הן נשענות על המעגל כולו)."
+],
+[
 "Where f = 0, g = 1; where f is negative, g is between 0 and 1.",
 "איפה ש-f = 0, g = 1; איפה ש-f שלילית, g בין 0 ל-1."
 ],
@@ -3815,6 +5354,14 @@
 [
 "1/cos²x = 4  ⇒  cos²x = 1/4  ⇒  cos x = 1/2  or  cos x = −1/2",
 "1/cos²x = 4  ⇒  cos²x = 1/4  ⇒  cos x = 1/2  או  cos x = −1/2"
+],
+[
+"A central angle is twice the inscribed angle on the same arc.",
+"זווית מרכזית גדולה פי 2 מזווית היקפית הנשענת על אותה קשת."
+],
+[
+"∠ACB is inscribed on arc AB; ∠AOB is the central angle on it.",
+"∠ACB היא זווית היקפית על הקשת AB; ∠AOB היא הזווית המרכזית עליה."
 ],
 [
 "Constant multiple: keep the constant, differentiate the rest.",
@@ -3865,6 +5412,14 @@
 "משמש בסקיצת גרף ובשינוי גרף, בשעונים ובתרגול."
 ],
 [
+"Chapter 2 · Growth and decay, exponential and log functions",
+"פרק שני · גדילה ודעיכה, פונקציות מעריכיות ולוגריתמיות"
+],
+[
+"Trig identities: sin/cos(α ± β), double angle, exact values",
+"זהויות טריגונומטריות: sin/cos(α ± β), זווית כפולה, ערכים מדויקים"
+],
+[
 "Your sketch is flat — show where the graph rises and falls.",
 "השרטוט שלכם שטוח — הראו איפה הגרף עולה ויורד."
 ],
@@ -3875,6 +5430,10 @@
 [
 "Your answer and the true derivative give different values:",
 "התשובה שלכם והנגזרת הנכונה נותנות ערכים שונים:"
+],
+[
+"Probability: repeated tries, first success, how many tries",
+"הסתברות: ניסיונות חוזרים, הצלחה ראשונה, כמה ניסיונות"
 ],
 [
 " — f is negative there, so squaring reverses the direction",
@@ -3937,6 +5496,14 @@
 "משמש בטיימרים ובצלצול הבדיקה של 10 שניות."
 ],
 [
+"△ACD ∼ △ABC (they share ∠A and both have a right angle).",
+"△ACD ∼ △ABC (יש להם זווית A משותפת ושניהם ישרי-זווית)."
+],
+[
+"(2 sin x + 1)(sin x − 1) = 0:  sin x = 1  or  sin x = −½",
+"(2 sin x + 1)(sin x − 1) = 0:  sin x = 1  או  sin x = −½"
+],
+[
 "Same x, height 1 ÷ (height of f)²: g is always positive.",
 "אותו x, גובה 1 ÷ (הגובה של f)²: g תמיד חיובית."
 ],
@@ -3973,6 +5540,18 @@
 "בעיות שטעיתם בהן חוזרות אחרי 1, 3 ו-7 ימים."
 ],
 [
+"Chapter 1 · Vectors, analytic geometry, complex numbers",
+"פרק ראשון · וקטורים, גאומטריה אנליטית, מספרים מרוכבים"
+],
+[
+"Chapter 1 · Analytic geometry, vectors, complex numbers",
+"פרק ראשון · גאומטריה אנליטית, וקטורים, מספרים מרוכבים"
+],
+[
+"Circle angles: inscribed, central, cyclic quadrilateral",
+"זוויות במעגל: היקפית, מרכזית, מרובע חסום"
+],
+[
 "By parts: ∫t·eᵗ dt = eᵗ(t − 1). Substitute t = x² back.",
 "בחלקים: ∫t·eᵗ dt = eᵗ(t − 1). מחזירים t = x²."
 ],
@@ -3987,6 +5566,18 @@
 [
 "Your answer — exact forms like ln 3, √2, 3/10 are fine",
 "התשובה שלכם — אפשר צורות מדויקות כמו ln 3, √2, 3/10"
+],
+[
+"(2cos x − 1)(cos x − 1) = 0:  cos x = ½  or  cos x = 1",
+"(2cos x − 1)(cos x − 1) = 0:  cos x = ½  או  cos x = 1"
+],
+[
+"Arithmetic, geometric, infinite, recursive · induction",
+"חשבונית, הנדסית, אינסופית, רקורסיבית · אינדוקציה"
+],
+[
+"Infinite geometric series: sum, convergence, finding q",
+"טור הנדסי אינסופי: סכום, התכנסות, מציאת q"
 ],
 [
 "Reflect in the y-axis: what f does at x, g does at −x.",
@@ -4021,6 +5612,14 @@
 "מאורעות בלתי תלויים, טבלאות, בינומי, עצים ובייס"
 ],
 [
+"Difference of squares: (cos²x − sin²x)(cos²x + sin²x)",
+"הפרש ריבועים: (cos²x − sin²x)(cos²x + sin²x)"
+],
+[
+"Full Bagrut exams (571 / 572 style), timed and scored",
+"בחינות בגרות מלאות (בסגנון 571 / 572), עם זמן וציון"
+],
+[
 "Same x, height e^(height of f): g is always positive.",
 "אותו x, גובה e^(הגובה של f): g תמיד חיובית."
 ],
@@ -4043,6 +5642,10 @@
 [
 "Given f, draw a related graph like 1/f(x)² or |f(x)|",
 "בהינתן f, שרטטו גרף קשור כמו 1/f(x)² או |f(x)|"
+],
+[
+"Circles: centre and radius, tangent, line and circle",
+"מעגלים: מרכז ורדיוס, משיק, ישר ומעגל"
 ],
 [
 "Differentiating the result gives back the integrand.",
@@ -4075,6 +5678,10 @@
 [
 "Draw the whole graph — pinch, Move or ± to see more",
 "שרטטו את כל הגרף — צביטה, \"הזז\" או ± כדי לראות עוד"
+],
+[
+"The asymptotes of x²/a² − y²/b² = 1 are y = ±(b/a)x",
+"האסימפטוטות של x²/a² − y²/b² = 1 הן y = ±(b/a)x"
 ],
 [
 "Same checks as Precision, with more room for error.",
@@ -4125,6 +5732,26 @@
 "התשובה שלכם — אפשר מספר עשרוני (או צורה מדויקת)"
 ],
 [
+"2k² ≥ (k + 1)²  ⇔  k² − 2k − 1 ≥ 0, true for k ≥ 3",
+"2k² ≥ (k + 1)²  ⇔  k² − 2k − 1 ≥ 0, נכון עבור k ≥ 3"
+],
+[
+"Circle angles, chords, tangents, similar triangles",
+"זוויות במעגל, מיתרים, משיקים, משולשים דומים"
+],
+[
+"Vectors in space: lines, planes, angles, distances",
+"וקטורים במרחב: ישרים, מישורים, זוויות, מרחקים"
+],
+[
+"Chapter 3 · Geometry and trigonometry in the plane",
+"פרק שלישי · גאומטריה וטריגונומטריה במישור"
+],
+[
+"Vectors: length, dot product, angle, perpendicular",
+"וקטורים: אורך, מכפלה סקלרית, זווית, ניצבות"
+],
+[
 "Whatever f does left of the y-axis doesn't matter.",
 "מה ש-f עושה משמאל לציר y לא משנה."
 ],
@@ -4161,6 +5788,14 @@
 "f′ > 0: f עולה ↗   ·   f′ < 0: f יורדת ↘"
 ],
 [
+"So it is 2sin²x / (2 sin x cos x) = sin x / cos x",
+"לכן זה 2sin²x / (2 sin x cos x) = sin x / cos x"
+],
+[
+"3k³ ≥ (k + 1)³  ⇔  (1 + 1/k)³ ≤ 3, true for k ≥ 3",
+"3k³ ≥ (k + 1)³  ⇔  (1 + 1/k)³ ≤ 3, נכון עבור k ≥ 3"
+],
+[
 "Reflect in the x-axis: every height changes sign.",
 "שיקוף בציר x: כל גובה מחליף סימן."
 ],
@@ -4187,6 +5822,26 @@
 [
 "After you close this, you'll get a new question.",
 "אחרי שתסגרו, תקבלו שאלה חדשה."
+],
+[
+"For every point of a hyperbola, |PF₁ − PF₂| = 2a",
+"לכל נקודה על ההיפרבולה, |PF₁ − PF₂| = 2a"
+],
+[
+"PT² = PA·PB (triangles PTA and PBT are similar).",
+"PT² = PA·PB (המשולשים PTA ו-PBT דומים)."
+],
+[
+"Algebraic and polar form, De Moivre, roots, loci",
+"הצגה אלגברית וקוטבית, דה-מואבר, שורשים, מקומות גאומטריים"
+],
+[
+"Sequence word problems: savings, a bouncing ball",
+"בעיות מילוליות בסדרות: חיסכון, כדור קופץ"
+],
+[
+"Planes: a point on a plane, a line meets a plane",
+"מישורים: נקודה על מישור, ישר חותך מישור"
 ],
 [
 " and moves above the axis (squares are positive)",
@@ -4219,6 +5874,18 @@
 [
 "turn it up (the in-app sound uses media volume)",
 "הגבירו (הצליל באפליקציה לפי עוצמת המדיה)"
+],
+[
+"Give the answer in degrees to 2 decimal places.",
+"תנו את התשובה במעלות, עד 2 ספרות אחרי הנקודה."
+],
+[
+"So it is 2 sin x cos x / 2cos²x = sin x / cos x",
+"לכן זה 2 sin x cos x / 2cos²x = sin x / cos x"
+],
+[
+"Odd places: a₁ + a₁q² + a₁q⁴ + …  = a₁/(1 − q²)",
+"מקומות אי-זוגיים: a₁ + a₁q² + a₁q⁴ + …  = a₁/(1 − q²)"
 ],
 [
 "on the x-axis — f is flat there, its slope is 0",
@@ -4297,6 +5964,18 @@
 "בעיות מילוליות: בונים פונקציה, ואז f′ = 0"
 ],
 [
+"cos²x + sin²x = 1, and cos²x − sin²x = cos 2x",
+"cos²x + sin²x = 1, ו-cos²x − sin²x = cos 2x"
+],
+[
+"Chapter 2 · Sequences, induction, probability",
+"פרק שני · סדרות, אינדוקציה, הסתברות"
+],
+[
+"Exponential and log derivatives and integrals",
+"נגזרות ואינטגרלים של פונקציות מעריכיות ולוגריתמיות"
+],
+[
 "Sum rule: differentiate each term separately.",
 "כלל הסכום: גוזרים כל מחובר בנפרד."
 ],
@@ -4315,6 +5994,26 @@
 [
 "Integrals and derivatives, typed as formulas",
 "אינטגרלים ונגזרות, מוקלדים כנוסחאות"
+],
+[
+"The line makes 90° − (angle with the normal)",
+"הזווית עם המישור היא 90° פחות הזווית עם הנורמל"
+],
+[
+"Multiply by the conjugate of the denominator",
+"כופלים בצמוד של המכנה"
+],
+[
+"Integrals, derivatives and finding f from f′",
+"אינטגרלים, נגזרות ומציאת f מתוך f′"
+],
+[
+"Probability: counting (groups, arrangements)",
+"הסתברות: קומבינטוריקה (קבוצות, סידורים)"
+],
+[
+"Exponential and log investigation and sketch",
+"חקירה ושרטוט של פונקציות מעריכיות ולוגריתמיות"
 ],
 [
 "same x, above 1 (and higher the higher A is)",
@@ -4343,6 +6042,26 @@
 [
 "The clock runs until the last one is right.",
 "השעון רץ עד שהאחרונה נכונה."
+],
+[
+"V = π∫ (eˣ)² dx = π∫ e^(2x) dx  from 0 to 1",
+"V = π∫ (eˣ)² dx = π∫ e^(2x) dx  מ-0 עד 1"
+],
+[
+"Even places: a₁q + a₁q³ + …  = a₁q/(1 − q²)",
+"מקומות זוגיים: a₁q + a₁q³ + …  = a₁q/(1 − q²)"
+],
+[
+"Circles, parabola, ellipse, hyperbola, loci",
+"מעגלים, פרבולה, אליפסה, היפרבולה, מקומות גאומטריים"
+],
+[
+"Geometric sequence: a term, the ratio, sums",
+"סדרה הנדסית: איבר, המנה, סכומים"
+],
+[
+"Probability: independent events, complement",
+"הסתברות: מאורעות בלתי תלויים, משלים"
 ],
 [
 "stays on the x-axis — g touches it smoothly",
@@ -4393,6 +6112,26 @@
 "העוצמה נמוכה — לחצו על כפתור הגברת העוצמה"
 ],
 [
+"The tangent is perpendicular to the radius",
+"המשיק ניצב לרדיוס"
+],
+[
+"Arithmetic sequence: a term, a₁ or d, sums",
+"סדרה חשבונית: איבר, a₁ או d, סכומים"
+],
+[
+"Distances: point to plane, parallel planes",
+"מרחקים: נקודה ממישור, מישורים מקבילים"
+],
+[
+"Complex numbers: algebraic form, equations",
+"מספרים מרוכבים: הצגה אלגברית, משוואות"
+],
+[
+"Roots of complex numbers and their polygon",
+"שורשים של מספרים מרוכבים והמצולע שלהם"
+],
+[
 "Quotient rule: (u/v)′ = (u′·v − u·v′) / v²",
 "כלל המנה: (u/v)′ = (u′·v − u·v′) / v²"
 ],
@@ -4441,6 +6180,34 @@
 "בעיות שתנסו בתרגול יופיעו כאן."
 ],
 [
+"its argument θ in degrees (0° ≤ θ < 360°)",
+"הארגומנט θ במעלות (0° ≤ θ < 360°)"
+],
+[
+"Inscribed angle = half the central angle.",
+"זווית היקפית = חצי מהזווית המרכזית."
+],
+[
+"Opposite angles of a cyclic quadrilateral",
+"זוויות נגדיות במרובע חסום"
+],
+[
+"Sines, cosines, areas and trig identities",
+"סינוסים, קוסינוסים, שטחים וזהויות טריגונומטריות"
+],
+[
+"A full 571 or 572 paper, timed and scored",
+"שאלון 571 או 572 מלא, עם זמן וציון"
+],
+[
+"Probability: binomial, at least / exactly",
+"הסתברות: התפלגות בינומית, לפחות / בדיוק"
+],
+[
+"Lines in space: meeting, parallel or skew",
+"ישרים במרחב: נחתכים, מקבילים או מצטלבים"
+],
+[
 "both the top and the bottom are positive",
 "גם המונה וגם המכנה חיוביים"
 ],
@@ -4455,6 +6222,18 @@
 [
 "3 wrong answers — one more problem added",
 "‏3 תשובות שגויות — נוספה עוד בעיה"
+],
+[
+"π·[e^(2x)/2]  from 0 to 1 = π·(e² − 1)/2",
+"π·[e^(2x)/2]  מ-0 עד 1 = π·(e² − 1)/2"
+],
+[
+"|q| < 1, so the series really converges.",
+"|q| < 1, ולכן הטור אכן מתכנס."
+],
+[
+"Probability: two-way tables, conditional",
+"הסתברות: טבלה דו-ממדית, הסתברות מותנית"
 ],
 [
 "Chain rule on a power: (uⁿ)′ = n·uⁿ⁻¹·u′",
@@ -4497,6 +6276,18 @@
 "החלשים קודם · הקישו כדי לתרגל את הסוג"
 ],
 [
+"Each year multiplies by the same factor",
+"בכל שנה כופלים באותו גורם"
+],
+[
+"Type the largest solution (in degrees).",
+"הקלידו את הפתרון הגדול ביותר (במעלות)."
+],
+[
+"Angle bisector theorem, tangent lengths",
+"משפט חוצה הזווית, אורכי משיקים"
+],
+[
 "stays — g is symmetric about the y-axis",
 "נשארת — g סימטרית סביב ציר y"
 ],
@@ -4529,6 +6320,14 @@
 "אף אחד מהם לא נמצא בתוך התחום."
 ],
 [
+"Medians, heights, multi-step triangles",
+"תיכונים, גבהים, משולשים בכמה שלבים"
+],
+[
+"Exponential and log equations (base e)",
+"משוואות מעריכיות ולוגריתמיות (בסיס e)"
+],
+[
 "Then sin²(2x) = (1 − cos 4x)/2, giving",
 "אחר כך sin²(2x) = (1 − cos 4x)/2, ומתקבל"
 ],
@@ -4547,6 +6346,18 @@
 [
 "Tap the star on a problem to keep it.",
 "הקישו על הכוכב בבעיה כדי לשמור אותה."
+],
+[
+"So the tangent is horizontal: slope 0",
+"לכן המשיק אופקי: שיפוע 0"
+],
+[
+"Areas go with the square of the ratio",
+"יחס השטחים שווה לריבוע יחס הדמיון"
+],
+[
+"Chapter 2 · Sequences and probability",
+"פרק שני · סדרות והסתברות"
 ],
 [
 "Result (any constant C can be added):",
@@ -4579,6 +6390,18 @@
 [
 "Time to turn the alarm off (minutes)",
 "זמן עד כיבוי השעון (דקות)"
+],
+[
+"Distance from the centre to the line",
+"המרחק מהמרכז לישר"
+],
+[
+"Both positive: the angles are acute.",
+"שניהם חיוביים: הזוויות חדות."
+],
+[
+"Induction: equalities (sum formulas)",
+"אינדוקציה: שוויונים (נוסחאות סכום)"
 ],
 [
 "Parts again on ∫x·e^(ax) dx (u = x):",
@@ -4619,6 +6442,26 @@
 [
 "Substitute t = cos x  (−1 ≤ t ≤ 1):",
 "מציבים t = cos x  (−1 ≤ t ≤ 1):"
+],
+[
+"Growth, decay, half-life and models",
+"גדילה, דעיכה, זמן מחצית חיים ומודלים"
+],
+[
+"Transformations (|f|, 1/f, f², √f…)",
+"טרנספורמציות (|f|, 1/f, f², √f…)"
+],
+[
+"Short questions — answer 2 of the 4",
+"שאלות קצרות — ענו על 2 מתוך 4"
+],
+[
+"Tangents, areas and antiderivatives",
+"משיקים, שטחים ופונקציות קדומות"
+],
+[
+"Finish the exam and see your score?",
+"לסיים את הבחינה ולראות את הציון?"
 ],
 [
 "Step 2 · Differentiate part by part",
@@ -4663,6 +6506,18 @@
 [
 "Show solution (new question after)",
 "הצג פתרון (ואחריו שאלה חדשה)"
+],
+[
+"cos θ < 0, so the angle is obtuse.",
+"cos θ < 0, ולכן הזווית קהה."
+],
+[
+"d > R: the line misses the circle.",
+"d > R: הישר אינו פוגש את המעגל."
+],
+[
+"Angles: line and plane, two planes",
+"זוויות: ישר ומישור, שני מישורים"
 ],
 [
 "Product rule: (u·v)′ = u′·v + u·v′",
@@ -4717,6 +6572,30 @@
 "10 נגזרות נגד השעון"
 ],
 [
+"cos θ > 0, so the angle is acute.",
+"cos θ > 0, ולכן הזווית חדה."
+],
+[
+"Find a sequence that is geometric",
+"מוצאים סדרה הנדסית"
+],
+[
+"Recursive sequences: aₙ₊₁ = f(aₙ)",
+"סדרות בנוסחת נסיגה: aₙ₊₁ = f(aₙ)"
+],
+[
+"Probability: tree diagrams, Bayes",
+"הסתברות: דיאגרמת עץ, בייס"
+],
+[
+"Probability: conditional binomial",
+"הסתברות: בינומית מותנית"
+],
+[
+"Law of sines and the circumradius",
+"משפט הסינוסים ורדיוס המעגל החוסם"
+],
+[
 "The second term is a plain power.",
 "האיבר השני הוא חזקה רגילה."
 ],
@@ -4743,6 +6622,22 @@
 [
 "Available — you'll be asked once",
 "זמין — תתבקשו פעם אחת"
+],
+[
+"d < R: the line cuts the circle.",
+"d < R: הישר חותך את המעגל."
+],
+[
+"Compare real and imaginary parts",
+"משווים חלק ממשי וחלק מדומה"
+],
+[
+"OA = OB (radii), so ∠OAB = ∠OBA.",
+"OA = OB (רדיוסים), ולכן ∠OAB = ∠OBA."
+],
+[
+"Probability: without replacement",
+"הסתברות: בלי החזרה"
 ],
 [
 "Exponential: (aᵛ)′ = aᵛ·ln(a)·v′",
@@ -4779,6 +6674,14 @@
 [
 "Good morning — have a great day",
 "בוקר טוב — שיהיה יום נהדר"
+],
+[
+"negative in the second quadrant",
+"שלילי ברביע השני"
+],
+[
+"A half-circle turns into a ball",
+"חצי מעגל מסתובב לכדור"
 ],
 [
 "Something doesn't fit together.",
@@ -4835,6 +6738,38 @@
 [
 "Clear every due review problem",
 "סיימו את כל בעיות החזרה שהגיע זמנן"
+],
+[
+"positive in the first quadrant",
+"חיובי ברביע הראשון"
+],
+[
+"x > 0 and x ≠ 1 (x is a base).",
+"x > 0 ו-x ≠ 1 (x הוא בסיס)."
+],
+[
+"Write both terms with a₁ and d",
+"כותבים את שני האיברים בעזרת a₁ ו-d"
+],
+[
+"Find a₁ from the odd-place sum",
+"מוצאים את a₁ מסכום המקומות האי-זוגיים"
+],
+[
+"Write both terms with a₁ and q",
+"כותבים את שני האיברים בעזרת a₁ ו-q"
+],
+[
+"Similar triangles, area ratios",
+"משולשים דומים, יחס שטחים"
+],
+[
+"Antiderivative through a point",
+"פונקציה קדומה העוברת בנקודה"
+],
+[
+"Growth and decay word problems",
+"בעיות גדילה ודעיכה"
 ],
 [
 "Draw the graph across the box.",
@@ -4917,6 +6852,26 @@
 "בעיה חדשה — אתם יכולים"
 ],
 [
+"d = R: the line is a tangent.",
+"d = R: הישר משיק."
+],
+[
+"How many solutions are there?",
+"כמה פתרונות יש?"
+],
+[
+"Full investigation and sketch",
+"חקירה מלאה ושרטוט"
+],
+[
+"Reading graphs of f, f′ and F",
+"קריאת גרפים של f, f′ ו-F"
+],
+[
+"Exponential and log functions",
+"פונקציות מעריכיות ולוגריתמיות"
+],
+[
 "Something is missing after ×.",
 "חסר משהו אחרי ×."
 ],
@@ -4967,6 +6922,34 @@
 [
 "That code doesn't look right",
 "הקוד הזה לא נראה תקין"
+],
+[
+"Are the directions parallel?",
+"האם הכיוונים מקבילים?"
+],
+[
+"Polar form of the right side",
+"הצגה קוטבית של אגף ימין"
+],
+[
+"So 2cos²x − (2cos²x − 1) = 1",
+"לכן 2cos²x − (2cos²x − 1) = 1"
+],
+[
+"Glue Dana and Yossi together",
+"\"מדביקים\" את דנה ויוסי יחד"
+],
+[
+"It is an arithmetic sequence",
+"זו סדרה חשבונית"
+],
+[
+"Answer 3 of the 5 questions.",
+"ענו על 3 מתוך 5 השאלות."
+],
+[
+"Growth, decay and logarithms",
+"גדילה, דעיכה ולוגריתמים"
 ],
 [
 "A constant has derivative 0.",
@@ -5053,6 +7036,50 @@
 "נפתר! עכשיו קומו ולכו"
 ],
 [
+"Perpendicular means u·v = 0",
+"ניצבים פירושו u·v = 0"
+],
+[
+"A general point of the line",
+"נקודה כללית על הישר"
+],
+[
+"sin x = 0  or  cos x = √3/2",
+"sin x = 0  או  cos x = √3/2"
+],
+[
+"Use a double-angle identity",
+"משתמשים בזהות של זווית כפולה"
+],
+[
+"All solutions in [0°, 360°)",
+"כל הפתרונות ב-[0°, 360°)"
+],
+[
+"Apply the rule step by step",
+"מפעילים את הכלל שלב אחר שלב"
+],
+[
+"Assume it is true for n = k",
+"מניחים שהטענה נכונה עבור n = k"
+],
+[
+"Bisectors & tangent lengths",
+"חוצי זווית ואורכי משיקים"
+],
+[
+"Chapter 1 · Short questions",
+"פרק ראשון · שאלות קצרות"
+],
+[
+"Hyperbola: foci, asymptotes",
+"היפרבולה: מוקדים, אסימפטוטות"
+],
+[
+"Graphs of ln f, e^f and 1/f",
+"גרפים של ln f, e^f ו-1/f"
+],
+[
 "steepest point (inflection)",
 "הנקודה התלולה ביותר (פיתול)"
 ],
@@ -5109,6 +7136,26 @@
 "התקינו מחדש את Math Alarm היום"
 ],
 [
+"x-coordinate of the centre",
+"שיעור ה-x של המרכז"
+],
+[
+"Focus = directrix distance",
+"מרחק מהמוקד = מרחק מהמדריך"
+],
+[
+"Fill the places one by one",
+"ממלאים את המקומות אחד אחד"
+],
+[
+"Length, dot product, angle",
+"אורך, מכפלה סקלרית, זווית"
+],
+[
+"Parabola: focus, directrix",
+"פרבולה: מוקד, מדריך"
+],
+[
 "Power rule: (xⁿ)′ = n·xⁿ⁻¹",
 "כלל החזקה: (xⁿ)′ = n·xⁿ⁻¹"
 ],
@@ -5159,6 +7206,38 @@
 [
 "Helper lines (asymptotes)",
 "קווי עזר (אסימפטוטות)"
+],
+[
+"Angle between the normals",
+"הזווית בין הנורמלים"
+],
+[
+"Triangle AOB is isosceles",
+"המשולש AOB שווה-שוקיים"
+],
+[
+"cos x = 1  or  cos x = −½",
+"cos x = 1  או  cos x = −½"
+],
+[
+"Chords, tangents, secants",
+"מיתרים, משיקים, חותכים"
+],
+[
+"Equations with identities",
+"משוואות עם זהויות"
+],
+[
+"An angle from three sides",
+"זווית משלוש צלעות"
+],
+[
+"Loci in the complex plane",
+"מקומות גאומטריים במישור המרוכב"
+],
+[
+"Trigonometry in the plane",
+"טריגונומטריה במישור"
 ],
 [
 "Multiply by the constant:",
@@ -5249,6 +7328,38 @@
 "פתרו את הבעיה הראשונה"
 ],
 [
+"Two vectors in the plane",
+"שני וקטורים במישור"
+],
+[
+"Distance from the origin",
+"המרחק מראשית הצירים"
+],
+[
+"the inscribed angle ∠ACB",
+"הזווית ההיקפית ∠ACB"
+],
+[
+"tangential quadrilateral",
+"מרובע חוסם מעגל"
+],
+[
+"sin x = 0  or  cos x = ½",
+"sin x = 0  או  cos x = ½"
+],
+[
+"cos x = 0  or  sin x = ½",
+"cos x = 0  או  sin x = ½"
+],
+[
+"Two sequences inside one",
+"שתי סדרות בתוך אחת"
+],
+[
+"Investigating a function",
+"חקירת פונקציה"
+],
+[
 "Intercepts with the axes",
 "נקודות חיתוך עם הצירים"
 ],
@@ -5335,6 +7446,38 @@
 [
 "Surrendered — alarm off",
 "נכנעתם — השעון כבוי"
+],
+[
+"Is B on the first line?",
+"האם B על הישר הראשון?"
+],
+[
+"What the equation means",
+"מה המשוואה אומרת"
+],
+[
+"Add the infinite series",
+"מחברים את הטור האינסופי"
+],
+[
+"Yearly pay is geometric",
+"השכר השנתי הוא סדרה הנדסית"
+],
+[
+"Drawing of the question",
+"שרטוט השאלה"
+],
+[
+"Induction: divisibility",
+"אינדוקציה: התחלקות"
+],
+[
+"Induction: inequalities",
+"אינדוקציה: אי-שוויונים"
+],
+[
+"Triangle area ½ab·sin C",
+"שטח משולש ½ab·sin C"
 ],
 [
 "Put together u′v + uv′:",
@@ -5433,6 +7576,42 @@
 "עוד לא — נסו שוב."
 ],
 [
+"They meet at one point",
+"נחתכים בנקודה אחת"
+],
+[
+"They are the same line",
+"אותו ישר"
+],
+[
+"Multiply out (i² = −1)",
+"פותחים סוגריים (i² = −1)"
+],
+[
+"Integrate term by term",
+"מוצאים פונקציה קדומה איבר-איבר"
+],
+[
+"the central angle ∠AOB",
+"הזווית המרכזית ∠AOB"
+],
+[
+"Tangent–secant theorem",
+"משפט המשיק והחותך"
+],
+[
+"Angle bisector theorem",
+"משפט חוצה הזווית"
+],
+[
+"Subtract the equations",
+"מחסרים את המשוואות"
+],
+[
+"Prove it for n = k + 1",
+"מוכיחים עבור n = k + 1"
+],
+[
 "down out of the bottom",
 "למטה מעבר לגבול התחתון"
 ],
@@ -5503,6 +7682,54 @@
 [
 "Step-by-step solution",
 "פתרון שלב אחר שלב"
+],
+[
+"angle between vectors",
+"זווית בין וקטורים"
+],
+[
+"Put it into the plane",
+"מציבים במשוואת המישור"
+],
+[
+"Compare with y² = 2px",
+"משווים ל-y² = 2px"
+],
+[
+"The defining property",
+"התכונה המגדירה"
+],
+[
+"centre's x-coordinate",
+"שיעור ה-x של מרכזו"
+],
+[
+"The quadratic formula",
+"נוסחת השורשים"
+],
+[
+"right triangle height",
+"גובה ליתר"
+],
+[
+"Count the good groups",
+"סופרים את הקבוצות המתאימות"
+],
+[
+"Polar form, De Moivre",
+"הצגה קוטבית, דה-מואבר"
+],
+[
+"Short mixed questions",
+"שאלות קצרות מעורבות"
+],
+[
+"Limits and asymptotes",
+"גבולות ואסימפטוטות"
+],
+[
+"Extreme-value problem",
+"בעיית קיצון"
 ],
 [
 "There's an empty box.",
@@ -5603,6 +7830,58 @@
 [
 "Find the integral of",
 "חשבו את האינטגרל של"
+],
+[
+"The plane's equation",
+"משוואת המישור"
+],
+[
+"Direction and normal",
+"כיוון ונורמל"
+],
+[
+"Complete the squares",
+"משלימים לריבוע"
+],
+[
+"hyperbola asymptotes",
+"אסימפטוטות של היפרבולה"
+],
+[
+"cyclic quadrilateral",
+"מרובע חסום במעגל"
+],
+[
+"between 90° and 180°",
+"בין 90° ל-180°"
+],
+[
+"Divide the equations",
+"מחלקים את המשוואות"
+],
+[
+"A geometric sequence",
+"סדרה הנדסית"
+],
+[
+"for a whole number m",
+"עבור m שלם"
+],
+[
+"Circles & similarity",
+"מעגלים ודמיון"
+],
+[
+"Volume of revolution",
+"נפח גוף סיבוב"
+],
+[
+"Chapter 4 · Calculus",
+"פרק רביעי · חשבון דיפרנציאלי ואינטגרלי"
+],
+[
+"Min and max problems",
+"בעיות קיצון"
 ],
 [
 "Product + chain rule",
@@ -5717,6 +7996,66 @@
 "השתקה ל-90 שניות"
 ],
 [
+"Write the condition",
+"כותבים את התנאי"
+],
+[
+"Complete the square",
+"משלימים לריבוע"
+],
+[
+"Tangent–chord angle",
+"זווית בין משיק למיתר"
+],
+[
+"Intersecting chords",
+"מיתרים נחתכים"
+],
+[
+"Ratio of similarity",
+"יחס הדמיון"
+],
+[
+"Set up the equation",
+"בונים משוואה"
+],
+[
+"Solve the quadratic",
+"פתרון המשוואה הריבועית"
+],
+[
+"Odd and even places",
+"מקומות זוגיים ואי-זוגיים"
+],
+[
+"Prove for n = k + 1",
+"מוכיחים עבור n = k + 1"
+],
+[
+"k + 1 > 2 for k ≥ 2",
+"k + 1 > 2 עבור k ≥ 2"
+],
+[
+"k + 1 > 3 for k ≥ 3",
+"k + 1 > 3 עבור k ≥ 3"
+],
+[
+"odd and even places",
+"מקומות זוגיים ואי-זוגיים"
+],
+[
+"odd and even series",
+"טור במקומות זוגיים ואי-זוגיים"
+],
+[
+"Number of solutions",
+"מספר פתרונות"
+],
+[
+"Ellipse: axes, foci",
+"אליפסה: צירים, מוקדים"
+],
+[
 "stretched away from",
 "מתרחק מ"
 ],
@@ -5763,10 +8102,6 @@
 [
 "Which one is on top",
 "מי למעלה"
-],
-[
-"Solve the quadratic",
-"פתרון המשוואה הריבועית"
 ],
 [
 "Substitute u = ln x",
@@ -5863,6 +8198,78 @@
 [
 "Solved — alarm off",
 "נפתר — השעון כבוי"
+],
+[
+"parabola directrix",
+"מדריך הפרבולה"
+],
+[
+"Foci of an ellipse",
+"מוקדי אליפסה"
+],
+[
+"hyperbola property",
+"תכונת ההיפרבולה"
+],
+[
+"Expand and collect",
+"פותחים סוגריים ומכנסים"
+],
+[
+"Q is on the circle",
+"Q על המעגל"
+],
+[
+"conjugate equation",
+"משוואה עם צמוד"
+],
+[
+"Integrate once: f′",
+"פונקציה קדומה פעם אחת: f′"
+],
+[
+"Integrate again: f",
+"ושוב: f"
+],
+[
+"The exterior angle",
+"הזווית החיצונית"
+],
+[
+"tangent and secant",
+"משיק וחותך"
+],
+[
+"right triangle leg",
+"ניצב במשולש ישר-זווית"
+],
+[
+"between 0° and 90°",
+"בין 0° ל-90°"
+],
+[
+"The missing values",
+"הערכים החסרים"
+],
+[
+"The volume formula",
+"נוסחת הנפח"
+],
+[
+"power substitution",
+"הצבה בחזקה"
+],
+[
+"The term asked for",
+"האיבר המבוקש"
+],
+[
+"Angles in a circle",
+"זוויות במעגל"
+],
+[
+"Tangent and normal",
+"משיק ונורמל"
 ],
 [
 "vertical asymptote",
@@ -5997,6 +8404,86 @@
 "אין עדיין מועדפים"
 ],
 [
+"Equate the points",
+"משווים את הנקודות"
+],
+[
+"The meeting point",
+"נקודת החיתוך"
+],
+[
+"They are parallel",
+"מקבילים"
+],
+[
+"parabola distance",
+"מרחק מהמוקד"
+],
+[
+"second derivative",
+"נגזרת שנייה"
+],
+[
+"The central angle",
+"הזווית המרכזית"
+],
+[
+"tangent and chord",
+"משיק ומיתר"
+],
+[
+"similar triangles",
+"משולשים דומים"
+],
+[
+"identity equation",
+"משוואה עם זהות"
+],
+[
+"the first term a₁",
+"האיבר הראשון a₁"
+],
+[
+"Subtract the sums",
+"מחסרים את הסכומים"
+],
+[
+"Does it converge?",
+"האם הטור מתכנס?"
+],
+[
+"Check convergence",
+"בודקים התכנסות"
+],
+[
+"recursive formula",
+"נוסחה מפורשת לנסיגה"
+],
+[
+"Analytic geometry",
+"גאומטריה אנליטית"
+],
+[
+"Similar triangles",
+"משולשים דומים"
+],
+[
+"Decay & half-life",
+"דעיכה ומחצית חיים"
+],
+[
+"Paper 571 (35571)",
+"שאלון 571 (35571)"
+],
+[
+"Paper 572 (35572)",
+"שאלון 572 (35572)"
+],
+[
+"Back to the paper",
+"חזרה לשאלון"
+],
+[
 "up out of the top",
 "למעלה מעבר לגבול העליון"
 ],
@@ -6121,6 +8608,66 @@
 "תווית (לא חובה)"
 ],
 [
+"line meets plane",
+"ישר חותך מישור"
+],
+[
+"Distance formula",
+"נוסחת המרחק"
+],
+[
+"— MP is vertical",
+"— MP אנכי"
+],
+[
+"ellipse triangle",
+"משולש באליפסה"
+],
+[
+"Write z = x + yi",
+"כותבים z = x + yi"
+],
+[
+"Combine the logs",
+"איחוד הלוגריתמים"
+],
+[
+"Check the domain",
+"בדיקת תחום ההגדרה"
+],
+[
+"Count all groups",
+"סופרים את כל הקבוצות"
+],
+[
+"the difference d",
+"ההפרש d"
+],
+[
+"A formula for aₙ",
+"נוסחה ל-aₙ"
+],
+[
+"Assume for n = k",
+"מניחים עבור n = k"
+],
+[
+"Try small values",
+"מנסים ערכים קטנים"
+],
+[
+"Vectors in space",
+"וקטורים במרחב"
+],
+[
+"Logs in any base",
+"לוגריתמים בכל בסיס"
+],
+[
+"Roots & polygons",
+"שורשים ומצולעים"
+],
+[
 "inflection point",
 "נקודת פיתול"
 ],
@@ -6155,14 +8702,6 @@
 [
 "The discriminant",
 "הדיסקרימיננטה"
-],
-[
-"Combine the logs",
-"איחוד הלוגריתמים"
-],
-[
-"Check the domain",
-"בדיקת תחום ההגדרה"
 ],
 [
 "ln is one-to-one",
@@ -6225,16 +8764,88 @@
 "אין עדיין בעיות"
 ],
 [
+"parallel planes",
+"מישורים מקבילים"
+],
+[
+"The radius to P",
+"הרדיוס ל-P"
+],
+[
+"line and circle",
+"ישר ומעגל"
+],
+[
+"Compare with R²",
+"משווים ל-R²"
+],
+[
+"two populations",
+"שתי אוכלוסיות"
+],
+[
+"Use both values",
+"משתמשים בשני הנתונים"
+],
+[
+"inscribed angle",
+"זווית היקפית"
+],
+[
+"Opposite angles",
+"זוויות נגדיות"
+],
+[
+"tangent lengths",
+"אורכי משיקים"
+],
+[
+"Use the formula",
+"משתמשים בנוסחה"
+],
+[
+"Change the base",
+"מעבר בסיס"
+],
+[
+"The sum formula",
+"נוסחת הסכום"
+],
+[
+"It is geometric",
+"זה טור הנדסי"
+],
+[
+"arithmetic term",
+"איבר בסדרה חשבונית"
+],
+[
+"recursive terms",
+"איברים בנוסחת נסיגה"
+],
+[
+"Trig identities",
+"זהויות טריגונומטריות"
+],
+[
+"Complex numbers",
+"מספרים מרוכבים"
+],
+[
+"Rational powers",
+"חזקות רציונליות"
+],
+[
+"Infinite series",
+"טור אינסופי"
+],
+[
 "Inner function:",
 "הפונקציה הפנימית:"
 ],
 [
 "Move each point",
 "מזיזים כל נקודה"
-],
-[
-"Trig identities",
-"זהויות טריגונומטריות"
 ],
 [
 "Formula → graph",
@@ -6341,6 +8952,110 @@
 "שיא חדש!"
 ],
 [
+"line and plane",
+"ישר ומישור"
+],
+[
+"point to plane",
+"נקודה ממישור"
+],
+[
+"Line through P",
+"ישר דרך P"
+],
+[
+"parabola focus",
+"מוקד הפרבולה"
+],
+[
+"hyperbola foci",
+"מוקדי היפרבולה"
+],
+[
+"midpoint locus",
+"מקום גאומטרי של אמצעים"
+],
+[
+"Write Q with M",
+"מבטאים את Q בעזרת M"
+],
+[
+"roots argument",
+"ארגומנט של שורש"
+],
+[
+"roots quadrant",
+"שורשים ברביע"
+],
+[
+"decay constant",
+"קבוע הדעיכה"
+],
+[
+"Twice the time",
+"פי 2 זמן"
+],
+[
+"angle bisector",
+"חוצה זווית"
+],
+[
+"Equal tangents",
+"משיקים שווים"
+],
+[
+"tan of the sum",
+"טנגנס של סכום"
+],
+[
+"Use identities",
+"משתמשים בזהויות"
+],
+[
+"change of base",
+"מעבר בסיס"
+],
+[
+"rational power",
+"חזקה רציונלית"
+],
+[
+"arithmetic sum",
+"סכום סדרה חשבונית"
+],
+[
+"geometric term",
+"איבר בסדרה הנדסית"
+],
+[
+"Growth & decay",
+"גדילה ודעיכה"
+],
+[
+"Find f from f′",
+"מציאת f מתוך f′"
+],
+[
+"Lines in space",
+"ישרים במרחב"
+],
+[
+"Algebraic form",
+"הצגה אלגברית"
+],
+[
+"Find the model",
+"מציאת המודל"
+],
+[
+"Law of cosines",
+"משפט הקוסינוסים"
+],
+[
+"Start the exam",
+"התחלת הבחינה"
+],
+[
 "y-axis (x = 0)",
 "ציר y (x = 0)"
 ],
@@ -6363,10 +9078,6 @@
 [
 "Repeated tries",
 "ניסיונות חוזרים"
-],
-[
-"Law of cosines",
-"משפט הקוסינוסים"
 ],
 [
 "Fences & boxes",
@@ -6499,6 +9210,58 @@
 [
 "Daily problem",
 "הבעיה היומית"
+],
+[
+"The vector AB",
+"הווקטור AB"
+],
+[
+"perpendicular",
+"ניצבות"
+],
+[
+"They are skew",
+"מצטלבים"
+],
+[
+"roots polygon",
+"מצולע השורשים"
+],
+[
+"After t years",
+"אחרי t שנים"
+],
+[
+"Use the point",
+"משתמשים בנקודה"
+],
+[
+"Central angle",
+"זווית מרכזית"
+],
+[
+"tan sum angle",
+"זווית מסכום טנגנסים"
+],
+[
+"log of a base",
+"לוגריתם שהבסיס שלו x"
+],
+[
+"geometric sum",
+"סכום סדרה הנדסית"
+],
+[
+"bouncing ball",
+"כדור קופץ"
+],
+[
+"bounce height",
+"גובה קפיצה"
+],
+[
+"Word problems",
+"בעיות מילוליות"
 ],
 [
 "further right",
@@ -6658,11 +9421,75 @@
 ],
 [
 "Another exam",
-"עוד מבחן"
+"בחינה נוספת"
 ],
 [
 "Solved today",
 "נפתרה היום"
+],
+[
+"Read a and b",
+"קוראים את a ו-b"
+],
+[
+"ellipse foci",
+"מוקדי אליפסה"
+],
+[
+"double angle",
+"זווית כפולה"
+],
+[
+"Which angle?",
+"איזו זווית?"
+],
+[
+"log any base",
+"לוגריתם בכל בסיס"
+],
+[
+"arrangements",
+"סידורים"
+],
+[
+"The last row",
+"השורה האחרונה"
+],
+[
+"arithmetic n",
+"מספר איברים בסדרה חשבונית"
+],
+[
+"infinite sum",
+"סכום טור אינסופי"
+],
+[
+"divisibility",
+"התחלקות"
+],
+[
+"Trigonometry",
+"טריגונומטריה"
+],
+[
+"Sum formulas",
+"נוסחאות סכום"
+],
+[
+"Divisibility",
+"התחלקות"
+],
+[
+"Inequalities",
+"אי-שוויונים"
+],
+[
+"Exact values",
+"ערכים מדויקים"
+],
+[
+"Double angle",
+"זווית כפולה"
 ],
 [
 "further left",
@@ -6806,7 +9633,7 @@
 ],
 [
 "Bagrut exam",
-"מבחן הבגרות"
+"בחינת בגרות"
 ],
 [
 "Awake check",
@@ -6867,6 +9694,90 @@
 [
 "Start timer",
 "הפעל טיימר"
+],
+[
+"Dot product",
+"מכפלה סקלרית"
+],
+[
+"The normals",
+"הנורמלים"
+],
+[
+"Same normal",
+"אותו נורמל"
+],
+[
+"Read it off",
+"קוראים מהמשוואה"
+],
+[
+"Same arc AB",
+"אותה קשת AB"
+],
+[
+"exact value",
+"ערך מדויק"
+],
+[
+"sum formula",
+"נוסחת סכום"
+],
+[
+"The formula",
+"הנוסחה"
+],
+[
+"Check t ≥ 0",
+"בודקים t ≥ 0"
+],
+[
+"Good orders",
+"סידורים מתאימים"
+],
+[
+"the ratio q",
+"המנה q"
+],
+[
+"Solve for n",
+"פותרים עבור n"
+],
+[
+"Solve for q",
+"פותרים עבור q"
+],
+[
+"Add them up",
+"מחברים"
+],
+[
+"Down and up",
+"למטה ולמעלה"
+],
+[
+"Check n = 1",
+"בדיקה עבור n = 1"
+],
+[
+"geometric n",
+"מספר איברים בסדרה הנדסית"
+],
+[
+"series in x",
+"טור עם x"
+],
+[
+"Polynomials",
+"פולינומים"
+],
+[
+"Derivatives",
+"נגזרות"
+],
+[
+"Sign tables",
+"טבלאות סימנים"
 ],
 [
 "Proportions",
@@ -6939,10 +9850,6 @@
 [
 "Plays sport",
 "עוסק בספורט"
-],
-[
-"The formula",
-"הנוסחה"
 ],
 [
 "The tangent",
@@ -7057,6 +9964,86 @@
 "שעון בדיקה"
 ],
 [
+"Its length",
+"אורכו"
+],
+[
+"lines meet",
+"ישרים נחתכים"
+],
+[
+"two planes",
+"שני מישורים"
+],
+[
+"apollonius",
+"מעגל אפולוניוס"
+],
+[
+"polar form",
+"הצגה קוטבית"
+],
+[
+"Polar form",
+"הצגה קוטבית"
+],
+[
+"decay time",
+"זמן דעיכה"
+],
+[
+"polynomial",
+"פולינום"
+],
+[
+"area ratio",
+"יחס שטחים"
+],
+[
+"Find cos α",
+"מוצאים את cos α"
+],
+[
+"All orders",
+"כל הסידורים"
+],
+[
+"Conclusion",
+"מסקנה"
+],
+[
+"added term",
+"האיבר שמתווסף"
+],
+[
+"inequality",
+"אי-שוויון"
+],
+[
+"Bagrut map",
+"מפת הבגרות"
+],
+[
+"Arithmetic",
+"חשבונית"
+],
+[
+"eˣ and 1/x",
+"eˣ ו-1/x"
+],
+[
+"Full exams",
+"בחינות מלאות"
+],
+[
+"Parameters",
+"פרמטרים"
+],
+[
+"Keep going",
+"להמשיך"
+],
+[
 "Shape only",
 "צורה בלבד"
 ],
@@ -7079,10 +10066,6 @@
 [
 "its domain",
 "תחום ההגדרה שלה"
-],
-[
-"Conclusion",
-"מסקנה"
 ],
 [
 "increasing",
@@ -7198,7 +10181,7 @@
 ],
 [
 "Integrate",
-"אינטגרל של "
+"מוצאים פונקציה קדומה"
 ],
 [
 "Functions",
@@ -7253,6 +10236,86 @@
 "מבחן קצר"
 ],
 [
+"The angle",
+"הזווית"
+],
+[
+"two lines",
+"שני ישרים"
+],
+[
+"The point",
+"הנקודה"
+],
+[
+"ellipse b",
+"הציר b באליפסה"
+],
+[
+"quadratic",
+"משוואה ריבועית"
+],
+[
+"de moivre",
+"דה-מואבר"
+],
+[
+"De Moivre",
+"דה-מואבר"
+],
+[
+"The roots",
+"השורשים"
+],
+[
+"half-life",
+"מחצית חיים"
+],
+[
+"The chord",
+"המיתר"
+],
+[
+"Back to x",
+"חזרה ל-x"
+],
+[
+"Sequences",
+"סדרות"
+],
+[
+"Induction",
+"אינדוקציה"
+],
+[
+"Geometric",
+"הנדסית"
+],
+[
+"Recursive",
+"נוסחת נסיגה"
+],
+[
+"Distances",
+"מרחקים"
+],
+[
+"Hyperbola",
+"היפרבולה"
+],
+[
+"How long?",
+"כמה זמן?"
+],
+[
+"eˣ and ln",
+"eˣ ו-ln"
+],
+[
+"Integrals",
+"אינטגרלים"
+],
+[
 "Precision",
 "דיוק"
 ],
@@ -7281,10 +10344,6 @@
 "לופיטל"
 ],
 [
-"Back to x",
-"חזרה ל-x"
-],
-[
 "same base",
 "אותו בסיס"
 ],
@@ -7307,10 +10366,6 @@
 [
 "two steps",
 "שני שלבים"
-],
-[
-"The angle",
-"הזווית"
 ],
 [
 "perimeter",
@@ -7339,10 +10394,6 @@
 [
 "growth ln",
 "קצב גידול של ln"
-],
-[
-"The point",
-"הנקודה"
 ],
 [
 "removable",
@@ -7425,6 +10476,54 @@
 "שפה"
 ],
 [
+"A normal",
+"וקטור נורמל"
+],
+[
+"Put D in",
+"מציבים את D"
+],
+[
+"multiply",
+"כפל"
+],
+[
+"Argument",
+"ארגומנט"
+],
+[
+"smallest",
+"הקטן ביותר"
+],
+[
+"compound",
+"ריבית דריבית"
+],
+[
+"simplify",
+"פישוט"
+],
+[
+"counting",
+"קומבינטוריקה"
+],
+[
+"Geometry",
+"גאומטריה"
+],
+[
+"Counting",
+"קומבינטוריקה"
+],
+[
+"Simplify",
+"פישוט"
+],
+[
+"Parabola",
+"פרבולה"
+],
+[
 "Standard",
 "רגיל"
 ],
@@ -7455,10 +10554,6 @@
 [
 "The rule",
 "הכלל"
-],
-[
-"smallest",
-"הקטן ביותר"
 ],
 [
 "Equation",
@@ -7561,6 +10656,22 @@
 "לחזרה עכשיו"
 ],
 [
+"Take ln",
+"לוקחים ln"
+],
+[
+"tan sum",
+"טנגנס של סכום"
+],
+[
+"Find a₁",
+"מוצאים את a₁"
+],
+[
+"Find q.",
+"מצאו את q."
+],
+[
 "maximum",
 "מקסימום"
 ],
@@ -7605,6 +10716,22 @@
 "לפי"
 ],
 [
+"Set up",
+"בניית הפונקציה"
+],
+[
+"find k",
+"מציאת k"
+],
+[
+"Find q",
+"מוצאים את q"
+],
+[
+"find q",
+"מציאת q"
+],
+[
 "up (∪)",
 "קעורה כלפי מעלה (∪)"
 ],
@@ -7631,10 +10758,6 @@
 [
 "base 2",
 "בסיס 2"
-],
-[
-"Set up",
-"בניית הפונקציה"
 ],
 [
 "start",

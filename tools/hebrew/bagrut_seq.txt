@@ -1,0 +1,156 @@
+# Sequences and induction (Sequences.swift).
+the first term a₁ ⟹ האיבר הראשון a₁
+the difference d ⟹ ההפרש d
+the ratio q ⟹ המנה q
+Write both terms with a₁ and d ⟹ כותבים את שני האיברים בעזרת a₁ ו-d
+Subtract the equations ⟹ מחסרים את המשוואות
+Find a₁ ⟹ מוצאים את a₁
+The term asked for ⟹ האיבר המבוקש
+In an arithmetic sequence {} = {} and {} = {}. Find {}. ⟹ בסדרה חשבונית {} = {} ו-{} = {}. מצאו את {}.
+An arithmetic sequence has a₁ = {} and d = {}. Find the sum of its first {} terms. ⟹ בסדרה חשבונית a₁ = {} ו-d = {}. מצאו את סכום {} האיברים הראשונים שלה.
+The sum formula ⟹ נוסחת הסכום
+Substitute n = {} ⟹ מציבים n = {}
+In an arithmetic sequence a₁ = {} and d = {}. How many terms must be added for the sum to be {}? ⟹ בסדרה חשבונית a₁ = {} ו-d = {}. כמה איברים צריך לחבר כדי שהסכום יהיה {}?
+Set up the equation ⟹ בונים משוואה
+Discriminant = ({})² + 8·({})·({}) = {},  √{} = {} ⟹ דיסקרימיננטה = ({})² + 8·({})·({}) = {},  √{} = {}
+n counts terms, so it must be a positive whole number: n = {} is rejected. ⟹ n סופר איברים, ולכן הוא חייב להיות מספר טבעי: n = {} נפסל.
+Solve the quadratic ⟹ פותרים את המשוואה הריבועית
+Two sequences inside one ⟹ שתי סדרות בתוך אחת
+The odd places a₁, a₃, a₅, … and the even places a₂, a₄, a₆, … each have {} terms and difference 2d. ⟹ למקומות האי-זוגיים a₁, a₃, a₅, … ולמקומות הזוגיים a₂, a₄, a₆, … יש {} איברים לכל אחד, עם הפרש 2d.
+Each even-place term is the odd-place term before it plus d: a₂ = a₁ + d, a₄ = a₃ + d, … ⟹ כל איבר במקום זוגי שווה לאיבר שלפניו (במקום אי-זוגי) ועוד d: a₂ = a₁ + d, a₄ = a₃ + d, …
+Subtract the sums ⟹ מחסרים את הסכומים
+S(even) − S(odd) = {}·d  ⇒  {} − {} = {}d ⟹ S(זוגיים) − S(אי-זוגיים) = {}·d  ⇒  {} − {} = {}d
+Find a₁ from the odd-place sum ⟹ מוצאים את a₁ מסכום המקומות האי-זוגיים
+S(odd) = {}/2·(2a₁ + {}·2d) = {} ⟹ S(אי-זוגיים) = {}/2·(2a₁ + {}·2d) = {}
+An arithmetic sequence has {} terms. The sum of the terms in the odd places is {}, and the sum of the terms in the even places is {}. Find {}. ⟹ בסדרה חשבונית יש {} איברים. סכום האיברים במקומות האי-זוגיים הוא {}, וסכום האיברים במקומות הזוגיים הוא {}. מצאו את {}.
+Write both terms with a₁ and q ⟹ כותבים את שני האיברים בעזרת a₁ ו-q
+Divide the equations ⟹ מחלקים את המשוואות
+q = ±{}, and the question says q {}: q = {} ⟹ q = ±{}, ולפי הנתון q {}: q = {}
+In a geometric sequence {} = {} and {} = {}. Find {}. ⟹ בסדרה הנדסית {} = {} ו-{} = {}. מצאו את {}.
+In a geometric sequence with a positive ratio, {} = {} and {} = {}. Find {}. ⟹ בסדרה הנדסית שהמנה שלה חיובית, {} = {} ו-{} = {}. מצאו את {}.
+In a geometric sequence with a negative ratio, {} = {} and {} = {}. Find {}. ⟹ בסדרה הנדסית שהמנה שלה שלילית, {} = {} ו-{} = {}. מצאו את {}.
+A geometric sequence has a₁ = {} and q = {}. Find the sum of its first {} terms. ⟹ בסדרה הנדסית a₁ = {} ו-q = {}. מצאו את סכום {} האיברים הראשונים שלה.
+A geometric sequence has a₁ = {} and q = {}. How many terms give a sum of {}? ⟹ בסדרה הנדסית a₁ = {} ו-q = {}. כמה איברים נותנים סכום של {}?
+Solve for n ⟹ פותרים עבור n
+{} = {}^{} (or n = ln {} / ln {}) ⟹ {} = {}^{} (או n = ln {} / ln {})
+Find the sum of the infinite geometric series  {} + ({}) + ({}) + … ⟹ מצאו את סכום הטור ההנדסי האינסופי  {} + ({}) + ({}) + …
+Find q ⟹ מוצאים את q
+Does it converge? ⟹ האם הטור מתכנס?
+|q| = {} < 1, so the infinite sum exists. ⟹ |q| = {} < 1, ולכן הסכום האינסופי קיים.
+An infinite geometric series has first term {} and sum {}. Find its ratio q. ⟹ לטור הנדסי אינסופי האיבר הראשון {} והסכום {}. מצאו את המנה q.
+Solve for q ⟹ פותרים עבור q
+|q| < 1, so the series really converges. ⟹ |q| < 1, ולכן הטור אכן מתכנס.
+Check ⟹ בדיקה
+Odd and even places ⟹ מקומות זוגיים ואי-זוגיים
+Odd places: a₁ + a₁q² + a₁q⁴ + …  = a₁/(1 − q²) ⟹ מקומות אי-זוגיים: a₁ + a₁q² + a₁q⁴ + …  = a₁/(1 − q²)
+Even places: a₁q + a₁q³ + …  = a₁q/(1 − q²) ⟹ מקומות זוגיים: a₁q + a₁q³ + …  = a₁q/(1 − q²)
+Divide ⟹ מחלקים
+S(odd)/S(even) = 1/q = {}  ⇒  q = 1/{} ⟹ S(אי-זוגיים)/S(זוגיים) = 1/q = {}  ⇒  q = 1/{}
+In an infinite geometric series with positive terms, the sum of the terms in the odd places is {} times the sum of the terms in the even places. ⟹ בטור הנדסי אינסופי שאיבריו חיוביים, סכום האיברים במקומות האי-זוגיים גדול פי {} מסכום האיברים במקומות הזוגיים.
+The sum of the whole series is {}. Find a₁. ⟹ סכום הטור כולו הוא {}. מצאו את a₁.
+Find q. ⟹ מצאו את q.
+S = a₁/(1 − 1/{}) = {}a₁/{} = {} ⟹ S = a₁/(1 − 1/{}) = {}a₁/{} = {}
+The series  1 + {}x + {}x² + {}x³ + …  converges, and its sum is {}. Find x. ⟹ הטור  1 + {}x + {}x² + {}x³ + …  מתכנס, וסכומו {}. מצאו את x.
+It is geometric ⟹ זה טור הנדסי
+Check convergence ⟹ בודקים התכנסות
+q = {}x = {}, and |q| < 1 ✓ ⟹ q = {}x = {}, ו-|q| < 1 ✓
+A sequence is defined by a₁ = {} and {} for every n ≥ 1. Find {}. ⟹ סדרה מוגדרת על ידי a₁ = {} ו-{} לכל n ≥ 1. מצאו את {}.
+Apply the rule step by step ⟹ מפעילים את הכלל שלב אחר שלב
+Put n = 1, 2, 3, … into the rule; each term is built from the one before. ⟹ מציבים n = 1, 2, 3, … בכלל; כל איבר נבנה מהאיבר שלפניו.
+A sequence is defined by a₁ = {} and aₙ₊₁ = {}aₙ{}. For which n does aₙ = {}? ⟹ סדרה מוגדרת על ידי a₁ = {} ו-aₙ₊₁ = {}aₙ{}. עבור איזה n מתקיים aₙ = {}?
+Find a sequence that is geometric ⟹ מוצאים סדרה הנדסית
+Try bₙ = aₙ − L, where L solves L = {}L{}:  L = {} ⟹ ננסה bₙ = aₙ − L, כאשר L פותר את L = {}L{}:  L = {}
+So bₙ is geometric with q = {} and b₁ = {}{} = {}. ⟹ לכן bₙ הנדסית עם q = {} ו-b₁ = {}{} = {}.
+A formula for aₙ ⟹ נוסחה ל-aₙ
+Solve ⟹ פותרים
+Noa saves {} ₪ in the first month, and every month she saves {} ₪ more than the month before. How much has she saved after {} months? ⟹ נועה חוסכת {} ₪ בחודש הראשון, ובכל חודש היא חוסכת {} ₪ יותר מבחודש הקודם. כמה חסכה אחרי {} חודשים?
+It is an arithmetic sequence ⟹ זו סדרה חשבונית
+Monthly amounts: {}, {}, {}, …   a₁ = {},  d = {} ⟹ הסכומים החודשיים: {}, {}, {}, …   a₁ = {},  d = {}
+Add the first {} terms ⟹ מחברים את {} האיברים הראשונים
+A hall has {} rows. The first row has {} seats and each row has {} more seat{} than the row in front of it. How many seats are there? ⟹ באולם {1} שורות. בשורה הראשונה {2} מושבים, ובכל שורה יש {3} מושבים יותר מבשורה שלפניה. כמה מושבים יש באולם?
+The last row ⟹ השורה האחרונה
+Add them up ⟹ מחברים
+S = {} seats ⟹ S = {} מושבים
+A ball is dropped from a height of {} m. After each bounce it rises to {} of the height before. What total distance does it travel until it stops? ⟹ כדור נזרק מגובה {} מ׳. אחרי כל קפיצה הוא עולה ל-{} מהגובה הקודם. איזה מרחק כולל הוא עובר עד שהוא נעצר?
+Down and up ⟹ למטה ולמעלה
+It falls {} m; then each bounce goes up and comes down the same height. ⟹ הוא נופל {} מ׳; אחר כך בכל קפיצה הוא עולה ויורד את אותו גובה.
+Heights after the bounces: {}·{}, {}·({})², …  a geometric series with q = {} ⟹ הגבהים אחרי הקפיצות: {}·{}, {}·({})², …  טור הנדסי עם q = {}
+Add the infinite series ⟹ מחברים את הטור האינסופי
+Up-and-down part: 2·({})/(1 − {}) = {} ⟹ החלק של העליות והירידות: 2·({})/(1 − {}) = {}
+Total = {} + {} = {} m ⟹ סך הכול = {} + {} = {} מ׳
+A ball is dropped from a height of {} m. After each bounce it rises to {} of the height before. How high does it rise after the {} bounce? ⟹ כדור נזרק מגובה {} מ׳. אחרי כל קפיצה הוא עולה ל-{} מהגובה הקודם. לאיזה גובה הוא עולה אחרי הקפיצה ה{}?
+first ⟹ ראשונה
+second ⟹ שנייה
+third ⟹ שלישית
+fourth ⟹ רביעית
+A geometric sequence ⟹ סדרה הנדסית
+The heights after each bounce: {}·{}, {}·({})², … ⟹ הגבהים אחרי כל קפיצה: {}·{}, {}·({})², …
+After bounce {}: {}·({})^{} = {} m ⟹ אחרי קפיצה {}: {}·({})^{} = {} מ׳
+A monthly salary of {} ₪ rises by {}% at the start of every year. How much is earned in total in {} years? Give the answer to the nearest shekel. ⟹ משכורת חודשית של {} ₪ עולה ב-{}% בתחילת כל שנה. כמה מרוויחים בסך הכול ב-{} שנים? עגלו לשקל השלם.
+Yearly pay is geometric ⟹ השכר השנתי הוא סדרה הנדסית
+Year 1: 12·{} = {},  then ×{} every year: q = {} ⟹ שנה 1: 12·{} = {},  ואז ×{} בכל שנה: q = {}
+Add {} years ⟹ מחברים {} שנים
+S ≈ {} ₪ ⟹ S ≈ {} ₪
+Check n = 1 ⟹ בדיקה עבור n = 1
+Left side: the first term, {}.  Right side: {}.  ✓ ⟹ אגף שמאל: האיבר הראשון, {}.  אגף ימין: {}.  ✓
+Assume it is true for n = k ⟹ מניחים שהטענה נכונה עבור n = k
+Prove it for n = k + 1 ⟹ מוכיחים עבור n = k + 1
+The left side for k + 1 is the left side for k plus one more term: {} ⟹ אגף שמאל עבור k + 1 הוא אגף שמאל עבור k ועוד איבר אחד: {}
+By the assumption it equals  {} + {} ⟹ לפי ההנחה הוא שווה  {} + {}
+This is the right side for n = k + 1: {}  ✓ ⟹ זה אגף ימין עבור n = k + 1: {}  ✓
+Conclusion ⟹ מסקנה
+True for n = 1, and true for k + 1 whenever true for k: true for every n ≥ 1. ⟹ נכון עבור n = 1, ונכון עבור k + 1 בכל פעם שנכון עבור k: נכון לכל n ≥ 1.
+We prove  {} = {}  by induction. Going from n = k to n = k + 1, which term is added to the left side? ⟹ מוכיחים באינדוקציה ש-  {} = {}. במעבר מ-n = k ל-n = k + 1, איזה איבר מתווסף לאגף שמאל?
+The added term is {} ⟹ האיבר שמתווסף הוא {}
+We prove  {} = {}  by induction. In the step, assuming it for n = k, what must the left side for n = k + 1 be shown to equal? ⟹ מוכיחים באינדוקציה ש-  {} = {}. בצעד האינדוקציה, בהנחה שהטענה נכונה עבור n = k, למה צריך להראות שאגף שמאל עבור n = k + 1 שווה?
+Show it equals {} ⟹ צריך להראות שהוא שווה {}
+Check the formula  {} = {}  for n = {}: what do both sides equal? ⟹ בדקו את הנוסחה  {} = {}  עבור n = {}: למה שווים שני האגפים?
+Left side for n = {} ⟹ אגף שמאל עבור n = {}
+Add the first {} terms of the sum. ⟹ מחברים את {} האיברים הראשונים של הסכום.
+Right side for n = {} ⟹ אגף ימין עבור n = {}
+Put n = {} into the formula. ⟹ מציבים n = {} בנוסחה.
+Both sides equal {} ⟹ שני האגפים שווים ל-{}
+Check the formula  {} = n/(n + 1)  for n = {}: what is the right side? ⟹ בדקו את הנוסחה  {} = n/(n + 1)  עבור n = {}: מהו אגף ימין?
+{}¹ − 1 = {}, divisible by {}  ✓ ⟹ {}¹ − 1 = {}, מתחלק ב-{}  ✓
+Assume for n = k ⟹ מניחים עבור n = k
+{}^k − 1 = {}m for a whole number m ⟹ {}^k − 1 = {}m עבור m שלם
+Prove for n = k + 1 ⟹ מוכיחים עבור n = k + 1
+We prove by induction that {}ⁿ − 1 is divisible by {} for every n ≥ 1. Which way of writing {}^(k + 1) − 1 makes the step work? ⟹ מוכיחים באינדוקציה ש-{}ⁿ − 1 מתחלק ב-{} לכל n ≥ 1. איזו כתיבה של {}^(k + 1) − 1 מאפשרת את צעד האינדוקציה?
+Add and take away {}·{}^k: ⟹ מוסיפים ומחסירים {}·{}^k:
+We prove that {}ⁿ − {}ⁿ is divisible by {} for every n ≥ 1. Which expression equals {}^(k + 1) − {}^(k + 1) and shows the step? ⟹ מוכיחים ש-{}ⁿ − {}ⁿ מתחלק ב-{} לכל n ≥ 1. איזה ביטוי שווה ל-{}^(k + 1) − {}^(k + 1) ומראה את הצעד?
+We prove that 4ⁿ + 15n − 1 is divisible by 9. Which expression equals 4^(k + 1) + 15(k + 1) − 1? ⟹ מוכיחים ש-4ⁿ + 15n − 1 מתחלק ב-9. איזה ביטוי שווה ל-4^(k + 1) + 15(k + 1) − 1?
+We prove that 3^(2n + 1) + 2^(n + 2) is divisible by 7. Which expression equals 3^(2k + 3) + 2^(k + 3)? ⟹ מוכיחים ש-3^(2n + 1) + 2^(n + 2) מתחלק ב-7. איזה ביטוי שווה ל-3^(2k + 3) + 2^(k + 3)?
+2k² ≥ (k + 1)²  ⇔  k² − 2k − 1 ≥ 0, true for k ≥ 3 ⟹ 2k² ≥ (k + 1)²  ⇔  k² − 2k − 1 ≥ 0, נכון עבור k ≥ 3
+3k³ ≥ (k + 1)³  ⇔  (1 + 1/k)³ ≤ 3, true for k ≥ 3 ⟹ 3k³ ≥ (k + 1)³  ⇔  (1 + 1/k)³ ≤ 3, נכון עבור k ≥ 3
+k + 1 > 2 for k ≥ 2 ⟹ k + 1 > 2 עבור k ≥ 2
+k + 1 > 3 for k ≥ 3 ⟹ k + 1 > 3 עבור k ≥ 3
+So {} ⟹ לכן {}
+The inequality {} is proved by induction for every n ≥ n₀. Find the smallest such whole number n₀ ≥ 1 (it must be true from n₀ on). ⟹ את אי-השוויון {} מוכיחים באינדוקציה לכל n ≥ n₀. מצאו את המספר הטבעי הקטן ביותר n₀ ≥ 1 כזה (אי-השוויון חייב להתקיים מ-n₀ והלאה).
+Try small values ⟹ מנסים ערכים קטנים
+So n₀ = {} is the base case; the step shows it stays true from there on. ⟹ לכן n₀ = {} הוא בסיס האינדוקציה; הצעד מראה שהטענה נשארת נכונה מכאן והלאה.
+Assume for n = k ≥ {} ⟹ מניחים עבור n = k ≥ {}
+True for n = {}, and true for k + 1 whenever true for k ≥ {}. ⟹ נכון עבור n = {}, ונכון עבור k + 1 בכל פעם שנכון עבור k ≥ {}.
+for a whole number m ⟹ עבור m שלם
+arithmetic term ⟹ איבר בסדרה חשבונית
+arithmetic sum ⟹ סכום סדרה חשבונית
+arithmetic n ⟹ מספר איברים בסדרה חשבונית
+odd and even places ⟹ מקומות זוגיים ואי-זוגיים
+geometric term ⟹ איבר בסדרה הנדסית
+geometric sum ⟹ סכום סדרה הנדסית
+geometric n ⟹ מספר איברים בסדרה הנדסית
+infinite sum ⟹ סכום טור אינסופי
+find q ⟹ מציאת q
+odd and even series ⟹ טור במקומות זוגיים ואי-זוגיים
+series in x ⟹ טור עם x
+recursive terms ⟹ איברים בנוסחת נסיגה
+recursive formula ⟹ נוסחה מפורשת לנסיגה
+savings ⟹ חיסכון
+seats ⟹ מושבים
+bouncing ball ⟹ כדור קופץ
+bounce height ⟹ גובה קפיצה
+salary ⟹ משכורת
+added term ⟹ האיבר שמתווסף
+target ⟹ יעד הצעד
+check ⟹ בדיקה
+divisibility ⟹ התחלקות
+inequality ⟹ אי-שוויון

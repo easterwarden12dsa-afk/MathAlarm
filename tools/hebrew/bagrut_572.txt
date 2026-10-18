@@ -1,0 +1,233 @@
+# Vectors, conics, complex numbers, growth (Space.swift, Conics.swift, Growth.swift).
+Give the answer in degrees to 2 decimal places. ⟹ תנו את התשובה במעלות, עד 2 ספרות אחרי הנקודה.
+A = {} and B = {}. Find the length of AB. ⟹ A = {} ו-B = {}. מצאו את אורך AB.
+length ⟹ אורך
+The vector AB ⟹ הווקטור AB
+Its length ⟹ אורכו
+u = {} and v = {}. Find the angle between u and v. {} ⟹ u = {} ו-v = {}. מצאו את הזווית בין u ל-v. {}
+angle between vectors ⟹ זווית בין וקטורים
+Dot product ⟹ מכפלה סקלרית
+Lengths ⟹ אורכים
+The angle ⟹ הזווית
+cos θ < 0, so the angle is obtuse. ⟹ cos θ < 0, ולכן הזווית קהה.
+cos θ > 0, so the angle is acute. ⟹ cos θ > 0, ולכן הזווית חדה.
+u = ({}) and v = {} are perpendicular. Find t. ⟹ u = ({}) ו-v = {} ניצבים. מצאו את t.
+perpendicular ⟹ ניצבות
+Perpendicular means u·v = 0 ⟹ ניצבים פירושו u·v = 0
+Are the directions parallel? ⟹ האם הכיוונים מקבילים?
+{} = {}·{}: the directions are parallel. ⟹ {} = {}·{}: הכיוונים מקבילים.
+{} and {} are not multiples of each other: the directions are not parallel. ⟹ {} ו-{} אינם כפולה זה של זה: הכיוונים אינם מקבילים.
+Is B on the first line? ⟹ האם B על הישר הראשון?
+It is a multiple of {}, so B is on the first line. ⟹ זו כפולה של {}, ולכן B על הישר הראשון.
+It is not a multiple of {}, so B is not on the first line. ⟹ זו אינה כפולה של {}, ולכן B אינה על הישר הראשון.
+Equate the points ⟹ משווים את הנקודות
+Solving: t = {},  s = {} ⟹ פתרון: t = {},  s = {}
+Check the {} equation ⟹ בודקים את המשוואה של {}
+{} agrees, so the lines meet. ⟹ גם {} מתאים, ולכן הישרים נחתכים.
+{} gives {} on the first line but {} on the second: they don't meet. ⟹ ב-{} מתקבל {} בישר הראשון אבל {} בשני: הישרים אינם נחתכים.
+The lines  {}  and  {}  meet at a point. Find its {}-coordinate. ⟹ הישרים  {}  ו-  {}  נחתכים בנקודה. מצאו את שיעור ה-{} שלה.
+lines meet ⟹ ישרים נחתכים
+The meeting point ⟹ נקודת החיתוך
+Put t into the first line: {} ⟹ מציבים את t בישר הראשון: {}
+They meet at one point ⟹ נחתכים בנקודה אחת
+They are parallel ⟹ מקבילים
+They are skew ⟹ מצטלבים
+They are the same line ⟹ אותו ישר
+How are the lines  {}  and  {}  placed? ⟹ מה המצב ההדדי של הישרים  {}  ו-  {}?
+two lines ⟹ שני ישרים
+Find k so that D({}, {}, k) is on the plane through A{}, B{} and C{}. ⟹ מצאו את k כך ש-D({}, {}, k) תהיה על המישור העובר דרך A{}, B{} ו-C{}.
+plane ⟹ מישור
+Two vectors in the plane ⟹ שני וקטורים במישור
+A normal ⟹ וקטור נורמל
+The plane's equation ⟹ משוואת המישור
+Put D in ⟹ מציבים את D
+The line  {}  meets the plane  {}. Find the {}-coordinate of the meeting point. ⟹ הישר  {}  חותך את המישור  {}. מצאו את שיעור ה-{} של נקודת החיתוך.
+line meets plane ⟹ ישר חותך מישור
+A general point of the line ⟹ נקודה כללית על הישר
+Put it into the plane ⟹ מציבים במשוואת המישור
+The point ⟹ הנקודה
+Find the angle between the line  {}  and the plane  {}. {} ⟹ מצאו את הזווית בין הישר  {}  למישור  {}. {}
+line and plane ⟹ ישר ומישור
+Direction and normal ⟹ כיוון ונורמל
+Line direction u = {}, plane normal n = {} ⟹ וקטור הכיוון של הישר u = {}, הנורמל למישור n = {}
+The line makes 90° − (angle with the normal) ⟹ הזווית עם המישור היא 90° פחות הזווית עם הנורמל
+Find the (acute) angle between the planes  {}  and  {}. {} ⟹ מצאו את הזווית (החדה) בין המישורים  {}  ו-  {}. {}
+two planes ⟹ שני מישורים
+The normals ⟹ הנורמלים
+Angle between the normals ⟹ הזווית בין הנורמלים
+Find the distance from P{} to the plane  {}. ⟹ מצאו את המרחק של P{} מהמישור  {}.
+point to plane ⟹ נקודה ממישור
+Distance formula ⟹ נוסחת המרחק
+Find the distance between the parallel planes  {}  and  {}. ⟹ מצאו את המרחק בין המישורים המקבילים  {}  ו-  {}.
+parallel planes ⟹ מישורים מקבילים
+Same normal ⟹ אותו נורמל
+Divide the second equation by {}: {} ⟹ מחלקים את המשוואה השנייה ב-{}: {}
+Find the {} of the circle  {}. ⟹ מצאו את {} של המעגל  {}.
+radius ⟹ הרדיוס
+x-coordinate of the centre ⟹ שיעור ה-x של המרכז
+circle ⟹ מעגל
+Complete the squares ⟹ משלימים לריבוע
+Read it off ⟹ קוראים מהמשוואה
+Centre ({}, {}),  R² = {} ⟹ מרכז ({}, {}),  R² = {}
+The centre's x is {} ⟹ שיעור ה-x של המרכז הוא {}
+P({}, {}) is on the circle  {} + {} = {}. Find the tangent to the circle at P. ⟹ הנקודה P({}, {}) על המעגל  {} + {} = {}. מצאו את המשיק למעגל בנקודה P.
+tangent ⟹ משיק
+The radius to P ⟹ הרדיוס ל-P
+Centre M({}, {}); slope of MP = {}/{} ⟹ מרכז M({}, {}); שיפוע MP = {}/{}
+— MP is vertical ⟹ — MP אנכי
+The tangent is perpendicular to the radius ⟹ המשיק ניצב לרדיוס
+So the tangent is horizontal: slope 0 ⟹ לכן המשיק אופקי: שיפוע 0
+Slope of the tangent = −1 ÷ {} = {} ⟹ שיפוע המשיק = −1 ÷ {} = {}
+Line through P ⟹ ישר דרך P
+How many points do the line  {}  and the circle  {} + {} = {}  have in common? ⟹ כמה נקודות משותפות יש לישר  {}  ולמעגל  {} + {} = {}?
+line and circle ⟹ ישר ומעגל
+Distance from the centre to the line ⟹ המרחק מהמרכז לישר
+Centre ({}, {}),  R² = {};  the line as mx − y + c = 0: {}− y{} = 0 ⟹ מרכז ({}, {}),  R² = {};  הישר בצורה mx − y + c = 0: {}− y{} = 0
+Compare with R² ⟹ משווים ל-R²
+d < R: the line cuts the circle. ⟹ d < R: הישר חותך את המעגל.
+d = R: the line is a tangent. ⟹ d = R: הישר משיק.
+d > R: the line misses the circle. ⟹ d > R: הישר אינו פוגש את המעגל.
+{} common point{} ⟹ {} נקודות משותפות
+Compare with y² = 2px ⟹ משווים ל-y² = 2px
+Focus F(p/2, 0) = ({}, 0);  directrix x = −p/2 = {} ⟹ מוקד F(p/2, 0) = ({}, 0);  מדריך x = −p/2 = {}
+Find the x-coordinate of the focus of the parabola  {}. ⟹ מצאו את שיעור ה-x של מוקד הפרבולה  {}.
+parabola focus ⟹ מוקד הפרבולה
+The directrix of the parabola  {}  is x = c. Find c. ⟹ המדריך של הפרבולה  {}  הוא x = c. מצאו את c.
+parabola directrix ⟹ מדריך הפרבולה
+P({}, {}) is on the parabola  {}. Find its distance from the focus. ⟹ הנקודה P({}, {}) על הפרבולה  {}. מצאו את מרחקה מהמוקד.
+parabola distance ⟹ מרחק מהמוקד
+Focus = directrix distance ⟹ מרחק מהמוקד = מרחק מהמדריך
+Every point of a parabola is as far from the focus as from the directrix. ⟹ כל נקודה על הפרבולה נמצאת באותו מרחק מהמוקד ומהמדריך.
+Distance to x = {}:  {} + {} ⟹ המרחק ל-x = {}:  {} + {}
+Read a and b ⟹ קוראים את a ו-b
+For an ellipse c² = a² − b² = {},  c = {} ⟹ באליפסה c² = a² − b² = {},  c = {}
+Find the positive x-coordinate of a focus of the ellipse  {}. ⟹ מצאו את שיעור ה-x החיובי של מוקד האליפסה  {}.
+ellipse foci ⟹ מוקדי אליפסה
+P is any point on the ellipse  {}, with foci F₁, F₂. Find the perimeter of triangle PF₁F₂. ⟹ P נקודה כלשהי על האליפסה  {}, שמוקדיה F₁, F₂. מצאו את היקף המשולש PF₁F₂.
+ellipse triangle ⟹ משולש באליפסה
+The defining property ⟹ התכונה המגדירה
+PF₁ + PF₂ = 2a = {} for every point of the ellipse ⟹ PF₁ + PF₂ = 2a = {} לכל נקודה על האליפסה
+Perimeter = {} + 2·{} ⟹ היקף = {} + 2·{}
+An ellipse x²/a² + y²/b² = 1 has a = {} and its foci at (±{}, 0). Find b. ⟹ לאליפסה x²/a² + y²/b² = 1 יש a = {} ומוקדים ב-(±{}, 0). מצאו את b.
+ellipse b ⟹ הציר b באליפסה
+Foci of an ellipse ⟹ מוקדי אליפסה
+Find the positive x-coordinate of a focus of the hyperbola  {}. ⟹ מצאו את שיעור ה-x החיובי של מוקד ההיפרבולה  {}.
+hyperbola foci ⟹ מוקדי היפרבולה
+For a hyperbola c² = a² + b² = {} ⟹ בהיפרבולה c² = a² + b² = {}
+The asymptotes of the hyperbola  {}  are y = ±mx. Find m. ⟹ האסימפטוטות של ההיפרבולה  {}  הן y = ±mx. מצאו את m.
+hyperbola asymptotes ⟹ אסימפטוטות של היפרבולה
+The asymptotes of x²/a² − y²/b² = 1 are y = ±(b/a)x ⟹ האסימפטוטות של x²/a² − y²/b² = 1 הן y = ±(b/a)x
+P is on the hyperbola  {}  with foci F₁, F₂. Find |PF₁ − PF₂|. ⟹ P על ההיפרבולה  {}  שמוקדיה F₁, F₂. מצאו את |PF₁ − PF₂|.
+hyperbola property ⟹ תכונת ההיפרבולה
+For every point of a hyperbola, |PF₁ − PF₂| = 2a ⟹ לכל נקודה על ההיפרבולה, |PF₁ − PF₂| = 2a
+A(0, 0) and B({}, 0). Point P moves so that PA = {}·PB. Its path is a circle; find its {}. ⟹ A(0, 0) ו-B({}, 0). הנקודה P נעה כך ש-PA = {}·PB. המסלול שלה הוא מעגל; מצאו את {}.
+centre's x-coordinate ⟹ שיעור ה-x של מרכזו
+apollonius ⟹ מעגל אפולוניוס
+Write the condition ⟹ כותבים את התנאי
+Expand and collect ⟹ פותחים סוגריים ומכנסים
+Complete the square ⟹ משלימים לריבוע
+Centre ({}, 0) ⟹ מרכז ({}, 0)
+Q moves on the circle x² + y² = {}, and A = ({}, {}). M is the midpoint of AQ. Find the {} of the path of M. ⟹ הנקודה Q נעה על המעגל x² + y² = {}, ו-A = ({}, {}). M אמצע הקטע AQ. מצאו את {} של המסלול של M.
+midpoint locus ⟹ מקום גאומטרי של אמצעים
+Write Q with M ⟹ מבטאים את Q בעזרת M
+M = (x, y) is the midpoint, so Q = (2x{}, 2y{}) ⟹ M = (x, y) היא נקודת האמצע, ולכן Q = (2x{}, 2y{})
+Q is on the circle ⟹ Q על המעגל
+Divide by 4: {} + {} = {} ⟹ מחלקים ב-4: {} + {} = {}
+Centre ({}, {}) ⟹ מרכז ({}, {})
+z = ({})/({}). Find {}. ⟹ z = ({})/({}). מצאו את {}.
+divide ⟹ חילוק
+Multiply by the conjugate of the denominator ⟹ כופלים בצמוד של המכנה
+Top: {},  bottom: {} + {} = {} ⟹ מונה: {},  מכנה: {} + {} = {}
+z = ({})({}). Find {}. ⟹ z = ({})({}). מצאו את {}.
+multiply ⟹ כפל
+Multiply out (i² = −1) ⟹ פותחים סוגריים (i² = −1)
+Solve:  z + {}z̄ = {}   (z̄ is the conjugate of z) ⟹ פתרו:  z + {}z̄ = {}   (z̄ הוא הצמוד של z)
+conjugate equation ⟹ משוואה עם צמוד
+Write z = x + yi ⟹ כותבים z = x + yi
+Compare real and imaginary parts ⟹ משווים חלק ממשי וחלק מדומה
+Solve:  {} ⟹ פתרו:  {}
+quadratic ⟹ משוואה ריבועית
+The quadratic formula ⟹ נוסחת השורשים
+Discriminant = {}² − 4·{} = {} < 0 ⟹ דיסקרימיננטה = {}² − 4·{} = {} < 0
+z = {}. Find {}. ⟹ z = {}. מצאו את {}.
+its argument θ in degrees (0° ≤ θ < 360°) ⟹ הארגומנט θ במעלות (0° ≤ θ < 360°)
+polar form ⟹ הצגה קוטבית
+Modulus ⟹ ערך מוחלט
+Argument ⟹ ארגומנט
+The point is in quadrant {} (or on an axis). ⟹ הנקודה ברביע {} (או על ציר).
+z = {}. Find {}(z^{}). ⟹ z = {}. מצאו את {}(z^{}).
+de moivre ⟹ דה-מואבר
+Polar form ⟹ הצגה קוטבית
+De Moivre ⟹ דה-מואבר
+{}° is the same direction as {}°: cos = {}, sin = {} ⟹ {}° זה אותו כיוון כמו {}°: cos = {}, sin = {}
+Polar form of the right side ⟹ הצגה קוטבית של אגף ימין
+The roots ⟹ השורשים
+Solve z^{} = {}. What is the argument (in degrees, 0° ≤ θ < 360°) of the root with the largest argument? ⟹ פתרו z^{} = {}. מהו הארגומנט (במעלות, 0° ≤ θ < 360°) של השורש בעל הארגומנט הגדול ביותר?
+roots argument ⟹ ארגומנט של שורש
+Solve z^{} = {}. How many of the roots are strictly inside the first quadrant? ⟹ פתרו z^{} = {}. כמה מהשורשים נמצאים בתוך הרביע הראשון (לא על הצירים)?
+roots quadrant ⟹ שורשים ברביע
+Strictly between 0° and 90°: {} ⟹ ממש בין 0° ל-90°: {}
+{} root{} ⟹ {} שורשים
+The solutions of z^{} = {} are the vertices of a polygon. Find its area. ⟹ הפתרונות של z^{} = {} הם קדקודי מצולע. מצאו את שטחו.
+roots polygon ⟹ מצולע השורשים
+A regular {}-gon ⟹ מצולע משוכלל בן {} צלעות
+The roots are equally spaced on the circle |z| = {}: {} triangles from the centre, each with angle {}° ⟹ השורשים מפוזרים במרווחים שווים על המעגל |z| = {}: {} משולשים מהמרכז, בכל אחד זווית של {}°
+Area = {}·½·{}²·sin {}° ⟹ שטח = {}·½·{}²·sin {}°
+z moves on the circle |z − ({})| = {}. Find the {} possible value of |z|. ⟹ z נע על המעגל |z − ({})| = {}. מצאו את הערך ה{} האפשרי של |z|.
+largest ⟹ הגדול ביותר
+smallest ⟹ הקטן ביותר
+loci ⟹ מקומות גאומטריים
+What the equation means ⟹ מה המשוואה אומרת
+All points at distance {} from z₀ = {}: a circle with centre z₀ and radius {}. ⟹ כל הנקודות במרחק {} מ-z₀ = {}: מעגל שמרכזו z₀ ורדיוסו {}.
+Distance from the origin ⟹ המרחק מראשית הצירים
+The farthest point is on the line through 0 and z₀, beyond z₀: {} + {} ⟹ הנקודה הרחוקה ביותר על הישר דרך 0 ו-z₀, מעבר ל-z₀: {} + {}
+The origin is outside the circle; the nearest point is {} − {} away. ⟹ הראשית מחוץ למעגל; הנקודה הקרובה ביותר במרחק {} − {}.
+The origin is inside the circle; the nearest point is {} − {} away. ⟹ הראשית בתוך המעגל; הנקודה הקרובה ביותר במרחק {} − {}.
+A bank deposit of {} ₪ earns {}% a year (added to the deposit). ⟹ פיקדון בנקאי של {} ₪ מקבל ריבית של {}% בשנה (שמצטרפת לפיקדון).
+A town of {} people grows by {}% every year. ⟹ עיירה של {} תושבים גדלה ב-{}% בכל שנה.
+How much will there be after {} years? ⟹ כמה יהיה אחרי {} שנים?
+compound ⟹ ריבית דריבית
+Each year multiplies by the same factor ⟹ בכל שנה כופלים באותו גורם
+Growth of {}%: q = 1 + {}/100 = {} ⟹ גדילה של {}%: q = 1 + {}/100 = {}
+After t years ⟹ אחרי t שנים
+An amount grew from {} to {} in {} years, by the same percentage every year. Find that percentage. ⟹ סכום גדל מ-{} ל-{} ב-{} שנים, באותו אחוז בכל שנה. מצאו את האחוז.
+rate ⟹ קצב גדילה
+Set up ⟹ בונים
+{}·qᵗ = {} with t = {} ⟹ {}·qᵗ = {} כאשר t = {}
+Take the {}-th root ⟹ מוציאים שורש מסדר {}
+A substance has a half-life of {} years: N(t) = N₀e^(−kt). Find k. Give it exactly (e.g. ln 2/5) or to 4 decimal places. ⟹ זמן מחצית החיים של חומר הוא {} שנים: N(t) = N₀e^(−kt). מצאו את k. תנו תשובה מדויקת (למשל ln 2/5) או עד 4 ספרות אחרי הנקודה.
+decay constant ⟹ קבוע הדעיכה
+Half of it is left after {} years ⟹ אחרי {} שנים נשאר חצי
+Take ln ⟹ לוקחים ln
+A substance has a half-life of {} years. There are {} g now. How much is left after {} years? ⟹ זמן מחצית החיים של חומר הוא {} שנים. עכשיו יש {} גרם. כמה יישאר אחרי {} שנים?
+half-life ⟹ מחצית חיים
+Halve every {} years ⟹ חצי כל {} שנים
+After t years: N = {}·(½)^(t/{}) ⟹ אחרי t שנים: N = {}·(½)^(t/{})
+Substitute t = {} ⟹ מציבים t = {}
+t/{} = {} (the number of half-lives) ⟹ t/{} = {} (מספר זמני מחצית החיים)
+A car loses {}% of its value every year. After how many years is it worth {}% of the price new? ⟹ מכונית מאבדת {}% מערכה בכל שנה. אחרי כמה שנים היא שווה {}% ממחירה כחדשה?
+decay time ⟹ זמן דעיכה
+Each year ×{}:  {}ᵗ = {} ⟹ בכל שנה ×{}:  {}ᵗ = {}
+t = ln {} / ln {} ≈ {} years ⟹ t = ln {} / ln {} ≈ {} שנים
+A population grows by {}% a year. After how many years will it be {} times as big? ⟹ אוכלוסייה גדלה ב-{}% בשנה. אחרי כמה שנים היא תהיה גדולה פי {}?
+time ⟹ זמן
+Town A has {} people and grows by {}% a year. Town B has {} people and grows by {}% a year. After how many years will they be equal? ⟹ בעיירה A יש {} תושבים והיא גדלה ב-{}% בשנה. בעיירה B יש {} תושבים והיא גדלה ב-{}% בשנה. אחרי כמה שנים מספר התושבים יהיה שווה?
+two populations ⟹ שתי אוכלוסיות
+t ≈ {} years ⟹ t ≈ {} שנים
+A culture follows N(t) = N₀e^(kt). N(0) = {} and N({}) = {}. Find k (exactly, e.g. ln {}/{}, or to 4 decimal places). ⟹ תרבית מתפתחת לפי N(t) = N₀e^(kt). N(0) = {} ו-N({}) = {}. מצאו את k (במדויק, למשל ln {}/{}, או עד 4 ספרות אחרי הנקודה).
+find k ⟹ מציאת k
+Use both values ⟹ משתמשים בשני הנתונים
+A culture follows N(t) = N₀e^(kt). N(0) = {} and N({}) = {}. Find N({}). ⟹ תרבית מתפתחת לפי N(t) = N₀e^(kt). N(0) = {} ו-N({}) = {}. מצאו את N({}).
+predict ⟹ חיזוי
+Twice the time ⟹ פי 2 זמן
+The graph of f passes through ({}, {}). Find f(x). ⟹ הגרף של f עובר דרך ({}, {}). מצאו את f(x).
+polynomial ⟹ פולינום
+Integrate term by term ⟹ מוצאים פונקציה קדומה איבר-איבר
+Use the point ⟹ משתמשים בנקודה
+Integrate ⟹ מוצאים פונקציה קדומה
+For x > 0, the graph of f passes through (1, {}). Find f(x). ⟹ עבור x > 0, הגרף של f עובר דרך (1, {}). מצאו את f(x).
+f′({}) = {} and the graph of f passes through ({}, {}). Find f(x). ⟹ f′({}) = {} והגרף של f עובר דרך ({}, {}). מצאו את f(x).
+second derivative ⟹ נגזרת שנייה
+Integrate once: f′ ⟹ פונקציה קדומה פעם אחת: f′
+Integrate again: f ⟹ ושוב: f
+n = AB × AC = {},  or simply {} ⟹ n = AB × AC = {},  או פשוט {}

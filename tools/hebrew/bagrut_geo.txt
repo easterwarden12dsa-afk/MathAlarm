@@ -1,0 +1,118 @@
+# Circles, similarity and trigonometric identities (Geometry.swift).
+A, B and C are on a circle with centre O, and ∠ACB = {}°. Find the central angle ∠AOB. ⟹ הנקודות A, B ו-C נמצאות על מעגל שמרכזו O, ו-∠ACB = {}°. מצאו את הזווית המרכזית ∠AOB.
+Same arc AB ⟹ אותה קשת AB
+∠ACB is an inscribed angle and ∠AOB is the central angle on the same arc AB. ⟹ ∠ACB היא זווית היקפית ו-∠AOB היא הזווית המרכזית הנשענות על אותה קשת AB.
+A central angle is twice the inscribed angle on the same arc. ⟹ זווית מרכזית גדולה פי 2 מזווית היקפית הנשענת על אותה קשת.
+A, B and C are on a circle with centre O, and the central angle ∠AOB = {}°. Find ∠ACB. ⟹ הנקודות A, B ו-C נמצאות על מעגל שמרכזו O, והזווית המרכזית ∠AOB = {}°. מצאו את ∠ACB.
+∠ACB is inscribed on arc AB; ∠AOB is the central angle on it. ⟹ ∠ACB היא זווית היקפית על הקשת AB; ∠AOB היא הזווית המרכזית עליה.
+Inscribed angle = half the central angle. ⟹ זווית היקפית = חצי מהזווית המרכזית.
+A, B and C are on a circle with centre O, and ∠ACB = {}°. Find ∠OAB. ⟹ הנקודות A, B ו-C נמצאות על מעגל שמרכזו O, ו-∠ACB = {}°. מצאו את ∠OAB.
+The central angle ⟹ הזווית המרכזית
+∠AOB = 2·∠ACB = {}° (central and inscribed on arc AB) ⟹ ∠AOB = 2·∠ACB = {}° (מרכזית והיקפית על הקשת AB)
+Triangle AOB is isosceles ⟹ המשולש AOB שווה-שוקיים
+OA = OB (radii), so ∠OAB = ∠OBA. ⟹ OA = OB (רדיוסים), ולכן ∠OAB = ∠OBA.
+inscribed angle ⟹ זווית היקפית
+ABCD is inscribed in a circle, with ∠A = {}° and ∠B = {}°. Find the exterior angle at C (between BC extended past C and CD). ⟹ המרובע ABCD חסום במעגל, ∠A = {}° ו-∠B = {}°. מצאו את הזווית החיצונית ליד C (בין המשך BC מעבר ל-C לבין CD).
+cyclic quadrilateral ⟹ מרובע חסום במעגל
+Opposite angles ⟹ זוויות נגדיות
+In a cyclic quadrilateral opposite angles add up to 180°: ∠C = 180° − {}° = {}° ⟹ במרובע חסום במעגל סכום הזוויות הנגדיות הוא 180°: ∠C = 180° − {}° = {}°
+The exterior angle ⟹ הזווית החיצונית
+It sits next to ∠C on a straight line: 180° − {}° ⟹ היא צמודה ל-∠C: 180° − {}°
+Exterior angle at C = {}° (equal to the opposite inner angle ∠A) ⟹ הזווית החיצונית ליד C = {}° (שווה לזווית הפנימית הנגדית ∠A)
+ABCD is inscribed in a circle, with ∠A = {}° and ∠B = {}°. Find ∠{}. ⟹ המרובע ABCD חסום במעגל, ∠A = {}° ו-∠B = {}°. מצאו את ∠{}.
+Opposite angles of a cyclic quadrilateral ⟹ זוויות נגדיות במרובע חסום
+They add up to 180° (together they stand on the whole circle). ⟹ סכומן 180° (יחד הן נשענות על המעגל כולו).
+AT is tangent to the circle at A, and ∠TAB = {}° where AB is a chord. Find {}. ⟹ AT משיק למעגל בנקודה A, ו-∠TAB = {}° כאשר AB מיתר. מצאו את {}.
+the central angle ∠AOB ⟹ הזווית המרכזית ∠AOB
+the inscribed angle ∠ACB ⟹ הזווית ההיקפית ∠ACB
+tangent and chord ⟹ משיק ומיתר
+Tangent–chord angle ⟹ זווית בין משיק למיתר
+The angle between a tangent and a chord equals the inscribed angle on the other side of the chord. ⟹ הזווית בין משיק למיתר שווה לזווית ההיקפית הנשענת על המיתר מהצד השני.
+Central angle ⟹ זווית מרכזית
+Chords AB and CD of a circle meet at E. AE = {}, EB = {} and CE = {}. Find ED. ⟹ המיתרים AB ו-CD במעגל נחתכים בנקודה E. AE = {}, EB = {} ו-CE = {}. מצאו את ED.
+Intersecting chords ⟹ מיתרים נחתכים
+The products of the pieces are equal: AE·EB = CE·ED (triangles AEC and DEB are similar). ⟹ מכפלות הקטעים שוות: AE·EB = CE·ED (המשולשים AEC ו-DEB דומים).
+chords ⟹ מיתרים
+From P outside a circle, PT is a tangent and a secant meets the circle at A and then B. PT = {} and PA = {}. Find AB. ⟹ מהנקודה P שמחוץ למעגל יוצאים המשיק PT וחותך הפוגש את המעגל ב-A ואחר כך ב-B. PT = {} ו-PA = {}. מצאו את AB.
+tangent and secant ⟹ משיק וחותך
+Tangent–secant theorem ⟹ משפט המשיק והחותך
+The chord ⟹ המיתר
+From P outside a circle, PT is a tangent and a secant meets the circle at A and then B. PA = {} and AB = {}. Find PT. ⟹ מהנקודה P שמחוץ למעגל יוצאים המשיק PT וחותך הפוגש את המעגל ב-A ואחר כך ב-B. PA = {} ו-AB = {}. מצאו את PT.
+PT² = PA·PB (triangles PTA and PBT are similar). ⟹ PT² = PA·PB (המשולשים PTA ו-PBT דומים).
+In triangle ABC, D is on AB and E is on AC with DE ∥ BC. AD = {}, DB = {} and BC = {}. Find DE. ⟹ במשולש ABC הנקודה D על AB והנקודה E על AC, ו-DE ∥ BC. AD = {}, DB = {} ו-BC = {}. מצאו את DE.
+similar triangles ⟹ משולשים דומים
+DE ∥ BC, so ∠ADE = ∠ABC and ∠AED = ∠ACB (corresponding angles): △ADE ∼ △ABC. ⟹ DE ∥ BC, ולכן ∠ADE = ∠ABC ו-∠AED = ∠ACB (זוויות מתאימות): △ADE ∼ △ABC.
+Ratio of similarity ⟹ יחס הדמיון
+AD/AB = DE/BC,  with AB = {} + {} = {} ⟹ AD/AB = DE/BC,  כאשר AB = {} + {} = {}
+In triangle ABC, DE ∥ BC with D on AB and AD : DB = {} : {}. The area of triangle ADE is {}. Find the area of the trapezoid DBCE. ⟹ במשולש ABC, DE ∥ BC, הנקודה D על AB ו-AD : DB = {} : {}. שטח המשולש ADE הוא {}. מצאו את שטח הטרפז DBCE.
+area ratio ⟹ יחס שטחים
+DE ∥ BC, so △ADE ∼ △ABC with ratio AD/AB = {}/{}. ⟹ DE ∥ BC, ולכן △ADE ∼ △ABC ביחס AD/AB = {}/{}.
+Areas go with the square of the ratio ⟹ יחס השטחים שווה לריבוע יחס הדמיון
+In triangle ABC, AB = {}, AC = {} and BC = {}. AD bisects angle A (D on BC). Find BD. ⟹ במשולש ABC, AB = {}, AC = {} ו-BC = {}. AD חוצה את הזווית A (D על BC). מצאו את BD.
+angle bisector ⟹ חוצה זווית
+Angle bisector theorem ⟹ משפט חוצה הזווית
+The bisector splits the opposite side in the ratio of the other two sides: BD/DC = AB/AC = {}/{} ⟹ חוצה הזווית מחלק את הצלע שמולו ביחס שתי הצלעות האחרות: BD/DC = AB/AC = {}/{}
+Split BC = {} in the ratio {} : {} ⟹ מחלקים את BC = {} ביחס {} : {}
+A circle is inscribed in triangle ABC with AB = {}, BC = {}, CA = {}. It touches AB at K. Find AK. ⟹ מעגל חסום במשולש ABC שבו AB = {}, BC = {}, CA = {}. המעגל משיק ל-AB בנקודה K. מצאו את AK.
+tangent lengths ⟹ אורכי משיקים
+Equal tangents ⟹ משיקים שווים
+Two tangents from the same point to a circle are equal. Call them x (from A), y (from B), z (from C). ⟹ שני משיקים למעגל מאותה נקודה שווים. נסמן אותם x (מ-A), y (מ-B), z (מ-C).
+Add all three: 2(x + y + z) = {},  x + y + z = {} ⟹ מחברים את שלושתן: 2(x + y + z) = {},  x + y + z = {}
+Quadrilateral ABCD is drawn around a circle (every side touches it). AB = {}, BC = {}, CD = {}. Find DA. ⟹ המרובע ABCD חוסם מעגל (כל צלע משיקה לו). AB = {}, BC = {}, CD = {}. מצאו את DA.
+tangential quadrilateral ⟹ מרובע חוסם מעגל
+From each corner the two tangents to the circle are equal; each side is made of two of them. ⟹ מכל קדקוד שני המשיקים למעגל שווים; כל צלע מורכבת משניים מהם.
+So AB + CD and BC + DA use each tangent length once: AB + CD = BC + DA. ⟹ לכן ב-AB + CD וב-BC + DA כל אורך משיק מופיע פעם אחת: AB + CD = BC + DA.
+In right triangle ABC (∠C = 90°), CD is the height to the hypotenuse. AD = {} and DB = {}. Find CD. ⟹ במשולש ישר-זווית ABC (∠C = 90°), CD הוא הגובה ליתר. AD = {} ו-DB = {}. מצאו את CD.
+right triangle height ⟹ גובה ליתר
+The height splits ABC into two triangles similar to it: △ACD ∼ △CBD. ⟹ הגובה מחלק את ABC לשני משולשים הדומים לו: △ACD ∼ △CBD.
+In right triangle ABC (∠C = 90°), CD is the height to the hypotenuse. AD = {} and DB = {}. Find AC. ⟹ במשולש ישר-זווית ABC (∠C = 90°), CD הוא הגובה ליתר. AD = {} ו-DB = {}. מצאו את AC.
+right triangle leg ⟹ ניצב במשולש ישר-זווית
+△ACD ∼ △ABC (they share ∠A and both have a right angle). ⟹ △ACD ∼ △ABC (יש להם זווית A משותפת ושניהם ישרי-זווית).
+Find the exact value of {} {}° (e.g. (√6 + √2)/4). ⟹ מצאו את הערך המדויק של {} {}° (למשל (√6 + √2)/4).
+exact value ⟹ ערך מדויק
+Write {}° with known angles ⟹ כותבים את {}° בעזרת זוויות מוכרות
+Use the formula ⟹ משתמשים בנוסחה
+double angle ⟹ זווית כפולה
+Find cos α ⟹ מוצאים את cos α
+cos α is {}: cos α = {} ⟹ cos α {}: cos α = {}
+negative in the second quadrant ⟹ שלילי ברביע השני
+positive in the first quadrant ⟹ חיובי ברביע הראשון
+sin α = {}/{} and α is {}. Find {}. ⟹ sin α = {}/{} ו-α {}. מצאו את {}.
+between 90° and 180° ⟹ בין 90° ל-180°
+between 0° and 90° ⟹ בין 0° ל-90°
+α and β are acute angles with sin α = {}/{} and cos β = {}/{}. Find {}. ⟹ α ו-β זוויות חדות, sin α = {}/{} ו-cos β = {}/{}. מצאו את {}.
+sum formula ⟹ נוסחת סכום
+The missing values ⟹ הערכים החסרים
+Both positive: the angles are acute. ⟹ שניהם חיוביים: הזוויות חדות.
+The formula ⟹ הנוסחה
+α and β are acute with tan α = {} and tan β = {}. Find α + β in degrees. ⟹ α ו-β זוויות חדות, tan α = {} ו-tan β = {}. מצאו את α + β במעלות.
+tan sum angle ⟹ זווית מסכום טנגנסים
+tan of the sum ⟹ טנגנס של סכום
+Which angle? ⟹ איזו זווית?
+tan α = {} and tan β = {}. Find tan(α + β). ⟹ tan α = {} ו-tan β = {}. מצאו את tan(α + β).
+tan sum ⟹ טנגנס של סכום
+Numerator: {} + {} = {} ⟹ מונה: {} + {} = {}
+Denominator: 1 − {} = {} ⟹ מכנה: 1 − {} = {}
+So it is 2 sin x cos x / 2cos²x = sin x / cos x ⟹ לכן זה 2 sin x cos x / 2cos²x = sin x / cos x
+So it is 2sin²x / (2 sin x cos x) = sin x / cos x ⟹ לכן זה 2sin²x / (2 sin x cos x) = sin x / cos x
+Difference of squares: (cos²x − sin²x)(cos²x + sin²x) ⟹ הפרש ריבועים: (cos²x − sin²x)(cos²x + sin²x)
+cos²x + sin²x = 1, and cos²x − sin²x = cos 2x ⟹ cos²x + sin²x = 1, ו-cos²x − sin²x = cos 2x
+So 2cos²x − (2cos²x − 1) = 1 ⟹ לכן 2cos²x − (2cos²x − 1) = 1
+Common denominator: (sin 3x cos x − cos 3x sin x)/(sin x cos x) ⟹ מכנה משותף: (sin 3x cos x − cos 3x sin x)/(sin x cos x)
+Which expression is equal to  {}  (wherever it is defined)? ⟹ איזה ביטוי שווה ל-  {}  (בכל מקום שבו הוא מוגדר)?
+Use identities ⟹ משתמשים בזהויות
+simplify ⟹ פישוט
+sin x = 0  or  cos x = ½ ⟹ sin x = 0  או  cos x = ½
+cos x = 1  or  cos x = −½ ⟹ cos x = 1  או  cos x = −½
+cos x = 0  or  sin x = ½ ⟹ cos x = 0  או  sin x = ½
+(2 sin x + 1)(sin x − 1) = 0:  sin x = 1  or  sin x = −½ ⟹ (2 sin x + 1)(sin x − 1) = 0:  sin x = 1  או  sin x = −½
+(2cos x − 1)(cos x − 1) = 0:  cos x = ½  or  cos x = 1 ⟹ (2cos x − 1)(cos x − 1) = 0:  cos x = ½  או  cos x = 1
+sin x = 0  or  cos x = √3/2 ⟹ sin x = 0  או  cos x = √3/2
+Solve {} for 0° ≤ x < 360°. ⟹ פתרו את {} עבור 0° ≤ x < 360°.
+Type the largest solution (in degrees). ⟹ הקלידו את הפתרון הגדול ביותר (במעלות).
+How many solutions are there? ⟹ כמה פתרונות יש?
+identity equation ⟹ משוואה עם זהות
+Use a double-angle identity ⟹ משתמשים בזהות של זווית כפולה
+All solutions in [0°, 360°) ⟹ כל הפתרונות ב-[0°, 360°)
+{} solutions ⟹ {} פתרונות
+0° < α + β < 180°, and tan(α + β) = {} ⟹ 0° < α + β < 180°, ו-tan(α + β) = {}
