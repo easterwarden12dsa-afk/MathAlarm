@@ -81,9 +81,10 @@ struct AlarmEditView: View {
                 Section {
                     Picker("Type", selection: $draft.challenge) {
                         ForEach(ChallengeKind.allCases) { kind in
-                            Text(kind.title).tag(kind)
+                            Label(kind.title, systemImage: kind.symbol).tag(kind)
                         }
                     }
+                    .pickerStyle(.navigationLink)
                     Picker("Difficulty", selection: $draft.difficulty) {
                         ForEach(Difficulty.allCases) { level in
                             Text(level.title).tag(level)
@@ -100,7 +101,7 @@ struct AlarmEditView: View {
                     Section {
                         ForEach($draft.randomMix.entries) { $entry in
                             VStack(alignment: .leading, spacing: 6) {
-                                Toggle(entry.kind.title, isOn: $entry.enabled)
+                                Toggle(isOn: $entry.enabled) { Label(entry.kind.title, systemImage: entry.kind.symbol) }
                                 if entry.enabled {
                                     Picker("Difficulty", selection: $entry.difficulty) {
                                         Text("Alarm's").tag(Difficulty?.none)

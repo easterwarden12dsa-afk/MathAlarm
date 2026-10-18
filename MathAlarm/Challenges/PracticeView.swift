@@ -37,6 +37,48 @@ struct PracticeView: View {
         }
 
         var isDrawing: Bool { self == .sketch || self == .change }
+
+        var category: Category { Category.allCases.first { $0.modes.contains(self) } ?? .calculus }
+    }
+
+    /// The top row: subjects. Each has one or more modes (the second row).
+    enum Category: String, CaseIterable, Identifiable {
+        case calculus, graphs, questions, probability, triangles, minmax
+
+        var id: String { rawValue }
+
+        var title: String {
+            switch self {
+            case .calculus: "Calculus"
+            case .graphs: "Graphs"
+            case .questions: "Questions"
+            case .probability: "Probability"
+            case .triangles: "Triangles"
+            case .minmax: "Min & max"
+            }
+        }
+
+        var symbol: String {
+            switch self {
+            case .calculus: "function"
+            case .graphs: "scribble.variable"
+            case .questions: "questionmark.bubble"
+            case .probability: "dice"
+            case .triangles: "triangle"
+            case .minmax: "arrow.up.and.down"
+            }
+        }
+
+        var modes: [Mode] {
+            switch self {
+            case .calculus: [.integral, .derivative]
+            case .graphs: [.sketch, .change]
+            case .questions: [.quiz(nil)] + QuizKind.quickCalculus.map { .quiz($0) }
+            case .probability: [.quiz(.probability)]
+            case .triangles: [.quiz(.triangle)]
+            case .minmax: [.quiz(.optimization)]
+            }
+        }
     }
 
     @ObservedObject private var settings = AppSettings.shared
@@ -66,15 +108,21 @@ struct PracticeView: View {
     @State private var generation = 0
 
     enum Sheet: String, Identifiable {
-        case speed, exam, review, weak, history
+        case hub, speed, exam, review, weak, history
         var id: String { rawValue }
     }
+    /// Opened after the Study hub closes (one sheet at a time).
+    @State private var pendingSheet: Sheet?
+    @State private var pendingCode = false
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 8) {
-                modeBar
-                    .zIndex(2)   // always on top: nothing below can steal its taps
+                VStack(spacing: 6) {
+                    categoryBar
+                    if mode.category.modes.count > 1 { modeBar }
+                }
+                .zIndex(2)   // always on top: nothing below can steal its taps
                 controls
                     .zIndex(2)
                 content
@@ -95,8 +143,25 @@ struct PracticeView: View {
                 if mode == .sketch, let plain = plainSketch { sketch = whole ? SketchFactory.whole(plain) : plain }
             }
             .sheet(isPresented: $showSolution) { SolutionSheet(problem: problem) }
-            .sheet(item: $sheet) { which in
+            .sheet(item: $sheet, onDismiss: {
+                if let next = pendingSheet {
+                    pendingSheet = nil
+                    sheet = next
+                } else if pendingCode {
+                    pendingCode = false
+                    showCodeEntry = true
+                }
+            }) { which in
                 switch which {
+                case .hub:
+                    StudyHubView { choice in
+                        switch choice {
+                        case .sheet(let s): pendingSheet = s
+                        case .code: pendingCode = true
+                        case .daily(let item): load(item, fromReview: false)
+                        }
+                        sheet = nil
+                    }
                 case .speed: SpeedRoundView()
                 case .exam: MiniExamView(difficulty: difficulty)
                 case .review: ReviewListView { item in load(item, fromReview: true) }
@@ -125,28 +190,56 @@ struct PracticeView: View {
 
     // MARK: Top
 
+    private var categoryBar: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 6) {
+                ForEach(Category.allCases) { c in
+                    let on = c == mode.category
+                    Button {
+                        Haptics.tap()
+                        if !on { select(c.modes[0]) }
+                    } label: {
+                        Label(c.title, systemImage: c.symbol)
+                            .font(.subheadline.weight(.bold))
+                            .foregroundStyle(on ? .black : .white)
+                            .padding(.horizontal, 14)
+                            .frame(minHeight: 36)
+                            .background(on ? Color.orange : Color.white.opacity(0.12), in: Capsule())
+                            .contentShape(Capsule())
+                    }
+                    .buttonStyle(PressableStyle())
+                    .accessibilityAddTraits(on ? .isSelected : [])
+                }
+            }
+            .padding(.vertical, 2)
+        }
+    }
+
+    /// The modes of the chosen subject, smaller and underlined.
     private var modeBar: some View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 6) {
-                    ForEach(Mode.all) { m in
+                HStack(spacing: 4) {
+                    ForEach(mode.category.modes) { m in
+                        let on = m == mode
                         Button {
                             Haptics.tap()
                             select(m)
                         } label: {
-                            Label(m.title, systemImage: m.symbol)
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(m == mode ? .black : .white)
-                                .padding(.horizontal, 12)
-                                .frame(minHeight: 34)
-                                .background(m == mode ? Color.orange : Color.white.opacity(0.12), in: Capsule())
-                                .contentShape(Capsule())
+                            VStack(spacing: 3) {
+                                Label(m.title, systemImage: m.symbol)
+                                    .font(.footnote.weight(on ? .bold : .semibold))
+                                    .foregroundStyle(on ? .orange : .white.opacity(0.75))
+                                Capsule().fill(on ? Color.orange : .clear).frame(height: 2.5)
+                            }
+                            .padding(.horizontal, 8)
+                            .frame(minHeight: 30)
+                            .contentShape(Rectangle())
                         }
                         .buttonStyle(PressableStyle())
                         .id(m.id)
                     }
                 }
-                .padding(.vertical, 2)
             }
             .onChange(of: mode) { _, m in withAnimation { proxy.scrollTo(m.id, anchor: .center) } }
         }
@@ -155,20 +248,18 @@ struct PracticeView: View {
     @ToolbarContentBuilder
     private var toolbar: some ToolbarContent {
         ToolbarItem(placement: .topBarLeading) {
-            Menu {
-                Button { sheet = .speed } label: { Label("Speed round", systemImage: "stopwatch") }
-                Button { sheet = .exam } label: { Label("Mini exam", systemImage: "doc.text") }
-                Button { sheet = .review } label: {
-                    Label(store.dueReview.isEmpty ? "Review" : "Review (\(store.dueReview.count) due)", systemImage: "arrow.counterclockwise")
-                }
-                Button { sheet = .weak } label: { Label("Weak spots", systemImage: "scope") }
-                Button { sheet = .history } label: { Label("History & favourites", systemImage: "clock") }
-                Divider()
-                Button { showCodeEntry = true } label: { Label("Enter a share code", systemImage: "keyboard") }
+            Button {
+                Haptics.tap()
+                sheet = .hub
             } label: {
-                Image(systemName: store.dueReview.isEmpty ? "square.grid.2x2" : "square.grid.2x2.fill")
+                Image(systemName: "rectangle.grid.2x2")
+                    .overlay(alignment: .topTrailing) {
+                        if !store.dueReview.isEmpty {
+                            Circle().fill(Color.red).frame(width: 9, height: 9).offset(x: 4, y: -3)
+                        }
+                    }
             }
-            .accessibilityLabel("More practice modes")
+            .accessibilityLabel(store.dueReview.isEmpty ? "Study modes" : "Study modes, \(store.dueReview.count) to review")
         }
         ToolbarItemGroup(placement: .topBarTrailing) {
             Button {
@@ -366,7 +457,7 @@ struct PracticeView: View {
             change = ProblemHistory.shared.freshChange(level: difficulty.level)
             strokes = []
         case .quiz(let k):
-            quiz = ProblemHistory.shared.freshQuiz(level: difficulty.level, kind: k)
+            quiz = ProblemHistory.shared.freshQuiz(level: difficulty.level, kind: k ?? QuizKind.quickCalculus.randomElement())
             editor = MathEditor()
         case .integral, .derivative:
             problem = ProblemHistory.shared.fresh(mode == .integral ? .integral : .derivative, level: difficulty.level)

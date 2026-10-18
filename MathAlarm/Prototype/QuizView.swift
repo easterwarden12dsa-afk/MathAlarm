@@ -83,7 +83,8 @@ struct QuizView: View {
 
     private var answerCaption: String {
         if case .function = quiz.answer { return quiz.kind == .tangent ? "y =" : "Your answer (a function of x)" }
-        return "Your answer — exact forms like ln 3, √2, π/3 are fine"
+        if quiz.tolerance != nil { return "Your answer — a decimal is fine (or an exact form)" }
+        return "Your answer — exact forms like ln 3, √2, 3/10 are fine"
     }
 
     private func questionCard(graphHeight: CGFloat) -> some View {
@@ -107,6 +108,10 @@ struct QuizView: View {
                 .foregroundStyle(.white)
                 .fixedSize(horizontal: false, vertical: true)
             QuizFormula(quiz: quiz)
+            if let t = quiz.table { QuizTableView(table: t) }
+            if let f = quiz.triangle, graphHeight > 0 {
+                TriangleView(figure: f).frame(height: graphHeight)
+            }
             if let g = quiz.graph, graphHeight > 0 {
                 QuizGraph(problem: g, shade: quiz.shade, lower: quiz.lower, hline: quiz.level_k)
                     .frame(height: graphHeight)
@@ -366,6 +371,8 @@ struct QuizStepsSheet: View {
                     }
                     Text(quiz.prompt).font(.headline)
                     QuizFormula(quiz: quiz)
+                    if let t = quiz.table { QuizTableView(table: t) }
+                    if let f = quiz.triangle { TriangleView(figure: f).frame(height: 220) }
                     if let g = quiz.graph {
                         QuizGraph(problem: g, shade: quiz.shade, lower: quiz.lower, hline: quiz.level_k).frame(height: 200)
                     }
@@ -391,5 +398,106 @@ struct QuizStepsSheet: View {
         case .function(let f): return "y = \(f.description)"
         case .signs(let iv, let p): return zip(iv, p).map { "\($0): \($1 ? "+" : "−")" }.joined(separator: ", ")
         }
+    }
+}
+
+/// A labelled triangle (trigonometry in the plane), scaled to fit.
+struct TriangleView: View {
+    let figure: TriangleFigure
+
+    var body: some View {
+        Canvas { ctx, size in
+            let p = figure.points
+            guard p.count == 6 else { return }
+            var pts = [CGPoint(x: p[0], y: p[1]), CGPoint(x: p[2], y: p[3]), CGPoint(x: p[4], y: p[5])]
+            if let e = figure.extra, e.count == 4 { pts += [CGPoint(x: e[0], y: e[1]), CGPoint(x: e[2], y: e[3])] }
+            let minX = pts.map(\.x).min()!, maxX = pts.map(\.x).max()!
+            let minY = pts.map(\.y).min()!, maxY = pts.map(\.y).max()!
+            let pad: CGFloat = 26
+            let scale = min((size.width - 2 * pad) / max(maxX - minX, 1e-6), (size.height - 2 * pad) / max(maxY - minY, 1e-6))
+            let ox = (size.width - (maxX - minX) * scale) / 2, oy = (size.height - (maxY - minY) * scale) / 2
+            func map(_ q: CGPoint) -> CGPoint { CGPoint(x: ox + (q.x - minX) * scale, y: size.height - oy - (q.y - minY) * scale) }
+            let v = pts.prefix(3).map(map)
+            let centre = CGPoint(x: (v[0].x + v[1].x + v[2].x) / 3, y: (v[0].y + v[1].y + v[2].y) / 3)
+            func away(_ q: CGPoint, from c: CGPoint, by d: CGFloat) -> CGPoint {
+                let dx = q.x - c.x, dy = q.y - c.y, l = max(hypot(dx, dy), 1e-6)
+                return CGPoint(x: q.x + dx / l * d, y: q.y + dy / l * d)
+            }
+            func text(_ s: String, _ at: CGPoint, _ color: Color, bold: Bool = false) {
+                let t = ctx.resolve(Text(s).font(.system(size: bold ? 16 : 14, weight: bold ? .bold : .semibold, design: .serif)).foregroundColor(color))
+                ctx.draw(t, at: at)
+            }
+
+            var tri = Path()
+            tri.move(to: v[0]); tri.addLine(to: v[1]); tri.addLine(to: v[2]); tri.closeSubpath()
+            ctx.fill(tri, with: .color(.orange.opacity(0.12)))
+            ctx.stroke(tri, with: .color(.white), style: StrokeStyle(lineWidth: 2.2, lineJoin: .round))
+
+            if let e = figure.extra, e.count == 4 {
+                let a = map(CGPoint(x: e[0], y: e[1])), b = map(CGPoint(x: e[2], y: e[3]))
+                ctx.stroke(Path { $0.move(to: a); $0.addLine(to: b) }, with: .color(.cyan), style: StrokeStyle(lineWidth: 2, dash: [6, 4]))
+                ctx.fill(Path(ellipseIn: CGRect(x: b.x - 3, y: b.y - 3, width: 6, height: 6)), with: .color(.cyan))
+                if let name = figure.extraPoint { text(name, away(b, from: centre, by: 14), .cyan, bold: true) }
+                if let l = figure.extraLabel {
+                    let mid = CGPoint(x: (a.x + b.x) / 2 + 12, y: (a.y + b.y) / 2)
+                    text(l, mid, .yellow, bold: true)
+                }
+            }
+            for i in 0..<3 {
+                // Vertex names outside, angles inside.
+                if let name = figure.vertexLabels[safe: i] { text(name, away(v[i], from: centre, by: 15), .white, bold: true) }
+                if let angle = figure.angleLabels[safe: i] ?? nil {
+                    let inside = away(v[i], from: centre, by: -min(30, hypot(v[i].x - centre.x, v[i].y - centre.y) * 0.45))
+                    text(angle, inside, angle == "?" ? .yellow : .orange)
+                }
+                if let side = figure.sideLabels[safe: i] ?? nil {
+                    let j = (i + 1) % 3
+                    let mid = CGPoint(x: (v[i].x + v[j].x) / 2, y: (v[i].y + v[j].y) / 2)
+                    text(side, away(mid, from: centre, by: 13), side == "?" ? .yellow : .white)
+                }
+            }
+        }
+        .accessibilityLabel("Triangle diagram")
+    }
+}
+
+/// A two-way table of counts with row and column totals.
+struct QuizTableView: View {
+    let table: QuizTable
+
+    private var numbers: [[Int]] { table.rows.map { $0.dropFirst().map { Int($0) ?? 0 } } }
+
+    var body: some View {
+        let n = numbers
+        let colTotals = (0..<(n.first?.count ?? 0)).map { c in n.reduce(0) { $0 + ($1[safe: c] ?? 0) } }
+        Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+            GridRow {
+                ForEach(Array((table.columns + ["Total"]).enumerated()), id: \.offset) { _, h in cell(h, header: true) }
+            }
+            ForEach(Array(table.rows.enumerated()), id: \.offset) { i, row in
+                GridRow {
+                    ForEach(Array(row.enumerated()), id: \.offset) { j, v in cell(v, header: j == 0) }
+                    cell("\(n[i].reduce(0, +))", header: false, total: true)
+                }
+            }
+            GridRow {
+                cell("Total", header: true)
+                ForEach(Array(colTotals.enumerated()), id: \.offset) { _, t in cell("\(t)", header: false, total: true) }
+                cell("\(colTotals.reduce(0, +))", header: false, total: true)
+            }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white.opacity(0.2)))
+    }
+
+    private func cell(_ s: String, header: Bool, total: Bool = false) -> some View {
+        Text(s)
+            .font(header ? .caption.weight(.bold) : .body.monospacedDigit().weight(total ? .regular : .semibold))
+            .foregroundStyle(total ? .white.opacity(0.6) : .white)
+            .lineLimit(1)
+            .minimumScaleFactor(0.6)
+            .frame(maxWidth: .infinity, minHeight: 32)
+            .background(header ? Color.white.opacity(0.1) : Color.clear)
+            .border(Color.white.opacity(0.08), width: 0.5)
     }
 }

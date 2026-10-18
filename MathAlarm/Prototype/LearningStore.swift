@@ -282,3 +282,25 @@ enum ShareCode {
 extension Array {
     subscript(safe i: Int) -> Element? { indices.contains(i) ? self[i] : nil }
 }
+
+// MARK: - Daily problem
+
+/// One problem per day, the same on every phone (seeded by the date).
+enum DailyProblem {
+    static func today(_ date: Date = Date()) -> PracticeItem {
+        let c = Calendar.current.dateComponents([.year, .month, .day], from: date)
+        let stamp = (c.year ?? 2026) * 10_000 + (c.month ?? 1) * 100 + (c.day ?? 1)
+        let seed = UInt64(stamp) &* 2_654_435_761
+        let day = Calendar.current.ordinality(of: .day, in: .year, for: date) ?? 1
+        switch day % 8 {
+        case 0: return .calculus(ProblemFactory.make(.derivative, level: .hard, seed: seed))
+        case 1: return .sketch(SketchFactory.make(level: .hard, seed: seed))
+        case 2: return .quiz(QuizFactory.make(.triangle, level: .hard, seed: seed))
+        case 3: return .quiz(QuizFactory.make(.probability, level: .hard, seed: seed))
+        case 4: return .calculus(ProblemFactory.make(.integral, level: .hard, seed: seed))
+        case 5: return .quiz(QuizFactory.make(.optimization, level: .hard, seed: seed))
+        case 6: return .change(ChangeFactory.make(level: .hard, seed: seed))
+        default: return .quiz(QuizFactory.make(.parameter, level: .bagrut, seed: seed))
+        }
+    }
+}

@@ -471,3 +471,101 @@ enum FavouritesPDF {
         }
     }
 }
+
+// MARK: - Study hub
+
+/// Every study mode as a card, with a hint of where you stand.
+struct StudyHubView: View {
+    enum Choice {
+        case sheet(PracticeView.Sheet)
+        case code
+        case daily(PracticeItem)
+    }
+
+    var choose: (Choice) -> Void
+    @Environment(\.dismiss) private var dismiss
+    @ObservedObject private var store = LearningStore.shared
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 12) {
+                    dailyCard
+                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
+                        tile("Speed round", "stopwatch.fill", .orange,
+                             store.data.bestSpeedRound.map { String(format: "Best %.0f s", $0) } ?? "10 derivatives, against the clock") { choose(.sheet(.speed)) }
+                        tile("Mini exam", "doc.text.fill", .purple,
+                             store.data.examsDone > 0 ? "\(store.data.examsDone) done" : "Sign table → extreme → sketch") { choose(.sheet(.exam)) }
+                        tile("Review", "arrow.counterclockwise.circle.fill", .red,
+                             store.dueReview.isEmpty ? "Nothing due" : "\(store.dueReview.count) due now",
+                             badge: store.dueReview.count) { choose(.sheet(.review)) }
+                        tile("Weak spots", "scope", .yellow,
+                             store.weakTopics.first.map { "Weakest: \($0.topic)" } ?? "Needs a few attempts first") { choose(.sheet(.weak)) }
+                        tile("History", "clock.fill", .cyan,
+                             "\(store.data.history.count) problems · \(store.data.favourites.count) ★") { choose(.sheet(.history)) }
+                        tile("Share code", "keyboard", .green, "Open a friend's problem") { choose(.code) }
+                    }
+                }
+                .padding()
+            }
+            .background(Color.black.ignoresSafeArea())
+            .navigationTitle("Study")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
+        }
+        .preferredColorScheme(.dark)
+        .presentationDetents([.medium, .large])
+    }
+
+    private var dailyCard: some View {
+        let item = DailyProblem.today()
+        let done = store.data.history.contains { $0.item.signature == item.signature && $0.solved }
+        return Button {
+            Haptics.tap()
+            choose(.daily(item))
+        } label: {
+            HStack(spacing: 14) {
+                Image(systemName: done ? "checkmark.seal.fill" : "sun.max.fill")
+                    .font(.system(size: 34))
+                    .foregroundStyle(done ? .green : .yellow)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Daily problem").font(.headline).foregroundStyle(.white)
+                    Text("\(item.title) · the same for everyone today").font(.footnote).foregroundStyle(.white.opacity(0.7))
+                    if done { Text("Solved today").font(.caption.weight(.bold)).foregroundStyle(.green) }
+                }
+                Spacer()
+                Image(systemName: "chevron.right").foregroundStyle(.white.opacity(0.5))
+            }
+            .padding(16)
+            .background(LinearGradient(colors: [Color.orange.opacity(0.35), Color.purple.opacity(0.25)], startPoint: .topLeading, endPoint: .bottomTrailing),
+                        in: RoundedRectangle(cornerRadius: 18))
+        }
+        .buttonStyle(PressableStyle(scale: 0.97))
+    }
+
+    private func tile(_ title: String, _ symbol: String, _ color: Color, _ detail: String, badge: Int = 0,
+                      action: @escaping () -> Void) -> some View {
+        Button {
+            Haptics.tap()
+            action()
+        } label: {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Image(systemName: symbol).font(.title2).foregroundStyle(color)
+                    Spacer()
+                    if badge > 0 {
+                        Text("\(badge)").font(.caption.bold()).foregroundStyle(.white)
+                            .padding(.horizontal, 7).padding(.vertical, 2).background(Color.red, in: Capsule())
+                    }
+                }
+                Text(title).font(.headline).foregroundStyle(.white)
+                Text(detail).font(.caption).foregroundStyle(.white.opacity(0.65)).lineLimit(2).multilineTextAlignment(.leading)
+                Spacer(minLength: 0)
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, minHeight: 120, alignment: .topLeading)
+            .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 18))
+        }
+        .buttonStyle(PressableStyle(scale: 0.96))
+    }
+}

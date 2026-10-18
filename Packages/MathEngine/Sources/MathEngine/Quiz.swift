@@ -29,6 +29,8 @@ public enum QuizAnswer: Codable, Hashable, Sendable {
 /// The quick question types (Bagrut sub-questions).
 public enum QuizKind: String, Codable, CaseIterable, Identifiable, Sendable {
     case chooseGraph, parameter, area, limit, tangent, solutions, signTable, equation
+    // Added later: keep them last so share codes stay the same.
+    case probability, triangle, optimization
 
     public var id: String { rawValue }
 
@@ -42,6 +44,9 @@ public enum QuizKind: String, Codable, CaseIterable, Identifiable, Sendable {
         case .solutions: "How many solutions"
         case .signTable: "Sign table"
         case .equation: "Equation"
+        case .probability: "Probability"
+        case .triangle: "Triangles"
+        case .optimization: "Min & max"
         }
     }
 
@@ -55,6 +60,20 @@ public enum QuizKind: String, Codable, CaseIterable, Identifiable, Sendable {
         case .solutions: "number"
         case .signTable: "plusminus"
         case .equation: "equal"
+        case .probability: "dice"
+        case .triangle: "triangle"
+        case .optimization: "arrow.up.and.down"
+        }
+    }
+
+    /// The short calculus questions (the "Questions" mix).
+    public static let quickCalculus: [QuizKind] = [.chooseGraph, .parameter, .area, .limit, .tangent, .solutions, .signTable, .equation]
+
+    /// Calculus questions about a function, as opposed to the other Bagrut topics.
+    public var isCalculus: Bool {
+        switch self {
+        case .probability, .triangle: false
+        default: true
         }
     }
 }
@@ -82,10 +101,37 @@ public struct QuizProblem: Codable, Hashable, Sendable {
     public var steps: [SolutionStep]
     /// For weak-spot statistics, e.g. "limit:removable".
     public var topic: String
+    /// A triangle to look at (trigonometry in the plane).
+    public var triangle: TriangleFigure? = nil
+    /// A two-way table of counts (probability).
+    public var table: QuizTable? = nil
+    /// Typed numbers within this distance are right (answers "to 2 decimal places").
+    public var tolerance: Double? = nil
 
     public var signature: String {
         "quiz:\(kind.rawValue):\(prompt):\(formula?.description ?? formulaText ?? ""):\(graph?.function.description ?? "")"
     }
+}
+
+/// A triangle drawn with its labels. Vertices are in any units (the app scales them).
+public struct TriangleFigure: Codable, Hashable, Sendable {
+    /// x0, y0, x1, y1, x2, y2.
+    public var points: [Double]
+    public var vertexLabels: [String]
+    /// Side i joins vertex i and vertex i+1 (AB, BC, CA); nil = no label.
+    public var sideLabels: [String?]
+    /// At vertex i; nil = no label.
+    public var angleLabels: [String?]
+    /// An extra segment (median, height): x1, y1, x2, y2, with its label and the new point's name.
+    public var extra: [Double]? = nil
+    public var extraLabel: String? = nil
+    public var extraPoint: String? = nil
+}
+
+/// Counts in a two-way table; the first entry of each row is its name.
+public struct QuizTable: Codable, Hashable, Sendable {
+    public var columns: [String]
+    public var rows: [[String]]
 }
 
 // MARK: - Checking typed answers
@@ -97,7 +143,7 @@ public enum QuizChecker {
         case .number(let v):
             guard !typed.containsX else { return false }
             let t = typed.evaluate(at: 0)
-            return t.isFinite && Swift.abs(t - v) <= 1e-6 * Swift.max(1, Swift.abs(v))
+            return t.isFinite && Swift.abs(t - v) <= (q.tolerance ?? 1e-6 * Swift.max(1, Swift.abs(v)))
         case .function(let f):
             let xs: [Double] = [-2.3, -1.1, -0.4, 0.3, 0.9, 1.7, 2.6, 3.4]
             var compared = 0
@@ -142,6 +188,9 @@ public enum QuizFactory {
         case .solutions: return solutions(level, &r, seed)
         case .signTable: return signTable(level, &r, seed)
         case .equation: return equation(level, &r, seed)
+        case .probability: return probability(level, &r, seed)
+        case .triangle: return triangle(level, &r, seed)
+        case .optimization: return optimization(level, &r, seed)
         }
     }
 

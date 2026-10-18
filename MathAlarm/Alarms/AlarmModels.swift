@@ -23,7 +23,7 @@ enum ChallengeKind: String, Codable, CaseIterable, Identifiable {
         case .derivative: "Differentiate a function"
         case .sketch: "Draw the graph of a function"
         case .change: "Given f, draw a related graph like 1/f(x)² or |f(x)|"
-        case .quiz: "Bagrut-style questions: limits, areas, tangents, sign tables…"
+        case .quiz: "Bagrut-style questions: limits, areas, sign tables, probability, triangles, min & max…"
         case .random: "A mix — choose which types below"
         }
     }
