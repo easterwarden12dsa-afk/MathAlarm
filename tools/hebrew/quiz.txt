@@ -321,3 +321,4 @@ x = {} or x = {} ⟹ x = {} או x = {}
  and  ⟹  ו-
 Check it is really an extremum ⟹ בדיקה שזו באמת נקודת קיצון
 Answer ⟹ תשובה
+Find a. ⟹ מצאו את a.

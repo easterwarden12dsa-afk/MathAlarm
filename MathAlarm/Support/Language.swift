@@ -57,7 +57,9 @@ final class HebrewTranslator: @unchecked Sendable {
 
     private static func compile(_ en: String, _ he: String) -> Template? {
         let parts = en.components(separatedBy: "{}")
-        let pattern = "^" + parts.map { NSRegularExpression.escapedPattern(for: $0) }.joined(separator: "(.*?)") + "$"
+        // A value never runs across a sentence end (". " before a capital), so long texts split cleanly.
+        let hole = #"((?:(?![.?!] [A-Z"“(]).)*?)"#
+        let pattern = "^" + parts.map { NSRegularExpression.escapedPattern(for: $0) }.joined(separator: hole) + "$"
         guard let rx = try? NSRegularExpression(pattern: pattern, options: [.dotMatchesLineSeparators]) else { return nil }
         // Hebrew pieces: "{}" takes the next value, "{2}" a given one.
         var pieces: [Piece] = []
@@ -131,6 +133,12 @@ final class HebrewTranslator: @unchecked Sendable {
                 if !matched { out.append(phrased(sentences[i])); i += 1 }
             }
             return out.joined(separator: " ")
+        }
+        // Clauses joined by a dash or an arrow: translate each one.
+        if depth < 4 {
+            for sep in [" — ", ";  ", "  →  "] where s.contains(sep) {
+                return s.components(separatedBy: sep).map { translateRaw($0, depth: depth + 1) }.joined(separator: sep)
+            }
         }
         return phrased(s)
     }

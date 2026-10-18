@@ -279,6 +279,7 @@
 "Draw the whole graph — pinch, Move or ± to see more": "שרטטו את כל הגרף — צביטה, \"הזז\" או ± כדי לראות עוד",
 "where f(x) =": "כאשר f(x) =",
 "f in grey with its key points A, B, …; g in green with the moved points A′, B′, …": "f באפור עם נקודות המפתח A, B, …; g בירוק עם הנקודות שהוזזו A′, B′, …",
+"f in grey": "f באפור",
 "Done": "סיום",
 "Line": "קו",
 "Add": "הוסף",
@@ -286,6 +287,8 @@
 "Your lines": "הקווים שלכם",
 "out of view": "מחוץ לתצוגה",
 "Helper lines": "קווי עזר",
+"zoom out or move the view to see it.": "התרחקו או הזיזו את התצוגה כדי לראות אותו.",
+"you won't see it on this graph.": "לא תראו אותו בגרף הזה.",
 "above": "מעל",
 "below": "מתחת",
 "Any equivalent form of the answer is accepted.": "כל צורה שקולה של התשובה מתקבלת.",
@@ -484,12 +487,7 @@
 "The overall shape is off — compare where it rises, falls and turns.": "הצורה הכללית לא נכונה — השוו איפה הוא עולה, יורד ומשנה כיוון.",
 "g(x) = f′(x)  (the derivative)": "g(x) = f′(x)  (הנגזרת)",
 "Draw the graph — everything you draw inside the view is checked.": "שרטטו את הגרף — כל מה ששורטט בתוך התצוגה נבדק.",
-"peak": "נקודת מקסימום",
-"dip": "נקודת מינימום",
 "peaks": "נקודות מקסימום",
-"maximum": "מקסימום",
-"minimum": "מינימום",
-"zero": "נקודת אפס",
 "inflection point": "נקודת פיתול",
 "turning point": "נקודת קיצון",
 "vertical asymptote": "אסימפטוטה אנכית",
@@ -510,8 +508,6 @@
 "fall": "לרדת",
 "positive": "חיובית",
 "negative": "שלילית",
-"start": "התחלה",
-"end": "סוף",
 "this point": "הנקודה הזו",
 "this end": "הקצה הזה",
 "up out of the top": "למעלה מעבר לגבול העליון",
@@ -572,6 +568,7 @@
 "Draw the whole graph — every x where it is defined.": "שרטטו את כל הגרף — בכל x שבו הוא מוגדר.",
 "Domain": "תחום הגדרה",
 "Domain and asymptotes": "תחום הגדרה ואסימפטוטות",
+"So x ≠": "לכן x ≠",
 "Vertical asymptotes": "אסימפטוטות אנכיות",
 "Behaviour at the ends of the domain": "התנהגות בקצות תחום ההגדרה",
 "Intercepts with the axes": "נקודות חיתוך עם הצירים",
@@ -580,6 +577,7 @@
 "The derivative": "הנגזרת",
 "Differentiate and factor:": "גוזרים ומפרקים לגורמים:",
 "Differentiate (a long expression — only its sign matters below).": "גוזרים (ביטוי ארוך — בהמשך חשוב רק הסימן שלו).",
+"or undefined": "או לא מוגדרת",
 "Conclusion": "מסקנה",
 "increasing": "עולה",
 "decreasing": "יורדת",
@@ -599,6 +597,8 @@
 "Only the grey graph of f — everything below is read off the picture, no formula and no exact values needed.": "רק הגרף האפור של f — כל מה שבהמשך נקרא מהשרטוט, בלי נוסחה ובלי ערכים מדויקים.",
 "Mark the key points of f": "מסמנים את נקודות המפתח של f",
 "Put a letter on every point where something happens (they're marked on the graph below):": "שמים אות על כל נקודה שבה משהו קורה (הן מסומנות בגרף למטה):",
+"above the x-axis": "מעל ציר x",
+"below the x-axis": "מתחת לציר x",
 "The rule": "הכלל",
 "Move each point": "מזיזים כל נקודה",
 "Join the new points": "מחברים את הנקודות החדשות",
@@ -611,6 +611,7 @@
 "stays where it is (f isn't negative there)": "נשארת במקומה (f לא שלילית שם)",
 "mirror it in the y-axis: same height, x on the other side": "משקפים בציר y: אותו גובה, x בצד השני",
 "stays on the x-axis — g touches it smoothly": "נשארת על ציר x — g נוגעת בו בצורה חלקה",
+"and moves above the axis (squares are positive)": "ועוברת מעל הציר (ריבועים חיוביים)",
 "same x, higher: squaring a number bigger than 1 makes it bigger": "אותו x, גבוה יותר: ריבוע של מספר גדול מ-1 גדל",
 "same x, closer to the axis: squaring a number below 1 makes it smaller": "אותו x, קרוב יותר לציר: ריבוע של מספר קטן מ-1 קטן",
 "goes to height 1": "עוברת לגובה 1",
@@ -634,6 +635,20 @@
 "on the x-axis — f is flat there, its slope is 0": "על ציר x — f שטוחה שם, השיפוע שלה 0",
 "largest": "הגדול ביותר",
 "smallest": "הקטן ביותר",
+"like f (the rule keeps the order of heights)": "כמו f (הכלל שומר על סדר הגבהים)",
+"like f": "כמו f",
+"opposite to f (the minus flips it)": "הפוך מ-f (המינוס הופך)",
+"f is positive there, so it goes the same way as f": "f חיובית שם, לכן הולכת באותו כיוון כמו f",
+"f is negative there, so squaring reverses the direction": "f שלילית שם, לכן הריבוע הופך את הכיוון",
+"f is above the axis there: unchanged": "f מעל הציר שם: ללא שינוי",
+"f is below the axis there: flipped, so the opposite way": "f מתחת לציר שם: מתהפכת, לכן בכיוון ההפוך",
+"f read from right to left": "f נקראת מימין לשמאל",
+"f bends up (∪) there, so its slope grows": "f קעורה כלפי מעלה (∪) שם, לכן השיפוע שלה גדל",
+"f bends down (∩) there, so its slope shrinks": "f קעורה כלפי מטה (∩) שם, לכן השיפוע שלה קטן",
+"f is above the x-axis there": "f מעל ציר x שם",
+"f is below the x-axis there": "f מתחת לציר x שם",
+"the mirror image of the right half": "תמונת הראי של החצי הימני",
+"exactly like f": "בדיוק כמו f",
 "Peaks stay peaks and dips stay dips, at the same x.": "מקסימום נשאר מקסימום ומינימום נשאר מינימום, באותו x.",
 "Reflect in the x-axis: every height changes sign.": "שיקוף בציר x: כל גובה מחליף סימן.",
 "Peaks become dips and dips become peaks; points on the x-axis stay.": "מקסימום הופך למינימום ולהפך; נקודות על ציר x נשארות.",
@@ -682,6 +697,11 @@
 "to the left": "שמאלה",
 "right": "ימינה",
 "left": "שמאלה",
+"Parts of the interval are outside the domain — there is no graph there.": "חלקים מהתחום נמצאים מחוץ לתחום ההגדרה — שם אין גרף.",
+"f peaks here, so g is steepest here — an inflection point of g": "‏f במקסימום כאן, לכן g הכי תלולה כאן — נקודת פיתול של g",
+"f dips here, so g is steepest here — an inflection point of g": "‏f במינימום כאן, לכן g הכי תלולה כאן — נקודת פיתול של g",
+"a peak of g": "מקסימום של g",
+"a dip of g": "מינימום של g",
 "Integrate term by term with the power rule ∫xⁿ dx = xⁿ⁺¹/(n+1); a constant c integrates to c·x.": "מחשבים אינטגרל איבר-איבר עם כלל החזקה ∫xⁿ dx = xⁿ⁺¹/(n+1); האינטגרל של קבוע c הוא c·x.",
 "Basic trig integral": "אינטגרל טריגונומטרי בסיסי",
 "∫cos(kx) dx = sin(kx)/k — the inner kx gives the factor 1/k.": "∫cos(kx) dx = sin(kx)/k — ה-kx הפנימי נותן את הגורם 1/k.",
@@ -985,6 +1005,8 @@
 "Basic angle π/3; cosine is negative in the 2nd and 3rd quadrants:": "זווית בסיסית π/3; קוסינוס שלילי ברביע השני והשלישי:",
 "trig quadratic": "ריבועית טריגונומטרית",
 "trig": "טריגונומטרית",
+"(the leftmost one)": "(השמאלית ביותר)",
+"Find a.": "מצאו את a.",
 "Give the answer exactly or to 3 decimal places.": "תנו תשובה מדויקת או עד 3 ספרות אחרי הנקודה.",
 "Give the answer to 2 decimal places.": "תנו תשובה עד 2 ספרות אחרי הנקודה.",
 "Dana passes the test": "דנה עוברת את המבחן",
@@ -1105,6 +1127,9 @@
 "how many": "כמה ניסיונות",
 "first success": "הצלחה ראשונה",
 "conditional binomial": "בינומי מותנה",
+"the bus comes late": "האוטובוס יאחר",
+"the first light shows green": "הרמזור הראשון יהיה ירוק",
+"the second light shows green": "הרמזור השני יהיה ירוק",
 "Doesn't exist": "לא קיים",
 "Find the limit.": "מצאו את הגבול.",
 "Substitute": "הצבה",
@@ -1782,6 +1807,10 @@
 "צלעות x (פעמיים, מאונכות לקיר) ו-{} − 2x"
 ],
 [
+"r² + h² = {},  V = (π/3)r²h = (π/3)({} − h²)h,  0 < h < {}",
+"r² + h² = {},  V = (π/3)r²h = (π/3)({} − h²)h,  0 < h < {}"
+],
+[
 "ln is one-to-one, so x(x − {}) = {}   ⇒   x² − {}x − {} = 0",
 "‏ln חד-חד-ערכית, לכן x(x − {}) = {}   ⇒   x² − {}x − {} = 0"
 ],
@@ -2174,6 +2203,10 @@
 "x → {}: הגרף מתקרב ל-y = {}"
 ],
 [
+"{} < x < {}:   {}″({}) {} < 0   ∩ bends down",
+"{} < x < {}:   {}″({}) {} < 0   ∩ קעורה כלפי מטה"
+],
+[
 "above the x-axis on {}, below it on {}",
 "מעל ציר x בתחום {}, ומתחתיו בתחום {}"
 ],
@@ -2206,8 +2239,16 @@
 "מצאו את ההסתברות שהוא {}."
 ],
 [
+"P(X = i) = C({}, i)·({}/{})ⁱ·({}/{})^({} − i)",
+"P(X = i) = C({}, i)·({}/{})ⁱ·({}/{})^({} − i)"
+],
+[
 "f(x) = {}({})({}) is already factored:",
 "f(x) = {}({})({}) כבר מפורק לגורמים:"
+],
+[
+"{} < x < {}:   {}″({}) {} > 0   ∪ bends up",
+"{} < x < {}:   {}″({}) {} > 0   ∪ קעורה כלפי מעלה"
 ],
 [
 "The asymptote is y = a, so a = {}.",
@@ -2316,6 +2357,14 @@
 [
 "{} times as far from the x-axis{}",
 "פי {} מרחק מציר x{}"
+],
+[
+"{} < x < {}:   {}′({}) {} > 0   ↗ rises",
+"{} < x < {}:   {}′({}) {} > 0   ↗ עולה"
+],
+[
+"{} < x < {}:   {}′({}) {} < 0   ↘ falls",
+"{} < x < {}:   {}′({}) {} < 0   ↘ יורדת"
 ],
 [
 "f has an extremum at x = ln {}.",
@@ -2642,6 +2691,14 @@
 "f {} בתחום {}  ⇒  שם f′ {}"
 ],
 [
+"{}:  f′({}) = {} > 0  ⇒  +",
+"{}:  f′({}) = {} > 0  ⇒  +"
+],
+[
+"{}:  f′({}) = {} < 0  ⇒  −",
+"{}:  f′({}) = {} < 0  ⇒  −"
+],
+[
 "Only the first: {}·{} = {}",
 "רק הראשון: {}·{} = {}"
 ],
@@ -2660,6 +2717,10 @@
 [
 "Where is the slope {}?",
 "איפה השיפוע {}?"
+],
+[
+"{} → {}′: {}  →  {}′ = ({}, {})",
+"{} → {}′: {}  →  {}′ = ({}, {})"
 ],
 [
 "Opposite: all {} fail",
@@ -2778,6 +2839,10 @@
 "A מקסימלי = {}·{} = {} מ״ר"
 ],
 [
+"P(defective) = {}",
+"P(פגום) = {}"
+],
+[
 "Substitute x = {}",
 "הצבת x = {}"
 ],
@@ -2838,12 +2903,24 @@
 "ישר {} ב-{}"
 ],
 [
+"{} to {}: g rises{}",
+"{} עד {}: g עולה{}"
+],
+[
+"{} to {}: g falls{}",
+"{} עד {}: g יורדת{}"
+],
+[
 "f = 0 at x = {}",
 "f = 0 ב-x = {}"
 ],
 [
 "Area = {} − (−{})",
 "שטח = {} − (−{})"
+],
+[
+"x = {}: f = {} ({})",
+"x = {}: f = {} ({})"
 ],
 [
 "V max = {}·{}² = {}",
@@ -2922,6 +2999,10 @@
 "מונה: {} = ({})·{}"
 ],
 [
+"m = f′({}) = {}",
+"m = f′({}) = {}"
+],
+[
 "The top {}({})",
 "המונה {}({})"
 ],
@@ -2938,12 +3019,20 @@
 "נותרו {} ימים"
 ],
 [
+"F({}) − F(−{})",
+"F({}) − F(−{})"
+],
+[
 "Area = {} − {}",
 "שטח = {} − {}"
 ],
 [
 "All {} count",
 "כל ה-{} נחשבים"
+],
+[
+"P(late) = {}",
+"P(איחור) = {}"
 ],
 [
 "{} per ring",
@@ -2972,6 +3061,10 @@
 [
 "{} solution{}",
 "{1} פתרונות"
+],
+[
+"x = {} > {} ✓",
+"x = {} > {} ✓"
 ],
 [
 "x = {} only",
@@ -3004,6 +3097,10 @@
 [
 "{} Find a.",
 "{} מצאו את a."
+],
+[
+"P = {}/{} = {}",
+"P = {}/{} = {}"
 ],
 [
 "Copied {}",
@@ -3058,12 +3155,24 @@
 "משימה: {}"
 ],
 [
+"{} → {}′: {}",
+"{} → {}′: {}"
+],
+[
 "g {} on {}",
 "g {} בתחום {}"
 ],
 [
 "Graph {}",
 "גרף {}"
+],
+[
+"P({}) = {}",
+"P({}) = {}"
+],
+[
+"x = {} m",
+"x = {} מ׳"
 ],
 [
 "{} days",
@@ -3082,6 +3191,10 @@
 "{} הושלמו"
 ],
 [
+"f′:  {}",
+"f′:  {}"
+],
+[
 "Due {}",
 "לחזרה {}"
 ],
@@ -3094,16 +3207,8 @@
 "ב-{}:"
 ],
 [
-"{} or {}",
-"{} או {}"
-],
-[
 "not {}",
 "לא {}"
-],
-[
-"{} on",
-"{} פעילים"
 ]
 ],
 "phrases": [
@@ -3480,6 +3585,10 @@
 "אותו x, גובה ln(הגובה של f); כאן f > 0, לכן g מוגדרת בכל מקום."
 ],
 [
+"Parts of the interval are outside the domain — there is no graph there.",
+"חלקים מהתחום נמצאים מחוץ לתחום ההגדרה — שם אין גרף."
+],
+[
 "Integration by parts: ∫u dv = u·v − ∫v du, with u = x, dv = sin(ax) dx.",
 "אינטגרציה בחלקים: ∫u dv = u·v − ∫v du, עם u = x, dv = sin(ax) dx."
 ],
@@ -3692,6 +3801,10 @@
 "איפה ש-f = 0, g = 1; איפה ש-f שלילית, g בין 0 ל-1."
 ],
 [
+"f peaks here, so g is steepest here — an inflection point of g",
+"‏f במקסימום כאן, לכן g הכי תלולה כאן — נקודת פיתול של g"
+],
+[
 "The numerator eˣ is exactly the derivative of the denominator:",
 "המונה eˣ הוא בדיוק נגזרת המכנה:"
 ],
@@ -3706,6 +3819,10 @@
 [
 "Constant multiple: keep the constant, differentiate the rest.",
 "כפל בקבוע: משאירים את הקבוע וגוזרים את השאר."
+],
+[
+"f dips here, so g is steepest here — an inflection point of g",
+"‏f במינימום כאן, לכן g הכי תלולה כאן — נקודת פיתול של g"
 ],
 [
 "∫sin(kx) dx = −cos(kx)/k — the inner kx gives the factor 1/k.",
@@ -4832,6 +4949,10 @@
 "מפצלים לשני גבולות מיוחדים"
 ],
 [
+"(times −1, because the top is",
+"(כפול −1, כי המונה הוא"
+],
+[
 "it is positive in the domain",
 "הוא חיובי בתחום ההגדרה"
 ],
@@ -4900,6 +5021,10 @@
 "מצאו את t לשטח הגדול ביותר."
 ],
 [
+"the second light shows green",
+"הרמזור השני יהיה ירוק"
+],
+[
 "1 − cos 0 = 0: the form 0/0.",
 "‏1 − cos 0 = 0: הצורה 0/0."
 ],
@@ -4950,6 +5075,10 @@
 [
 "Independent events multiply",
 "מאורעות בלתי תלויים — כופלים"
+],
+[
+"the first light shows green",
+"הרמזור הראשון יהיה ירוק"
 ],
 [
 "Use 1 − cos u = 2 sin²(u/2)",
@@ -5010,6 +5139,10 @@
 [
 "The line through the point",
 "הישר דרך הנקודה"
+],
+[
+"which also flips the graph",
+"מה שגם הופך את הגרף"
 ],
 [
 "Turn on at least one day.",
@@ -5656,6 +5789,10 @@
 "משתמשים ב-ln(1 + u)/u → 1"
 ],
 [
+"(at the asymptotes)",
+"(באסימפטוטות)"
+],
+[
 "positive for x > 0",
 "חיובי עבור x > 0"
 ],
@@ -5790,6 +5927,10 @@
 [
 "Two separate cases",
 "שני מקרים נפרדים"
+],
+[
+"the bus comes late",
+"האוטובוס יאחר"
 ],
 [
 "conjugate infinity",
@@ -5930,6 +6071,10 @@
 [
 "Both brackets → 1",
 "שני הסוגריים → 1"
+],
+[
+"on the other side",
+"בצד השני"
 ],
 [
 "positive (x > 0)",
@@ -6278,6 +6423,10 @@
 [
 "Differentiate:",
 "גזירה:"
+],
+[
+"the asymptotes",
+"האסימפטוטות"
 ],
 [
 "the top is −1",
@@ -6632,6 +6781,18 @@
 "הפרש מעריכים"
 ],
 [
+"on the right",
+"מימין"
+],
+[
+"an asymptote",
+"אסימפטוטה"
+],
+[
+"at most once",
+"לכל היותר פעם אחת"
+],
+[
 "just before",
 "מעט לפני"
 ],
@@ -6716,6 +6877,10 @@
 "שמאלה"
 ],
 [
+"a peak of g",
+"מקסימום של g"
+],
+[
 "Exponential",
 "מעריכית"
 ],
@@ -6786,6 +6951,10 @@
 [
 "independent",
 "בלתי תלויים"
+],
+[
+"on the left",
+"משמאל"
 ],
 [
 "x > 0 here",
@@ -6924,6 +7093,10 @@
 "יורדת"
 ],
 [
+"a dip of g",
+"מינימום של g"
+],
+[
 "multiple =",
 "כפולה ="
 ],
@@ -6986,6 +7159,18 @@
 [
 "growth exp",
 "קצב גידול מעריכי"
+],
+[
+"inflection",
+"פיתול"
+],
+[
+"bends down",
+"קעורה כלפי מטה"
+],
+[
+"  or  x = ",
+"  או  x = "
 ],
 [
 "Challenge",
@@ -7344,6 +7529,26 @@
 "אינסוף"
 ],
 [
+"bends up",
+"קעורה כלפי מעלה"
+],
+[
+"but swap",
+"אבל מתחלפים"
+],
+[
+" or x = ",
+" או x = "
+],
+[
+" or t = ",
+" או t = "
+],
+[
+" or u = ",
+" או u = "
+],
+[
 "< 1 day",
 "פחות מיום"
 ],
@@ -7356,8 +7561,20 @@
 "לחזרה עכשיו"
 ],
 [
+"maximum",
+"מקסימום"
+],
+[
+"minimum",
+"מינימום"
+],
+[
 "Draw it",
 "משרטטים"
+],
+[
+"highest",
+"הגבוה ביותר"
 ],
 [
 "rises ↗",
@@ -7366,6 +7583,10 @@
 [
 "falls ↘",
 "יורדת ↘"
+],
+[
+"Find a.",
+"מצאו את a."
 ],
 [
 "A Train",
@@ -7386,6 +7607,10 @@
 [
 "up (∪)",
 "קעורה כלפי מעלה (∪)"
+],
+[
+"lowest",
+"הנמוך ביותר"
 ],
 [
 "f → f′",
@@ -7412,6 +7637,10 @@
 "בניית הפונקציה"
 ],
 [
+"start",
+"התחלה"
+],
+[
 " and ",
 " ו-"
 ],
@@ -7420,8 +7649,28 @@
 "f ← F"
 ],
 [
+"peak",
+"מקסימום"
+],
+[
+"zero",
+"אפס"
+],
+[
+"dip",
+"מינימום"
+],
+[
+"end",
+"סוף"
+],
+[
 "→ 0",
 "→ 0"
+],
+[
+"and",
+"ו"
 ]
 ]
 }

@@ -324,7 +324,8 @@ extension QuizFactory {
         }
         func lineText(_ m: Double, _ b: Double) -> String {
             let mt = ratText(m)
-            var s = m == 0 ? "" : (mt == "1" ? "x" : (mt == "−1" ? "−x" : "\(mt)x"))
+            let coefficient = mt.contains("/") ? "(\(mt))" : mt
+            var s = m == 0 ? "" : (mt == "1" ? "x" : (mt == "−1" ? "−x" : "\(coefficient)x"))
             if b != 0 || s.isEmpty { s += s.isEmpty ? ratText(b) : (b < 0 ? " − \(ratText(-b))" : " + \(ratText(b))") }
             return s
         }

@@ -1,0 +1,28 @@
+# Single words and short phrases replaced inside longer text (everything in this file is used as a phrase).
+maximum ⟹ מקסימום
+minimum ⟹ מינימום
+inflection ⟹ פיתול
+start ⟹ התחלה
+end ⟹ סוף
+peak ⟹ מקסימום
+dip ⟹ מינימום
+zero ⟹ אפס
+bends up ⟹ קעורה כלפי מעלה
+bends down ⟹ קעורה כלפי מטה
+on the left ⟹ משמאל
+on the right ⟹ מימין
+(at the asymptotes) ⟹ (באסימפטוטות)
+an asymptote ⟹ אסימפטוטה
+the asymptotes ⟹ האסימפטוטות
+but swap ⟹ אבל מתחלפים
+which also flips the graph ⟹ מה שגם הופך את הגרף
+(times −1, because the top is ⟹ (כפול −1, כי המונה הוא
+on the other side ⟹ בצד השני
+at most once ⟹ לכל היותר פעם אחת
+and ⟹ ו
+lowest ⟹ הנמוך ביותר
+highest ⟹ הגבוה ביותר
+ or x =  ⟹  או x = 
+ or t =  ⟹  או t = 
+ or u =  ⟹  או u = 
+  or  x =  ⟹   או  x = 

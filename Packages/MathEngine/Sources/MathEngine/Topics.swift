@@ -80,8 +80,8 @@ extension QuizFactory {
             let a = r.pick(ps), b = r.pick(ps)
             let ask = r.int(0...2)
             let names = r.pick([("Dana passes the test", "Yossi passes the test"),
-                                ("the bus is late", "it rains"),
-                                ("the first light is green", "the second light is green")])
+                                ("the bus comes late", "it rains"),
+                                ("the first light shows green", "the second light shows green")])
             let value: Double, what: String, steps: [SolutionStep]
             switch ask {
             case 0:

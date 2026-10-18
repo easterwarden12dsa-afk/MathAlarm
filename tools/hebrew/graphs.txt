@@ -197,3 +197,18 @@ right ⟹ ימינה
 left ⟹ שמאלה
 stretched away from ⟹ מתרחק מ
 squashed towards ⟹ מתכווץ לכיוון
+{} → {}′: {}  →  {}′ = ({}, {}) ⟹ {} → {}′: {}  →  {}′ = ({}, {})
+{} → {}′: {} ⟹ {} → {}′: {}
+{} to {}: g rises{} ⟹ {} עד {}: g עולה{}
+{} to {}: g falls{} ⟹ {} עד {}: g יורדת{}
+Parts of the interval are outside the domain — there is no graph there. ⟹ חלקים מהתחום נמצאים מחוץ לתחום ההגדרה — שם אין גרף.
+{} < x < {}:   {}″({}) {} > 0   ∪ bends up ⟹ {} < x < {}:   {}″({}) {} > 0   ∪ קעורה כלפי מעלה
+{} < x < {}:   {}″({}) {} < 0   ∩ bends down ⟹ {} < x < {}:   {}″({}) {} < 0   ∩ קעורה כלפי מטה
+{} < x < {}:   {}′({}) {} > 0   ↗ rises ⟹ {} < x < {}:   {}′({}) {} > 0   ↗ עולה
+{} < x < {}:   {}′({}) {} < 0   ↘ falls ⟹ {} < x < {}:   {}′({}) {} < 0   ↘ יורדת
+f peaks here, so g is steepest here — an inflection point of g ⟹ ‏f במקסימום כאן, לכן g הכי תלולה כאן — נקודת פיתול של g
+f dips here, so g is steepest here — an inflection point of g ⟹ ‏f במינימום כאן, לכן g הכי תלולה כאן — נקודת פיתול של g
+lowest ⟹ הנמוך ביותר
+highest ⟹ הגבוה ביותר
+a peak of g ⟹ מקסימום של g
+a dip of g ⟹ מינימום של g

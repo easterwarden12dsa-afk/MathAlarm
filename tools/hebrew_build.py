@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 import strings_scan  # noqa: E402
 
 def load():
-    table = {}
+    table, words = {}, {}
     for path in sorted(glob.glob(os.path.join(ROOT, "tools", "hebrew", "*.txt"))):
         for n, line in enumerate(open(path, encoding="utf-8"), 1):
             line = line.rstrip("\n")
@@ -24,7 +24,8 @@ def load():
             if en.strip() != en and en.strip() and en[0].isalpha():
                 en = en.rstrip()
             table[en] = he
-    return table
+            if os.path.basename(path) == "words.txt": words[en] = True
+    return table, words
 
 def placeholders(he):
     """Hebrew template -> list of 0-based capture indices in order."""
@@ -35,14 +36,22 @@ def placeholders(he):
     return out
 
 def main():
-    table = load()
+    table, words_file = load()
     exact, templates, phrases = {}, [], []
     for en, he in table.items():
-        if "{}" in en:
-            if not re.search(r"[A-Za-z]{2,}", en.replace("{}", "")): continue
+        if words_file.get(en):
+            phrases.append([en, he])
+        elif "{}" in en:
+            literal = re.sub(r"\s", "", en.replace("{}", ""))
+            # Too little fixed text ("{} or {}") would match almost anything.
+            if (len(literal) < 3 or (not re.search(r"[A-Za-z]", literal) and len(literal) < 6)) and "→" not in literal: continue
             templates.append([en.strip(), he.strip()])
         elif en[:1] in " ,—-;(" or en.endswith(" "):
             phrases.append([en, he])
+            # Clause splitting (at " — ") hands over the fragment without its dash.
+            core_en = re.sub(r"^\s*[—,;]\s*", "", en).strip()
+            core_he = re.sub(r"^\s*[—,;]\s*", "", he).strip()
+            if core_en and core_en not in table: exact[core_en] = core_he
         else:
             exact[en] = he
             if len(en.split()) >= 2 or len(en) >= 8:

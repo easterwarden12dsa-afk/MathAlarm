@@ -229,3 +229,11 @@ tree ⟹ עץ
 how many ⟹ כמה ניסיונות
 first success ⟹ הצלחה ראשונה
 conditional binomial ⟹ בינומי מותנה
+Find its height when its volume is largest. ⟹ מצאו את גובהו כשהנפח הגדול ביותר.
+the bus is late ⟹ האוטובוס מאחר
+the first light is green ⟹ הרמזור הראשון ירוק
+P(late) = {} ⟹ P(איחור) = {}
+P(defective) = {} ⟹ P(פגום) = {}
+the bus comes late ⟹ האוטובוס יאחר
+the first light shows green ⟹ הרמזור הראשון יהיה ירוק
+the second light shows green ⟹ הרמזור השני יהיה ירוק
