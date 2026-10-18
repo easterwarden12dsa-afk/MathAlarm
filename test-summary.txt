@@ -1,0 +1,400 @@
+56:Test Case '-[MathEngineTests.AsymptoteWholeTests testAsymptoteFamiliesGenerate]' passed (3.849 seconds).
+58:Test Case '-[MathEngineTests.AsymptoteWholeTests testBagrutChangeKinds]' passed (0.975 seconds).
+60:Test Case '-[MathEngineTests.AsymptoteWholeTests testCorrectionsAreFixable]' passed (38.736 seconds).
+62:Test Case '-[MathEngineTests.AsymptoteWholeTests testPerfectDrawingWithAsymptotePasses]' passed (0.035 seconds).
+64:Test Case '-[MathEngineTests.AsymptoteWholeTests testRootsIgnorePoles]' passed (0.001 seconds).
+66:Test Case '-[MathEngineTests.AsymptoteWholeTests testWholeGraph]' passed (0.033 seconds).
+68:Test Case '-[MathEngineTests.AsymptoteWholeTests testWrongWayAtAsymptoteFails]' passed (0.064 seconds).
+69:Test Suite 'AsymptoteWholeTests' passed at 2026-10-18 18:19:20.779.
+70:	 Executed 7 tests, with 0 failures (0 unexpected) in 43.692 (43.693) seconds
+75:Test Suite 'BagrutDump' passed at 2026-10-18 18:19:20.784.
+76:	 Executed 1 test, with 1 test skipped and 0 failures (0 unexpected) in 0.004 (0.005) seconds
+79:Test Case '-[MathEngineTests.BagrutExamScoreTests testScoreCountsBestQuestions]' passed (0.023 seconds).
+80:Test Suite 'BagrutExamScoreTests' passed at 2026-10-18 18:19:20.807.
+81:	 Executed 1 test, with 0 failures (0 unexpected) in 0.023 (0.023) seconds
+84:Test Case '-[MathEngineTests.BagrutTests testAntiderivativeMatchesDerivative]' passed (0.024 seconds).
+86:Test Case '-[MathEngineTests.BagrutTests testBagrutExams]' passed (0.170 seconds).
+88:Test Case '-[MathEngineTests.BagrutTests testComplexRootsPolygon]' passed (0.004 seconds).
+90:Test Case '-[MathEngineTests.BagrutTests testEveryNewTypeBuilds]' passed (3.880 seconds).
+92:Test Case '-[MathEngineTests.BagrutTests testEveryVariantIsReachable]' passed (0.073 seconds).
+94:Test Case '-[MathEngineTests.BagrutTests testGeometryAnswersMatchDrawing]' passed (0.002 seconds).
+96:Test Case '-[MathEngineTests.BagrutTests testInductionThresholds]' passed (0.011 seconds).
+98:Test Case '-[MathEngineTests.BagrutTests testSequenceAnswers]' passed (0.004 seconds).
+100:Test Case '-[MathEngineTests.BagrutTests testTangentToCircleTouches]' passed (0.005 seconds).
+102:Test Case '-[MathEngineTests.BagrutTests testVectorAngles]' passed (0.004 seconds).
+103:Test Suite 'BagrutTests' passed at 2026-10-18 18:19:24.987.
+104:	 Executed 10 tests, with 0 failures (0 unexpected) in 4.178 (4.180) seconds
+107:Test Case '-[MathEngineTests.ChangeStepsTests testGraphOnlyStepsNeverUseTheFormula]' passed (0.172 seconds).
+109:Test Case '-[MathEngineTests.ChangeStepsTests testShapeModeIsVisual]' passed (0.027 seconds).
+110:Test Suite 'ChangeStepsTests' passed at 2026-10-18 18:19:25.187.
+111:	 Executed 2 tests, with 0 failures (0 unexpected) in 0.199 (0.200) seconds
+114:Test Case '-[MathEngineTests.CheckerTests testBrokenReferenceCannotRejectCorrectAnswer]' passed (0.000 seconds).
+116:Test Case '-[MathEngineTests.CheckerTests testDerivativeOfSinX2]' passed (0.000 seconds).
+118:Test Case '-[MathEngineTests.CheckerTests testDerivativeQuotientExample]' passed (0.000 seconds).
+120:Test Case '-[MathEngineTests.CheckerTests testIntegralLnRule]' passed (0.000 seconds).
+122:Test Case '-[MathEngineTests.CheckerTests testIntegralOfXeX]' passed (0.000 seconds).
+124:Test Case '-[MathEngineTests.CheckerTests testIntegralUndefinedAnswer]' passed (0.000 seconds).
+125:Test Suite 'CheckerTests' passed at 2026-10-18 18:19:25.189.
+126:	 Executed 6 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+129:Test Case '-[MathEngineTests.DifferentiatorTests testEveryFunction]' passed (0.002 seconds).
+131:Test Case '-[MathEngineTests.DifferentiatorTests testRules]' passed (0.001 seconds).
+133:Test Case '-[MathEngineTests.DifferentiatorTests testSimplifyKeepsValue]' passed (0.000 seconds).
+134:Test Suite 'DifferentiatorTests' passed at 2026-10-18 18:19:25.193.
+135:	 Executed 3 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+138:Test Case '-[MathEngineTests.EditorM3Tests testDivideGrabsLastTerm]' passed (0.001 seconds).
+140:Test Case '-[MathEngineTests.EditorM3Tests testPlaceCursor]' passed (0.000 seconds).
+141:Test Suite 'EditorM3Tests' passed at 2026-10-18 18:19:25.195.
+142:	 Executed 2 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+145:Test Case '-[MathEngineTests.EditorTests testBackspaceEntersStructureFirst]' passed (0.000 seconds).
+147:Test Case '-[MathEngineTests.EditorTests testBackspaceUnwrapsStructure]' passed (0.000 seconds).
+149:Test Case '-[MathEngineTests.EditorTests testCursorWalksThroughFraction]' passed (0.000 seconds).
+151:Test Case '-[MathEngineTests.EditorTests testDisplayRoundTrip]' passed (0.001 seconds).
+153:Test Case '-[MathEngineTests.EditorTests testDivideTakesOperandAsNumerator]' passed (0.000 seconds).
+155:Test Case '-[MathEngineTests.EditorTests testEditorIsCodable]' passed (0.002 seconds).
+157:Test Case '-[MathEngineTests.EditorTests testEntryErrors]' passed (0.000 seconds).
+159:Test Case '-[MathEngineTests.EditorTests testExpKeyAndImplicitMultiplication]' passed (0.000 seconds).
+161:Test Case '-[MathEngineTests.EditorTests testFunctionPowerVersusArgumentPower]' passed (0.000 seconds).
+163:Test Case '-[MathEngineTests.EditorTests testParenAndCloseGroup]' passed (0.000 seconds).
+165:Test Case '-[MathEngineTests.EditorTests testTypingAPolynomial]' passed (0.000 seconds).
+167:Test Case '-[MathEngineTests.EditorTests testUnaryMinusAndPrecedence]' passed (0.000 seconds).
+168:Test Suite 'EditorTests' passed at 2026-10-18 18:19:25.201.
+169:	 Executed 12 tests, with 0 failures (0 unexpected) in 0.005 (0.006) seconds
+172:Test Case '-[MathEngineTests.GeneratorTests testEveryGeneratedProblemIsSolvableAndRejectsNearMisses]' passed (0.516 seconds).
+174:Test Case '-[MathEngineTests.GeneratorTests testHardDerivativesAreLayered]' passed (0.024 seconds).
+176:Test Case '-[MathEngineTests.GeneratorTests testSameSeedSameProblem]' passed (0.001 seconds).
+177:Test Suite 'GeneratorTests' passed at 2026-10-18 18:19:25.743.
+178:	 Executed 3 tests, with 0 failures (0 unexpected) in 0.541 (0.541) seconds
+181:Test Case '-[MathEngineTests.GraphAlgebraTests testAlgebraFindsEveryRoot]' passed (1.877 seconds).
+183:Test Case '-[MathEngineTests.GraphAlgebraTests testBagrutStepsAreExact]' passed (0.004 seconds).
+185:Test Case '-[MathEngineTests.GraphAlgebraTests testFactoredFormsAreTheDerivatives]' passed (0.363 seconds).
+187:Test Case '-[MathEngineTests.GraphAlgebraTests testQuadraticLabels]' passed (0.000 seconds).
+189:Test Case '-[MathEngineTests.GraphAlgebraTests testReferenceCaseIsSolvedByAlgebra]' passed (0.005 seconds).
+190:Test Suite 'GraphAlgebraTests' passed at 2026-10-18 18:19:27.992.
+191:	 Executed 5 tests, with 0 failures (0 unexpected) in 2.249 (2.250) seconds
+194:Test Case '-[MathEngineTests.GraphStepsTests testEveryProblemHasSteps]' passed (0.423 seconds).
+196:Test Case '-[MathEngineTests.GraphStepsTests testReferenceCaseSteps]' passed (0.006 seconds).
+198:Test Case '-[MathEngineTests.GraphStepsTests testRootsFindsCrossingsAndTouches]' passed (0.002 seconds).
+200:Test Case '-[MathEngineTests.GraphStepsTests testSketchVariety]' passed (0.059 seconds).
+201:Test Suite 'GraphStepsTests' passed at 2026-10-18 18:19:28.483.
+202:	 Executed 4 tests, with 0 failures (0 unexpected) in 0.490 (0.491) seconds
+205:Test Case '-[MathEngineTests.HardIntegralTests testHardHasIntegralTasks]' passed (0.140 seconds).
+206:Test Suite 'HardIntegralTests' passed at 2026-10-18 18:19:28.623.
+207:	 Executed 1 test, with 0 failures (0 unexpected) in 0.140 (0.140) seconds
+210:Test Case '-[MathEngineTests.MiniExamTests testExamPartsBelongToOneFunction]' passed (0.165 seconds).
+211:Test Suite 'MiniExamTests' passed at 2026-10-18 18:19:28.788.
+212:	 Executed 1 test, with 0 failures (0 unexpected) in 0.165 (0.165) seconds
+215:Test Case '-[MathEngineTests.MistakeTests testDroppedMinus]' passed (0.000 seconds).
+217:Test Case '-[MathEngineTests.MistakeTests testRecognisesForgottenChainRule]' passed (0.000 seconds).
+219:Test Case '-[MathEngineTests.MistakeTests testRecognisesProductAsProduct]' passed (0.000 seconds).
+221:Test Case '-[MathEngineTests.MistakeTests testRecognisesQuotientOrder]' passed (0.000 seconds).
+223:Test Case '-[MathEngineTests.MistakeTests testRightAnswerHasNoMistake]' passed (0.000 seconds).
+224:Test Suite 'MistakeTests' passed at 2026-10-18 18:19:28.790.
+225:	 Executed 5 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+228:Test Case '-[MathEngineTests.PasteTests testPastedPiecesParseBack]' passed (0.019 seconds).
+230:Test Case '-[MathEngineTests.PasteTests testPastingASumNextToSomethingAddsBrackets]' passed (0.000 seconds).
+231:Test Suite 'PasteTests' passed at 2026-10-18 18:19:28.810.
+232:	 Executed 2 tests, with 0 failures (0 unexpected) in 0.020 (0.020) seconds
+235:Test Case '-[MathEngineTests.QuizTests testEveryKindGeneratesAndIsSelfConsistent]' passed (0.913 seconds).
+237:Test Case '-[MathEngineTests.QuizTests testNumberAnswersAcceptExactForms]' passed (0.000 seconds).
+239:Test Case '-[MathEngineTests.QuizTests testParameterAnswersSatisfyTheCondition]' passed (0.001 seconds).
+241:Test Case '-[MathEngineTests.QuizTests testTangentAnswerIsTheTangent]' passed (0.008 seconds).
+242:Test Suite 'QuizTests' passed at 2026-10-18 18:19:29.733.
+243:	 Executed 4 tests, with 0 failures (0 unexpected) in 0.922 (0.923) seconds
+246:Test Case '-[MathEngineTests.QuizVarietyTests testLimitAnswersMatchTheFunction]' passed (0.012 seconds).
+248:Test Case '-[MathEngineTests.QuizVarietyTests testLimitsAreVaried]' passed (0.007 seconds).
+250:Test Case '-[MathEngineTests.QuizVarietyTests testNewAreaFamiliesAgreeWithNumericIntegration]' passed (0.193 seconds).
+252:Test Case '-[MathEngineTests.QuizVarietyTests testRecentTopicsAreAvoided]' passed (0.000 seconds).
+254:Test Case '-[MathEngineTests.QuizVarietyTests testTangentsAndNormalsAreRight]' passed (0.045 seconds).
+255:Test Suite 'QuizVarietyTests' passed at 2026-10-18 18:19:29.992.
+256:	 Executed 5 tests, with 0 failures (0 unexpected) in 0.258 (0.259) seconds
+259:Test Case '-[MathEngineTests.SampleOutputTests testPrintSamples]' passed (0.005 seconds).
+260:Test Suite 'SampleOutputTests' passed at 2026-10-18 18:19:29.997.
+261:	 Executed 1 test, with 0 failures (0 unexpected) in 0.005 (0.005) seconds
+264:Test Case '-[MathEngineTests.SingleBracketTests testCloseOnlyWrapsWhatCameBefore]' passed (0.000 seconds).
+266:Test Case '-[MathEngineTests.SingleBracketTests testOpenOnlyWrapsWhatComesAfter]' passed (0.000 seconds).
+267:Test Suite 'SingleBracketTests' passed at 2026-10-18 18:19:29.998.
+268:	 Executed 2 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+271:Test Case '-[MathEngineTests.SketchGuideTests testGuideJoinsTheUsersDrawing]' passed (0.005 seconds).
+272:Test Suite 'SketchGuideTests' passed at 2026-10-18 18:19:30.003.
+273:	 Executed 1 test, with 0 failures (0 unexpected) in 0.005 (0.005) seconds
+276:Test Case '-[MathEngineTests.SketchTests testChangeProblemsAreValidAndSolvable]' passed (4.385 seconds).
+278:Test Case '-[MathEngineTests.SketchTests testEachRegionHasItsOwnHint]' passed (0.032 seconds).
+280:Test Case '-[MathEngineTests.SketchTests testEraseBandKeepsOutsideParts]' passed (0.000 seconds).
+282:Test Case '-[MathEngineTests.SketchTests testEraserCutsALongStraightSegment]' passed (0.000 seconds).
+284:Test Case '-[MathEngineTests.SketchTests testEraserCutsOnlyTheMiddle]' passed (0.000 seconds).
+286:Test Case '-[MathEngineTests.SketchTests testEraserLeavesOtherStrokesAlone]' passed (0.000 seconds).
+288:Test Case '-[MathEngineTests.SketchTests testEveryGeneratedProblemWorksInEveryMode]' passed (12.256 seconds).
+290:Test Case '-[MathEngineTests.SketchTests testExactSketchPassesEveryMode]' passed (0.019 seconds).
+292:Test Case '-[MathEngineTests.SketchTests testFlagsTheRightRegion]' passed (0.016 seconds).
+294:Test Case '-[MathEngineTests.SketchTests testHalfDrawnFails]' passed (0.004 seconds).
+296:Test Case '-[MathEngineTests.SketchTests testPrecisionAcceptsCarefulRejectsRough]' passed (0.046 seconds).
+298:Test Case '-[MathEngineTests.SketchTests testProportionsIgnoresVerticalScale]' passed (0.076 seconds).
+300:Test Case '-[MathEngineTests.SketchTests testReferenceCaseShape]' passed (0.000 seconds).
+302:Test Case '-[MathEngineTests.SketchTests testShapeOnlyAcceptsRightStructure]' passed (0.017 seconds).
+304:Test Case '-[MathEngineTests.SketchTests testStandardAcceptsSomewhatRough]' passed (0.004 seconds).
+306:Test Case '-[MathEngineTests.SketchTests testTransformsComputeTheRightGraph]' passed (0.000 seconds).
+308:Test Case '-[MathEngineTests.SketchTests testWrongShapesFailEveryMode]' passed (0.261 seconds).
+309:Test Suite 'SketchTests' passed at 2026-10-18 18:19:47.122.
+310:	 Executed 17 tests, with 0 failures (0 unexpected) in 17.117 (17.119) seconds
+313:SAMPLE integral easy [Basic trig integral] f = -(5*sin(2*x))   ref = (5)/(2)*cos(2*x)
+314:SAMPLE integral easy [Exponential] f = 5*exp(2*x)   ref = (5)/(2)*exp(2*x)
+315:SAMPLE integral easy [Power rule] f = 4*sqrt(x)   ref = (8)/(3)*(x)^((3)/(2))
+316:SAMPLE integral easy [Power rule] f = 6*sqrt(x)   ref = 4*(x)^((3)/(2))
+317:SAMPLE integral medium [Substitution] f = x*exp(3*(x)^(2))   ref = (1)/(6)*exp(3*(x)^(2))
+318:SAMPLE integral medium [Substitution (f′/f)] f = ((6*x + 12))/((((x)^(2) + 4*x) + 8))   ref = 3*ln((((x)^(2) + 4*x) + 8))
+319:SAMPLE integral medium [Integration by parts] f = x*sin(3*x)   ref = (-((1)/(3)*x*cos(3*x)) + (1)/(9)*sin(3*x))
+320:SAMPLE integral medium [Integration by parts] f = x*sin(4*x)   ref = (-((1)/(4)*x*cos(4*x)) + (1)/(16)*sin(4*x))
+321:SAMPLE integral hard [Integration by parts (cyclic)] f = exp(2*x)*sin(x)   ref = exp(2*x)*((2)/(5)*sin(x) - (1)/(5)*cos(x))
+322:SAMPLE integral hard [Trig identities] f = (sin(x))^(2)*(cos(x))^(2)   ref = ((1)/(8)*x - (1)/(32)*sin(4*x))
+323:SAMPLE integral hard [Substitution] f = (x)/(sqrt(((x)^(2) + 6)))   ref = sqrt(((x)^(2) + 6))
+324:SAMPLE integral hard [Substitution] f = (sin(ln(x)))/(x)   ref = -(cos(ln(x)))
+325:SAMPLE integral bagrut [f′/f and power rule] f = ((8*x)/(((x)^(2) + 1)) + (-3)/((x)^(2)))   ref = (4*ln(((x)^(2) + 1)) + 3*(1)/(x))
+326:SAMPLE integral bagrut [Linear inner function] f = ((4)/(sqrt((4*x + 4))) + 2*cos(4*x))   ref = (2*sqrt((4*x + 4)) + (1)/(2)*sin(4*x))
+327:SAMPLE integral bagrut [Standard integrals] f = ((1)/((cos(x))^(2)) - 4*sin(x))   ref = (tan(x) + 4*cos(x))
+328:SAMPLE integral bagrut [Standard integrals] f = ((3)/((cos(x))^(2)) - 3*sin(x))   ref = (3*tan(x) + 3*cos(x))
+329:SAMPLE derivative easy [Chain rule] f = sin((((x)^(2) - 3*x) + 1))   ref = cos((((x)^(2) - 3*x) + 1))*(2*x - 3)
+330:SAMPLE derivative easy [Quotient rule] f = (sqrt((((x)^(2))^(2) + 2)))/(((x)^(2) + exp(x)))   ref = (((1)/(2*sqrt((((x)^(2))^(2) + 2)))*2*(x)^(2)*2*x*((x)^(2) + exp(x)) - sqrt((((x)^(2))^(2) + 2))*(2*x + exp(x))))/((((x)^(2) + exp(x)))^(2))
+331:SAMPLE derivative easy [Product + chain rule] f = (x)^(2)*sin(3*x)   ref = (2*x*sin(3*x) + (x)^(2)*3*cos(3*x))
+332:SAMPLE derivative easy [Quotient rule] f = (sin((x)^(2)))/((3 + cos(x)))   ref = ((cos((x)^(2))*2*x*(3 + cos(x)) + sin((x)^(2))*sin(x)))/(((3 + cos(x)))^(2))
+333:SAMPLE derivative medium [Chain rule (two layers)] f = exp(sin((((x)^(2) - 3*x) + 1)))   ref = exp(sin((((x)^(2) - 3*x) + 1)))*cos((((x)^(2) - 3*x) + 1))*(2*x - 3)
+334:SAMPLE derivative medium [Product + chain rule] f = exp(-(x))*ln((((2*(x)^(2) + 5))^(2) + 2))   ref = (-(exp(-(x))*ln((((2*(x)^(2) + 5))^(2) + 2))) + exp(-(x))*(1)/((((2*(x)^(2) + 5))^(2) + 2))*2*(2*(x)^(2) + 5)*4*x)
+335:SAMPLE derivative medium [Product + chain rule] f = sin(x)*arctan(((x)^(3) - x))   ref = (cos(x)*arctan(((x)^(3) - x)) + sin(x)*(1)/((1 + (((x)^(3) - x))^(2)))*(3*(x)^(2) - 1))
+336:SAMPLE derivative medium [Product + chain rule] f = ((x)^(2) - 2)*arctan(((x)^(3) - 3*x))   ref = (2*x*arctan(((x)^(3) - 3*x)) + ((x)^(2) - 2)*(1)/((1 + (((x)^(3) - 3*x))^(2)))*(3*(x)^(2) - 3))
+337:SAMPLE derivative hard [Quotient + nested chain rule] f = (exp(sin((((x)^(2) - 3*x) + 1))))/((exp(x) + 1))   ref = ((exp(sin((((x)^(2) - 3*x) + 1)))*cos((((x)^(2) - 3*x) + 1))*(2*x - 3)*(exp(x) + 1) - exp(sin((((x)^(2) - 3*x) + 1)))*exp(x)))/(((exp(x) + 1))^(2))
+338:SAMPLE derivative hard [Product + nested chain rule] f = ln(((ln(((((x)^(3) - x))^(2) + 3)))^(2) + 2))*sqrt(((((x)^(2) + 1))^(2) + 2))   ref = ((1)/(((ln(((((x)^(3) - x))^(2) + 3)))^(2) + 2))*2*ln(((((x)^(3) - x))^(2) + 3))*(1)/(((((x)^(3) - x))^(2) + 3))*2*((x)^(3) - x)*(3*(x)^(2) - 1)*sqrt(((((x)^(2) + 1))^(2) + 2)) + ln(((ln(((((x)^(3) - x))^(2) + 3)))^(2) + 2))*(1)/(2*sqrt(((((x)^(2) + 1))^(2) + 2)))*2*((x)^(2) + 1)*2*x)
+339:SAMPLE derivative hard [Product + nested chain rule] f = arctan(sin((((x)^(2) - 3*x) + 2)))*arctan((x)^(2))   ref = ((1)/((1 + (sin((((x)^(2) - 3*x) + 2)))^(2)))*cos((((x)^(2) - 3*x) + 2))*(2*x - 3)*arctan((x)^(2)) + arctan(sin((((x)^(2) - 3*x) + 2)))*(1)/((1 + ((x)^(2))^(2)))*2*x)
+340:SAMPLE derivative hard [Product + nested chain rule] f = arctan(ln(((exp(x))^(2) + 3)))*cos((x)^(2))   ref = ((1)/((1 + (ln(((exp(x))^(2) + 3)))^(2)))*(1)/(((exp(x))^(2) + 3))*2*exp(x)*exp(x)*cos((x)^(2)) - arctan(ln(((exp(x))^(2) + 3)))*sin((x)^(2))*2*x)
+341:SAMPLE derivative bagrut [Chain rule (two layers)] f = exp(sin((((x)^(2) - 3*x) + 1)))   ref = exp(sin((((x)^(2) - 3*x) + 1)))*cos((((x)^(2) - 3*x) + 1))*(2*x - 3)
+342:SAMPLE derivative bagrut [Product + chain rule] f = exp(-(x))*ln((((2*(x)^(2) + 5))^(2) + 2))   ref = (-(exp(-(x))*ln((((2*(x)^(2) + 5))^(2) + 2))) + exp(-(x))*(1)/((((2*(x)^(2) + 5))^(2) + 2))*2*(2*(x)^(2) + 5)*4*x)
+343:SAMPLE derivative bagrut [Product + chain rule] f = sin(x)*sin(((x)^(3) - x))   ref = (cos(x)*sin(((x)^(3) - x)) + sin(x)*cos(((x)^(3) - x))*(3*(x)^(2) - 1))
+344:SAMPLE derivative bagrut [Product + chain rule] f = ((x)^(2) - 2)*sin(((x)^(3) - 3*x))   ref = (2*x*sin(((x)^(3) - 3*x)) + ((x)^(2) - 2)*cos(((x)^(3) - 3*x))*(3*(x)^(2) - 3))
+345:SAMPLE ===== reference
+346:SAMPLE [heading] The function
+347:SAMPLE   {f(x) = (sin(x))^(2)*cos(2*x)}
+348:SAMPLE on the interval −π/4 ≤ x ≤ π/4.
+349:SAMPLE [heading] Step 1 · Domain
+350:SAMPLE f is defined for every x.
+351:SAMPLE On −π/4 ≤ x ≤ π/4 it is defined and continuous, so there are no vertical asymptotes here (and on a closed interval no horizontal ones either).
+352:SAMPLE [heading] Step 2 · Intercepts with the axes
+353:SAMPLE [subheading] y-axis (x = 0)
+354:SAMPLE   f(0) = 0  →  the point (0, 0)
+355:SAMPLE [subheading] x-axis: solve f(x) = 0
+356:SAMPLE   A product is 0 exactly when one of its factors is 0:
+357:SAMPLE   • sin²x = 0
+358:SAMPLE     sin x = 0
+359:SAMPLE       ⇒ x = πn
+360:SAMPLE       Inside the interval (n = …, −1, 0, 1, …):  x = 0
+361:SAMPLE   • cos 2x = 0
+362:SAMPLE     cos(2x) = 0
+363:SAMPLE       ⇒ 2x = π/2 + πn
+364:SAMPLE       None of these lie inside the interval.
+365:SAMPLE   [result] On −π/4 < x < π/4:  x = 0
+366:SAMPLE [heading] Step 3 · Extreme points
+367:SAMPLE [subheading] The derivative
+368:SAMPLE   Differentiate and factor:  {f′(x) = 2*sin(x)*cos(3*x)}
+369:SAMPLE [subheading] Solve f′(x) = 0
+370:SAMPLE   Product and chain rule: f′(x) = 2 sin x cos x·cos 2x − 2sin²x·sin 2x = 2 sin x·(cos x cos 2x − sin x sin 2x) = 2 sin x·cos 3x  (cos(A + B) = cos A cos B − sin A sin B)
+371:SAMPLE   A product is 0 exactly when one of its factors is 0:
+372:SAMPLE   • sin x = 0
+373:SAMPLE     sin x = 0
+374:SAMPLE       ⇒ x = πn
+375:SAMPLE       Inside the interval (n = …, −1, 0, 1, …):  x = 0
+376:SAMPLE   • cos 3x = 0
+377:SAMPLE     cos(3x) = 0
+378:SAMPLE       ⇒ 3x = π/2 + πn
+379:SAMPLE       Inside the interval (n = …, −1, 0, 1, …):  x = −π/6,  x = π/6
+380:SAMPLE   [result] On −π/4 < x < π/4:  x = −π/6,  x = 0,  x = π/6
+381:SAMPLE [subheading] Sign of f′ — the proof
+382:SAMPLE   f′ can only change sign where it is 0, so one test point in each part decides the sign there:
+383:SAMPLE   −π/4 < x < −π/6:   f′(−0.7) ≈ 0.65 > 0   ↗ increasing
+384:SAMPLE   −π/6 < x < 0:   f′(−π/12) ≈ −0.366 < 0   ↘ decreasing
+385:SAMPLE   0 < x < π/6:   f′(π/12) ≈ 0.366 > 0   ↗ increasing
+386:SAMPLE   π/6 < x < π/4:   f′(0.7) ≈ −0.65 < 0   ↘ decreasing
+387:SAMPLE [subheading] Conclusion
+388:SAMPLE   [result] x = −π/6: f′ changes from + to −  ⇒  maximum at (−π/6, 0.125).
+389:SAMPLE     Check: f″(−π/6) = −3 < 0 (∩) ✓
+390:SAMPLE   [result] x = 0: f′ changes from − to +  ⇒  minimum at (0, 0).
+391:SAMPLE     Check: f″(0) = 2 > 0 (∪) ✓
+392:SAMPLE   [result] x = π/6: f′ changes from + to −  ⇒  maximum at (π/6, 0.125).
+393:SAMPLE     Check: f″(π/6) = −3 < 0 (∩) ✓
+394:SAMPLE   End points: (−π/4, 0) is an end minimum (the graph rises from it), (π/4, 0) is an end minimum.
+395:SAMPLE [heading] Step 4 · Inflection points
+396:SAMPLE [subheading] The second derivative
+397:SAMPLE   Differentiate f′ again:  {f″(x) = (((2*cos(x)*cos(x) - 2*sin(x)*sin(x))*cos(2*x) - 2*sin(x)*cos(x)*2*sin(2*x)) - (2*sin(x)*cos(x)*2*sin(2*x) + (sin(x))^(2)*4*cos(2*x)))}
+398:SAMPLE [subheading] Solve f″(x) = 0
+399:SAMPLE   This equation can't be solved exactly by hand. f″(x) is continuous (between asymptotes), so it is 0 wherever it changes sign (intermediate value theorem):
+400:SAMPLE     x ≈ −0.284:  f″(x) is negative just before and positive just after
+401:SAMPLE     x ≈ 0.284:  f″(x) is positive just before and negative just after
+402:SAMPLE [subheading] Sign of f″
+403:SAMPLE   −π/4 < x < −0.284:   f″(−π/6) = −3 < 0   ∩ bends down
+404:SAMPLE   −0.284 < x < 0.284:   f″(0) = 2 > 0   ∪ bends up
+405:SAMPLE   0.284 < x < π/4:   f″(π/6) = −3 < 0   ∩ bends down
+406:SAMPLE [subheading] Conclusion
+407:SAMPLE   [result] x ≈ −0.284: f″ changes sign  ⇒  inflection point (−0.284, 0.0662).
+408:SAMPLE   [result] x ≈ 0.284: f″ changes sign  ⇒  inflection point (0.284, 0.0662).
+409:SAMPLE [heading] Step 5 · Draw it
+410:SAMPLE Plot these points from left to right and join them, rising/falling (Step 3) and bending (Step 4) as found:
+411:SAMPLE   (−π/4, 0)  — start
+412:SAMPLE   (−π/6, 0.125)  — maximum
+413:SAMPLE   (−0.284, 0.0662)  — inflection
+414:SAMPLE   (0, 0)  — on the x-axis, minimum
+415:SAMPLE   (0.284, 0.0662)  — inflection
+416:SAMPLE   (π/6, 0.125)  — maximum
+417:SAMPLE   (π/4, 0)  — end
+418:SAMPLE ===== x² − 3 ln x
+419:SAMPLE [heading] The function
+420:SAMPLE   {f(x) = ((x)^(2) - 3*ln(x))}
+421:SAMPLE on the interval 0.2 ≤ x ≤ 3.1.
+422:SAMPLE [heading] Step 1 · Domain
+423:SAMPLE ln needs a positive argument.
+424:SAMPLE On 0.2 ≤ x ≤ 3.1 it is defined and continuous, so there are no vertical asymptotes here (and on a closed interval no horizontal ones either).
+425:SAMPLE [heading] Step 2 · Intercepts with the axes
+426:SAMPLE [subheading] x-axis: solve f(x) = 0
+427:SAMPLE   This equation can't be solved exactly by hand. f(x) is continuous (between asymptotes), so it is 0 wherever it changes sign (intermediate value theorem):
+428:SAMPLE     f(x) doesn't change sign on the interval, so it has no solution here.
+429:SAMPLE [heading] Step 3 · Extreme points
+430:SAMPLE [subheading] The derivative
+431:SAMPLE   Differentiate and factor:  {f′(x) = ((2*(x)^(2) - 3))/(x)}
+432:SAMPLE [subheading] Solve f′(x) = 0
+433:SAMPLE   A fraction is 0 when its numerator is 0. The denominator x is positive (ln x needs x > 0), so solve 2x² − 3 = 0:
+434:SAMPLE   2x² − 3 = 0:  Δ = b² − 4ac = 0² − 4·2·(−3) = 24
+435:SAMPLE     x = (−b ± √Δ)/(2a) = (0 ± √24)/4  ⇒  x = √6/2 (≈ 1.22)  or  x = −√6/2 (≈ −1.22)
+436:SAMPLE   [result] On 0.2 < x < 3.1:  x = √6/2
+437:SAMPLE [subheading] Sign of f′ — the proof
+438:SAMPLE   f′ can only change sign where it is 0, so one test point in each part decides the sign there:
+439:SAMPLE   0.2 < x < √6/2:   f′(1) = −1 < 0   ↘ decreasing
+440:SAMPLE   √6/2 < x < 3.1:   f′(2) ≈ 2.5 > 0   ↗ increasing
+441:SAMPLE [subheading] Conclusion
+442:SAMPLE   [result] x = √6/2: f′ changes from − to +  ⇒  minimum at (√6/2, 0.892).
+443:SAMPLE     Check: f″(√6/2) = 4 > 0 (∪) ✓
+444:SAMPLE   End points: (0.2, 4.87) is an end maximum (the graph falls from it), (3.1, 6.22) is an end maximum.
+445:SAMPLE [heading] Step 4 · Inflection points
+446:SAMPLE [subheading] The second derivative
+447:SAMPLE   Differentiate f′ again:  {f″(x) = (2 + (3)/((x)^(2)))}
+448:SAMPLE [subheading] Solve f″(x) = 0
+449:SAMPLE   f″(x) = 2 + 3/x² = 0 has no solution: it is always positive.
+450:SAMPLE   [result] No solutions on 0.2 < x < 3.1.
+451:SAMPLE [subheading] Sign of f″
+452:SAMPLE   0.2 < x < 3.1:   f″(2) ≈ 2.75 > 0   ∪ bends up
+453:SAMPLE [subheading] Conclusion
+454:SAMPLE   [result] No inflection points: f bends up (∪) everywhere.
+455:SAMPLE [heading] Step 5 · Draw it
+456:SAMPLE Plot these points from left to right and join them, rising/falling (Step 3) and bending (Step 4) as found:
+457:SAMPLE   (0.2, 4.87)  — start
+458:SAMPLE   (√6/2, 0.892)  — minimum
+459:SAMPLE   (3.1, 6.22)  — end
+460:SAMPLE ===== hard (sin(x))^(2)*cos(3*x)
+461:SAMPLE [heading] The function
+462:SAMPLE   {f(x) = (sin(x))^(2)*cos(3*x)}
+463:SAMPLE on the interval −π/6 ≤ x ≤ π/6.
+464:SAMPLE [heading] Step 1 · Domain
+465:SAMPLE f is defined for every x.
+466:SAMPLE On −π/6 ≤ x ≤ π/6 it is defined and continuous, so there are no vertical asymptotes here (and on a closed interval no horizontal ones either).
+467:SAMPLE [heading] Step 2 · Intercepts with the axes
+468:SAMPLE [subheading] y-axis (x = 0)
+469:SAMPLE   f(0) = 0  →  the point (0, 0)
+470:SAMPLE [subheading] x-axis: solve f(x) = 0
+471:SAMPLE   A product is 0 exactly when one of its factors is 0:
+472:SAMPLE   • sin²x = 0
+473:SAMPLE     sin x = 0
+474:SAMPLE       ⇒ x = πn
+475:SAMPLE       Inside the interval (n = …, −1, 0, 1, …):  x = 0
+476:SAMPLE   • cos 3x = 0
+477:SAMPLE     cos(3x) = 0
+478:SAMPLE       ⇒ 3x = π/2 + πn
+479:SAMPLE       None of these lie inside the interval.
+480:SAMPLE   [result] On −π/6 < x < π/6:  x = 0
+481:SAMPLE [heading] Step 3 · Extreme points
+482:SAMPLE [subheading] The derivative
+483:SAMPLE   Differentiate and factor:  {f′(x) = sin(x)*(2*cos(x)*cos(3*x) - 3*sin(x)*sin(3*x))}
+484:SAMPLE [subheading] Solve f′(x) = 0
+485:SAMPLE   A product is 0 exactly when one of its factors is 0:
+486:SAMPLE   • sin x = 0
+487:SAMPLE     sin x = 0
+488:SAMPLE       ⇒ x = πn
+489:SAMPLE       Inside the interval (n = …, −1, 0, 1, …):  x = 0
+490:SAMPLE   • 2cos x cos 3x − 3 sin x sin 3x = 0
+491:SAMPLE       x ≈ −0.355:  2cos x cos 3x − 3 sin x sin 3x is negative just before and positive just after
+492:SAMPLE       x ≈ 0.355:  2cos x cos 3x − 3 sin x sin 3x is positive just before and negative just after
+493:SAMPLE   [result] On −π/6 < x < π/6:  x ≈ −0.355,  x = 0,  x ≈ 0.355
+494:SAMPLE [subheading] Sign of f′ — the proof
+495:SAMPLE   f′ can only change sign where it is 0, so one test point in each part decides the sign there:
+496:SAMPLE   −π/6 < x < −0.355:   f′(−0.4) ≈ 0.164 > 0   ↗ increasing
+497:SAMPLE   −0.355 < x < 0:   f′(−π/12) ≈ −0.211 < 0   ↘ decreasing
+498:SAMPLE   0 < x < 0.355:   f′(π/12) ≈ 0.211 > 0   ↗ increasing
+499:SAMPLE   0.355 < x < π/6:   f′(0.4) ≈ −0.164 < 0   ↘ decreasing
+500:SAMPLE [subheading] Conclusion
+501:SAMPLE   [result] x ≈ −0.355: f′ changes from + to −  ⇒  maximum at (−0.355, 0.0585).
+502:SAMPLE     Check: f″(−0.355) ≈ −3.21 < 0 (∩) ✓
+503:SAMPLE   [result] x = 0: f′ changes from − to +  ⇒  minimum at (0, 0).
+504:SAMPLE     Check: f″(0) = 2 > 0 (∪) ✓
+505:SAMPLE   [result] x ≈ 0.355: f′ changes from + to −  ⇒  maximum at (0.355, 0.0585).
+506:SAMPLE     Check: f″(0.355) ≈ −3.21 < 0 (∩) ✓
+507:SAMPLE   End points: (−π/6, 0) is an end minimum (the graph rises from it), (π/6, 0) is an end minimum.
+508:SAMPLE [heading] Step 4 · Inflection points
+509:SAMPLE [subheading] The second derivative
+510:SAMPLE   Differentiate f′ again:  {f″(x) = (((2*cos(x)*cos(x) - 2*sin(x)*sin(x))*cos(3*x) - 2*sin(x)*cos(x)*3*sin(3*x)) - (2*sin(x)*cos(x)*3*sin(3*x) + (sin(x))^(2)*9*cos(3*x)))}
+511:SAMPLE [subheading] Solve f″(x) = 0
+512:SAMPLE   This equation can't be solved exactly by hand. f″(x) is continuous (between asymptotes), so it is 0 wherever it changes sign (intermediate value theorem):
+513:SAMPLE     x ≈ −0.195:  f″(x) is negative just before and positive just after
+514:SAMPLE     x ≈ 0.195:  f″(x) is positive just before and negative just after
+515:SAMPLE [subheading] Sign of f″
+516:SAMPLE   −π/6 < x < −0.195:   f″(−π/12) ≈ −1.32 < 0   ∩ bends down
+517:SAMPLE   −0.195 < x < 0.195:   f″(0) = 2 > 0   ∪ bends up
+518:SAMPLE   0.195 < x < π/6:   f″(π/12) ≈ −1.32 < 0   ∩ bends down
+519:SAMPLE [subheading] Conclusion
+520:SAMPLE   [result] x ≈ −0.195: f″ changes sign  ⇒  inflection point (−0.195, 0.0313).
+521:SAMPLE   [result] x ≈ 0.195: f″ changes sign  ⇒  inflection point (0.195, 0.0313).
+522:SAMPLE [heading] Step 5 · Draw it
+523:SAMPLE Plot these points from left to right and join them, rising/falling (Step 3) and bending (Step 4) as found:
+524:SAMPLE   (−π/6, 0)  — start
+525:SAMPLE   (−0.355, 0.0585)  — maximum
+526:SAMPLE   (−0.195, 0.0313)  — inflection
+527:SAMPLE   (0, 0)  — on the x-axis, minimum
+528:SAMPLE   (0.195, 0.0313)  — inflection
+529:SAMPLE   (0.355, 0.0585)  — maximum
+530:SAMPLE   (π/6, 0)  — end
+531:SAMPLE ===== oblique (((x)^(2) + 5))/((x + 2))
+532:SAMPLE [heading] The function
+533:SAMPLE   {f(x) = (((x)^(2) + 5))/((x + 2))}
+534:SAMPLE Draw the whole graph — every x where it is defined.
+535:SAMPLE [heading] Step 1 · Domain and asymptotes
+536:SAMPLE a denominator must not be 0.  So x ≠ −2.
+537:SAMPLE [subheading] Vertical asymptotes
+538:SAMPLE   x = −2 is not in the domain, and next to it |f(x)| grows without bound — a vertical asymptote.
+539:SAMPLE     [result] x → −2⁻:  f(x) → −∞;    x → −2⁺:  f(x) → +∞
+540:SAMPLE [subheading] Behaviour at the ends of the domain
+541:SAMPLE   Divide: (x² + 5)/(x + 2) = x − 2 + 9/(x + 2). The last part → 0 as x → ±∞, so the graph approaches the line y = x − 2 — an oblique asymptote.
+542:SAMPLE [heading] Step 2 · Intercepts with the axes
+543:SAMPLE [subheading] y-axis (x = 0)
+544:SAMPLE   f(0) = 2.5  →  the point (0, 2.5)
+545:SAMPLE [subheading] x-axis: solve f(x) = 0
+546:SAMPLE   A fraction is 0 when its numerator is 0. The denominator x + 2 is not 0 in the domain, so solve x² + 5 = 0:
+547:SAMPLE   x² + 5 = 0:  Δ = b² − 4ac = 0² − 4·1·5 = −20
+548:SAMPLE     Δ < 0, so there are no real solutions.
+549:SAMPLE   [result] No solutions on its domain.
+550:SAMPLE [heading] Step 3 · Extreme points
+551:SAMPLE [subheading] The derivative
+552:SAMPLE   Differentiate and factor:  {f′(x) = ((((x)^(2) + 4*x) - 5))/(((x + 2))^(2))}
+553:SAMPLE [subheading] Solve f′(x) = 0
+554:SAMPLE   Quotient rule: f′(x) = [2x(x + 2) − (x² + 5)]/(x + 2)² = (x² + 4x − 5)/(x + 2)²
+555:SAMPLE   A fraction is 0 when its numerator is 0. The denominator (x + 2)² is positive wherever f is defined, so solve x² + 4x − 5 = 0:
+556:SAMPLE   x² + 4x − 5 = 0:  Δ = b² − 4ac = 4² − 4·1·(−5) = 36
+557:SAMPLE     x = (−b ± √Δ)/(2a) = (−4 ± √36)/2  ⇒  x = 1  or  x = −5
+558:SAMPLE   [result] On its domain:  x = −5,  x = 1
+559:SAMPLE [subheading] Sign of f′ — the proof
+560:SAMPLE   f′ can only change sign where it is 0 or undefined (at the asymptotes), so one test point in each part decides the sign there:
+561:SAMPLE   −∞ < x < −5:   f′(−7) ≈ 0.64 > 0   ↗ increasing
+562:SAMPLE   −5 < x < −2:   f′(−4) ≈ −1.25 < 0   ↘ decreasing
+563:SAMPLE   −2 < x < 1:   f′(−1) = −8 < 0   ↘ decreasing
+564:SAMPLE   1 < x < ∞:   f′(3) ≈ 0.64 > 0   ↗ increasing
+565:SAMPLE [subheading] Conclusion
+566:SAMPLE   [result] x = −5: f′ changes from + to −  ⇒  maximum at (−5, −10).
+567:SAMPLE     Check: f″(−5) ≈ −0.667 < 0 (∩) ✓
+568:SAMPLE   [result] x = 1: f′ changes from − to +  ⇒  minimum at (1, 2).
+569:SAMPLE     Check: f″(1) ≈ 0.667 > 0 (∪) ✓
+570:SAMPLE [heading] Step 4 · Inflection points
+571:SAMPLE [subheading] The second derivative
+572:SAMPLE   Differentiate f′ again:  {f″(x) = (18)/(((x + 2))^(3))}
+573:SAMPLE [subheading] Solve f″(x) = 0
+574:SAMPLE   f″(x) = 18/(x + 2)³ = 0 has no solution: the top is never 0.
