@@ -1,7 +1,7 @@
 import XCTest
 @testable import MathEngine
 
-final class VarietyTests: XCTestCase {
+final class QuizVarietyTests: XCTestCase {
     /// Where the limit is taken, from the label "lim x→3⁺", "lim x→−∞"…
     private func approach(_ label: String) -> [Double] {
         let t = label.replacingOccurrences(of: "lim x→", with: "").replacingOccurrences(of: "−", with: "-")

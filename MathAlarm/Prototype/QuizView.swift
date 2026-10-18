@@ -21,6 +21,7 @@ struct QuizView: View {
     @State private var showSteps = false
     @State private var confirmSteps = false
     @State private var shakes: CGFloat = 0
+    @State private var showPicture = false
 
     private var inAlarm: Bool { onSolutionViewed != nil }
 
@@ -29,10 +30,11 @@ struct QuizView: View {
             switch quiz.answer {
             case .number, .function:
                 ViewThatFits(in: .vertical) {
-                    typedLayout(keyHeight: 42, graphHeight: 150)
-                    typedLayout(keyHeight: 36, graphHeight: 120)
-                    typedLayout(keyHeight: 31, graphHeight: 96)
-                    typedLayout(keyHeight: 28, graphHeight: 0)
+                    typedLayout(keyHeight: 42, graphHeight: 170)
+                    typedLayout(keyHeight: 38, graphHeight: 140)
+                    typedLayout(keyHeight: 33, graphHeight: 116)
+                    typedLayout(keyHeight: 29, graphHeight: 96)
+                    typedLayout(keyHeight: 26, graphHeight: 0)
                 }
             case .choice, .signs:
                 VStack(spacing: 10) {
@@ -53,6 +55,9 @@ struct QuizView: View {
         .sheet(isPresented: $showSteps, onDismiss: { if inAlarm { onSolutionViewed?() } }) {
             QuizStepsSheet(quiz: quiz, warning: inAlarm ? "After you close this, you'll get a new question." : nil)
         }
+        .sheet(isPresented: $showPicture) {
+            QuizPictureSheet(quiz: quiz)
+        }
         .confirmationDialog("Show the solution?", isPresented: $confirmSteps, titleVisibility: .visible) {
             Button("Show solution (new question after)") { showSteps = true }
             Button("Keep trying", role: .cancel) {}
@@ -60,6 +65,11 @@ struct QuizView: View {
     }
 
     // MARK: Layouts
+
+    /// Pictures matter in geometry: never hide a triangle or a sketch completely.
+    private func pictureHeight(_ h: CGFloat) -> CGFloat {
+        quiz.triangle != nil || (quiz.diagram != nil && quiz.graph == nil) ? Swift.max(h, 104) : h
+    }
 
     private func typedLayout(keyHeight: CGFloat, graphHeight: CGFloat) -> some View {
         VStack(spacing: 8) {
@@ -109,11 +119,20 @@ struct QuizView: View {
                 .fixedSize(horizontal: false, vertical: true)
             QuizFormula(quiz: quiz)
             if let t = quiz.table { QuizTableView(table: t) }
-            if let f = quiz.triangle, graphHeight > 0 {
-                TriangleView(figure: f).frame(height: graphHeight)
+            if let f = quiz.triangle {
+                TriangleView(figure: f)
+                    .frame(height: pictureHeight(graphHeight))
+                    .contentShape(Rectangle())
+                    .onTapGesture { showPicture = true }
+            }
+            if let d = quiz.diagram, quiz.graph == nil {
+                QuizDiagramView(diagram: d)
+                    .frame(height: pictureHeight(graphHeight))
+                    .contentShape(Rectangle())
+                    .onTapGesture { showPicture = true }
             }
             if let g = quiz.graph, graphHeight > 0 {
-                QuizGraph(problem: g, shade: quiz.shade, lower: quiz.lower, hline: quiz.level_k)
+                QuizGraph(problem: g, shade: quiz.shade, lower: quiz.lower, hline: quiz.level_k, diagram: quiz.diagram)
                     .frame(height: graphHeight)
             }
         }
@@ -346,10 +365,29 @@ struct QuizGraph: View {
     var lower: SketchProblem? = nil
     var hline: Double? = nil
     var compact = false
+    var diagram: QuizDiagram? = nil
+
+    /// Rectangles and tangent triangles drawn on the graph.
+    private var overlays: [[Double]] {
+        guard let d = diagram else { return [] }
+        switch d.kind {
+        case .rectangleUnder where d.numbers.count >= 3:
+            let x1 = d.numbers[0], x2 = d.numbers[1], h = problem.value(at: d.numbers[2])
+            return [[x1, 0, x2, 0, x2, h, x1, h]]
+        case .tangentTriangle where !d.numbers.isEmpty:
+            let t = d.numbers[0], y = problem.value(at: t)
+            let m = problem.function.derivative().evaluate(at: t)
+            guard m != 0, y.isFinite, m.isFinite else { return [] }
+            let xi = t - y / m, yi = y - m * t
+            return [[0, 0, xi, 0, 0, yi], [problem.xMin, y + m * (problem.xMin - t), problem.xMax, y + m * (problem.xMax - t)]]
+        default:
+            return []
+        }
+    }
 
     var body: some View {
         SketchCanvas(problem: problem, strokes: .constant([]), showYScale: !compact,
-                     curveColor: .white, shade: shade, shadeLower: lower, hline: hline)
+                     curveColor: .white, shade: shade, shadeLower: lower, hline: hline, overlayPolygons: overlays)
             .allowsHitTesting(false)
             .accessibilityLabel("Graph")
     }
@@ -373,8 +411,9 @@ struct QuizStepsSheet: View {
                     QuizFormula(quiz: quiz)
                     if let t = quiz.table { QuizTableView(table: t) }
                     if let f = quiz.triangle { TriangleView(figure: f).frame(height: 220) }
+                    if let d = quiz.diagram, quiz.graph == nil { QuizDiagramView(diagram: d).frame(height: 200) }
                     if let g = quiz.graph {
-                        QuizGraph(problem: g, shade: quiz.shade, lower: quiz.lower, hline: quiz.level_k).frame(height: 200)
+                        QuizGraph(problem: g, shade: quiz.shade, lower: quiz.lower, hline: quiz.level_k, diagram: quiz.diagram).frame(height: 200)
                     }
                     StepsList(steps: quiz.steps)
                     Text("Answer: \(answerText)")
@@ -499,5 +538,149 @@ struct QuizTableView: View {
             .frame(maxWidth: .infinity, minHeight: 32)
             .background(header ? Color.white.opacity(0.1) : Color.clear)
             .border(Color.white.opacity(0.08), width: 0.5)
+    }
+}
+
+/// The question's picture, big (tap a triangle or sketch to open it).
+struct QuizPictureSheet: View {
+    let quiz: QuizProblem
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 16) {
+                Text(quiz.prompt)
+                    .font(.subheadline.weight(.semibold))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                if let f = quiz.triangle { TriangleView(figure: f).frame(maxHeight: .infinity) }
+                if let d = quiz.diagram, quiz.graph == nil { QuizDiagramView(diagram: d).frame(maxHeight: .infinity) }
+            }
+            .padding()
+            .background(Color.black)
+            .navigationTitle(quiz.kind.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
+        }
+        .preferredColorScheme(.dark)
+    }
+}
+
+/// Sketches for word problems: a fenced field, a sheet folded into a box,
+/// a trapezoid, a cone, a probability tree and a bag of balls.
+struct QuizDiagramView: View {
+    let diagram: QuizDiagram
+
+    private func label(_ i: Int) -> String { diagram.labels[safe: i] ?? "" }
+
+    var body: some View {
+        Canvas { ctx, size in
+            let w = size.width, h = size.height
+            func text(_ s: String, _ p: CGPoint, _ color: Color = .white, size: CGFloat = 15, bold: Bool = true) {
+                ctx.draw(ctx.resolve(Text(s).font(.system(size: size, weight: bold ? .bold : .regular, design: .serif)).foregroundColor(color)), at: p)
+            }
+            func line(_ a: CGPoint, _ b: CGPoint, _ color: Color = .white, width: CGFloat = 2.2, dash: [CGFloat] = []) {
+                ctx.stroke(Path { $0.move(to: a); $0.addLine(to: b) }, with: .color(color), style: StrokeStyle(lineWidth: width, lineCap: .round, dash: dash))
+            }
+            switch diagram.kind {
+            case .fence:
+                // The wall on top, the fence on the other three sides.
+                let r = CGRect(x: w * 0.2, y: h * 0.22, width: w * 0.6, height: h * 0.55)
+                ctx.fill(Path(CGRect(x: w * 0.08, y: r.minY - 12, width: w * 0.84, height: 10)), with: .color(.gray.opacity(0.6)))
+                text("wall", CGPoint(x: w * 0.5, y: r.minY - 24), .gray, size: 13, bold: false)
+                ctx.fill(Path(r), with: .color(.green.opacity(0.15)))
+                var fence = Path()
+                fence.move(to: CGPoint(x: r.minX, y: r.minY)); fence.addLine(to: CGPoint(x: r.minX, y: r.maxY))
+                fence.addLine(to: CGPoint(x: r.maxX, y: r.maxY)); fence.addLine(to: CGPoint(x: r.maxX, y: r.minY))
+                ctx.stroke(fence, with: .color(.orange), style: StrokeStyle(lineWidth: 3, dash: [8, 4]))
+                text(label(0), CGPoint(x: r.minX - 14, y: r.midY), .yellow)
+                text(label(0), CGPoint(x: r.maxX + 14, y: r.midY), .yellow)
+                text(label(1), CGPoint(x: r.midX, y: r.maxY + 16), .yellow)
+            case .box:
+                let side = min(w, h) * 0.78
+                let r = CGRect(x: (w - side) / 2, y: (h - side) / 2, width: side, height: side)
+                let c = side * 0.18
+                ctx.fill(Path(r), with: .color(.white.opacity(0.08)))
+                ctx.stroke(Path(r), with: .color(.white), lineWidth: 2)
+                for (dx, dy) in [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0), (1.0, 1.0)] {
+                    let sq = CGRect(x: r.minX + CGFloat(dx) * (side - c), y: r.minY + CGFloat(dy) * (side - c), width: c, height: c)
+                    ctx.fill(Path(sq), with: .color(.red.opacity(0.35)))
+                    ctx.stroke(Path(sq), with: .color(.red), lineWidth: 1.5)
+                }
+                let inner = r.insetBy(dx: c, dy: c)
+                ctx.stroke(Path(inner), with: .color(.orange), style: StrokeStyle(lineWidth: 1.5, dash: [5, 4]))
+                text(label(0), CGPoint(x: r.midX, y: r.maxY + 12), .yellow)
+                text(label(1), CGPoint(x: r.minX + c / 2, y: r.minY + c / 2), .yellow, size: 13)
+                text("fold", CGPoint(x: inner.midX, y: inner.midY), .orange, size: 12, bold: false)
+            case .trapezoid:
+                let s = min(w * 0.3, h * 0.55)
+                let angle = Double.pi / 3.2
+                let base = CGPoint(x: w / 2 - s / 2 - s * CGFloat(cos(angle)), y: h * 0.78)
+                let p1 = base, p4 = CGPoint(x: w / 2 + s / 2 + s * CGFloat(cos(angle)), y: base.y)
+                let p2 = CGPoint(x: w / 2 - s / 2, y: base.y - s * CGFloat(sin(angle)))
+                let p3 = CGPoint(x: w / 2 + s / 2, y: p2.y)
+                var path = Path()
+                path.move(to: p1); path.addLine(to: p2); path.addLine(to: p3); path.addLine(to: p4); path.closeSubpath()
+                ctx.fill(path, with: .color(.orange.opacity(0.15)))
+                ctx.stroke(path, with: .color(.white), lineWidth: 2.2)
+                text(label(0), CGPoint(x: (p1.x + p2.x) / 2 - 14, y: (p1.y + p2.y) / 2), .yellow)
+                text(label(0), CGPoint(x: (p2.x + p3.x) / 2, y: p2.y - 14), .yellow)
+                text(label(0), CGPoint(x: (p3.x + p4.x) / 2 + 14, y: (p3.y + p4.y) / 2), .yellow)
+                text(label(1), CGPoint(x: p1.x + 26, y: p1.y - 10), .orange)
+                text(label(1), CGPoint(x: p4.x - 26, y: p4.y - 10), .orange)
+                line(p2, CGPoint(x: p2.x, y: base.y), .cyan, width: 1.5, dash: [5, 4])
+            case .cone:
+                let top = CGPoint(x: w / 2, y: h * 0.1), bl = CGPoint(x: w / 2 - h * 0.45, y: h * 0.8), br = CGPoint(x: w / 2 + h * 0.45, y: h * 0.8)
+                let centre = CGPoint(x: w / 2, y: h * 0.8)
+                ctx.stroke(Path(ellipseIn: CGRect(x: bl.x, y: bl.y - h * 0.07, width: br.x - bl.x, height: h * 0.14)), with: .color(.white.opacity(0.6)), lineWidth: 1.5)
+                var path = Path()
+                path.move(to: bl); path.addLine(to: top); path.addLine(to: br)
+                ctx.stroke(path, with: .color(.white), lineWidth: 2.2)
+                line(top, centre, .cyan, width: 1.6, dash: [5, 4])
+                line(centre, br, .orange, width: 1.8, dash: [5, 4])
+                text(label(0), CGPoint(x: (top.x + br.x) / 2 + 14, y: (top.y + br.y) / 2 - 6), .yellow)
+                text(label(1), CGPoint(x: top.x - 12, y: (top.y + centre.y) / 2), .cyan)
+                text(label(2), CGPoint(x: (centre.x + br.x) / 2, y: centre.y + 14), .orange)
+            case .tree:
+                let n = diagram.numbers
+                guard n.count >= 3 else { return }
+                func fmt(_ v: Double) -> String { String(format: "%g", (v * 1000).rounded() / 1000) }
+                let root = CGPoint(x: w * 0.08, y: h / 2)
+                let a = CGPoint(x: w * 0.42, y: h * 0.27), b = CGPoint(x: w * 0.42, y: h * 0.73)
+                let leaves = [CGPoint(x: w * 0.82, y: h * 0.12), CGPoint(x: w * 0.82, y: h * 0.38),
+                              CGPoint(x: w * 0.82, y: h * 0.62), CGPoint(x: w * 0.82, y: h * 0.88)]
+                ctx.fill(Path(ellipseIn: CGRect(x: root.x - 4, y: root.y - 4, width: 8, height: 8)), with: .color(.white))
+                line(root, a); line(root, b)
+                text(fmt(n[0]), CGPoint(x: (root.x + a.x) / 2 - 6, y: (root.y + a.y) / 2 - 10), .yellow, size: 13)
+                text(fmt(1 - n[0]), CGPoint(x: (root.x + b.x) / 2 - 6, y: (root.y + b.y) / 2 + 10), .yellow, size: 13)
+                text(label(0), CGPoint(x: a.x, y: a.y - 14), .orange); text(label(1), CGPoint(x: b.x, y: b.y + 14), .orange)
+                let probs = [n[1], 1 - n[1], n[2], 1 - n[2]]
+                for (i, leaf) in leaves.enumerated() {
+                    let from = i < 2 ? a : b
+                    line(from, leaf, .white.opacity(0.85), width: 1.8)
+                    text(fmt(probs[i]), CGPoint(x: (from.x + leaf.x) / 2, y: (from.y + leaf.y) / 2 - 9), .yellow, size: 12)
+                    text(i % 2 == 0 ? label(2) : label(3), CGPoint(x: leaf.x + 4, y: leaf.y + 13), i % 2 == 0 ? .red : .green, size: 11, bold: false)
+                }
+            case .bag:
+                let red = Int(diagram.numbers[safe: 0] ?? 0), blue = Int(diagram.numbers[safe: 1] ?? 0)
+                let bag = Path(roundedRect: CGRect(x: w * 0.2, y: h * 0.12, width: w * 0.6, height: h * 0.8), cornerRadius: 26)
+                ctx.fill(bag, with: .color(.brown.opacity(0.25)))
+                ctx.stroke(bag, with: .color(.brown), lineWidth: 2.5)
+                let total = red + blue
+                let cols = max(1, Int(ceil(sqrt(Double(total) * 1.6))))
+                let rows = Int(ceil(Double(total) / Double(cols)))
+                let cell = min(w * 0.52 / CGFloat(cols), h * 0.66 / CGFloat(max(rows, 1)))
+                for i in 0..<total {
+                    let row = i / cols, col = i % cols
+                    let x = w / 2 - CGFloat(cols) * cell / 2 + (CGFloat(col) + 0.5) * cell
+                    let y = h * 0.2 + (CGFloat(row) + 0.5) * cell
+                    let r = cell * 0.4
+                    ctx.fill(Path(ellipseIn: CGRect(x: x - r, y: y - r, width: 2 * r, height: 2 * r)), with: .color(i < red ? .red : .blue))
+                }
+                text("\(red) red · \(blue) blue", CGPoint(x: w / 2, y: h * 0.96), .white, size: 13, bold: false)
+            case .rectangleUnder, .tangentTriangle:
+                break
+            }
+        }
+        .accessibilityLabel("Sketch of the situation")
     }
 }

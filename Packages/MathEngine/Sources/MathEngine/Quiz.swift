@@ -163,6 +163,8 @@ public struct QuizProblem: Codable, Hashable, Sendable {
     public var tolerance: Double? = nil
     /// The sub-type it was asked for (nil = any), so share codes rebuild it exactly.
     public var variant: String? = nil
+    /// A picture of the situation (fence, box, tree diagram…).
+    public var diagram: QuizDiagram? = nil
 
     public var signature: String {
         "quiz:\(kind.rawValue):\(prompt):\(formula?.description ?? formulaText ?? ""):\(graph?.function.description ?? "")"
@@ -182,6 +184,37 @@ public struct TriangleFigure: Codable, Hashable, Sendable {
     public var extra: [Double]? = nil
     public var extraLabel: String? = nil
     public var extraPoint: String? = nil
+}
+
+/// A sketch of a word problem. `numbers` and `labels` depend on the kind.
+public struct QuizDiagram: Codable, Hashable, Sendable {
+    public enum Kind: String, Codable, Sendable {
+        /// A rectangle against a wall: labels = [side, other side].
+        case fence
+        /// A square sheet with squares cut from the corners: labels = [side, cut].
+        case box
+        /// A trapezoid with three equal sides: labels = [side, angle].
+        case trapezoid
+        /// A cone's cross-section: labels = [slant, height, radius].
+        case cone
+        /// A two-level tree: numbers = [P(A), P(event|A), P(event|B)], labels = [A, B, event, not event].
+        case tree
+        /// A bag of balls: numbers = [red, blue].
+        case bag
+        /// On the graph: a rectangle from x = numbers[0] to numbers[1] up to f(numbers[2]).
+        case rectangleUnder
+        /// On the graph: the tangent at x = numbers[0] and the triangle it makes with the axes.
+        case tangentTriangle
+    }
+    public var kind: Kind
+    public var numbers: [Double] = []
+    public var labels: [String] = []
+
+    public init(_ kind: Kind, numbers: [Double] = [], labels: [String] = []) {
+        self.kind = kind
+        self.numbers = numbers
+        self.labels = labels
+    }
 }
 
 /// Counts in a two-way table; the first entry of each row is its name.

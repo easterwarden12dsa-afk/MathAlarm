@@ -36,6 +36,8 @@ struct SketchCanvas: View {
     var shadeLower: SketchProblem? = nil
     /// Quiz graphs: the line y = k.
     var hline: Double? = nil
+    /// Quiz graphs: shapes drawn on top, each a flat list x0, y0, x1, y1, … (closed and filled).
+    var overlayPolygons: [[Double]] = []
 
     @State private var zoomStart: SketchViewport?
     @State private var panStart: SketchViewport?
@@ -71,6 +73,14 @@ struct SketchCanvas: View {
                                        with: .color(.cyan.opacity(0.85)), style: StrokeStyle(lineWidth: 1.5, dash: [7, 5]))
                     }
                     if let curveColor { drawCurve(clipped, map, shown, color: curveColor, dash: [], width: 2.8) }
+                    for poly in overlayPolygons where poly.count >= 4 {
+                        var path = Path()
+                        path.move(to: map.screen(poly[0], poly[1]))
+                        for i in stride(from: 2, to: poly.count - 1, by: 2) { path.addLine(to: map.screen(poly[i], poly[i + 1])) }
+                        if poly.count >= 6 { path.closeSubpath() }
+                        if poly.count >= 6 { clipped.fill(path, with: .color(.orange.opacity(0.22))) }
+                        clipped.stroke(path, with: .color(.orange), style: StrokeStyle(lineWidth: 2, lineJoin: .round, dash: poly.count >= 6 ? [] : [6, 4]))
+                    }
                     if let reference { drawCurve(clipped, map, reference.windowed(shown.viewport), color: .white.opacity(0.45), dash: [], width: 2.5) }
                     if revealTruth {
                         for c in shown.poles where c > shown.xMin && c < shown.xMax {

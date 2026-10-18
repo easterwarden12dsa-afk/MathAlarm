@@ -121,9 +121,11 @@ extension QuizFactory {
             if ask >= 1 { steps.append(S("P(blue, blue) = \(blue)/\(n) · \(blue - 1)/\(n - 1) = \(Solver.frac(bb, all))")) }
             if ask == 2 { steps = [H("Two orders"), S("Red then blue: \(red)/\(n) · \(blue)/\(n - 1)"), S("Blue then red: \(blue)/\(n) · \(red)/\(n - 1)")] }
             steps.append(R("P = \(Solver.frac(num, all))"))
-            return number(.probability, level, seed,
-                          "A bag has \(red) red and \(blue) blue balls. Two are taken out, one after the other, without putting back. Find the probability that \(what).",
-                          Double(num) / Double(all), topic: "probability:draws", steps: steps)
+            var q = number(.probability, level, seed,
+                           "A bag has \(red) red and \(blue) blue balls. Two are taken out, one after the other, without putting back. Find the probability that \(what).",
+                           Double(num) / Double(all), topic: "probability:draws", steps: steps)
+            q.diagram = QuizDiagram(.bag, numbers: [Double(red), Double(blue)])
+            return q
         case 2:
             // Two-way table.
             let ctx = r.pick([(["Boys", "Girls"], ["Passed", "Failed"], "a student"),
@@ -202,7 +204,9 @@ extension QuizFactory {
                 steps += [H("Conditional probability"), S("P(A | \(ctx.2)) = P(A and \(ctx.2)) / P(\(ctx.2))"),
                           R("= \(dec(share * d1))/\(dec(pd)) ≈ \(dp(value, 3))")]
             }
-            return number(.probability, level, seed, prompt, value, topic: bayes ? "probability:bayes" : "probability:tree", steps: steps, tolerance: tol3)
+            var q = number(.probability, level, seed, prompt, value, topic: bayes ? "probability:bayes" : "probability:tree", steps: steps, tolerance: tol3)
+            q.diagram = QuizDiagram(.tree, numbers: [share, d1, d2], labels: ["A", "B", ctx.2, "not \(ctx.2)"])
+            return q
         case 6:
             // How many tries for "at least one" to pass a threshold.
             let (pn, pd) = r.pick([(1, 3), (1, 4), (1, 5), (1, 6), (1, 10), (2, 5)])
@@ -430,8 +434,15 @@ extension QuizFactory {
         case .bagrut: pool = [8, 9, 10, 7, 6]
         }
         let H = SolutionStep.heading, S = { (t: String) in SolutionStep(t, depth: 1) }, R = { (t: String) in SolutionStep.result(t) }
+        var diagram: QuizDiagram?, graph: SketchProblem?
         func q(_ prompt: String, _ v: Double, _ topic: String, _ steps: [SolutionStep], tol: Double? = nil) -> QuizProblem {
-            number(.optimization, level, seed, prompt, v, topic: "optimization:\(topic)", steps: steps, tolerance: tol)
+            var p = number(.optimization, level, seed, prompt, v, topic: "optimization:\(topic)", steps: steps, tolerance: tol)
+            p.diagram = diagram
+            p.graph = graph
+            return p
+        }
+        func plot(_ e: Expr, _ lo: Double, _ hi: Double) -> SketchProblem? {
+            SketchFactory.finish(e, lo, hi, piBased: false, level: level, seed: seed)
         }
         let maxCheck = { (fn: String, at: String) in S("\(fn) changes from + to − at \(at), so it is a maximum.") }
         let minCheck = { (fn: String, at: String) in S("\(fn) changes from − to + at \(at), so it is a minimum.") }
@@ -448,6 +459,7 @@ extension QuizFactory {
         case 1:
             let L = 4 * r.int(5...30)
             let askX = r.bool()
+            diagram = QuizDiagram(.fence, labels: ["x", "\(L) − 2x"])
             return q("A farmer fences a rectangle along a long wall, using \(L) m of fence for the other three sides. " +
                      (askX ? "Find the length of each side perpendicular to the wall for the largest area." : "Find the largest possible area (m²)."),
                      askX ? Double(L / 4) : Double(L * L / 8), "fence",
@@ -458,6 +470,7 @@ extension QuizFactory {
             let s = 6 * r.int(1...6)
             let x = s / 6, V = x * (s - 2 * x) * (s - 2 * x)
             let askX = r.bool()
+            diagram = QuizDiagram(.box, labels: ["\(s)", "x"])
             return q("From a square sheet of side \(s), equal squares of side x are cut from the corners and the sides folded up into an open box. " +
                      (askX ? "Find x for the largest volume." : "Find the largest possible volume."),
                      askX ? Double(x) : Double(V), "box",
@@ -477,6 +490,8 @@ extension QuizFactory {
             let askX = r.bool()
             // Area 2x(k² − x²), max at x = k/√3, area 4k³/(3√3) = 4k³√3/9.
             let xs = exact(k, rad: 3, den: 3), area = exact(4 * k * k * k, rad: 3, den: 9)
+            graph = plot(.sub(.n(k * k), .p(.x, 2)), -Double(k) - 0.6, Double(k) + 0.6)
+            diagram = QuizDiagram(.rectangleUnder, numbers: [-Double(k) / 2, Double(k) / 2, Double(k) / 2])
             return q("A rectangle has two vertices on the x-axis and two on the parabola y = \(k * k) − x² (above the axis), symmetric about the y-axis. " +
                      (askX ? "Find the x of its right-hand vertices when its area is largest." : "Find its largest possible area."),
                      askX ? xs.value : area.value, "rectangle in parabola",
@@ -495,6 +510,8 @@ extension QuizFactory {
             let k = r.int(1...4)
             let askT = r.bool()
             let kt = k == 1 ? "t" : "\(k)t"
+            graph = plot(.exp(.scaled(-k, 1, .x)), -0.3 / Double(k), 3.5 / Double(k))
+            diagram = QuizDiagram(.rectangleUnder, numbers: [0, 1.6 / Double(k), 1.6 / Double(k)])
             return q("A rectangle has vertices (0, 0), (t, 0), (t, e^(−\(kt))) and (0, e^(−\(kt))), t > 0. " +
                      (askT ? "Find t for the largest area." : "Find the largest area (exactly, e.g. with e)."),
                      askT ? 1 / Double(k) : 1 / (Double(k) * M_E), "rectangle under exp",
@@ -514,6 +531,8 @@ extension QuizFactory {
             let askT = r.bool()
             let fa = a == 1 ? "" : "\(a)"
             let half = a == 1 ? "½" : "(\(a)/2)"
+            graph = plot(.scaled(a, 1, .exp(.neg(.x))), -0.4, 3.2)
+            diagram = QuizDiagram(.tangentTriangle, numbers: [0.6])
             return q("The tangent to y = \(fa)e^(−x) at the point with x = t (t > 0) forms a triangle with the axes. " +
                      (askT ? "Find t for which the triangle's area is largest." : "Find the largest possible area (exactly, e.g. with e)."),
                      askT ? 1 : 2 * Double(a) / M_E, "tangent triangle",
@@ -528,6 +547,7 @@ extension QuizFactory {
             let s = r.int(2...10)
             let askAngle = r.bool()
             let area = exact(3 * s * s, rad: 3, den: 4)
+            diagram = QuizDiagram(.trapezoid, labels: ["\(s)", "θ"])
             return q("A trapezoid has a base and two legs all of length \(s); the legs make equal angles θ with the longer base. " +
                      (askAngle ? "Find θ in degrees for the largest area." : "Find the largest possible area."),
                      askAngle ? 60 : area.value, "trapezoid",
@@ -542,6 +562,7 @@ extension QuizFactory {
             let askH = r.bool()
             let h = exact(L, rad: 3, den: 3)
             let vCoef = exact(2 * L * L * L, rad: 3, den: 27)
+            diagram = QuizDiagram(.cone, labels: ["\(L)", "h", "r"])
             return q("A cone has slant height \(L). " + (askH ? "Find its height when its volume is largest." : "Find its largest possible volume (exactly, with π)."),
                      askH ? h.value : vCoef.value * .pi, "cone",
                      [H("Set up"), S("r² + h² = \(L * L),  V = (π/3)r²h = (π/3)(\(L * L) − h²)h,  0 < h < \(L)"),
