@@ -120,7 +120,7 @@ final class TopicTests: XCTestCase {
                     let q = QuizFactory.make(kind, level: level, seed: seed &* 7_331)
                     XCTAssertGreaterThanOrEqual(q.steps.filter { $0.style == .heading }.count, 2, "\(kind) \(q.prompt)")
                     XCTAssertTrue(q.steps.contains { $0.style == .result }, "\(kind) \(q.prompt)")
-                    XCTAssertFalse(q.steps.contains { $0.text.contains("Optional(") || $0.text.contains("nan") }, "\(kind) \(q.steps.map(\.text))")
+                    XCTAssertFalse(q.steps.contains { $0.text.contains("Optional(") || $0.text.range(of: #"\bnan\b|\binf\b"#, options: .regularExpression) != nil }, "\(kind) \(q.steps.map(\.text))")
                 }
             }
         }
