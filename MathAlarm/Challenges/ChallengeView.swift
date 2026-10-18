@@ -11,6 +11,8 @@ struct ChallengeView: View {
     /// When set (ringing screen), opening the full solution replaces the
     /// problem with a new one; the closure does the replacing.
     var onSolutionViewed: (() -> Void)? = nil
+    /// A wrong answer (alarms: escalation; practice: statistics).
+    var onWrong: () -> Void = {}
     var onSolved: () -> Void
 
     @State private var feedback: Feedback?
@@ -21,6 +23,9 @@ struct ChallengeView: View {
     @State private var showWhy = false
     @State private var showSolution = false
     @State private var confirmSolution = false
+    /// Hint ladder: 0 none, 1 technique, 2 first step, 3 more steps.
+    @State private var hintLevel = 0
+    @State private var mistake: MistakeFinder.Mistake?
 
     enum Feedback: Equatable {
         case wrong
@@ -177,15 +182,40 @@ struct ChallengeView: View {
                     .font(.footnote)
                     .foregroundStyle(.white.opacity(0.65))
             }
-            if wrongAttempts >= 2 {
-                Text("Hint: \(problem.technique)")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.cyan)
-            }
+            hints
         }
         .padding(10)
         .frame(maxWidth: .infinity)
         .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 16))
+    }
+
+    /// Hints get stronger one tap at a time: the technique, the first step, then more.
+    @ViewBuilder
+    private var hints: some View {
+        if hintLevel >= 1 {
+            Text("Hint: \(problem.technique)")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.cyan)
+        }
+        if hintLevel >= 2 {
+            let steps = problem.solutionSteps.filter { $0.style == nil }
+            ScrollView {
+                StepsList(steps: Array(steps.prefix(hintLevel == 2 ? 1 : 3)))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .frame(maxHeight: hintLevel == 2 ? 60 : 120)
+        }
+        if wrongAttempts >= 1, hintLevel < 3 {
+            Button {
+                Haptics.tap()
+                withAnimation { hintLevel += 1 }
+            } label: {
+                Label(["Hint: which technique?", "Hint: first step", "Hint: more steps"][hintLevel], systemImage: "lightbulb.fill")
+                    .font(.caption.weight(.semibold))
+            }
+            .buttonStyle(PressableStyle())
+            .tint(.cyan)
+        }
     }
 
     private var answerCard: some View {
@@ -238,6 +268,14 @@ struct ChallengeView: View {
                 }
             }
             .transition(.opacity)
+            if let mistake, feedback == .wrong {
+                Label(mistake.explanation, systemImage: "lightbulb.max.fill")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.yellow)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .transition(.opacity)
+            }
         }
     }
 
@@ -273,6 +311,10 @@ struct ChallengeView: View {
     private func wrong(_ f: Feedback, _ answer: Expr) {
         wrongAttempts += 1
         lastWrongAnswer = answer
+        mistake = problem.kind == .derivative
+            ? MistakeFinder.diagnose(answer, derivativeOf: problem.display, in: problem.domainLow...problem.domainHigh)
+            : nil
+        onWrong()
         withAnimation { feedback = f }
         withAnimation(.linear(duration: 0.4)) { shakes += 1 }
         Haptics.error()

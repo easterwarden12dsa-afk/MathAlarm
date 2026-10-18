@@ -29,6 +29,13 @@ struct SketchCanvas: View {
     var zoomable = false
     /// Your own dashed helper lines (asymptotes etc.) — not checked.
     var guidelines: [Guideline] = []
+    /// Quiz graphs: the function drawn solid in this colour.
+    var curveColor: Color? = nil
+    /// Quiz graphs: an area shaded between the curve and the x-axis (or `shadeLower`).
+    var shade: ClosedRange<Double>? = nil
+    var shadeLower: SketchProblem? = nil
+    /// Quiz graphs: the line y = k.
+    var hline: Double? = nil
 
     @State private var zoomStart: SketchViewport?
     @State private var panStart: SketchViewport?
@@ -56,6 +63,14 @@ struct SketchCanvas: View {
                     var clipped = ctx
                     clipped.clip(to: Path(map.plot))
                     for r in regions { drawRegion(clipped, map, r) }
+                    if let shade { drawShade(clipped, map, shade) }
+                    if let shadeLower { drawCurve(clipped, map, shadeLower.windowed(shown.viewport), color: .mint, dash: [], width: 2.5) }
+                    if let hline {
+                        let y = map.screen(0, hline).y
+                        clipped.stroke(Path { $0.move(to: CGPoint(x: map.plot.minX, y: y)); $0.addLine(to: CGPoint(x: map.plot.maxX, y: y)) },
+                                       with: .color(.cyan.opacity(0.85)), style: StrokeStyle(lineWidth: 1.5, dash: [7, 5]))
+                    }
+                    if let curveColor { drawCurve(clipped, map, shown, color: curveColor, dash: [], width: 2.8) }
                     if let reference { drawCurve(clipped, map, reference.windowed(shown.viewport), color: .white.opacity(0.45), dash: [], width: 2.5) }
                     if revealTruth {
                         for c in shown.poles where c > shown.xMin && c < shown.xMax {
@@ -270,6 +285,26 @@ struct SketchCanvas: View {
         ctx.stroke(path, with: .color(color), style: StrokeStyle(lineWidth: width, lineCap: .round, dash: dash))
     }
 
+    private func drawShade(_ ctx: GraphicsContext, _ m: Mapping, _ range: ClosedRange<Double>) {
+        let lo = Swift.max(range.lowerBound, shown.xMin), hi = Swift.min(range.upperBound, shown.xMax)
+        guard hi > lo else { return }
+        let n = 160
+        var path = Path()
+        for i in 0...n {
+            let x = lo + (hi - lo) * Double(i) / Double(n)
+            let y = shown.value(at: x)
+            let pt = m.screen(x, y.isFinite ? y : 0)
+            if i == 0 { path.move(to: pt) } else { path.addLine(to: pt) }
+        }
+        for i in stride(from: n, through: 0, by: -1) {
+            let x = lo + (hi - lo) * Double(i) / Double(n)
+            let y = shadeLower?.value(at: x) ?? 0
+            path.addLine(to: m.screen(x, y.isFinite ? y : 0))
+        }
+        path.closeSubpath()
+        ctx.fill(path, with: .color(.yellow.opacity(0.3)))
+    }
+
     private func drawGuide(_ ctx: GraphicsContext, _ m: Mapping, _ g: SketchStroke) {
         guard let first = g.first else { return }
         var path = Path()
@@ -420,6 +455,8 @@ struct SketchChallengeView<Header: View>: View {
     var allowZoneReveal = true
     /// Change: the solution graph shows f with lettered points and their images.
     var change: ChangeProblem? = nil
+    /// A rejected drawing (alarms: escalation; practice: statistics).
+    var onWrong: () -> Void = {}
     var onSolved: () -> Void
     @ViewBuilder var header: Header
 
@@ -730,6 +767,7 @@ struct SketchChallengeView<Header: View>: View {
         } else {
             Haptics.error()
             withAnimation(.linear(duration: 0.4)) { shakes += 1 }
+            if !strokes.isEmpty { onWrong() }
         }
     }
 }

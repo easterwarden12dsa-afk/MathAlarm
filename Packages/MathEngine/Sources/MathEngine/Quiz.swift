@@ -532,6 +532,11 @@ public enum QuizFactory {
 
     static func signTable(_ level: Level, _ r: inout SeededRandom, _ seed: UInt64) -> QuizProblem? {
         guard let f = SketchFactory.candidate(level: level, rng: &r, seed: seed) else { return nil }
+        return signQuiz(for: f, level: level, seed: seed)
+    }
+
+    /// The sign-of-f′ question for a given graph (also the first part of a mini exam).
+    public static func signQuiz(for f: SketchProblem, level: Level, seed: UInt64) -> QuizProblem? {
         let a = f.xMin, b = f.xMax
         let d1 = f.function.derivative()
         let crit = GraphSteps.roots(of: d1, in: a...b)
@@ -601,5 +606,49 @@ public enum QuizFactory {
                        ["x = \(p),  x = \(q0)", "x = ln \(p),  x = ln \(q0)", "x = e\(Solver.sup(p + q0))"],
                        ["Substitute u = ln x: u² − \(p + q0)u + \(p * q0) = 0  ⇒  u = \(p) or u = \(q0)", "ln x = \(p) or ln x = \(q0)  ⇒  x = e\(Solver.sup(p)) or x = e\(Solver.sup(q0))"], "ln quadratic")
         }
+    }
+}
+
+// MARK: - Mini exam
+
+/// A short Bagrut-style question chain about one function: the sign of f′,
+/// the x of an extreme point (exact), then a sketch of f.
+public struct MiniExam: Sendable {
+    public var sketch: SketchProblem
+    public var signs: QuizProblem
+    public var extreme: QuizProblem
+
+    public static func make(level: Level, seed: UInt64) -> MiniExam {
+        var s = seed
+        for _ in 0..<80 {
+            var r = SeededRandom(seed: s)
+            if let f = SketchFactory.candidate(level: level, rng: &r, seed: s), let e = make(f, level: level, seed: s) { return e }
+            s = s &* 6_364_136_223_846_793_005 &+ 1_442_695_040_888_963_407
+        }
+        // Always works: a cubic with exact turning points.
+        let f = SketchFactory.make(level: .easy, seed: seed)
+        return make(f, level: .easy, seed: seed) ?? MiniExam(sketch: f, signs: QuizFactory.make(.signTable, level: .easy, seed: seed),
+                                                            extreme: QuizFactory.make(.limit, level: .easy, seed: seed))
+    }
+
+    static func make(_ f: SketchProblem, level: Level, seed: UInt64) -> MiniExam? {
+        guard !f.isWhole, let signs = QuizFactory.signQuiz(for: f, level: level, seed: seed),
+              let inv = GraphAlgebra.investigate(f), let d1 = inv.d1, d1.solve.exact else { return nil }
+        let d = f.function.derivative()
+        // The first extreme point with an exact x.
+        for root in d1.solve.roots.sorted(by: { $0.x < $1.x }) where root.x > f.xMin && root.x < f.xMax {
+            let l = d.evaluate(at: root.x - 1e-4), r = d.evaluate(at: root.x + 1e-4)
+            guard l.isFinite, r.isFinite, (l > 0) != (r > 0) else { continue }
+            let isMax = l > 0
+            var q = QuizFactory.blank(.signTable, level, seed,
+                                      "Using the sign table, type the x of the \(isMax ? "maximum" : "minimum") point\(d1.solve.roots.count > 1 ? " (the leftmost one)" : "").",
+                                      .number(root.x), topic: "extreme")
+            q.formulaLabel = "f(x) ="
+            q.formula = f.function
+            q.steps = [SolutionStep("f′(x) = 0 at x = \(GraphSteps.bare(root.label))."),
+                       SolutionStep("f′ changes from \(isMax ? "+ to −" : "− to +") there, so it is a \(isMax ? "maximum" : "minimum").", depth: 1)]
+            return MiniExam(sketch: f, signs: signs, extreme: q)
+        }
+        return nil
     }
 }

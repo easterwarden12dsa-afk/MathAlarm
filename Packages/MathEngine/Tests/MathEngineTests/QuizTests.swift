@@ -90,3 +90,23 @@ final class MistakeTests: XCTestCase {
         XCTAssertEqual(MistakeFinder.diagnose(.sin(.x), derivativeOf: f), .droppedMinus)
     }
 }
+
+final class MiniExamTests: XCTestCase {
+    func testExamPartsBelongToOneFunction() {
+        var exact = 0
+        for level in Level.allCases {
+            for seed in UInt64(1)...20 {
+                let e = MiniExam.make(level: level, seed: seed)
+                if case .number(let x) = e.extreme.answer, e.extreme.formula == e.sketch.function {
+                    exact += 1
+                    XCTAssertTrue(x > e.sketch.xMin && x < e.sketch.xMax)
+                    XCTAssertLessThan(Swift.abs(e.sketch.function.derivative().evaluate(at: x)), 1e-6, "\(e.sketch.function)")
+                }
+                if case .signs(let iv, let pos) = e.signs.answer {
+                    XCTAssertEqual(iv.count, pos.count)
+                } else { XCTFail("sign part") }
+            }
+        }
+        XCTAssertGreaterThan(exact, 70)
+    }
+}

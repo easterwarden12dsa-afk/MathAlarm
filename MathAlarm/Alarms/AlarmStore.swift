@@ -154,7 +154,7 @@ final class AlarmStore: ObservableObject {
         for alarm in systemAlarms where alarm.state == .scheduled && !owned.contains(alarm.id) {
             let purpose = AlarmRegistry.shared.context(for: alarm.id)?.purpose
             switch purpose {
-            case .test, .timer:
+            case .test, .timer, .awakeCheck:
                 continue
             case .reRing, .watchdog:
                 if !ringActive { AlarmScheduler.cancel(alarm.id) }

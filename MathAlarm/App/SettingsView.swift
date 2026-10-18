@@ -26,6 +26,47 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    Toggle("More problems after mistakes", isOn: $settings.escalation)
+                    Picker("Awake check", selection: $settings.awakeCheckMinutes) {
+                        Text("Off").tag(0)
+                        ForEach([3, 5, 10, 15], id: \.self) { Text("\($0) min after").tag($0) }
+                    }
+                    Picker("Walk before it stops", selection: $settings.stepsToWalk) {
+                        Text("Off").tag(0)
+                        ForEach([20, 40, 80], id: \.self) { Text("\($0) steps").tag($0) }
+                    }
+                    Toggle("Hold Surrender for 2 s", isOn: $settings.holdToSurrender)
+                    Picker("Friday & Saturday", selection: $settings.weekendDifficulty) {
+                        Text("Alarm's own").tag(Difficulty?.none)
+                        ForEach(Difficulty.allCases) { Text($0.title).tag(Difficulty?.some($0)) }
+                    }
+                    NavigationLink {
+                        SetupCheckView()
+                            .environmentObject(store)
+                            .environmentObject(ring)
+                    } label: {
+                        Label("Test my setup", systemImage: "checklist")
+                    }
+                } header: {
+                    Text("Wake-up rules (β)")
+                } footer: {
+                    Text("Mistakes: every 3 wrong answers add one more problem (at most 2). Awake check: a few minutes after you solve, a gentle ring with an \u{201C}I'm awake\u{201D} button. Walk: after the last problem, walk that many steps (needs Motion access). Friday & Saturday: a different difficulty on weekend mornings.")
+                }
+
+                Section {
+                    DatePicker("Bagrut exam", selection: Binding(get: { settings.examDate ?? Date().addingTimeInterval(60 * 86_400) },
+                                                                 set: { settings.examDate = $0 }),
+                               in: Date()..., displayedComponents: .date)
+                    if settings.examDate != nil {
+                        Button("Clear exam date", role: .destructive) { settings.examDate = nil }
+                    }
+                } header: {
+                    Text("Exam countdown")
+                } footer: {
+                    Text("Shown on the Progress tab with a daily plan.")
+                }
+
+                Section {
                     ForEach(SketchMode.allCases) { mode in
                         Button {
                             Haptics.tap()

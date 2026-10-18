@@ -23,7 +23,19 @@ struct RingingView: View {
                         .background(Color.yellow, in: RoundedRectangle(cornerRadius: 10))
                 }
 
-                if let session = ring.session, let sketch = session.sketch {
+                if let session = ring.session, session.awakeCheck == true {
+                    AwakeCheckView { ring.resolve(.solved) }
+                } else if let session = ring.session, session.walking == true {
+                    StepGateView(needed: AppSettings.shared.stepsToWalk) { ring.resolve(.solved) }
+                } else if let session = ring.session, let quiz = session.quiz {
+                    QuizView(quiz: quiz,
+                             editor: Binding(get: { ring.session?.editor ?? MathEditor() },
+                                             set: { ring.updateEditor($0) }),
+                             onSolutionViewed: { ring.replaceProblem() },
+                             onWrong: { ring.wrongAnswer() },
+                             onSolved: { ring.solvedOne() })
+                    .id(quiz.signature + "\(session.solvesDone ?? 0)")
+                } else if let session = ring.session, let sketch = session.sketch {
                     SketchChallengeView(
                         problem: sketch,
                         strokes: Binding(get: { ring.session?.strokes ?? [] },
@@ -32,6 +44,7 @@ struct RingingView: View {
                         steps: { GraphSteps.steps(for: sketch) },
                         onSolutionViewed: { ring.replaceProblem() },
                         allowZoneReveal: AppSettings.shared.zoneRevealInAlarms,
+                        onWrong: { ring.wrongAnswer() },
                         onSolved: { ring.solvedOne() }) {
                         SketchHeader(problem: sketch)
                     }
@@ -48,6 +61,7 @@ struct RingingView: View {
                         onSolutionViewed: { ring.replaceProblem() },
                         allowZoneReveal: AppSettings.shared.zoneRevealInAlarms,
                         change: change,
+                        onWrong: { ring.wrongAnswer() },
                         onSolved: { ring.solvedOne() }) {
                         ChangeHeader(change: change, display: display)
                     }
@@ -58,6 +72,7 @@ struct RingingView: View {
                         editor: Binding(get: { ring.session?.editor ?? MathEditor() },
                                         set: { ring.updateEditor($0) }),
                         onSolutionViewed: { ring.replaceProblem() },
+                        onWrong: { ring.wrongAnswer() },
                         onSolved: { ring.solvedOne() })
                     .id(problem.seed)
                 } else {
@@ -91,17 +106,9 @@ struct RingingView: View {
             }
             .foregroundStyle(.white)
             Spacer(minLength: 4)
-            Button {
+            HoldToSurrenderButton(hold: AppSettings.shared.holdToSurrender && ring.session?.awakeCheck != true) {
                 ring.resolve(.surrendered)
-            } label: {
-                Label("Surrender", systemImage: "flag.fill")
-                    .font(.headline.bold())
-                    .foregroundStyle(.white)
-                    .frame(minWidth: 116, minHeight: 48)
-                    .background(Color.red, in: RoundedRectangle(cornerRadius: 14))
             }
-            .buttonStyle(PressableStyle())
-            .accessibilityHint("Turns the alarm off immediately")
         }
     }
 

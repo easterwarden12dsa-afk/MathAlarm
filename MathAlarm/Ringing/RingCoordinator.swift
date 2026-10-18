@@ -122,7 +122,12 @@ final class RingCoordinator: ObservableObject {
 
     /// Adds the alarm to the current session, or starts a new session.
     private func join(alarmID: UUID) {
-        let context = AlarmRegistry.shared.context(for: alarmID) ?? .fallback
+        var context = AlarmRegistry.shared.context(for: alarmID) ?? .fallback
+        // Weekend mornings (Friday, Saturday) can have their own difficulty.
+        if [.alarm, .reRing, .watchdog].contains(context.purpose), let w = AppSettings.shared.weekendDifficulty,
+           [6, 7].contains(Calendar.current.component(.weekday, from: Date())) {
+            context.difficulty = w
+        }
         if var s = session {
             if let itemID = context.itemID, !s.itemIDs.contains(itemID) {
                 s.itemIDs.append(itemID)
@@ -289,6 +294,8 @@ final class RingCoordinator: ObservableObject {
         } else if s.change != nil {
             s.change = ProblemHistory.shared.freshChange(level: level)
             s.strokes = []
+        } else if let old = s.quiz {
+            s.quiz = ProblemHistory.shared.freshQuiz(level: old.level)
         } else {
             return
         }
@@ -310,9 +317,30 @@ final class RingCoordinator: ObservableObject {
             saveSession()
             Haptics.success()
             toast = Toast(message: "Solved \(done) of \(needed) — next one!", symbol: "checkmark.circle.fill", style: .success)
+        } else if AppSettings.shared.stepsToWalk > 0, s.walking != true, StepCounter.isAvailable {
+            s.solvesDone = done
+            s.walking = true
+            session = s
+            saveSession()
+            Haptics.success()
+            toast = Toast(message: "Solved! Now get up and walk", symbol: "figure.walk", style: .success)
         } else {
             resolve(.solved)
         }
+    }
+
+    /// A wrong answer. With escalation on, every third adds one more problem (at most two).
+    func wrongAnswer() {
+        guard var s = session else { return }
+        let wrong = (s.wrongAnswers ?? 0) + 1
+        s.wrongAnswers = wrong
+        if AppSettings.shared.escalation, wrong % 3 == 0, (s.extraProblems ?? 0) < 2 {
+            s.extraProblems = (s.extraProblems ?? 0) + 1
+            s.solvesNeeded = (s.solvesNeeded ?? 1) + 1
+            toast = Toast(message: "3 wrong answers — one more problem added", symbol: "plus.circle.fill", style: .warning)
+        }
+        session = s
+        saveSession()
     }
 
     func updateStrokes(_ strokes: [SketchStroke]) {
@@ -334,16 +362,30 @@ final class RingCoordinator: ObservableObject {
     /// repeating alarms carry on to their next occurrence.
     func resolve(_ outcome: Outcome) {
         let itemIDs = session?.itemIDs ?? []
+        let finished = session
         session = nil
         Persistence.delete(Self.sessionFile)
         inAppEngaged = false
         stopTicker()
         sound.stop()
         UIApplication.shared.isIdleTimerDisabled = false
+        let wasAwakeCheck = finished?.awakeCheck == true
+        if let finished, !wasAwakeCheck {
+            LearningStore.shared.recordRing(started: finished.startedAt, wrongAnswers: finished.wrongAnswers ?? 0,
+                                            surrendered: outcome == .surrendered, challenge: finished.challenge.title)
+        }
         switch outcome {
+        case .solved where wasAwakeCheck:
+            toast = Toast(message: "Good morning — have a great day", symbol: "sun.max.fill", style: .success)
         case .solved:
             AppSettings.shared.recordSolved()
             toast = Toast(message: "Solved — alarm off", symbol: "checkmark.circle.fill", style: .success)
+            let minutes = AppSettings.shared.awakeCheckMinutes
+            if minutes > 0, let finished, finished.purpose != .timer {
+                var context = finished.context(purpose: .awakeCheck)
+                context.label = "Still awake?"
+                Task { _ = try? await AlarmScheduler.scheduleFixed(at: Date().addingTimeInterval(Double(minutes) * 60), context: context) }
+            }
         case .surrendered:
             AppSettings.shared.recordSurrender()
             Haptics.press()

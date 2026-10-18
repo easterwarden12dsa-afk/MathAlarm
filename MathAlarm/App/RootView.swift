@@ -15,6 +15,8 @@ struct RootView: View {
                         .tabItem { Label("Timer", systemImage: "timer") }
                     PracticeView()
                         .tabItem { Label("Practice", systemImage: "function") }
+                    InsightsView()
+                        .tabItem { Label("Progress", systemImage: "chart.line.uptrend.xyaxis") }
                     SettingsView()
                         .tabItem { Label("Settings", systemImage: "gearshape.fill") }
                 }

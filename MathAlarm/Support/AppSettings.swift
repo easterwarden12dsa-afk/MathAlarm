@@ -60,6 +60,32 @@ final class AppSettings: ObservableObject {
         }
     }
 
+    // Prototype features
+    /// Every 3 wrong answers add one more problem (at most 2 extra).
+    @Published var escalation: Bool {
+        didSet { defaults.set(escalation, forKey: "escalation") }
+    }
+    /// Minutes after solving for an "are you awake?" ring (0 = off).
+    @Published var awakeCheckMinutes: Int {
+        didSet { defaults.set(awakeCheckMinutes, forKey: "awakeCheckMinutes") }
+    }
+    /// Surrender needs a 2-second hold.
+    @Published var holdToSurrender: Bool {
+        didSet { defaults.set(holdToSurrender, forKey: "holdToSurrender") }
+    }
+    /// Difficulty on Friday and Saturday mornings (nil = the alarm's own).
+    @Published var weekendDifficulty: Difficulty? {
+        didSet { defaults.set(weekendDifficulty?.rawValue ?? "", forKey: "weekendDifficulty") }
+    }
+    /// Steps to walk after solving before the alarm stops (0 = off).
+    @Published var stepsToWalk: Int {
+        didSet { defaults.set(stepsToWalk, forKey: "stepsToWalk") }
+    }
+    /// The Bagrut exam date, for the countdown.
+    @Published var examDate: Date? {
+        didSet { defaults.set(examDate, forKey: "examDate") }
+    }
+
     // Stats
     @Published private(set) var solved: Int
     @Published private(set) var surrendered: Int
@@ -77,6 +103,12 @@ final class AppSettings: ObservableObject {
         quickDifficulty = Difficulty(rawValue: defaults.string(forKey: "quickDifficulty") ?? "") ?? .medium
         quickSound = AlarmSound(id: defaults.string(forKey: "quickSound") ?? "classic")
         expiryReminder = defaults.object(forKey: "expiryReminder") as? Bool ?? false
+        escalation = defaults.object(forKey: "escalation") as? Bool ?? true
+        awakeCheckMinutes = defaults.integer(forKey: "awakeCheckMinutes")
+        holdToSurrender = defaults.object(forKey: "holdToSurrender") as? Bool ?? true
+        weekendDifficulty = Difficulty(rawValue: defaults.string(forKey: "weekendDifficulty") ?? "")
+        stepsToWalk = defaults.integer(forKey: "stepsToWalk")
+        examDate = defaults.object(forKey: "examDate") as? Date
         solved = defaults.integer(forKey: "statSolved")
         surrendered = defaults.integer(forKey: "statSurrendered")
         streak = defaults.integer(forKey: "statStreak")

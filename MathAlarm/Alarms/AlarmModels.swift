@@ -2,7 +2,7 @@ import Foundation
 import MathEngine
 
 enum ChallengeKind: String, Codable, CaseIterable, Identifiable {
-    case integral, derivative, sketch, change, random
+    case integral, derivative, sketch, change, quiz, random
 
     var id: String { rawValue }
 
@@ -12,6 +12,7 @@ enum ChallengeKind: String, Codable, CaseIterable, Identifiable {
         case .derivative: "Derivative"
         case .sketch: "Graph Sketch"
         case .change: "Change"
+        case .quiz: "Quick questions"
         case .random: "Random"
         }
     }
@@ -22,11 +23,12 @@ enum ChallengeKind: String, Codable, CaseIterable, Identifiable {
         case .derivative: "Differentiate a function"
         case .sketch: "Draw the graph of a function"
         case .change: "Given f, draw a related graph like 1/f(x)² or |f(x)|"
+        case .quiz: "Bagrut-style questions: limits, areas, tangents, sign tables…"
         case .random: "A mix — choose which types below"
         }
     }
 
-    static let concreteKinds: [ChallengeKind] = [.integral, .derivative, .sketch, .change]
+    static let concreteKinds: [ChallengeKind] = [.integral, .derivative, .sketch, .change, .quiz]
 
     /// Picks a concrete challenge for `.random`; other kinds return themselves.
     func resolved() -> ChallengeKind {
@@ -38,7 +40,7 @@ enum ChallengeKind: String, Codable, CaseIterable, Identifiable {
     var problemKind: ProblemKind {
         switch self {
         case .integral: .integral
-        case .derivative, .sketch, .change: .derivative
+        case .derivative, .sketch, .change, .quiz: .derivative
         case .random: Bool.random() ? .integral : .derivative
         }
     }
@@ -49,6 +51,7 @@ enum ChallengeKind: String, Codable, CaseIterable, Identifiable {
         case .derivative: "function"
         case .sketch: "scribble.variable"
         case .change: "arrow.triangle.swap"
+        case .quiz: "questionmark.bubble"
         case .random: "shuffle"
         }
     }
@@ -108,6 +111,13 @@ final class ProblemHistory {
         shapes.remember(shape: ShapeKey.of(p.target), kind: p.kindName)
         Persistence.save(shapes, to: "shapeMemory.json")
         return p
+    }
+
+    func freshQuiz(level: Level, kind: QuizKind? = nil) -> QuizProblem {
+        let k = kind ?? QuizKind.allCases.randomElement()!
+        let q = QuizFactory.make(k, level: level, seed: ProblemFactory.randomSeed(), avoiding: avoid)
+        remember(q.signature)
+        return q
     }
 
     /// `whole`: draw the whole graph (non-periodic functions), from Settings by default.
@@ -428,6 +438,7 @@ enum AlarmPurpose: String, Codable {
     case reRing     // scheduled after the system Stop button was pressed
     case watchdog   // safety net while a ring is unresolved
     case timer      // countdown timer (M4)
+    case awakeCheck // "are you still awake?" a few minutes after solving
 }
 
 /// Everything needed to start a ring from an AlarmKit alarm ID.
@@ -494,6 +505,16 @@ struct RingSession: Codable, Identifiable {
     var solvesDone: Int?
     /// The challenge type chosen for the alarm (may be Random).
     var requestedChallenge: ChallengeKind?
+    /// Quick-question challenge.
+    var quiz: QuizProblem?
+    /// Wrong answers in this ring, and how many extra problems they added.
+    var wrongAnswers: Int?
+    var extraProblems: Int?
+    /// Only an "I'm awake" button (scheduled after an earlier solve).
+    var awakeCheck: Bool?
+    /// All problems solved; now walk this many steps.
+    var walking: Bool?
+    var purpose: AlarmPurpose?
 
     init(context: RingContext, solvesNeeded: Int = 1) {
         label = context.label
@@ -505,6 +526,11 @@ struct RingSession: Codable, Identifiable {
         self.solvesNeeded = solvesNeeded
         solvesDone = 0
         mix = context.mix
+        purpose = context.purpose
+        if context.purpose == .awakeCheck {
+            awakeCheck = true
+            return
+        }
         newChallenge()
     }
 
@@ -519,8 +545,10 @@ struct RingSession: Codable, Identifiable {
             challenge = requested.resolved()
         }
         currentDifficulty = level
-        problem = nil; editor = nil; sketch = nil; change = nil; strokes = nil
+        problem = nil; editor = nil; sketch = nil; change = nil; strokes = nil; quiz = nil
         switch challenge {
+        case .quiz:
+            quiz = ProblemHistory.shared.freshQuiz(level: level.level)
         case .sketch:
             sketch = ProblemHistory.shared.freshSketch(level: level.level)
             strokes = []
@@ -533,7 +561,7 @@ struct RingSession: Codable, Identifiable {
         }
     }
 
-    var hasChallenge: Bool { problem != nil || sketch != nil || change != nil }
+    var hasChallenge: Bool { problem != nil || sketch != nil || change != nil || quiz != nil || awakeCheck == true }
 
     var progressText: String? {
         let needed = solvesNeeded ?? 1
