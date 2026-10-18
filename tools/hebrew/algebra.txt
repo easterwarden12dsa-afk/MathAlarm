@@ -1,0 +1,113 @@
+# Equation-solving lines in Sketch solutions (GraphAlgebra.swift).
+{} = 0 has no solution: {}. ⟹ ל-{} = 0 אין פתרון: {}.
+A product is 0 exactly when one of its factors is 0: ⟹ מכפלה היא 0 בדיוק כשאחד הגורמים שלה 0:
+A fraction is 0 when its numerator is 0. The denominator {} is {}, so solve {} = 0: ⟹ שבר הוא 0 כשהמונה שלו 0. המכנה {} {}, לכן פותרים {} = 0:
+This is 0 for every {}. ⟹ זה 0 לכל {}.
+{} ≠ 0, so there is no solution. ⟹ ‏{} ≠ 0, לכן אין פתרון.
+Take out the common factor {}:  {}·({}) = 0 ⟹ מוציאים גורם משותף {}:  {}·({}) = 0
+Only even powers: substitute t = {}²:  {} = 0 ⟹ רק חזקות זוגיות: מציבים t = {}²:  {} = 0
+t = {} < 0: {}² can't be negative, no solution. ⟹ t = {} < 0: {}² לא יכול להיות שלילי, אין פתרון.
+Try {} = {} (rational root test: ± divisors of {} over divisors of {}): it gives 0. ⟹ מנסים {} = {} (בדיקת שורשים רציונליים: ± מחלקי {} חלקי מחלקי {}): מתקבל 0.
+So ({}) is a factor:  ({})·({}) = 0 ⟹ לכן ({}) הוא גורם:  ({})·({}) = 0
+{} = 0 has no rational solutions (rational root test), and there's no formula worth using by hand, so the solutions are found from sign changes (intermediate value theorem): ⟹ ל-{} = 0 אין פתרונות רציונליים (בדיקת שורשים רציונליים), ואין נוסחה שכדאי להשתמש בה ביד, לכן מוצאים את הפתרונות מחילופי סימן (משפט ערך הביניים):
+Δ < 0, so there are no real solutions. ⟹ ‏Δ < 0, לכן אין פתרונות ממשיים.
+Δ = 0: one (double) solution  {} = −b/(2a) = {} ⟹ ‏Δ = 0: פתרון אחד (כפול)  {} = −b/(2a) = {}
+Impossible: {} is always between −1 and 1. No solution. ⟹ בלתי אפשרי: {} תמיד בין −1 ל-1. אין פתרון.
+None of these lie inside the interval. ⟹ אף אחד מהם לא נמצא בתוך התחום.
+Inside the interval (n = …, −1, 0, 1, …): ⟹ בתוך התחום (n = …, −1, 0, 1, …):
+Substitute s = sin x  (−1 ≤ s ≤ 1): ⟹ מציבים s = sin x  (−1 ≤ s ≤ 1):
+s = {} {} is outside [−1, 1]: no x. ⟹ s = {} {} מחוץ ל-[−1, 1]: אין x.
+Substitute t = cos x  (−1 ≤ t ≤ 1): ⟹ מציבים t = cos x  (−1 ≤ t ≤ 1):
+t = {} {} is outside [−1, 1]: no x. ⟹ t = {} {} מחוץ ל-[−1, 1]: אין x.
+{} doesn't change sign on the interval, so it has no solution here. ⟹ ‏{} לא מחליף סימן בתחום, לכן אין לו פתרון כאן.
+x {}:  {} is {} just before and {} just after ⟹ x {}:  {} {} מעט לפני ו{} מעט אחרי
+x {}:  {} touches 0 there ⟹ x {}:  {} נוגע שם ב-0
+an exponential is always positive ⟹ פונקציה מעריכית תמיד חיובית
+f(x) = {}({})({}) is already factored: ⟹ f(x) = {}({})({}) כבר מפורק לגורמים:
+x = {}  or  x = {} ⟹ x = {}  או  x = {}
+it is a nonzero constant ⟹ זה קבוע שונה מ-0
+f is already a product of three brackets:  x = {},  x = {},  x = {} ⟹ ‏f כבר מכפלה של שלושה סוגריים:  x = {},  x = {},  x = {}
+Multiplying out: f(x) = {}{}{} ⟹ פותחים סוגריים: f(x) = {}{}{}
+If cos({}) were 0, sin({}) would be ±1 and f′ ≠ 0 — so we may divide by cos({}): ⟹ אילו cos({}) היה 0, sin({}) היה ±1 ו-f′ ≠ 0 — לכן מותר לחלק ב-cos({}):
+f″(x) = −{}(sin({}) {} ½cos({})). Divide by cos({}) for the same reason:  tan({}) = {} ⟹ f″(x) = −{}(sin({}) {} ½cos({})). מחלקים ב-cos({}) מאותה סיבה:  tan({}) = {}
+Use sin 2x = 2 sin x cos x:  f′(x) = cos x {} 2 sin x cos x = cos x·(1 {} 2 sin x) ⟹ משתמשים ב-sin 2x = 2 sin x cos x:  f′(x) = cos x {} 2 sin x cos x = cos x·(1 {} 2 sin x)
+Use cos 2x = 1 − 2sin²x:  f″(x) = −sin x {} 2(1 − 2sin²x) = {} ⟹ משתמשים ב-cos 2x = 1 − 2sin²x:  f″(x) = −sin x {} 2(1 − 2sin²x) = {}
+Use cos 2x = 1 − 2sin²x:  f′(x) = 2(1 − 2sin²x) {} ½ sin x;  set it to 0 and multiply by −2: ⟹ משתמשים ב-cos 2x = 1 − 2sin²x:  f′(x) = 2(1 − 2sin²x) {} ½ sin x;  משווים ל-0 וכופלים ב-−2:
+Use sin 2x = 2 sin x cos x:  f″(x) = −8 sin x cos x {} ½ cos x = −cos x·(8 sin x {} ½) ⟹ משתמשים ב-sin 2x = 2 sin x cos x:  f″(x) = −8 sin x cos x {} ½ cos x = −cos x·(8 sin x {} ½)
+always positive ⟹ תמיד חיובי
+it is always positive ⟹ הוא תמיד חיובי
+{}/(x² + 1) = {}  ⇒  multiply by (x² + 1):  {} = 0 ⟹ {}/(x² + 1) = {}  ⇒  כופלים ב-(x² + 1):  {} = 0
+Sum to product: cos A + cos B = 2cos((A+B)/2)·cos((A−B)/2), so  f′(x) = cos x + cos {}x = 2{}·{} ⟹ סכום למכפלה: cos A + cos B = 2cos((A+B)/2)·cos((A−B)/2), לכן  f′(x) = cos x + cos {}x = 2{}·{}
+sin 2x = 2 sin x cos x, so f(x) = sin x + sin x cos x = sin x·(1 + cos x) ⟹ sin 2x = 2 sin x cos x, לכן f(x) = sin x + sin x cos x = sin x·(1 + cos x)
+sin 3x = 3 sin x − 4sin³x, so f(x) = 2 sin x − (4/3)sin³x = sin x·(2 − (4/3)sin²x) ⟹ sin 3x = 3 sin x − 4sin³x, לכן f(x) = 2 sin x − (4/3)sin³x = sin x·(2 − (4/3)sin²x)
+Product and chain rule: f′(x) = 2 sin x cos x·cos 2x − 2sin²x·sin 2x = 2 sin x·(cos x cos 2x − sin x sin 2x) = 2 sin x·cos 3x  (cos(A + B) = cos A cos B − sin A sin B) ⟹ כלל המכפלה והשרשרת: f′(x) = 2 sin x cos x·cos 2x − 2sin²x·sin 2x = 2 sin x·(cos x cos 2x − sin x sin 2x) = 2 sin x·cos 3x  (cos(A + B) = cos A cos B − sin A sin B)
+{} > 0, so f′(x) = 0  ⇔  {}cos({}) = (1/{})·sin({}). ⟹ ‏{} > 0, לכן f′(x) = 0  ⇔  {}cos({}) = (1/{})·sin({}).
+cos({}) = 0 would force sin({}) = 0 too — impossible — so divide by cos({}):  tan({}) = {} ⟹ ‏cos({}) = 0 היה מחייב גם sin({}) = 0 — בלתי אפשרי — לכן מחלקים ב-cos({}):  tan({}) = {}
+{} > 0, so f″(x) = 0  ⇔  (1/{} − {})·sin({}) = ({})·cos({});  divide by cos({}):  tan({}) = {} ⟹ ‏{} > 0, לכן f″(x) = 0  ⇔  (1/{} − {})·sin({}) = ({})·cos({});  מחלקים ב-cos({}):  tan({}) = {}
+Quotient rule: f′(x) = [2x({}) − 2x({})]/({})² = {}x/({})² ⟹ כלל המנה: f′(x) = [2x({}) − 2x({})]/({})² = {}x/({})²
+x = 0 is a solution (sin 0 + 0·cos 0 = 0). ⟹ x = 0 הוא פתרון (sin 0 + 0·cos 0 = 0).
+At any other solution cos x ≠ 0 (otherwise sin x = ±1 ≠ 0), so divide by cos x:  tan x = −x. ⟹ בכל פתרון אחר cos x ≠ 0 (אחרת sin x = ±1 ≠ 0), לכן מחלקים ב-cos x:  tan x = −x.
+tan x = −x mixes x with tan x, so algebra can't solve it — the solutions are where y = tan x meets y = −x. From sign changes of f′: ⟹ ‏tan x = −x מערבב את x עם tan x, לכן אלגברה לא פותרת את זה — הפתרונות הם איפה ש-y = tan x פוגש את y = −x. מחילופי הסימן של f′:
+positive (ln x needs x > 0) ⟹ חיובי (ln x דורש x > 0)
+ln(u) = 0 exactly when u = 1:  x² + {} = 1  ⇒  {} = 0 ⟹ ‏ln(u) = 0 בדיוק כש-u = 1:  x² + {} = 1  ⇒  {} = 0
+for x > 0 both terms are positive ⟹ עבור x > 0 שני האיברים חיוביים
+it is positive for x > 0 ⟹ הוא חיובי עבור x > 0
+x > 0 here ⟹ כאן x > 0
+positive for x > 0 ⟹ חיובי עבור x > 0
+The denominator (x² + {})² is always positive, so only the numerator matters: ⟹ המכנה (x² + {})² תמיד חיובי, לכן רק המונה חשוב:
+both the top and the bottom are positive ⟹ גם המונה וגם המכנה חיוביים
+a fraction with a nonzero top is never 0 ⟹ שבר עם מונה שונה מ-0 אף פעם לא 0
+the top is never 0 ⟹ המונה אף פעם לא 0
+positive wherever f is defined ⟹ חיובי בכל מקום ש-f מוגדרת
+Quotient rule: f′(x) = [2x({}) − ({})]/({})² = ({})/({})² ⟹ כלל המנה: f′(x) = [2x({}) − ({})]/({})² = ({})/({})²
+not 0 in the domain ⟹ לא 0 בתחום ההגדרה
+The top {}({}) ⟹ המונה {}({})
+6x² + {} is always positive ⟹ 6x² + {} תמיד חיובי
+x² + {} is always positive ⟹ x² + {} תמיד חיובי
+f″(x) = 2cos 2x {} cos x, and cos 2x = 2cos²x − 1:  f″(x) = 4cos²x {} cos x − 2 ⟹ f″(x) = 2cos 2x {} cos x, ו-cos 2x = 2cos²x − 1:  f″(x) = 4cos²x {} cos x − 2
+positive ({} ≥ {} > 0) ⟹ חיובי ({} ≥ {} > 0)
+Quotient rule: f′(x) = [cos x({}) + sin²x]/({})² = ({}cos x + 1)/({})²  (sin²x + cos²x = 1) ⟹ כלל המנה: f′(x) = [cos x({}) + sin²x]/({})² = ({}cos x + 1)/({})²  (sin²x + cos²x = 1)
+ln(u) = 0 exactly when u = 1:  {} = 1  ⇒  cos x = {} ⟹ ‏ln(u) = 0 בדיוק כש-u = 1:  {} = 1  ⇒  cos x = {}
+Quotient rule: f″(x) = −[cos x({}) + sin²x]/({})² = −({}cos x + 1)/({})² ⟹ כלל המנה: f″(x) = −[cos x({}) + sin²x]/({})² = −({}cos x + 1)/({})²
+Quotient rule: f′(x) = [−sin x(1 + sin x) − cos²x]/(1 + sin x)² = −(sin x + 1)/(1 + sin x)² = −1/(1 + sin x) ⟹ כלל המנה: f′(x) = [−sin x(1 + sin x) − cos²x]/(1 + sin x)² = −(sin x + 1)/(1 + sin x)² = −1/(1 + sin x)
+0 only at x = 3π/2, which is not in the domain ⟹ ‏0 רק ב-x = 3π/2, שאינו בתחום ההגדרה
+positive in the domain ⟹ חיובי בתחום ההגדרה
+positive (x > 0) ⟹ חיובי (x > 0)
+Quotient rule: f′(x) = [eˣ({}) − eˣ]/({})² = eˣ({})/({})². The denominator is positive in the domain: ⟹ כלל המנה: f′(x) = [eˣ({}) − eˣ]/({})² = eˣ({})/({})². המכנה חיובי בתחום ההגדרה:
+The denominator ({})³ is never 0 in the domain, so look at the top: ⟹ המכנה ({})³ אף פעם לא 0 בתחום, לכן מסתכלים על המונה:
+the top eˣ is never 0 ⟹ המונה eˣ אף פעם לא 0
+ln(u) = 0 exactly when u = 1:  {} = 1 ⟹ ‏ln(u) = 0 בדיוק כש-u = 1:  {} = 1
+always positive (its Δ < 0) ⟹ תמיד חיובי (Δ < 0)
+3x² + {} is always positive ⟹ 3x² + {} תמיד חיובי
+x = 0 is outside the domain |x| > {} ⟹ x = 0 מחוץ לתחום ההגדרה |x| > {}
+f′(x) = [2x·√({}) − x²·x/√({})]/({}) = x(2({}) − x²)/({})^(3/2) = x({})/({})^(3/2). (x = 0 is outside the domain |x| > {}.) ⟹ f′(x) = [2x·√({}) − x²·x/√({})]/({}) = x(2({}) − x²)/({})^(3/2) = x({})/({})^(3/2). (x = 0 מחוץ לתחום |x| > {}.)
+it is positive in the domain ⟹ הוא חיובי בתחום ההגדרה
+Quotient rule: f′(x) = [cos x(1 + sin²x) − sin x·2 sin x cos x]/(1 + sin²x)² = cos x(1 − sin²x)/(1 + sin²x)² = cos³x/(1 + sin²x)² ⟹ כלל המנה: f′(x) = [cos x(1 + sin²x) − sin x·2 sin x cos x]/(1 + sin²x)² = cos x(1 − sin²x)/(1 + sin²x)² = cos³x/(1 + sin²x)²
+Multiply by cos²x (≠ 0 in the domain): cos³x + 2 = 0  ⇒  cos³x = −2 — impossible, since cos³x ≥ −1. No solution. ⟹ כופלים ב-cos²x (≠ 0 בתחום): cos³x + 2 = 0  ⇒  cos³x = −2 — בלתי אפשרי, כי cos³x ≥ −1. אין פתרון.
+1/cos²x = 4  ⇒  cos²x = 1/4  ⇒  cos x = 1/2  or  cos x = −1/2 ⟹ 1/cos²x = 4  ⇒  cos²x = 1/4  ⇒  cos x = 1/2  או  cos x = −1/2
+the top is positive (2cos²x + 6sin²x ≥ 2) ⟹ המונה חיובי (2cos²x + 6sin²x ≥ 2)
+Chain rule: (2cos²x − 5cos x − 3)′ = sin x·(5 − 4cos x), so f′(x) = −6 sin x(5 − 4cos x)/(…)² = 6 sin x(4cos x − 5)/(…)². The denominator 2cos²x − 5cos x − 3 = (2cos x + 1)(cos x − 3) is 0 where cos x = −1/2: the asymptotes x = 2π/3, 4π/3. ⟹ כלל השרשרת: (2cos²x − 5cos x − 3)′ = sin x·(5 − 4cos x), לכן f′(x) = −6 sin x(5 − 4cos x)/(…)² = 6 sin x(4cos x − 5)/(…)². המכנה 2cos²x − 5cos x − 3 = (2cos x + 1)(cos x − 3) מתאפס כש-cos x = −1/2: האסימפטוטות x = 2π/3, 4π/3.
+the top is 6 ⟹ המונה הוא 6
+positive in the domain (it is 0 only at x = 3π/2) ⟹ חיובי בתחום (הוא 0 רק ב-x = 3π/2)
+Quotient rule: f′(x) = [cos x(sin x + 1) − (sin x − 1)cos x]/(sin x + 1)² = 2cos x/(sin x + 1)² ⟹ כלל המנה: f′(x) = [cos x(sin x + 1) − (sin x − 1)cos x]/(sin x + 1)² = 2cos x/(sin x + 1)²
+With t = eˣ: f = 2t²/(t² − 5t + 4) and f′(x) = t·df/dt = 2t²(8 − 5t)/(t² − 5t + 4)². The denominator (eˣ − 1)(eˣ − 4) is 0 at x = 0 and x = ln 4: the asymptotes. ⟹ עם t = eˣ: f = 2t²/(t² − 5t + 4) ו-f′(x) = t·df/dt = 2t²(8 − 5t)/(t² − 5t + 4)². המכנה (eˣ − 1)(eˣ − 4) מתאפס ב-x = 0 וב-x = ln 4: האסימפטוטות.
+the top 2e^(2x) is never 0 ⟹ המונה 2e^(2x) אף פעם לא 0
+it is positive ⟹ הוא חיובי
+the top is always positive ⟹ המונה תמיד חיובי
+Quotient rule: f′(x) = [eˣ(eˣ − 4)² − (eˣ − {})·2(eˣ − 4)eˣ]/(eˣ − 4)⁴ = eˣ[(eˣ − 4) − 2(eˣ − {})]/(eˣ − 4)³ = eˣ({} − eˣ)/(eˣ − 4)³ ⟹ כלל המנה: f′(x) = [eˣ(eˣ − 4)² − (eˣ − {})·2(eˣ − 4)eˣ]/(eˣ − 4)⁴ = eˣ[(eˣ − 4) − 2(eˣ − {})]/(eˣ − 4)³ = eˣ({} − eˣ)/(eˣ − 4)³
+With u = ln x: f = u²/(u² − 1) = 1 + 1/(u² − 1), so f′(x) = −2u/(u² − 1)² · (1/x) = −2 ln x/(x((ln x)² − 1)²). The asymptotes are where (ln x)² = 1: x = e and x = 1/e. ⟹ עם u = ln x: f = u²/(u² − 1) = 1 + 1/(u² − 1), לכן f′(x) = −2u/(u² − 1)² · (1/x) = −2 ln x/(x((ln x)² − 1)²). האסימפטוטות איפה ש-(ln x)² = 1: x = e ו-x = 1/e.
+x > 0 in the domain ⟹ בתחום ההגדרה x > 0
+it is negative for x > 0 ⟹ הוא שלילי עבור x > 0
+x ≠ 0, so ln(x²) − 1 = 0  ⇒  x² = e  ⇒  x = ±√e  (≈ ±1.65) ⟹ x ≠ 0, לכן ln(x²) − 1 = 0  ⇒  x² = e  ⇒  x = ±√e  (≈ ±1.65)
+8/x is never 0 (its sign changes at x = 0, which isn't in the domain) ⟹ ‏8/x אף פעם לא 0 (הסימן שלו משתנה ב-x = 0, שאינו בתחום)
+x > 0, so solve (ln x)² − 2 ln x + 2 = 0 with u = ln x: ⟹ x > 0, לכן פותרים (ln x)² − 2 ln x + 2 = 0 עם u = ln x:
+f′(x) = (ln x)² − 2 ln x + 2 + x·(2 ln x − 2)/x = (ln x)².  (ln x)² = 0  ⇒  ln x = 0  ⇒  x = 1 — a double zero, so f′ ≥ 0 and doesn't change sign there. ⟹ f′(x) = (ln x)² − 2 ln x + 2 + x·(2 ln x − 2)/x = (ln x)².  (ln x)² = 0  ⇒  ln x = 0  ⇒  x = 1 — אפס כפול, לכן f′ ≥ 0 ולא מחליפה שם סימן.
+not 0 in the domain |x| > √{} ⟹ לא 0 בתחום |x| > √{}
+f′(x) = 1 + 2x/(x² − {}) = ({})/(x² − {}). The domain is x² > {}; a solution with x² < {} doesn't count. ⟹ f′(x) = 1 + 2x/(x² − {}) = ({})/(x² − {}). התחום הוא x² > {}; פתרון עם x² < {} לא נחשב.
+it is negative everywhere in the domain ⟹ הוא שלילי בכל התחום
+the top is 1 ⟹ המונה הוא 1
+the top is −1 ⟹ המונה הוא −1
+(The factor {} in front doesn't change where {} is 0.) ⟹ (הגורם {} בהתחלה לא משנה איפה ש-{} מתאפס.)
+just before ⟹ מעט לפני
+just after ⟹ מעט אחרי
+is ⟹ הוא

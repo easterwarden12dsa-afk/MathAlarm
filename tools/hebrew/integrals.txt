@@ -1,0 +1,115 @@
+# Integral solutions (IntegralGenerator.swift).
+Power rule ⟹ כלל החזקה
+Integrate term by term with the power rule ∫xⁿ dx = xⁿ⁺¹/(n+1); a constant c integrates to c·x. ⟹ מחשבים אינטגרל איבר-איבר עם כלל החזקה ∫xⁿ dx = xⁿ⁺¹/(n+1); האינטגרל של קבוע c הוא c·x.
+Basic trig integral ⟹ אינטגרל טריגונומטרי בסיסי
+∫cos(kx) dx = sin(kx)/k — the inner kx gives the factor 1/k. ⟹ ∫cos(kx) dx = sin(kx)/k — ה-kx הפנימי נותן את הגורם 1/k.
+∫sin(kx) dx = −cos(kx)/k — the inner kx gives the factor 1/k. ⟹ ∫sin(kx) dx = −cos(kx)/k — ה-kx הפנימי נותן את הגורם 1/k.
+Exponential ⟹ מעריכית
+Logarithm ⟹ לוגריתם
+∫ 1/(x + b) dx = ln|x + b|. On this interval x + b > 0, so ln(x + b) is fine. ⟹ ∫ 1/(x + b) dx = ln|x + b|. בתחום הזה x + b > 0, לכן ln(x + b) תקין.
+Write √x as a power: ⟹ כותבים את √x כחזקה:
+Power rule: ∫x^(1/2) dx = x^(3/2) / (3/2) = (2/3)·x^(3/2). ⟹ כלל החזקה: ∫x^(1/2) dx = x^(3/2) / (3/2) = (2/3)·x^(3/2).
+Standard integral ⟹ אינטגרל מוכר
+(tan x)′ = sec²x, so ∫sec²x dx = tan x. ⟹ (tan x)′ = sec²x, לכן ∫sec²x dx = tan x.
+(arctan x)′ = 1/(x² + 1), so ∫ 1/(x² + 1) dx = arctan x. ⟹ (arctan x)′ = 1/(x² + 1), לכן ∫ 1/(x² + 1) dx = arctan x.
+Substitution ⟹ הצבה
+Substitute the inside of the power: ⟹ מציבים את מה שבתוך החזקה:
+Then du = 2x dx, so x dx = du/2. ⟹ אז du = 2x dx, לכן x dx = du/2.
+The integral becomes (k/2)·∫uⁿ du = (k/2)·uⁿ⁺¹/(n+1). ⟹ האינטגרל הופך ל-(k/2)·∫uⁿ du = (k/2)·uⁿ⁺¹/(n+1).
+Substitute u back. ⟹ מחזירים את u.
+Substitute the exponent: ⟹ מציבים את המעריך:
+du = 2a·x dx, so x dx = du/(2a). ⟹ du = 2a·x dx, לכן x dx = du/(2a).
+∫ eᵘ du/(2a) = eᵘ/(2a). Substitute u back. ⟹ ∫ eᵘ du/(2a) = eᵘ/(2a). מחזירים את u.
+Substitute: ⟹ מציבים:
+du = cos x dx, so the integral is ∫uⁿ du = uⁿ⁺¹/(n+1). ⟹ du = cos x dx, לכן האינטגרל הוא ∫uⁿ du = uⁿ⁺¹/(n+1).
+du = −sin x dx, so the integral is −∫uⁿ du = −uⁿ⁺¹/(n+1). ⟹ du = −sin x dx, לכן האינטגרל הוא −∫uⁿ du = −uⁿ⁺¹/(n+1).
+Substitution (f′/f) ⟹ הצבה (f′/f)
+The numerator is a multiple of the derivative of the denominator: ⟹ המונה הוא כפולה של נגזרת המכנה:
+(denominator)′ = ⟹ (מכנה)′ =
+∫ f′/f dx = ln|f|, and the denominator is always positive here. ⟹ ∫ f′/f dx = ln|f|, והמכנה כאן תמיד חיובי.
+multiple = ⟹ כפולה =
+The numerator eˣ is exactly the derivative of the denominator: ⟹ המונה eˣ הוא בדיוק נגזרת המכנה:
+∫ f′/f dx = ln|f|, and f > 0. ⟹ ∫ f′/f dx = ln|f|, ו-f > 0.
+Integration by parts ⟹ אינטגרציה בחלקים
+Integration by parts: ∫u dv = u·v − ∫v du. ⟹ אינטגרציה בחלקים: ∫u dv = u·v − ∫v du.
+Choose u = x (it gets simpler) and dv = e^(ax) dx: ⟹ בוחרים u = x (הוא נעשה פשוט יותר) ו-dv = e^(ax) dx:
+Then du = dx and ⟹ אז du = dx ו-
+Integration by parts: ∫u dv = u·v − ∫v du, with u = x, dv = sin(ax) dx. ⟹ אינטגרציה בחלקים: ∫u dv = u·v − ∫v du, עם u = x, dv = sin(ax) dx.
+du = dx and ⟹ du = dx ו-
+Integration by parts: ∫u dv = u·v − ∫v du, with u = x, dv = cos(ax) dx. ⟹ אינטגרציה בחלקים: ∫u dv = u·v − ∫v du, עם u = x, dv = cos(ax) dx.
+Write ln x = 1·ln x and use parts with u = ln x, dv = dx. ⟹ כותבים ln x = 1·ln x ומשתמשים בחלקים עם u = ln x, dv = dx.
+du = dx/x and v = x, so ∫ln x dx = x·ln x − ∫ x·(1/x) dx = x·ln x − x. ⟹ du = dx/x ו-v = x, לכן ∫ln x dx = x·ln x − ∫ x·(1/x) dx = x·ln x − x.
+Parts with u = ln x (it simplifies when differentiated), dv = x dx. ⟹ בחלקים עם u = ln x (הוא מתפשט כשגוזרים), dv = x dx.
+du = dx/x and ⟹ du = dx/x ו-
+Trig identity ⟹ זהות טריגונומטרית
+Use the double-angle identity to remove the square: ⟹ משתמשים בזהות הזווית הכפולה כדי להיפטר מהריבוע:
+Integrate: ∫½ dx = x/2 and ∫cos(2ax) dx = sin(2ax)/(2a). ⟹ מחשבים: ∫½ dx = x/2 ו-∫cos(2ax) dx = sin(2ax)/(2a).
+Arctangent ⟹ ארקטנגנס
+Standard form: ∫ 1/(x² + k²) dx = (1/k)·arctan(x/k). ⟹ צורה מוכרת: ∫ 1/(x² + k²) dx = (1/k)·arctan(x/k).
+Partial fractions ⟹ שברים חלקיים
+Factor the denominator: ⟹ מפרקים את המכנה:
+Split into A/(x − a) + B/(x − b) and match the numerators. ⟹ מפצלים ל-A/(x − a) + B/(x − b) ומשווים מונים.
+Solving gives ⟹ הפתרון נותן
+Each piece integrates to a logarithm; on this interval both brackets are positive. ⟹ האינטגרל של כל חלק הוא לוגריתם; בתחום הזה שני הסוגריים חיוביים.
+Integration by parts (twice) ⟹ אינטגרציה בחלקים (פעמיים)
+Parts with u = x², dv = e^(ax) dx: du = 2x dx, v = e^(ax)/a. ⟹ בחלקים עם u = x², dv = e^(ax) dx: du = 2x dx, v = e^(ax)/a.
+Parts again on ∫x·e^(ax) dx (u = x): ⟹ שוב בחלקים על ∫x·e^(ax) dx (u = x):
+Combine and factor out e^(ax). ⟹ מאחדים ומוציאים את e^(ax) כגורם משותף.
+Integration by parts (cyclic) ⟹ אינטגרציה בחלקים (מעגלית)
+Call the integral I. Integrate by parts twice (u = the trig part each time). ⟹ נסמן את האינטגרל ב-I. מבצעים אינטגרציה בחלקים פעמיים (u = החלק הטריגונומטרי בכל פעם).
+The second time, the original integral I appears again on the right-hand side. ⟹ בפעם השנייה האינטגרל המקורי I מופיע שוב באגף ימין.
+Move it to the left: (1 + b²/a²)·I = …, so I has the factor 1/(a² + b²). ⟹ מעבירים אותו שמאלה: (1 + b²/a²)·I = …, לכן ל-I יש גורם 1/(a² + b²).
+Trig powers ⟹ חזקות טריגונומטריות
+Split off one sine: ⟹ מפרידים סינוס אחד:
+Substitute u = cos x, du = −sin x dx: −∫(1 − u²) du = −u + u³/3. ⟹ מציבים u = cos x, du = −sin x dx: −∫(1 − u²) du = −u + u³/3.
+Split off one cosine: ⟹ מפרידים קוסינוס אחד:
+Substitute u = sin x, du = cos x dx: ∫(1 − u²) du = u − u³/3. ⟹ מציבים u = sin x, du = cos x dx: ∫(1 − u²) du = u − u³/3.
+Trig identities ⟹ זהויות טריגונומטריות
+sin x·cos x = sin(2x)/2, so the integrand is sin²(2x)/4. ⟹ sin x·cos x = sin(2x)/2, לכן הפונקציה שמתחת לאינטגרל היא sin²(2x)/4.
+Then sin²(2x) = (1 − cos 4x)/2, giving ⟹ אחר כך sin²(2x) = (1 − cos 4x)/2, ומתקבל
+Integrate: x/8 − sin(4x)/32. ⟹ מחשבים: x/8 − sin(4x)/32.
+du = cos x dx, so the integral is ∫eᵘ du = eᵘ. ⟹ du = cos x dx, לכן האינטגרל הוא ∫eᵘ du = eᵘ.
+du = −sin x dx, so the integral is −∫eᵘ du = −eᵘ. ⟹ du = −sin x dx, לכן האינטגרל הוא −∫eᵘ du = −eᵘ.
+du = dx/x, so the integral is ∫uⁿ du = uⁿ⁺¹/(n+1). ⟹ du = dx/x, לכן האינטגרל הוא ∫uⁿ du = uⁿ⁺¹/(n+1).
+du = dx/x, so the integral is ∫sin u du = −cos u. ⟹ du = dx/x, לכן האינטגרל הוא ∫sin u du = −cos u.
+du = dx/x, so the integral is ∫cos u du = sin u. ⟹ du = dx/x, לכן האינטגרל הוא ∫cos u du = sin u.
+du = 2x dx, so the integral is (k/2)·∫u^(−1/2) du = (k/2)·2√u = k√u. ⟹ du = 2x dx, לכן האינטגרל הוא (k/2)·∫u^(−1/2) du = (k/2)·2√u = k√u.
+Write tan x = sin x / cos x and substitute u = cos x, du = −sin x dx. ⟹ כותבים tan x = sin x / cos x ומציבים u = cos x, du = −sin x dx.
+−∫du/u = −ln|u| = −ln(cos x)  (cos x > 0 here). ⟹ −∫du/u = −ln|u| = −ln(cos x)  (כאן cos x > 0).
+Multiply top and bottom by (sec x + tan x). ⟹ כופלים מונה ומכנה ב-(sec x + tan x).
+The numerator becomes the derivative of the denominator sec x + tan x, so the integral is ln|sec x + tan x|. ⟹ המונה הופך לנגזרת של המכנה sec x + tan x, לכן האינטגרל הוא ln|sec x + tan x|.
+Parts with u = ln x, dv = x² dx: du = dx/x and ⟹ בחלקים עם u = ln x, dv = x² dx: du = dx/x ו-
+Parts with u = arctan x, dv = dx: du = dx/(1 + x²), v = x. ⟹ בחלקים עם u = arctan x, dv = dx: du = dx/(1 + x²), v = x.
+x·arctan x − ∫ x/(1 + x²) dx, and that last integral is ½·ln(1 + x²) (f′/f). ⟹ x·arctan x − ∫ x/(1 + x²) dx, והאינטגרל האחרון הוא ½·ln(1 + x²) (f′/f).
+Substitution + by parts ⟹ הצבה + בחלקים
+Substitute t = x², dt = 2x dx: the integral becomes ½·∫t·eᵗ dt. ⟹ מציבים t = x², dt = 2x dx: האינטגרל הופך ל-½·∫t·eᵗ dt.
+By parts: ∫t·eᵗ dt = eᵗ(t − 1). Substitute t = x² back. ⟹ בחלקים: ∫t·eᵗ dt = eᵗ(t − 1). מחזירים t = x².
+Sum of standard integrals ⟹ סכום של אינטגרלים מוכרים
+Integrate each term separately. ⟹ מחשבים אינטגרל לכל איבר בנפרד.
+∫ a/(bx + c) dx = (a/b)·ln(bx + c)  (bx + c > 0 here). ⟹ ∫ a/(bx + c) dx = (a/b)·ln(bx + c)  (כאן bx + c > 0).
+Linear inner function ⟹ פונקציה פנימית ליניארית
+For a linear inside ax + b:  ∫(ax + b)ⁿ dx = (ax + b)ⁿ⁺¹ / (a·(n+1)). ⟹ לפונקציה פנימית ליניארית ax + b:  ∫(ax + b)ⁿ dx = (ax + b)ⁿ⁺¹ / (a·(n+1)).
+The second term is a plain power. ⟹ האיבר השני הוא חזקה רגילה.
+f′/f and power rule ⟹ ‏f′/f וכלל החזקה
+First term: the derivative of x² + a is 2x, so it is (k/2)·f′/f. ⟹ איבר ראשון: הנגזרת של x² + a היא 2x, לכן הוא (k/2)·f′/f.
+Second term: m/x² = m·x⁻², which integrates to −m/x. ⟹ איבר שני: m/x² = m·x⁻², והאינטגרל שלו −m/x.
+1/√(ax + b) = (ax + b)^(−1/2), which integrates to 2√(ax + b)/a. ⟹ 1/√(ax + b) = (ax + b)^(−1/2), והאינטגרל שלו 2√(ax + b)/a.
+The factor in front is k times the derivative of the exponent: ⟹ הגורם בהתחלה הוא k כפול נגזרת המעריך:
+exponent = ⟹ מעריך =
+With f = ln x, f′ = 1/x, so lnⁿ(x)/x = f′·fⁿ, which integrates to fⁿ⁺¹/(n+1). ⟹ עם f = ln x, f′ = 1/x, לכן lnⁿ(x)/x = f′·fⁿ, והאינטגרל שלו fⁿ⁺¹/(n+1).
+With f = sin x, f′ = cos x: cos x·sinⁿx = f′·fⁿ → fⁿ⁺¹/(n+1). ⟹ עם f = sin x, f′ = cos x: cos x·sinⁿx = f′·fⁿ → fⁿ⁺¹/(n+1).
+Standard integrals ⟹ אינטגרלים מוכרים
+(tan(kx))′ = k/cos²(kx), so ∫ 1/cos²(kx) dx = tan(kx)/k. ⟹ (tan(kx))′ = k/cos²(kx), לכן ∫ 1/cos²(kx) dx = tan(kx)/k.
+With f = x² + a, f′ = 2x, so x·√f = ½·f′·f^(1/2). ⟹ עם f = x² + a, f′ = 2x, לכן x·√f = ½·f′·f^(1/2).
+∫ f′·f^(1/2) dx = (2/3)·f^(3/2); with the ½ and the factor k this gives (k/3)·f^(3/2). ⟹ ∫ f′·f^(1/2) dx = (2/3)·f^(3/2); עם ה-½ והגורם k מתקבל (k/3)·f^(3/2).
+Expand, then integrate ⟹ פותחים סוגריים, ואז אינטגרל
+Expand the square: ⟹ פותחים את הריבוע:
+Integrate each term: ∫e^(kx) dx = e^(kx)/k and a² integrates to a²x. ⟹ אינטגרל לכל איבר: ∫e^(kx) dx = e^(kx)/k והאינטגרל של a² הוא a²x.
+Divide, then integrate ⟹ מחלקים, ואז אינטגרל
+Divide each term by x: ⟹ מחלקים כל איבר ב-x:
+Integrate: x²/2 + b·x + c·ln x  (x > 0). ⟹ מחשבים: x²/2 + b·x + c·ln x  (x > 0).
+Expand, divide, integrate ⟹ פותחים, מחלקים, מחשבים אינטגרל
+Expand: (√x + a)² = x + 2a√x + a². ⟹ פותחים: (√x + a)² = x + 2a√x + a².
+Divide by x: ⟹ מחלקים ב-x:
+Integrate: x + 4a√x + a²·ln x. ⟹ מחשבים: x + 4a√x + a²·ln x.
+Integral ⟹ אינטגרל

@@ -10,7 +10,10 @@ struct MathKeypad: View {
 
     @State private var page = 0
 
-    var body: some View {
+    var body: some View { mathBody.mathDirection() }
+
+    @ViewBuilder
+    private var mathBody: some View {
         VStack(spacing: 6) {
             ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
                 HStack(spacing: 6) {

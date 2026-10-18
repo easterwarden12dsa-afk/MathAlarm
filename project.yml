@@ -3,6 +3,7 @@
 name: MathAlarm
 
 options:
+  developmentLanguage: en
   bundleIdPrefix: com.mathalarm
   deploymentTarget:
     iOS: "26.1"
@@ -40,6 +41,10 @@ targets:
         UIBackgroundModes:
           - audio
         NSSupportsLiveActivities: true
+        CFBundleLocalizations:
+          - en
+          - he
+        CFBundleDevelopmentRegion: en
         NSMotionUsageDescription: "Math Alarm β can ask you to walk a few steps before the math appears, so you're really up."
         NSAlarmKitUsageDescription: "Math Alarm schedules the alarms you create so they ring even when your phone is locked, silenced or in Focus."
     settings:

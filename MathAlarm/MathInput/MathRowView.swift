@@ -32,7 +32,10 @@ struct MathRowView: View {
         return cursor.index
     }
 
-    var body: some View {
+    var body: some View { mathBody.mathDirection() }
+
+    @ViewBuilder
+    private var mathBody: some View {
         HStack(alignment: .mathAxis, spacing: size * 0.04) {
             if row.atoms.isEmpty {
                 placeholder
@@ -289,7 +292,10 @@ struct FittedMath<Content: View>: View {
 
     private func size(_ i: Int) -> CGFloat { sizes[Swift.min(i, sizes.count - 1)] }
 
-    var body: some View {
+    var body: some View { mathBody.mathDirection() }
+
+    @ViewBuilder
+    private var mathBody: some View {
         ViewThatFits(in: .horizontal) {
             content(size(0)).fixedSize()
             content(size(1)).fixedSize()
@@ -320,7 +326,10 @@ struct AnswerField: View {
         return count > 16 ? 23 : 27
     }
 
-    var body: some View {
+    var body: some View { mathBody.mathDirection() }
+
+    @ViewBuilder
+    private var mathBody: some View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal, showsIndicators: true) {
                 HStack(spacing: 0) {

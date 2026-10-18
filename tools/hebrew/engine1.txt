@@ -1,0 +1,141 @@
+# Drawing checker, derivative steps, input errors, small words used inside other sentences.
+Precision ⟹ דיוק
+Standard ⟹ רגיל
+Proportions ⟹ פרופורציות
+Shape only ⟹ צורה בלבד
+Like pen and paper: peaks, dips, zeros and end values must be close to exact. ⟹ כמו בדף ועט: מקסימום, מינימום, אפסים וערכי קצה צריכים להיות קרובים למדויק.
+Same checks as Precision, with more room for error. ⟹ אותן בדיקות כמו "דיוק", עם יותר מקום לטעות.
+Any vertical scale. Heights must be right relative to each other and to the x-axis. ⟹ כל קנה מידה אנכי. הגבהים צריכים להיות נכונים זה ביחס לזה וביחס לציר x.
+Judged by eye: does your drawing look like the graph? Scale and exact values don't matter. ⟹ לפי העין: האם השרטוט נראה כמו הגרף? קנה מידה וערכים מדויקים לא משנים.
+The shape is off from x = {} to x = {} — redraw this whole stretch (the eye shows the right shape). ⟹ הצורה לא נכונה מ-x = {} עד x = {} — שרטטו מחדש את כל הקטע (העין מראה את הצורה הנכונה).
+The general shape from x = {} to x = {} is off — redraw it (the eye shows the right shape). ⟹ הצורה הכללית מ-x = {} עד x = {} לא נכונה — שרטטו אותה מחדש (העין מראה את הצורה הנכונה).
+Several things are off from x = {} to x = {} — redraw this part (the eye shows the right shape). ⟹ כמה דברים לא נכונים מ-x = {} עד x = {} — שרטטו את החלק הזה מחדש (העין מראה את הצורה הנכונה).
+None of the graph is on screen here — move or zoom the view. ⟹ שום חלק מהגרף לא נמצא כאן על המסך — הזיזו או שנו את הזום.
+Nothing drawn from x = {} to x = {} — draw across the whole interval. ⟹ לא שורטט כלום מ-x = {} עד x = {} — שרטטו לאורך כל התחום.
+Draw the graph across the box. ⟹ שרטטו את הגרף לאורך המסגרת.
+The overall shape is upside down or flat — compare with where the graph is above and below the x-axis. ⟹ הצורה הכללית הפוכה או שטוחה — השוו לאן הגרף מעל ומתחת לציר x.
+Your sketch is flat — show where the graph rises and falls. ⟹ השרטוט שלכם שטוח — הראו איפה הגרף עולה ויורד.
+ (vertical asymptote x = {}) ⟹  (אסימפטוטה אנכית x = {})
+Near x = {} the graph shoots {} of the box{} — take your line there. ⟹ ליד x = {} הגרף יוצא {} מהמסגרת{} — הביאו את הקו לשם.
+There should be a {} near x = {}. ⟹ צריכה להיות {} ליד x = {}.
+further right ⟹ ימינה יותר
+further left ⟹ שמאלה יותר
+Your {} is in the wrong place — move it {}, to about x = {}. ⟹ ה{} שלכם במקום הלא נכון — הזיזו {}, לערך x = {}.
+The {} near x = {} should be at y ≈ {} (yours is too {}). ⟹ ה{} ליד x = {} צריכה להיות ב-y ≈ {} (אצלכם {} מדי).
+The {} near x = {} is too {} compared with the rest of your graph. ⟹ ה{} ליד x = {} {} מדי ביחס לשאר הגרף שלכם.
+The graph should reach y = 0 at x = {} (yours is {} it). ⟹ הגרף צריך להגיע ל-y = 0 ב-x = {} (אצלכם {}).
+The graph should go {} from x = {} to x = {}. ⟹ הגרף צריך {} מ-x = {} עד x = {}.
+Too high from x = {} to x = {} — bring it down. ⟹ גבוה מדי מ-x = {} עד x = {} — הורידו.
+Too low from x = {} to x = {} — bring it up. ⟹ נמוך מדי מ-x = {} עד x = {} — העלו.
+At x = {} the graph should {} near y = {}. ⟹ ב-x = {} הגרף צריך {} ליד y = {}.
+At x = {} the graph should {} {}. ⟹ ב-x = {} הגרף צריך {} {}.
+Your sketch has extra bumps (near x = {}) that the graph doesn't have. ⟹ בשרטוט שלכם יש בליטות מיותרות (ליד x = {}) שאין בגרף.
+It doesn't look like the graph — check where it goes up and where it goes down. ⟹ זה לא נראה כמו הגרף — בדקו איפה הוא עולה ואיפה יורד.
+From x = {} to x = {} it doesn't look like the graph — it should be {} there. ⟹ מ-x = {} עד x = {} זה לא נראה כמו הגרף — שם הוא צריך להיות {}.
+Your drawing has extra bumps (near x = {}) that the graph doesn't have. ⟹ בשרטוט שלכם יש בליטות מיותרות (ליד x = {}) שאין בגרף.
+The graph has a {} near x = {} — your drawing doesn't turn there. ⟹ לגרף יש {} ליד x = {} — השרטוט שלכם לא מסתובב שם.
+The overall shape is off — compare where it rises, falls and turns. ⟹ הצורה הכללית לא נכונה — השוו איפה הוא עולה, יורד ומשנה כיוון.
+From x = {} to x = {} your line goes up and down where the graph doesn't — smooth it out. ⟹ מ-x = {} עד x = {} הקו שלכם עולה ויורד במקום שהגרף לא — החליקו אותו.
+from x = {} to x = {} ⟹ מ-x = {} עד x = {}
+Too high {} — bring it down. ⟹ גבוה מדי {} — הורידו.
+Too low {} — bring it up. ⟹ נמוך מדי {} — העלו.
+The graph should go up {}. ⟹ הגרף צריך לעלות {}.
+The graph should go down {}. ⟹ הגרף צריך לרדת {}.
+Nothing drawn {}. ⟹ לא שורטט כלום {}.
+g(x) = f′(x)  (the derivative) ⟹ g(x) = f′(x)  (הנגזרת)
+Draw the graph — everything you draw inside the view is checked. ⟹ שרטטו את הגרף — כל מה ששורטט בתוך התצוגה נבדק.
+The graph has a {} at {}, outside the view — move or zoom out and draw it too. ⟹ לגרף יש {} ב-{}, מחוץ לתצוגה — הזיזו או התרחקו ושרטטו גם אותה.
+Draw further: the graph has a {} at {}, and your drawing has to include it. ⟹ שרטטו הלאה: לגרף יש {} ב-{}, והשרטוט צריך לכלול אותה.
+The {} at {} is off the screen {} — zoom out or move the view so you can draw it. ⟹ ה{} ב-{} מחוץ למסך {} — התרחקו או הזיזו את התצוגה כדי לשרטט אותה.
+peak ⟹ נקודת מקסימום
+dip ⟹ נקודת מינימום
+peaks ⟹ נקודות מקסימום
+maximum ⟹ מקסימום
+minimum ⟹ מינימום
+zero ⟹ נקודת אפס
+inflection point ⟹ נקודת פיתול
+turning point ⟹ נקודת קיצון
+vertical asymptote ⟹ אסימפטוטה אנכית
+steepest point (inflection) ⟹ הנקודה התלולה ביותר (פיתול)
+left end ⟹ הקצה השמאלי
+right end ⟹ הקצה הימני
+up ⟹ למעלה
+down ⟹ למטה
+high ⟹ גבוה
+low ⟹ נמוך
+higher ⟹ גבוה יותר
+lower ⟹ נמוך יותר
+rises ⟹ עולה
+falls ⟹ יורדת
+rising ⟹ עולה
+falling ⟹ יורדת
+rise ⟹ לעלות
+fall ⟹ לרדת
+positive ⟹ חיובית
+negative ⟹ שלילית
+start ⟹ התחלה
+end ⟹ סוף
+this point ⟹ הנקודה הזו
+this end ⟹ הקצה הזה
+up out of the top ⟹ למעלה מעבר לגבול העליון
+down out of the bottom ⟹ למטה מעבר לגבול התחתון
+above ⟹ מעל
+below ⟹ מתחת
+stretched away from ⟹ נמתח הרחק מ
+squashed towards ⟹ נדחס לכיוון
+the same ⟹ אותו דבר
+Result: ⟹ תוצאה:
+A constant has derivative 0. ⟹ הנגזרת של קבוע היא 0.
+Take the minus sign outside. ⟹ מוציאים את המינוס החוצה.
+So: ⟹ לכן:
+Sum rule: differentiate each term separately. ⟹ כלל הסכום: גוזרים כל מחובר בנפרד.
+Adding the terms: ⟹ מחברים את האיברים:
+Constant multiple: keep the constant, differentiate the rest. ⟹ כפל בקבוע: משאירים את הקבוע וגוזרים את השאר.
+constant = ⟹ קבוע =
+Multiply by the constant: ⟹ כופלים בקבוע:
+Product rule: (u·v)′ = u′·v + u·v′ ⟹ כלל המכפלה: (u·v)′ = u′·v + u·v′
+Put together u′v + uv′: ⟹ מרכיבים u′v + uv′:
+Dividing by a constant: differentiate the top, keep the bottom. ⟹ חלוקה בקבוע: גוזרים את המונה ומשאירים את המכנה.
+Quotient rule: (u/v)′ = (u′·v − u·v′) / v² ⟹ כלל המנה: (u/v)′ = (u′·v − u·v′) / v²
+Put together (u′v − uv′)/v²: ⟹ מרכיבים (u′v − uv′)/v²:
+Power rule: (xⁿ)′ = n·xⁿ⁻¹ ⟹ כלל החזקה: (xⁿ)′ = n·xⁿ⁻¹
+Chain rule on a power: (uⁿ)′ = n·uⁿ⁻¹·u′ ⟹ כלל השרשרת לחזקה: (uⁿ)′ = n·uⁿ⁻¹·u′
+Multiply n·uⁿ⁻¹ by u′: ⟹ כופלים n·uⁿ⁻¹ ב-u′:
+Exponential: (aᵛ)′ = aᵛ·ln(a)·v′ ⟹ פונקציה מעריכית: (aᵛ)′ = aᵛ·ln(a)·v′
+Variable base and exponent: write uᵛ = e^(v·ln u) and use the chain rule. ⟹ בסיס ומעריך משתנים: כותבים uᵛ = e^(v·ln u) ומשתמשים בכלל השרשרת.
+Standard derivative of {}: ⟹ נגזרת מוכרת של {}:
+Chain rule: (outer)′ at the inner function, times (inner)′. Outer: {}(□), its derivative: ⟹ כלל השרשרת: (החיצונית)′ בנקודת הפנימית, כפול (הפנימית)′. החיצונית: {}(□), והנגזרת שלה:
+Inner function: ⟹ הפונקציה הפנימית:
+Multiply: ⟹ כופלים:
+(your answer)′ = ⟹ (התשובה שלכם)′ =
+Step 1 · What kind of function ⟹ שלב 1 · איזו פונקציה זו
+Step 2 · Differentiate part by part ⟹ שלב 2 · גוזרים חלק אחר חלק
+Answer ⟹ תשובה
+Step 1 · Technique: {} ⟹ שלב 1 · שיטה: {}
+Result (any constant C can be added): ⟹ תוצאה (אפשר להוסיף קבוע C כלשהו):
+Check ⟹ בדיקה
+Differentiating the result gives back the integrand. ⟹ גזירת התוצאה מחזירה את הפונקציה שמתחת לאינטגרל.
+It looks like you forgot the chain rule: after differentiating the outer function, multiply by the derivative of the inside. ⟹ נראה ששכחתם את כלל השרשרת: אחרי גזירת הפונקציה החיצונית, כופלים בנגזרת של הפנימית.
+It looks like the quotient rule's subtraction is the wrong way round: it's (u′v − uv′)/v², u′v first. ⟹ נראה שהחיסור בכלל המנה הפוך: זה (u′v − uv′)/v², קודם u′v.
+It looks like you used (uv)′ = u′v′. The product rule is u′v + uv′. ⟹ נראה שהשתמשתם ב-(uv)′ = u′v′. כלל המכפלה הוא u′v + uv′.
+It looks like a power slip: (xⁿ)′ = n·xⁿ⁻¹ — the power goes down by one. ⟹ נראה שיש טעות בחזקה: (xⁿ)′ = n·xⁿ⁻¹ — החזקה יורדת באחד.
+Your answer has the wrong sign everywhere — check a minus (e.g. (cos x)′ = −sin x, (1/x)′ = −1/x²). ⟹ לתשובה שלכם סימן הפוך בכל מקום — בדקו מינוס (למשל (cos x)′ = −sin x, (1/x)′ = −1/x²).
+Your answer is off by a constant factor — check a number in front (a chain-rule factor or a coefficient). ⟹ התשובה שלכם שונה בכפל בקבוע — בדקו מספר בהתחלה (גורם מכלל השרשרת או מקדם).
+There's an empty box. ⟹ יש תיבה ריקה.
+Something doesn't fit together. ⟹ משהו לא מסתדר.
+Something is missing after {}. ⟹ חסר משהו אחרי {}.
+Something is missing after ×. ⟹ חסר משהו אחרי ×.
+Something is missing at the end. ⟹ חסר משהו בסוף.
+{} needs something before it. ⟹ ל-{} חסר משהו לפניו.
+A power needs something before it. ⟹ לחזקה חסר משהו לפניה.
+{} isn't a number. ⟹ {} אינו מספר.
+Chain rule ⟹ כלל השרשרת
+Product + chain rule ⟹ כלל המכפלה + כלל השרשרת
+Quotient rule ⟹ כלל המנה
+Chain rule (two layers) ⟹ כלל השרשרת (שתי שכבות)
+Quotient + chain rule ⟹ כלל המנה + כלל השרשרת
+Quotient + nested chain rule ⟹ כלל המנה + שרשרת מקוננת
+Product + nested chain rule ⟹ כלל המכפלה + שרשרת מקוננת
+Product + quotient + chain rule ⟹ מכפלה + מנה + שרשרת
+Product rule ⟹ כלל המכפלה
+Power rule ⟹ כלל החזקה

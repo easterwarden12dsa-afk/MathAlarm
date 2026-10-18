@@ -53,7 +53,10 @@ struct SketchCanvas: View {
     private let insets = EdgeInsets(top: 12, leading: 46, bottom: 30, trailing: 14)
     private let eraserRadius: CGFloat = 22
 
-    var body: some View {
+    var body: some View { mathBody.mathDirection() }
+
+    @ViewBuilder
+    private var mathBody: some View {
         GeometryReader { geo in
             let plot = CGRect(x: insets.leading, y: insets.top,
                               width: geo.size.width - insets.leading - insets.trailing,

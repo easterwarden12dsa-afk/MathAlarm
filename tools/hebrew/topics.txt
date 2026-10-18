@@ -1,0 +1,231 @@
+# Probability, triangles, min & max (Topics.swift). Long prompts are split into sentences at runtime.
+Give the answer exactly or to 3 decimal places. ⟹ תנו תשובה מדויקת או עד 3 ספרות אחרי הנקודה.
+Give the answer to 2 decimal places. ⟹ תנו תשובה עד 2 ספרות אחרי הנקודה.
+Dana passes the test ⟹ דנה עוברת את המבחן
+Yossi passes the test ⟹ יוסי עובר את המבחן
+the bus is late ⟹ האוטובוס מאחר
+it rains ⟹ יורד גשם
+the first light is green ⟹ הרמזור הראשון ירוק
+the second light is green ⟹ הרמזור השני ירוק
+at least one of the two happens ⟹ לפחות אחד מהשניים יקרה
+exactly one of the two happens ⟹ בדיוק אחד מהשניים יקרה
+both happen ⟹ שניהם יקרו
+Complement ⟹ המאורע המשלים
+"At least one" is the opposite of "neither". ⟹ "לפחות אחד" הוא המשלים של "אף אחד".
+P(neither) = (1 − {})·(1 − {}) = {} ⟹ P(אף אחד) = (1 − {})·(1 − {}) = {}
+P(at least one) = 1 − {} = {} ⟹ P(לפחות אחד) = 1 − {} = {}
+Two separate cases ⟹ שני מקרים נפרדים
+Only the first: {}·{} = {} ⟹ רק הראשון: {}·{} = {}
+Only the second: {}·{} = {} ⟹ רק השני: {}·{} = {}
+P(exactly one) = {} ⟹ P(בדיוק אחד) = {}
+Independent events multiply ⟹ מאורעות בלתי תלויים — כופלים
+For independent events, P(A and B) = P(A)·P(B). ⟹ למאורעות בלתי תלויים, P(A וגם B) = P(A)·P(B).
+P(both) = {}·{} = {} ⟹ P(שניהם) = {}·{} = {}
+The probability that {} is {}; the probability that {} is {}, independently. Find the probability that {}. ⟹ ההסתברות ש{} היא {}; ההסתברות ש{} היא {}, באופן בלתי תלוי. מצאו את ההסתברות ש{}.
+both are red ⟹ שני הכדורים אדומים
+both are the same colour ⟹ שני הכדורים באותו צבע
+one is red and one is blue ⟹ אחד אדום ואחד כחול
+Draw one, then another (no return) ⟹ מוציאים אחד ואז עוד אחד (בלי החזרה)
+P(red, red) = {}/{} · {}/{} = {} ⟹ P(אדום, אדום) = {}/{} · {}/{} = {}
+P(blue, blue) = {}/{} · {}/{} = {} ⟹ P(כחול, כחול) = {}/{} · {}/{} = {}
+Two orders ⟹ שני סדרים
+Red then blue: {}/{} · {}/{} ⟹ אדום ואז כחול: {}/{} · {}/{}
+Blue then red: {}/{} · {}/{} ⟹ כחול ואז אדום: {}/{} · {}/{}
+P = {} ⟹ P = {}
+A bag has {} red and {} blue balls. Two are taken out, one after the other, without putting back. Find the probability that {}. ⟹ בשקית {} כדורים אדומים ו-{} כחולים. מוציאים שניים, בזה אחר זה, בלי להחזיר. מצאו את ההסתברות ש{}.
+Boys ⟹ בנים
+Girls ⟹ בנות
+Passed ⟹ עברו
+Failed ⟹ נכשלו
+A Student ⟹ תלמיד
+A Train ⟹ רכבת
+a student ⟹ תלמיד
+a train ⟹ רכבת
+Grade 11 ⟹ כיתה י״א
+Grade 12 ⟹ כיתה י״ב
+Plays sport ⟹ עוסק בספורט
+Doesn't ⟹ לא עוסק
+Morning ⟹ בוקר
+Evening ⟹ ערב
+On time ⟹ בזמן
+Late ⟹ מאחרת
+"{}", given it is in "{}" ⟹ "{}", בהינתן שזה ב"{}"
+Only the "{}" row counts: {} in all ⟹ רק השורה "{}" נחשבת: {} בסך הכל
+in "{}", given it is "{}" ⟹ ב"{}", בהינתן שזה "{}"
+Only the "{}" column counts: {} in all ⟹ רק העמודה "{}" נחשבת: {} בסך הכל
+in "{}" and "{}" ⟹ ב"{}" וגם "{}"
+All {} count ⟹ כל ה-{} נחשבים
+The table shows counts. ⟹ בטבלה מספרים.
+{} is picked at random. ⟹ בוחרים {} באקראי.
+Find the probability that it is {}. ⟹ מצאו את ההסתברות שהוא {}.
+Out of everyone ⟹ מתוך כולם
+Conditional probability: shrink the sample ⟹ הסתברות מותנית: מצמצמים את מרחב המדגם
+Of those, {} are in the cell asked about ⟹ מתוכם, {} בתא המבוקש
+P = {}/{} = {} ⟹ P = {}/{} = {}
+A basketball player scores a free throw with probability {}/{}. ⟹ שחקן כדורסל קולע זריקת עונשין בהסתברות {}/{}.
+A seed sprouts with probability {}/{}. ⟹ זרע נובט בהסתברות {}/{}.
+A die-like game is won with probability {}/{}. ⟹ במשחק מנצחים בהסתברות {}/{}.
+Is it binomial? ⟹ האם זה בינומי?
+{} independent tries with the same p: X ~ B({}, {}/{}). ⟹ {} ניסיונות בלתי תלויים עם אותו p: X ~ B({}, {}/{}).
+P(X = i) = C({}, i)·({}/{})ⁱ·({}/{})^({} − i) ⟹ P(X = i) = C({}, i)·({}/{})ⁱ·({}/{})^({} − i)
+Complement: 1 − P(X ≤ {}) ⟹ משלים: 1 − P(X ≤ {})
+Add P(X = {}) up to P(X = {}) ⟹ מחברים מ-P(X = {}) עד P(X = {})
+In {} independent tries, find the probability of at least {} successes. ⟹ ב-{} ניסיונות בלתי תלויים, מצאו את ההסתברות ללפחות {} הצלחות.
+In {} independent tries, find the probability of exactly {} successes. ⟹ ב-{} ניסיונות בלתי תלויים, מצאו את ההסתברות לבדיוק {} הצלחות.
+{} independent tries with the same p = {}/{} each time: X ~ B({}, {}/{}). ⟹ {} ניסיונות בלתי תלויים עם אותו p = {}/{} בכל פעם: X ~ B({}, {}/{}).
+The formula ⟹ הנוסחה
+C({}, {}) = {} ways to choose which tries succeed ⟹ C({}, {}) = {} דרכים לבחור אילו ניסיונות מצליחים
+Substitute k = {} ⟹ הצבה k = {}
+Machine A makes {}% of a factory's parts; machine B makes the rest. ⟹ מכונה A מייצרת {}% מחלקי המפעל; מכונה B מייצרת את השאר.
+Route A is taken on {}% of days; route B on the others. ⟹ במסלול A נוסעים ב-{}% מהימים; במסלול B בשאר.
+With A, {}% are {}; with B, {}%. ⟹ ב-A, {}% {}; ב-B, {}%.
+defective ⟹ פגומים
+late ⟹ מאחרים
+One is found {}. Find the probability it was {}. ⟹ נמצא אחד {}. מצאו את ההסתברות שהוא {}.
+One is found {}. ⟹ נמצא אחד {}.
+Find the probability it was {}. ⟹ מצאו את ההסתברות שהוא {}.
+Find the probability that one picked at random is {}. ⟹ מצאו את ההסתברות שאחד שנבחר באקראי {}.
+made by machine A ⟹ מתוצרת מכונה A
+on route A ⟹ ממסלול A
+Tree diagram ⟹ דיאגרמת עץ
+A and {}: {}·{} = {} ⟹ ‏A וגם {}: {}·{} = {}
+B and {}: {}·{} = {} ⟹ ‏B וגם {}: {}·{} = {}
+P({}) = {} ⟹ P({}) = {}
+Conditional probability ⟹ הסתברות מותנית
+P(A | {}) = P(A and {}) / P({}) ⟹ P(A | {}) = P(A וגם {}) / P({})
+not {} ⟹ לא {}
+not defective ⟹ לא פגום
+not late ⟹ לא מאחר
+Each try succeeds with probability {}/{}. What is the smallest number of tries so that the probability of at least one success is more than {}? ⟹ כל ניסיון מצליח בהסתברות {}/{}. מהו מספר הניסיונות הקטן ביותר כך שההסתברות ללפחות הצלחה אחת תהיה יותר מ-{}?
+At least one success in n tries ⟹ לפחות הצלחה אחת ב-n ניסיונות
+Take ln (ln of a number below 1 is negative, so the inequality flips): n > ln {} / ln({}/{}) ≈ {} ⟹ מוציאים ln (ln של מספר קטן מ-1 שלילי, לכן אי-השוויון מתהפך): n > ln {} / ln({}/{}) ≈ {}
+A player keeps trying until the first success; each try succeeds with probability {}/{}. ⟹ שחקן מנסה עד ההצלחה הראשונה; כל ניסיון מצליח בהסתברות {}/{}.
+Find the probability that it takes at most {} tries. ⟹ מצאו את ההסתברות שיידרשו לכל היותר {} ניסיונות.
+Find the probability that the first success is on try {}. ⟹ מצאו את ההסתברות שההצלחה הראשונה תהיה בניסיון ה-{}.
+Opposite: all {} fail ⟹ המשלים: כל {} נכשלים
+"At most {} tries" means a success somewhere in the first {}; its opposite is {} failures in a row. ⟹ "לכל היותר {} ניסיונות" פירושו הצלחה כלשהי ב-{} הראשונים; המשלים הוא {} כישלונות ברצף.
+P(all fail) = ({}/{})^{} ⟹ P(כולם נכשלים) = ({}/{})^{}
+Fail {} times, then succeed ⟹ נכשלים {} פעמים, ואז מצליחים
+The tries are independent: multiply (1 − p) for each failure, then p for the success. ⟹ הניסיונות בלתי תלויים: כופלים (1 − p) לכל כישלון, ואז p להצלחה.
+A shot hits with probability {}/{}; {} independent shots are fired. Given that at least one hit, find the probability of exactly {} hits. ⟹ יריה פוגעת בהסתברות {}/{}; יורים {} יריות בלתי תלויות. בהינתן שלפחות אחת פגעה, מצאו את ההסתברות לבדיוק {} פגיעות.
+P(exactly {} | at least 1) = P(exactly {}) / P(at least 1) (exactly {} is inside "at least 1") ⟹ P(בדיוק {} | לפחות 1) = P(בדיוק {}) / P(לפחות 1) (המאורע "בדיוק {}" כלול ב"לפחות 1")
+The two probabilities ⟹ שתי ההסתברויות
+P(exactly {}) = {}·({}/{})^{}·({}/{})^{} ≈ {} ⟹ P(בדיוק {}) = {}·({}/{})^{}·({}/{})^{} ≈ {}
+P(at least 1) = 1 − ({}/{})^{} ≈ {} ⟹ P(לפחות 1) = 1 − ({}/{})^{} ≈ {}
+In triangle ABC, AB = {}, AC = {} and ∠A = {}°. Find BC. ⟹ במשולש ABC, AB = {}, AC = {} ו-∠A = {}°. מצאו את BC.
+law of cosines ⟹ משפט הקוסינוסים
+What is given ⟹ מה נתון
+Two sides and the angle between them (SAS): the law of cosines finds the third side. ⟹ שתי צלעות והזווית שביניהן (צ.ז.צ.): משפט הקוסינוסים נותן את הצלע השלישית.
+In triangle ABC, AB = {}, AC = {} and ∠A = {}°. Find the area of the triangle. ⟹ במשולש ABC, AB = {}, AC = {} ו-∠A = {}°. מצאו את שטח המשולש.
+Two sides and the angle between them: the area is ½·(side)·(side)·sin(angle between). ⟹ שתי צלעות והזווית שביניהן: השטח הוא ½·(צלע)·(צלע)·sin(הזווית שביניהן).
+Area formula ⟹ נוסחת השטח
+In triangle ABC, BC = {}, ∠A = {}° and ∠B = {}°. Find AC. ⟹ במשולש ABC, BC = {}, ∠A = {}° ו-∠B = {}°. מצאו את AC.
+law of sines ⟹ משפט הסינוסים
+Two angles and a side opposite one of them: the law of sines. ⟹ שתי זוויות וצלע שמול אחת מהן: משפט הסינוסים.
+In triangle ABC, CA = {}, BC = {} and AB = {}. Find ∠C in degrees. ⟹ במשולש ABC, CA = {}, BC = {} ו-AB = {}. מצאו את ∠C במעלות.
+angle from sides ⟹ זווית מהצלעות
+All three sides (SSS): the law of cosines gives any angle. ⟹ שלוש הצלעות (צ.צ.צ.): משפט הקוסינוסים נותן כל זווית.
+Law of cosines, solved for the angle ⟹ משפט הקוסינוסים, נפתר עבור הזווית
+In triangle ABC, BC = {} and ∠A = {}°. Find the radius R of the circle through A, B and C. ⟹ במשולש ABC, BC = {} ו-∠A = {}°. מצאו את הרדיוס R של המעגל החוסם (העובר דרך A, B ו-C).
+A side and the angle opposite it: that is exactly what the extended law of sines needs. ⟹ צלע והזווית שמולה: בדיוק מה שמשפט הסינוסים המורחב צריך.
+Extended law of sines ⟹ משפט הסינוסים המורחב
+In triangle ABC, AB = {}, AC = {} and ∠A = {}°. Find BC. {} ⟹ במשולש ABC, AB = {}, AC = {} ו-∠A = {}°. מצאו את BC. {}
+Two sides and the angle between them (SAS): the law of cosines. ⟹ שתי צלעות והזווית שביניהן (צ.ז.צ.): משפט הקוסינוסים.
+In triangle ABC, AB = {}, BC = {} and ∠B = {}°. Find ∠A in degrees. ⟹ במשולש ABC, AB = {}, BC = {} ו-∠B = {}°. מצאו את ∠A במעלות.
+two steps ⟹ שני שלבים
+The third side ⟹ הצלע השלישית
+The angle ⟹ הזווית
+(The law of cosines gives the angle without the sine rule's two possible answers.) ⟹ (משפט הקוסינוסים נותן את הזווית בלי שתי האפשרויות של משפט הסינוסים.)
+In triangle ABC, AB = {}, BC = {} and ∠B = {}°. BM is the median to AC. Find BM. ⟹ במשולש ABC, AB = {}, BC = {} ו-∠B = {}°. BM הוא התיכון לצלע AC. מצאו את BM.
+Triangle ABM ⟹ משולש ABM
+median ⟹ תיכון
+AB by the law of sines ⟹ ‏AB ממשפט הסינוסים
+The height in the right triangle ABD ⟹ הגובה במשולש ישר הזווית ABD
+height ⟹ גובה
+area ⟹ שטח
+In triangle ABC, BC = {}, ∠B = {}° and ∠C = {}°. AD is the height to BC. Find {}. ⟹ במשולש ABC, BC = {}, ∠B = {}° ו-∠C = {}°. AD הוא הגובה לצלע BC. מצאו את {}.
+the area of the triangle ⟹ שטח המשולש
+In isosceles triangle ABC, AB = AC = {} and ∠A = {}°. Find the radius of the circle through A, B and C. ⟹ במשולש שווה שוקיים ABC, AB = AC = {} ו-∠A = {}°. מצאו את רדיוס המעגל החוסם (העובר דרך A, B ו-C).
+circumradius ⟹ רדיוס מעגל חוסם
+The base ⟹ הבסיס
+Law of sines ⟹ משפט הסינוסים
+{} changes from + to − at {}, so it is a maximum. ⟹ ‏{} עוברת מ-+ ל-− ב-{}, לכן זה מקסימום.
+{} changes from − to + at {}, so it is a minimum. ⟹ ‏{} עוברת מ-− ל-+ ב-{}, לכן זה מינימום.
+Two positive numbers add up to {}. ⟹ סכומם של שני מספרים חיוביים הוא {}.
+Find the larger of the two numbers when their product is as large as possible. ⟹ מצאו את הגדול מבין המספרים כשמכפלתם הגדולה ביותר.
+Find the largest possible product. ⟹ מצאו את המכפלה הגדולה ביותר.
+Set up ⟹ בניית הפונקציה
+Numbers x and {} − x, 0 < x < {} ⟹ המספרים x ו-{} − x, 0 < x < {}
+Both numbers are {} ⟹ שני המספרים שווים {}
+P max = {}·{} = {} ⟹ P מקסימלי = {}·{} = {}
+A farmer fences a rectangle along a long wall, using {} m of fence for the other three sides. ⟹ חקלאי מגדר מלבן לאורך קיר ארוך, עם {} מ׳ גדר לשלוש הצלעות האחרות.
+Find the length of each side perpendicular to the wall for the largest area. ⟹ מצאו את אורך כל צלע שמאונכת לקיר כשהשטח הגדול ביותר.
+Find the largest possible area (m²). ⟹ מצאו את השטח הגדול ביותר (מ״ר).
+Sides x (twice, perpendicular to the wall) and {} − 2x ⟹ צלעות x (פעמיים, מאונכות לקיר) ו-{} − 2x
+A max = {}·{} = {} m² ⟹ A מקסימלי = {}·{} = {} מ״ר
+x = {} m ⟹ x = {} מ׳
+From a square sheet of side {}, equal squares of side x are cut from the corners and the sides folded up into an open box. ⟹ מריבוע של נייר בצלע {} חותכים בפינות ריבועים שווים בצלע x ומקפלים את הצדדים לקופסה פתוחה.
+Find x for the largest volume. ⟹ מצאו את x לנפח הגדול ביותר.
+Find the largest possible volume. ⟹ מצאו את הנפח הגדול ביותר.
+Base ({} − 2x) by ({} − 2x), height x, 0 < x < {} ⟹ בסיס ({} − 2x) על ({} − 2x), גובה x, 0 < x < {}
+V′ = 0 inside the domain at x = {} ⟹ V′ = 0 בתוך התחום ב-x = {}
+V max = {}·{}² = {} ⟹ V מקסימלי = {}·{}² = {}
+x and y are positive and x + y = {}. Find the largest possible value of x·y². ⟹ x ו-y חיוביים ו-x + y = {}. מצאו את הערך הגדול ביותר של x·y².
+One variable ⟹ משתנה אחד
+x = {}, y = {},  P max = {}·{} = {} ⟹ x = {}, y = {},  P מקסימלי = {}·{} = {}
+A rectangle has two vertices on the x-axis and two on the parabola y = {} − x² (above the axis), symmetric about the y-axis. ⟹ למלבן שני קדקודים על ציר x ושניים על הפרבולה y = {} − x² (מעל הציר), סימטרי סביב ציר y.
+Find the x of its right-hand vertices when its area is largest. ⟹ מצאו את ה-x של הקדקודים הימניים כששטחו הגדול ביותר.
+Find its largest possible area. ⟹ מצאו את השטח הגדול ביותר שלו.
+rectangle in parabola ⟹ מלבן בפרבולה
+Right vertices at x and the height is {} − x², so the width is 2x ⟹ הקדקודים הימניים ב-x והגובה {} − x², לכן הרוחב 2x
+A max = 2·{}·({} − {}) = {} ⟹ A מקסימלי = 2·{}·({} − {}) = {}
+Find the shortest distance from the point ({}, 0) to the graph of y = √x. ⟹ מצאו את המרחק הקצר ביותר מהנקודה ({}, 0) לגרף של y = √x.
+Distance squared (easier, same minimum) ⟹ ריבוע המרחק (קל יותר, אותו מינימום)
+A point on the graph: (x, √x),  d² = (x − {})² + x ⟹ נקודה על הגרף: (x, √x),  d² = (x − {})² + x
+d min = √({} + {}) = {} ⟹ d מינימלי = √({} + {}) = {}
+distance ⟹ מרחק
+A rectangle has vertices (0, 0), (t, 0), (t, e^(−{})) and (0, e^(−{})), t > 0. ⟹ למלבן הקדקודים (0, 0), (t, 0), (t, e^(−{})) ו-(0, e^(−{})), t > 0.
+Find t for the largest area. ⟹ מצאו את t לשטח הגדול ביותר.
+Find the largest area (exactly, e.g. with e). ⟹ מצאו את השטח הגדול ביותר (במדויק, למשל עם e).
+rectangle under exp ⟹ מלבן מתחת לפונקציה מעריכית
+e^(−{}) > 0, so A′ = 0 at t = {} ⟹ e^(−{}) > 0, לכן A′ = 0 ב-t = {}
+A max = {}·e^(−1) = 1/{}e ⟹ A מקסימלי = {}·e^(−1) = 1/{}e
+A rectangle has area {}. Find its smallest possible perimeter. ⟹ שטח מלבן הוא {}. מצאו את ההיקף הקטן ביותר שלו.
+Sides x and {}/x,  P(x) = 2x + {}/x,  x > 0 ⟹ צלעות x ו-{}/x,  P(x) = 2x + {}/x,  x > 0
+It is a square: P min = 4·{} = {} ⟹ זה ריבוע: P מינימלי = 4·{} = {}
+perimeter ⟹ היקף
+The tangent to y = {}e^(−x) at the point with x = t (t > 0) forms a triangle with the axes. ⟹ המשיק ל-y = {}e^(−x) בנקודה שבה x = t (t > 0) יוצר משולש עם הצירים.
+Find t for which the triangle's area is largest. ⟹ מצאו את t שעבורו שטח המשולש הגדול ביותר.
+Find the largest possible area (exactly, e.g. with e). ⟹ מצאו את השטח הגדול ביותר (במדויק, למשל עם e).
+tangent triangle ⟹ משולש משיק
+The tangent ⟹ המשיק
+y′ = −{}e^(−x),  tangent: y − {}e^(−t) = −{}e^(−t)(x − t) ⟹ y′ = −{}e^(−x),  משיק: y − {}e^(−t) = −{}e^(−t)(x − t)
+y = 0 at x = t + 1;  x = 0 at y = {}(t + 1)e^(−t) ⟹ y = 0 ב-x = t + 1;  x = 0 ב-y = {}(t + 1)e^(−t)
+The area ⟹ השטח
+S′ = 0 at t = 1 (t > 0) ⟹ S′ = 0 ב-t = 1 (t > 0)
+S max = {}·4·e^(−1) = {}/e ⟹ S מקסימלי = {}·4·e^(−1) = {}/e
+A trapezoid has a base and two legs all of length {}; the legs make equal angles θ with the longer base. ⟹ בטרפז בסיס ושתי שוקיים כולם באורך {}; השוקיים יוצרות זוויות שוות θ עם הבסיס הארוך.
+Find θ in degrees for the largest area. ⟹ מצאו את θ במעלות לשטח הגדול ביותר.
+Find the largest possible area. ⟹ מצאו את השטח הגדול ביותר.
+Set up with the angle ⟹ בונים פונקציה של הזווית
+Height {}·sin θ, longer base {} + 2·{}·cos θ ⟹ גובה {}·sin θ, בסיס ארוך {} + 2·{}·cos θ
+S max = {}·(3/2)·(√3/2) = {} ⟹ S מקסימלי = {}·(3/2)·(√3/2) = {}
+trapezoid ⟹ טרפז
+A cone has slant height {}. ⟹ לחרוט קו יוצר באורך {}.
+Find its height when its volume is largest. ⟹ מצאו את גובהו כשהנפח הגדול ביותר.
+Find its largest possible volume (exactly, with π). ⟹ מצאו את הנפח הגדול ביותר (במדויק, עם π).
+r² + h² = {},  V = (π/3)r²h = (π/3)({} − h²)h,  0 < h < {} ⟹ r² + h² = {},  V = (π/3)r²h = (π/3)({} − h²)h,  0 < h < {}
+V max = (π/3)·({} − {})·{} = {}·π ⟹ V מקסימלי = (π/3)·({} − {})·{} = {}·π
+cone ⟹ חרוט
+product ⟹ מכפלה
+fence ⟹ גדר
+box ⟹ קופסה
+independent ⟹ בלתי תלויים
+draws ⟹ הוצאות
+table ⟹ טבלה
+binomial ⟹ בינומי
+bayes ⟹ בייס
+tree ⟹ עץ
+how many ⟹ כמה ניסיונות
+first success ⟹ הצלחה ראשונה
+conditional binomial ⟹ בינומי מותנה

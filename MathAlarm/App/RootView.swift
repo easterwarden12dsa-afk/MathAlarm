@@ -31,6 +31,7 @@ struct RootView: View {
                 .environmentObject(ring)
                 .environmentObject(store)
                 .preferredColorScheme(.dark)
+                .appLanguage(AppSettings.shared.language)
         }
     }
 }

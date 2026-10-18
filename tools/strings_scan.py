@@ -39,9 +39,18 @@ def scan(src):
                             j = k
                         j += 1
                     parts.append(src[i + 2:j - 1]); text += "\u0001"; i = j; continue
+                if src.startswith("\\u{", i):
+                    j = src.find("}", i)
+                    text += chr(int(src[i + 3:j], 16)); i = j + 1; continue
                 if src[i] == "\\" and i + 1 < n:
                     text += {"n": "\n", "t": "\t", '"': '"', "\\": "\\"}.get(src[i + 1], src[i + 1]); i += 2; continue
                 text += src[i]; i += 1
+            if multi:
+                # Swift strips the first newline and the closing line's indentation.
+                lines = text.split("\n")
+                indent = len(lines[-1]) - len(lines[-1].lstrip(" ")) if lines[-1].strip() == "" else 0
+                body = lines[1:-1] if lines[-1].strip() == "" else lines[1:]
+                text = "\n".join(l[indent:] for l in body)
             # the call this literal is an argument of
             before = src[max(0, start - 60):start]
             m = re.search(r"([A-Za-z_]+)\(\s*$", before)
@@ -49,6 +58,17 @@ def scan(src):
             continue
         i += 1
     return out
+
+MATH_WORDS = {"sin", "cos", "tan", "cot", "sec", "csc", "arcsin", "arccos", "arctan", "sinh", "cosh", "tanh",
+              "log", "exp", "lim", "max", "min", "arc", "abs"}
+
+def needs_translation(text):
+    t = text.replace("\u0001", " ")
+    words = [w for w in re.findall(r"[A-Za-z]{2,}", t) if w.lower() not in MATH_WORDS]
+    if not words: return False
+    if re.fullmatch(r"[a-z][A-Za-z0-9._:\-]*", t): return False      # ids and keys
+    if t.startswith("com.") or t.endswith((".json", ".wav", ".caf", ".pdf")): return False
+    return True
 
 if __name__ == "__main__":
     rows = []

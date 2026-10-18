@@ -13,6 +13,14 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section {
+                    Picker(selection: $settings.language) {
+                        ForEach(AppLanguage.allCases) { Text(verbatim: $0.title).tag($0) }
+                    } label: {
+                        SettingsRow("Language", "globe", .teal)
+                    }
+                }
+
+                Section {
                     HStack(spacing: 0) {
                         summary("\(settings.streak)", "day streak", "flame.fill", .orange)
                         Divider().frame(height: 44)

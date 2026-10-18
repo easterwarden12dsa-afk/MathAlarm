@@ -1,0 +1,199 @@
+# Sketch and Change solutions (GraphSteps.swift). Keys starting with a space, comma or dash are fragments (replaced inside longer text).
+its domain ⟹ תחום ההגדרה שלה
+No solutions on {}. ⟹ אין פתרונות ב-{}.
+On {}: ⟹ ב-{}:
+This equation can't be solved exactly by hand. {} is continuous (between asymptotes), so it is 0 wherever it changes sign (intermediate value theorem): ⟹ את המשוואה הזו אי אפשר לפתור במדויק ביד. {} רציפה (בין האסימפטוטות), לכן היא 0 בכל מקום שהיא מחליפה סימן (משפט ערך הביניים):
+The function ⟹ הפונקציה
+Draw the whole graph — every x where it is defined. ⟹ שרטטו את כל הגרף — בכל x שבו הוא מוגדר.
+on the interval {} ≤ x ≤ {}. ⟹ בתחום {} ≤ x ≤ {}.
+Domain ⟹ תחום הגדרה
+Domain and asymptotes ⟹ תחום הגדרה ואסימפטוטות
+  So x ≠  ⟹   לכן x ≠ 
+ Parts of the interval are outside the domain — there is no graph there. ⟹  חלקים מהתחום נמצאים מחוץ לתחום ההגדרה — שם אין גרף.
+On {} ≤ x ≤ {} it is defined and continuous, so there are no vertical asymptotes here (and on a closed interval no horizontal ones either). ⟹ ב-{} ≤ x ≤ {} הפונקציה מוגדרת ורציפה, לכן אין כאן אסימפטוטות אנכיות (ובקטע סגור גם לא אופקיות).
+Vertical asymptotes ⟹ אסימפטוטות אנכיות
+x = {} is not in the domain, and next to it |{}(x)| grows without bound — a vertical asymptote. ⟹ x = {} לא בתחום ההגדרה, ולידו |{}(x)| גדל ללא גבול — אסימפטוטה אנכית.
+vertical asymptote x = {}: {} on the left, {} on the right ⟹ אסימפטוטה אנכית x = {}: {} משמאל, {} מימין
+Behaviour at the ends of the domain ⟹ התנהגות בקצות תחום ההגדרה
+Intercepts with the axes ⟹ נקודות חיתוך עם הצירים
+y-axis (x = 0) ⟹ ציר y (x = 0)
+{}(0) = {}  →  the point (0, {}) ⟹ {}(0) = {}  →  הנקודה (0, {})
+x-axis: solve {}(x) = 0 ⟹ ציר x: פותרים {}(x) = 0
+Extreme points ⟹ נקודות קיצון
+The derivative ⟹ הנגזרת
+Differentiate and factor: ⟹ גוזרים ומפרקים לגורמים:
+Differentiate (a long expression — only its sign matters below). ⟹ גוזרים (ביטוי ארוך — בהמשך חשוב רק הסימן שלו).
+Solve {}′(x) = 0 ⟹ פתרון {}′(x) = 0
+Sign of {}′ — the proof ⟹ הסימן של {}′ — ההוכחה
+{}′ can only change sign where it is 0{}, so one test point in each part decides the sign there: ⟹ ‏{}′ יכולה להחליף סימן רק איפה שהיא 0{}, לכן נקודת בדיקה אחת בכל חלק קובעת את הסימן שם:
+ or undefined ⟹  או לא מוגדרת
+Conclusion ⟹ מסקנה
+{}′ never changes sign: {} is {} on each part of {}, with no turning points. ⟹ ‏{}′ אף פעם לא מחליפה סימן: {} {} בכל חלק של {}, בלי נקודות קיצון.
+increasing ⟹ עולה
+decreasing ⟹ יורדת
+No turning points: {}′ only changes sign across an asymptote. ⟹ אין נקודות קיצון: {}′ מחליפה סימן רק מעבר לאסימפטוטה.
+Check: {}″({}) {} {} ✓ ⟹ בדיקה: {}″({}) {} {} ✓
+{}: {}′ changes from + to −  ⇒  maximum at {}. ⟹ {}: {}′ עוברת מ-+ ל-−  ⇒  מקסימום ב-{}.
+{}: {}′ changes from − to +  ⇒  minimum at {}. ⟹ {}: {}′ עוברת מ-− ל-+  ⇒  מינימום ב-{}.
+{}: {}′ = 0 but doesn't change sign  ⇒  no turn, just a flat moment at {}. ⟹ {}: {}′ = 0 אבל לא מחליפה סימן  ⇒  אין קיצון, רק רגע שטוח ב-{}.
+End points: {} is an end {} (the graph {} from it), {} is an end {}. ⟹ נקודות קצה: {} היא קצה {} (הגרף {} ממנה), {} היא קצה {}.
+Inflection points ⟹ נקודות פיתול
+The second derivative ⟹ הנגזרת השנייה
+Differentiate {}′ again: ⟹ גוזרים שוב את {}′:
+Differentiate {}′ again (a long expression — only its sign matters below). ⟹ גוזרים שוב את {}′ (ביטוי ארוך — בהמשך חשוב רק הסימן שלו).
+Solve {}″(x) = 0 ⟹ פתרון {}″(x) = 0
+Sign of {}″ ⟹ הסימן של {}″
+{}: {}″ changes sign  ⇒  inflection point {}. ⟹ {}: {}″ מחליפה סימן  ⇒  נקודת פיתול {}.
+{}: {}″ = 0 but keeps its sign — not an inflection point. ⟹ {}: {}″ = 0 אבל שומרת על הסימן — זו לא נקודת פיתול.
+No inflection points: {} bends {} everywhere. ⟹ אין נקודות פיתול: {} {} בכל מקום.
+up (∪) ⟹ קעורה כלפי מעלה (∪)
+down (∩) ⟹ קעורה כלפי מטה (∩)
+No inflection points: the bending only changes across {}, which isn't part of the graph. ⟹ אין נקודות פיתול: הקעירות משתנה רק מעבר ל-{}, שאינה חלק מהגרף.
+Draw it ⟹ משרטטים
+First draw the asymptotes as dashed lines; the graph gets closer and closer to them without touching. ⟹ קודם משרטטים את האסימפטוטות בקו מקווקו; הגרף מתקרב אליהן יותר ויותר בלי לגעת.
+Plot these points from left to right and join them, rising/falling (Step 3) and bending (Step 4) as found: ⟹ מסמנים את הנקודות האלה משמאל לימין ומחברים אותן, עולה/יורדת (שלב 3) וקעורה (שלב 4) כפי שמצאנו:
+on the x-axis ⟹ על ציר x
+an exponential beats any power of x ⟹ פונקציה מעריכית חזקה מכל חזקה של x
+ln x grows more slowly than any power of x ⟹ ‏ln x גדל לאט יותר מכל חזקה של x
+compare the highest powers of x on the top and the bottom ⟹ משווים את החזקות הגבוהות ביותר של x במונה ובמכנה
+the highest power of x decides ⟹ החזקה הגבוהה ביותר של x קובעת
+Divide: ({})/({}) = {} + {}/({}). The last part → 0 as x → ±∞, so the graph approaches the line y = {}{}{} — an oblique asymptote. ⟹ מחלקים: ({})/({}) = {} + {}/({}). החלק האחרון → 0 כש-x → ±∞, לכן הגרף מתקרב לישר y = {}{}{} — אסימפטוטה משופעת.
+both ends: close to the oblique asymptote y = {}{}{} ⟹ בשני הקצוות: קרוב לאסימפטוטה המשופעת y = {}{}{}
+x → {}:  {}(x) → {}  ⇒  y = {} is a horizontal asymptote ({}). ⟹ x → {}:  {}(x) → {}  ⇒  y = {} היא אסימפטוטה אופקית ({}).
+x → {}: the graph gets close to y = {} ⟹ x → {}: הגרף מתקרב ל-y = {}
+x → {}:  {}(x) → {} — no horizontal asymptote on this side ({}). ⟹ x → {}:  {}(x) → {} — אין אסימפטוטה אופקית בצד הזה ({}).
+x → {}: the graph goes {} forever ⟹ x → {}: הגרף ממשיך {} בלי סוף
+x → {}⁺:  {}(x) → {}  ⇒  x = {} is a vertical asymptote. ⟹ x → {}⁺:  {}(x) → {}  ⇒  x = {} היא אסימפטוטה אנכית.
+x → {}⁺: shoots {} along x = {} ⟹ x → {}⁺: עולה/יורד {} לאורך x = {}
+x → {}⁺:  {}(x) → {} — the graph starts there. ⟹ x → {}⁺:  {}(x) → {} — הגרף מתחיל שם.
+x → {}⁺: starts near ({}, {}) ⟹ x → {}⁺: מתחיל ליד ({}, {})
+ and  ⟹  ו-
+What you have ⟹ מה יש לכם
+Only the grey graph of f — everything below is read off the picture, no formula and no exact values needed. ⟹ רק הגרף האפור של f — כל מה שבהמשך נקרא מהשרטוט, בלי נוסחה ובלי ערכים מדויקים.
+Task: {} ⟹ משימה: {}
+Mark the key points of f ⟹ מסמנים את נקודות המפתח של f
+Put a letter on every point where something happens (they're marked on the graph below): ⟹ שמים אות על כל נקודה שבה משהו קורה (הן מסומנות בגרף למטה):
+, above the x-axis ⟹ , מעל ציר x
+, below the x-axis ⟹ , מתחת לציר x
+The rule ⟹ הכלל
+Move each point ⟹ מזיזים כל נקודה
+ — a peak of g ⟹  — מקסימום של g
+ — a dip of g ⟹  — מינימום של g
+Join the new points ⟹ מחברים את הנקודות החדשות
+{} to {}: g {}{} ⟹ {} עד {}: g {}{}
+Between the points g bends up (∪) where f rises and down (∩) where f falls. There's no need for exact heights beyond the given starting point — the shape between the marked points is enough. ⟹ בין הנקודות g קעורה כלפי מעלה (∪) איפה ש-f עולה וכלפי מטה (∩) איפה ש-f יורדת. אין צורך בגבהים מדויקים מעבר לנקודת ההתחלה הנתונה — הצורה בין הנקודות המסומנות מספיקה.
+Keep the curve smooth between the points and copy how f bends. There's no need to find g's exact inflection points — the shape between the marked points is enough. ⟹ שומרים על עקומה חלקה בין הנקודות ומעתיקים את הקעירות של f. אין צורך למצוא את נקודות הפיתול המדויקות של g — הצורה בין הנקודות המסומנות מספיקה.
+Check with the formula ⟹ בדיקה עם הנוסחה
+straight {} by {} ⟹ ישר {} ב-{}
+stays on the x-axis ⟹ נשארת על ציר x
+mirror it in the x-axis (same distance, other side) ⟹ משקפים בציר x (אותו מרחק, בצד השני)
+{} times as far from the x-axis{} ⟹ פי {} מרחק מציר x{}
+mirror it in the x-axis, then move it {} by {} ⟹ משקפים בציר x, ואז מזיזים {} ב-{}
+it's below the x-axis, so flip it up (mirror image above the axis) ⟹ היא מתחת לציר x, לכן הופכים אותה למעלה (תמונת ראי מעל הציר)
+stays where it is (f isn't negative there) ⟹ נשארת במקומה (f לא שלילית שם)
+mirror it in the y-axis: same height, x on the other side ⟹ משקפים בציר y: אותו גובה, x בצד השני
+f is 0 here, so x = {} is a vertical asymptote of g — next to it g shoots to ±∞ on the side where f is ± ⟹ ‏f היא 0 כאן, לכן x = {} אסימפטוטה אנכית של g — לידה g שואפת ל-±∞ לפי הסימן של f
+stays put — at height {}, 1/f = f ⟹ נשארת במקום — בגובה {}, 1/f = f
+same x; it's further than 1 from the axis, so 1/f is closer than 1 (between 0 and {}) ⟹ אותו x; היא רחוקה מ-1 מהציר, לכן 1/f קרובה מ-1 (בין 0 ל-{})
+same x; it's closer than 1 to the axis, so 1/f is further than 1 (beyond {}) ⟹ אותו x; היא קרובה מ-1 לציר, לכן 1/f רחוקה מ-1 (מעבר ל-{})
+stays on the x-axis — g touches it smoothly ⟹ נשארת על ציר x — g נוגעת בו בצורה חלקה
+ and moves above the axis (squares are positive) ⟹  ועוברת מעל הציר (ריבועים חיוביים)
+goes to height 1{} ⟹ עוברת לגובה 1{}
+same x, higher: squaring a number bigger than 1 makes it bigger ⟹ אותו x, גבוה יותר: ריבוע של מספר גדול מ-1 גדל
+same x, closer to the axis: squaring a number below 1 makes it smaller ⟹ אותו x, קרוב יותר לציר: ריבוע של מספר קטן מ-1 קטן
+goes to height 1 ⟹ עוברת לגובה 1
+same x, between 0 and 1 (1 ÷ a square bigger than 1) ⟹ אותו x, בין 0 ל-1 (1 חלקי ריבוע גדול מ-1)
+same x, above 1 (1 ÷ a square smaller than 1) ⟹ אותו x, מעל 1 (1 חלקי ריבוע קטן מ-1)
+stays at height 1 ⟹ נשארת בגובה 1
+same x, lower but still above 1 (√ pulls towards 1) ⟹ אותו x, נמוך יותר אבל עדיין מעל 1 (√ מושך לכיוון 1)
+same x, higher but still below 1 (√ pulls towards 1) ⟹ אותו x, גבוה יותר אבל עדיין מתחת ל-1 (√ מושך לכיוון 1)
+g starts at the given point ({}, {}) and {} from there (f is {}) ⟹ ‏g מתחילה בנקודה הנתונה ({}, {}) ו{} משם (f {})
+f changes from + to −, so g has a maximum at this x ⟹ ‏f עוברת מ-+ ל-−, לכן ל-g מקסימום ב-x הזה
+f changes from − to +, so g has a minimum at this x ⟹ ‏f עוברת מ-− ל-+, לכן ל-g מינימום ב-x הזה
+f touches 0 without changing sign: g is flat for a moment but keeps going ⟹ ‏f נוגעת ב-0 בלי להחליף סימן: g שטוחה לרגע אבל ממשיכה
+f {} here, so g is steepest here — an inflection point of g ⟹ ‏f {} כאן, לכן g הכי תלולה כאן — נקודת פיתול של g
+g {} into this end (f is {} there) ⟹ ‏g {} עד הקצה הזה (f {} שם)
+on the x-axis: ln 1 = 0 ⟹ על ציר x: ln 1 = 0
+same x, above the x-axis but much lower (ln shrinks big heights) ⟹ אותו x, מעל ציר x אבל הרבה יותר נמוך (ln מקטין גבהים גדולים)
+same x, below the x-axis (ln of a number between 0 and 1 is negative) ⟹ אותו x, מתחת לציר x (ln של מספר בין 0 ל-1 שלילי)
+at height 1 (e⁰ = 1) ⟹ בגובה 1 (e⁰ = 1)
+same x, above 1 (and higher the higher A is) ⟹ אותו x, מעל 1 (וגבוה יותר ככל ש-A גבוהה יותר)
+same x, between 0 and 1 ⟹ אותו x, בין 0 ל-1
+stays — g is symmetric about the y-axis ⟹ נשארת — g סימטרית סביב ציר y
+stays (for x ≥ 0, g = f), and is copied to −x as its mirror image ⟹ נשארת (עבור x ≥ 0, g = f), ומועתקת ל-−x כתמונת ראי
+dropped: for x < 0, g copies the right half instead ⟹ נמחקת: עבור x < 0, g מעתיקה במקום זה את החצי הימני
+on the x-axis — f is flat there, its slope is 0 ⟹ על ציר x — f שטוחה שם, השיפוע שלה 0
+f is steepest here, so g reaches its {} value around here ⟹ ‏f הכי תלולה כאן, לכן g מגיעה כאן לערך ה{} שלה
+largest ⟹ הגדול ביותר
+smallest ⟹ הקטן ביותר
+above the x-axis — f rises at {} ⟹ מעל ציר x — f עולה ב-{}
+below the x-axis — f falls at {} ⟹ מתחת לציר x — f יורדת ב-{}
+ — like f (the rule keeps the order of heights) ⟹  — כמו f (הכלל שומר על סדר הגבהים)
+ — like f ⟹  — כמו f
+ — opposite to f (the minus flips it) ⟹  — הפוך מ-f (המינוס הופך)
+ — f {} there, and 1/… turns bigger into smaller ⟹  — f {} שם, ו-1/… הופך גדול לקטן
+ — f is positive there, so it goes the same way as f ⟹  — f חיובית שם, לכן הולכת באותו כיוון כמו f
+ — f is negative there, so squaring reverses the direction ⟹  — f שלילית שם, לכן הריבוע הופך את הכיוון
+ — f is above the axis there: unchanged ⟹  — f מעל הציר שם: ללא שינוי
+ — f is below the axis there: flipped, so the opposite way ⟹  — f מתחת לציר שם: מתהפכת, לכן בכיוון ההפוך
+ — f read from right to left ⟹  — f נקראת מימין לשמאל
+ — f bends up (∪) there, so its slope grows ⟹  — f קעורה כלפי מעלה (∪) שם, לכן השיפוע שלה גדל
+ — f bends down (∩) there, so its slope shrinks ⟹  — f קעורה כלפי מטה (∩) שם, לכן השיפוע שלה קטן
+ — f is above the x-axis there ⟹  — f מעל ציר x שם
+ — f is below the x-axis there ⟹  — f מתחת לציר x שם
+ — the mirror image of the right half ⟹  — תמונת הראי של החצי הימני
+ — exactly like f ⟹  — בדיוק כמו f
+Every point moves {} {}. The shape stays exactly the same. ⟹ כל נקודה זזה {} {}. הצורה נשארת בדיוק אותו דבר.
+Peaks stay peaks and dips stay dips, at the same x. ⟹ מקסימום נשאר מקסימום ומינימום נשאר מינימום, באותו x.
+Reflect in the x-axis: every height changes sign. ⟹ שיקוף בציר x: כל גובה מחליף סימן.
+Peaks become dips and dips become peaks; points on the x-axis stay. ⟹ מקסימום הופך למינימום ולהפך; נקודות על ציר x נשארות.
+Every height is multiplied by {}{}: the graph is {} the x-axis. ⟹ כל גובה מוכפל ב-{}{}: הגרף {} ציר x.
+Points on the x-axis stay; peaks and dips stay at the same x{}. ⟹ נקודות על ציר x נשארות; נקודות קיצון נשארות באותו x{}.
+First reflect in the x-axis (−f), then move everything {} {}. ⟹ קודם משקפים בציר x (−f), ואז מזיזים הכל {} {}.
+Peaks of f become dips of g and vice versa. ⟹ מקסימום של f הופך למינימום של g ולהפך.
+Keep the parts of f above the x-axis; flip the parts below it upwards. ⟹ משאירים את חלקי f שמעל ציר x; הופכים למעלה את החלקים שמתחתיו.
+Where f crosses the x-axis, g just touches it — usually with a sharp corner. ⟹ איפה ש-f חותכת את ציר x, g רק נוגעת בו — בדרך כלל עם פינה חדה.
+g is never below the x-axis. ⟹ ‏g אף פעם לא מתחת לציר x.
+Reflect in the y-axis: what f does at x, g does at −x. ⟹ שיקוף בציר y: מה ש-f עושה ב-x, g עושה ב-−x.
+The picture is reversed left to right; heights don't change. ⟹ התמונה הפוכה מימין לשמאל; הגבהים לא משתנים.
+Same x, height 1 ÷ (height of f). The sign stays the same. ⟹ אותו x, גובה 1 ÷ (הגובה של f). הסימן נשאר אותו דבר.
+f never reaches 0 on this interval, so g has no vertical asymptote here. ⟹ ‏f לא מגיעה ל-0 בתחום הזה, לכן ל-g אין כאן אסימפטוטה אנכית.
+Where f = 0, 1/f is undefined: every zero of f is a vertical asymptote of g, with g on the same side (+ or −) as f. ⟹ איפה ש-f = 0, 1/f לא מוגדרת: כל אפס של f הוא אסימפטוטה אנכית של g, ו-g באותו צד (+ או −) כמו f.
+Big becomes small and small becomes big: a peak of f becomes a dip of g, and a dip becomes a peak. ⟹ גדול הופך לקטן וקטן לגדול: מקסימום של f הופך למינימום של g, ומינימום למקסימום.
+Where f is at height 1 (or −1), g is there too — the graphs meet. ⟹ איפה ש-f בגובה 1 (או −1), גם g שם — הגרפים נפגשים.
+Same x, height squared: g is never below the x-axis. ⟹ אותו x, הגובה בריבוע: g אף פעם לא מתחת לציר x.
+Heights further than 1 from the axis grow, heights closer than 1 shrink towards 0. ⟹ גבהים רחוקים מ-1 מהציר גדלים, גבהים קרובים מ-1 מתכווצים לכיוון 0.
+Where f crosses the x-axis, g touches it smoothly (a dip of g). ⟹ איפה ש-f חותכת את ציר x, g נוגעת בו בצורה חלקה (מינימום של g).
+Same x, height 1 ÷ (height of f)²: g is always positive. ⟹ אותו x, גובה 1 ÷ (הגובה של f)²: g תמיד חיובית.
+f is never 0 here, so there are no vertical asymptotes on this interval. ⟹ ‏f אף פעם לא 0 כאן, לכן אין אסימפטוטות אנכיות בתחום הזה.
+Where f is furthest from the axis g is lowest; where f is closest g is highest. ⟹ איפה ש-f הכי רחוקה מהציר g הכי נמוכה; איפה ש-f הכי קרובה g הכי גבוהה.
+Same x, height √(height of f) — f is never negative here. ⟹ אותו x, גובה √(הגובה של f) — f אף פעם לא שלילית כאן.
+√ keeps the order (g rises where f rises) but pulls every height towards 1. ⟹ √ שומר על הסדר (g עולה איפה ש-f עולה) אבל מושך כל גובה לכיוון 1.
+g′ = f: where f is above the x-axis g rises, where f is below it g falls. ⟹ g′ = f: איפה ש-f מעל ציר x, g עולה; איפה ש-f מתחתיו, g יורדת.
+Where f crosses the x-axis g turns: a maximum if f goes from + to −, a minimum if from − to +. ⟹ איפה ש-f חותכת את ציר x, ל-g קיצון: מקסימום אם f עוברת מ-+ ל-−, מינימום אם מ-− ל-+.
+Where f has a peak or a dip, g is steepest: an inflection point of g. ⟹ איפה של-f יש קיצון, g הכי תלולה: נקודת פיתול של g.
+Start at the given point and follow these rules from left to right. ⟹ מתחילים בנקודה הנתונה ועוקבים אחרי הכללים האלה משמאל לימין.
+Same x, height ln(height of f); f > 0 here, so g is defined everywhere. ⟹ אותו x, גובה ln(הגובה של f); כאן f > 0, לכן g מוגדרת בכל מקום.
+ln keeps the order: peaks stay peaks, dips stay dips, at the same x. ⟹ ‏ln שומר על הסדר: מקסימום נשאר מקסימום, מינימום נשאר מינימום, באותו x.
+Where f = 1, g = 0; where f is below 1, g is negative. ⟹ איפה ש-f = 1, g = 0; איפה ש-f מתחת ל-1, g שלילית.
+Same x, height e^(height of f): g is always positive. ⟹ אותו x, גובה e^(הגובה של f): g תמיד חיובית.
+e^ keeps the order: peaks stay peaks, dips stay dips, at the same x. ⟹ ‏e^ שומר על הסדר: מקסימום נשאר מקסימום, מינימום נשאר מינימום, באותו x.
+Where f = 0, g = 1; where f is negative, g is between 0 and 1. ⟹ איפה ש-f = 0, g = 1; איפה ש-f שלילית, g בין 0 ל-1.
+g(x) = f(|x|): for x ≥ 0 g is exactly f. ⟹ g(x) = f(|x|): עבור x ≥ 0, g היא בדיוק f.
+For x < 0, g repeats the right half mirrored, so g is symmetric about the y-axis. ⟹ עבור x < 0, g חוזרת על החצי הימני בשיקוף, לכן g סימטרית סביב ציר y.
+Whatever f does left of the y-axis doesn't matter. ⟹ מה ש-f עושה משמאל לציר y לא משנה.
+g = f′ is the slope of f at each x. ⟹ g = f′ היא השיפוע של f בכל x.
+Where f rises g is above the x-axis, where f falls g is below it. ⟹ איפה ש-f עולה, g מעל ציר x; איפה ש-f יורדת, g מתחתיו.
+At peaks and dips of f the slope is 0: g crosses the x-axis there. ⟹ בנקודות הקיצון של f השיפוע 0: שם g חותכת את ציר x.
+Where f is steepest (its inflection points) g has its peaks and dips. ⟹ איפה ש-f הכי תלולה (נקודות הפיתול שלה), ל-g יש נקודות קיצון.
+ln needs a positive argument ⟹ ‏ln דורש ארגומנט חיובי
+√ needs a non-negative argument ⟹ √ דורש ארגומנט אי-שלילי
+tan x is undefined where cos x = 0 ⟹ ‏tan x לא מוגדר איפה ש-cos x = 0
+a denominator must not be 0 ⟹ מכנה לא יכול להיות 0
+f is defined for every x. ⟹ ‏f מוגדרת לכל x.
+to the right ⟹ ימינה
+to the left ⟹ שמאלה
+right ⟹ ימינה
+left ⟹ שמאלה
+stretched away from ⟹ מתרחק מ
+squashed towards ⟹ מתכווץ לכיוון

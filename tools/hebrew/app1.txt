@@ -1,0 +1,158 @@
+# English ⟹ Hebrew. "{}" is a value filled in at runtime ({1}, {2}… to reorder). "\n" is a line break.
+Label ⟹ תווית
+Repeat ⟹ חזרה
+Set by ⟹ לפי
+Date & time ⟹ תאריך ושעה
+Time from now ⟹ זמן מעכשיו
+Rings {} ⟹ יצלצל {}
+Time ⟹ שעה
+Type ⟹ סוג
+Difficulty ⟹ רמת קושי
+Challenge ⟹ אתגר
+Alarm's ⟹ של השעון
+Random mix ⟹ תמהיל אקראי
+Each ring picks one of the switched-on types, at its own difficulty ("Alarm's" uses the difficulty above). ⟹ בכל צלצול נבחר אחד מהסוגים המופעלים, ברמת הקושי שלו ("של השעון" = רמת הקושי שלמעלה).
+Sound ⟹ צליל
+Play preview ⟹ השמע דוגמה
+Delete alarm ⟹ מחק שעון
+New Alarm ⟹ שעון חדש
+Edit Alarm ⟹ עריכת שעון
+Cancel ⟹ ביטול
+Save ⟹ שמירה
+Reinstall soon ⟹ צריך להתקין מחדש בקרוב
+This free install stops working {} ({}). Reinstall with iloader before then, or alarms may not ring. ⟹ ההתקנה החינמית תפסיק לעבוד {} ({}). התקינו מחדש עם iloader לפני כן, אחרת השעונים עלולים לא לצלצל.
+Test alarm rings in 10 seconds. Lock your phone to see the real thing. ⟹ שעון הבדיקה יצלצל בעוד 10 שניות. נעלו את הטלפון כדי לראות איך זה נראה באמת.
+Couldn't schedule the test alarm. Check that alarms are allowed. ⟹ לא הצלחנו לקבוע את שעון הבדיקה. בדקו שהשעונים מורשים.
+Ring in 10 seconds ⟹ צלצול בעוד 10 שניות
+Alarms ⟹ שעונים
+No alarms yet. Tap + to add one. ⟹ אין עדיין שעונים. הקישו + כדי להוסיף.
+Math Alarm ⟹ שעון מתמטי
+Add alarm ⟹ הוספת שעון
+Alarms aren't allowed ⟹ השעונים לא מורשים
+Without permission nothing will ring. ⟹ בלי הרשאה שום דבר לא יצלצל.
+Allow ⟹ אפשר
+Open Settings ⟹ פתח הגדרות
+Alarm ⟹ שעון מעורר
+Next: {} ⟹ הבא: {}
+Integral ⟹ אינטגרל
+Derivative ⟹ נגזרת
+Graph Sketch ⟹ סקיצת גרף
+Change ⟹ שינוי גרף
+Quick questions ⟹ שאלות קצרות
+Random ⟹ אקראי
+Find an antiderivative ⟹ מצאו פונקציה קדומה
+Differentiate a function ⟹ גזרו פונקציה
+Draw the graph of a function ⟹ שרטטו את גרף הפונקציה
+Given f, draw a related graph like 1/f(x)² or |f(x)| ⟹ בהינתן f, שרטטו גרף קשור כמו 1/f(x)² או |f(x)|
+Bagrut-style questions: limits, areas, sign tables, probability, triangles, min & max… ⟹ שאלות בסגנון בגרות: גבולות, שטחים, טבלאות סימנים, הסתברות, משולשים, בעיות קיצון…
+A mix — choose which types below ⟹ תמהיל — בחרו סוגים למטה
+Bagrut 5U ⟹ בגרות 5 יח״ל
+Digital beeps ⟹ צפצופים דיגיטליים
+Siren ⟹ סירנה
+Klaxon buzzer ⟹ זמזם
+Ringing bell ⟹ פעמון
+Speeding-up beeps ⟹ צפצופים מואצים
+Two-tone alert ⟹ התראה דו-צלילית
+iPhone alarm sound ⟹ צליל השעון של האייפון
+Imported sound ⟹ צליל שיובא
+One time ⟹ פעם אחת
+Every day ⟹ כל יום
+Weekdays ⟹ ימים בשבוע
+No days selected ⟹ לא נבחרו ימים
+Pick a time in the future. ⟹ בחרו שעה בעתיד.
+Turn on at least one day. ⟹ הפעילו לפחות יום אחד.
+Switch on at least one challenge type in the Random mix. ⟹ הפעילו לפחות סוג אתגר אחד בתמהיל האקראי.
+Problem {} of {} ⟹ בעיה {} מתוך {}
+Solve ⟹ פתור
+Pause ⟹ השהה
+Paused ⟹ מושהה
+Resume ⟹ המשך
+Couldn't schedule "{}": {} ⟹ לא ניתן לקבוע את "{}": {}
+Sounds ⟹ צלילים
+That file couldn't be read as audio. ⟹ לא ניתן לקרוא את הקובץ כשמע.
+That audio file is empty. ⟹ קובץ השמע ריק.
+The system alarm uses Apple's sound. Inside the app you'll hear Digital beeps. ⟹ שעון המערכת משתמש בצליל של Apple. בתוך האפליקציה תשמעו צפצופים דיגיטליים.
+Built-in ⟹ מובנים
+Tap a sound to hear it. The alarm plays at your Alarm volume (Settings › Sounds & Haptics). ⟹ הקישו על צליל כדי לשמוע אותו. השעון מנגן בעוצמת השעון המעורר (הגדרות › צלילים ורטט).
+Your sounds ⟹ הצלילים שלך
+Delete ⟹ מחיקה
+Importing… ⟹ מייבא…
+Import from Files… ⟹ ייבוא מקבצים…
+Your alarm only goes quiet when you solve a math problem — or press Surrender. ⟹ השעון שלך משתתק רק כשפותרים בעיה במתמטיקה — או לוחצים על "כניעה".
+Allow alarms ⟹ אפשרו שעונים
+Alarms then ring like the Clock app: on the lock screen, on Silent and in Focus. ⟹ כך השעונים יצלצלו כמו באפליקציית השעון: במסך הנעילה, במצב שקט ובמצב ריכוז.
+Turn the volume up ⟹ הגבירו את העוצמה
+The system alarm uses your Alarm volume. Inside the app the sound follows your media volume. ⟹ שעון המערכת משתמש בעוצמת השעון המעורר. בתוך האפליקציה הצליל לפי עוצמת המדיה.
+Tap "Solve", not Stop ⟹ הקישו "פתור", לא "עצור"
+Stop can't be hidden by any app. If you press it, the alarm rings again within seconds until you solve or surrender. ⟹ אף אפליקציה לא יכולה להסתיר את "עצור". אם תלחצו עליו, השעון יצלצל שוב תוך שניות עד שתפתרו או תיכנעו.
+Reinstall every 7 days ⟹ התקינו מחדש כל 7 ימים
+Apps installed with a free Apple ID stop opening after 7 days. Reinstall with Sideloadly before then; your alarms are kept. ⟹ אפליקציות שהותקנו עם Apple ID חינמי מפסיקות להיפתח אחרי 7 ימים. התקינו מחדש לפני כן; השעונים שלכם יישמרו.
+Continue ⟹ המשך
+Alarms allowed ⟹ השעונים מורשים
+Alarms are turned off ⟹ השעונים כבויים
+Open Settings › Math Alarm and allow Alarms & Timers. ⟹ פתחו הגדרות › Math Alarm ואפשרו שעונים וטיימרים.
+Timer ⟹ טיימר
+Practice ⟹ תרגול
+Progress ⟹ התקדמות
+Settings ⟹ הגדרות
+day streak ⟹ ימים ברצף
+Challenges ⟹ אתגרים
+{} per ring ⟹ {} בכל צלצול
+Wake-up rules ⟹ כללי השכמה
+Drawing mode ⟹ מצב ציור
+Timers and the test ring ⟹ טיימרים וצלצול הבדיקה
+Study ⟹ לימוד
+Bagrut exam ⟹ מבחן הבגרות
+Clear exam date ⟹ נקה את תאריך המבחן
+Test my setup ⟹ בדיקת ההגדרות שלי
+Action needed ⟹ נדרשת פעולה
+Install & expiry ⟹ התקנה ותפוגה
+< 1 day ⟹ פחות מיום
+{} days ⟹ {} ימים
+How answers are checked ⟹ איך התשובות נבדקות
+iPhone Settings ⟹ הגדרות האייפון
+Alarms not allowed ⟹ השעונים לא מורשים
+Help ⟹ עזרה
+Version ⟹ גרסה
+Off ⟹ כבוי
+{} on ⟹ {} פעילים
+Problems per ring ⟹ בעיות בכל צלצול
+More problems per ring means you have to solve several in a row before the alarm stops. Surrender still works at any time. ⟹ יותר בעיות בכל צלצול = צריך לפתור כמה ברצף לפני שהשעון נעצר. "כניעה" עדיין עובדת בכל רגע.
+Change shows f as ⟹ בשינוי גרף, f מוצגת כ
+Show correct part during alarms ⟹ הצג את החלק הנכון בזמן צלצול
+Sketch the whole graph ⟹ שרטוט הגרף כולו
+Graph Sketch and Change ⟹ סקיצת גרף ושינוי גרף
+Whole graph: for functions that don't repeat, you draw the whole graph (asymptotes included) and can pinch, use Move or ± to zoom and pan. What you drew inside the view is checked, and it has to include every peak, dip, zero, inflection point and asymptote. ⟹ גרף שלם: בפונקציות שאינן מחזוריות משרטטים את כל הגרף (כולל אסימפטוטות), ואפשר לצבוט, להשתמש ב"הזז" או ב-± כדי להתקרב ולזוז. נבדק מה ששורטט בתוך התצוגה, והוא חייב לכלול כל מקסימום, מינימום, נקודת אפס, נקודת פיתול ואסימפטוטה.
+More problems after mistakes ⟹ עוד בעיות אחרי טעויות
+Every 3 wrong answers add one more problem (at most 2). ⟹ כל 3 תשובות שגויות מוסיפות בעיה אחת (לכל היותר 2).
+Hold Surrender for 2 s ⟹ החזקת "כניעה" ל-2 שניות
+So it isn't a half-asleep reflex. ⟹ כדי שזה לא יהיה רפלקס של חצי שינה.
+{} min after ⟹ {} דקות אחרי
+Awake check ⟹ בדיקת ערנות
+A gentle ring with an “I'm awake” button, a few minutes after you solve. ⟹ צלצול עדין עם כפתור "אני ער/ה", כמה דקות אחרי שפותרים.
+{} steps ⟹ {} צעדים
+Walk before it stops ⟹ ללכת לפני שהשעון נעצר
+After the last problem (needs Motion access). ⟹ אחרי הבעיה האחרונה (דורש גישה לתנועה).
+After solving ⟹ אחרי הפתרון
+Alarm's own ⟹ של השעון
+Friday & Saturday ⟹ שישי ושבת
+A different difficulty on weekend mornings. ⟹ רמת קושי אחרת בבקרים של סוף השבוע.
+Weekend ⟹ סוף שבוע
+Used by Graph Sketch and Change, in alarms and in Practice. ⟹ משמש בסקיצת גרף ובשינוי גרף, בשעונים ובתרגול.
+Used by countdown timers and by the 10-second test ring. ⟹ משמש בטיימרים ובצלצול הבדיקה של 10 שניות.
+Timers and test ⟹ טיימרים ובדיקה
+This install works until ⟹ ההתקנה עובדת עד
+Time left ⟹ זמן שנותר
+less than a day ⟹ פחות מיום
+Remind me the day before ⟹ תזכורת יום לפני
+Expiry date not found (it's only present in sideloaded builds). ⟹ לא נמצא תאריך תפוגה (הוא קיים רק בהתקנות צד).
+Apps installed with a free Apple ID stop opening after 7 days. If that happens, alarms may not ring. ⟹ אפליקציות שהותקנו עם Apple ID חינמי מפסיקות להיפתח אחרי 7 ימים. אם זה קורה, השעונים עלולים לא לצלצל.
+How to reinstall ⟹ איך להתקין מחדש
+1. Download the latest MathAlarm.ipa from the GitHub Releases page.\n2. Plug the iPhone into your PC and open iloader.\n3. Import the .ipa and install it over the existing app — don't delete the app first, or your alarms are lost. ⟹ 1. הורידו את MathAlarm.ipa העדכני מדף ה-Releases ב-GitHub.\n2. חברו את האייפון למחשב ופתחו את iloader.\n3. ייבאו את קובץ ה-ipa והתקינו מעל האפליקציה הקיימת — אל תמחקו אותה קודם, אחרת השעונים יאבדו.
+Skip the PC: SideStore ⟹ בלי מחשב: SideStore
+SideStore can refresh the app on the phone itself every week. Set it up once with iloader ("Install SideStore"), import MathAlarm.ipa inside SideStore, then tap Refresh All in SideStore at least once a week. Full guide: the README on GitHub. ⟹ SideStore יכול לרענן את האפליקציה בטלפון עצמו כל שבוע. מתקינים אותו פעם אחת עם iloader ("Install SideStore"), מייבאים את MathAlarm.ipa בתוך SideStore, ואז מקישים Refresh All לפחות פעם בשבוע. מדריך מלא: ה-README ב-GitHub.
+Integrals and derivatives ⟹ אינטגרלים ונגזרות
+Your expression is compared with the correct one at 40 random points, so any equivalent form passes, simplified or not, with or without + C. Points are only taken from the interval shown with the problem (if any); there ln x and ln|x| agree, so both are accepted. ⟹ הביטוי שלכם מושווה לביטוי הנכון ב-40 נקודות אקראיות, כך שכל צורה שקולה מתקבלת, מצומצמת או לא, עם או בלי + C. הנקודות נלקחות רק מהתחום שמוצג עם הבעיה (אם יש); שם ln x ו-ln|x| שווים, ולכן שניהם מתקבלים.
+Your drawing is compared with the true graph in 8 strips, at the ends, at zeros and at every peak and dip. The drawing mode decides how much has to match: Precision and Standard check values, Proportions allows any vertical scale, Shape only looks at the overall shape. Where the graph runs off the box (an asymptote), your line has to leave the box the same way. Every correction shown can be fixed in its zone: if fixing a small part wouldn't be enough, the zone is made bigger. ⟹ השרטוט שלכם מושווה לגרף האמיתי ב-8 רצועות, בקצוות, באפסים ובכל מקסימום ומינימום. מצב הציור קובע כמה צריך להתאים: "דיוק" ו"רגיל" בודקים ערכים, "פרופורציות" מאפשר כל קנה מידה אנכי, "צורה בלבד" בודק רק את הצורה הכללית. כשהגרף יוצא מהמסגרת (אסימפטוטה), הקו שלכם צריך לצאת מהמסגרת באותה דרך. כל תיקון שמוצג אפשר לתקן באזור שלו: אם תיקון של חלק קטן לא מספיק, האזור מוגדל.
+Questions, probability, triangles, min & max ⟹ שאלות, הסתברות, משולשים, בעיות קיצון
+Typed numbers are checked exactly, so √7, 5√2/2, 3/10 or 2/e all work. When a question asks for 2 (or 3) decimal places, an answer within rounding is accepted. Multiple-choice and sign-table answers can't be retried: the right answer is shown instead. ⟹ מספרים שמוקלדים נבדקים במדויק, כך ש-√7, 5√2/2, 3/10 או 2/e כולם עובדים. כששאלה מבקשת 2 (או 3) ספרות אחרי הנקודה, תשובה בטווח העיגול מתקבלת. בשאלות אמריקאיות ובטבלאות סימנים אין ניסיון נוסף: במקום זה מוצגת התשובה הנכונה.

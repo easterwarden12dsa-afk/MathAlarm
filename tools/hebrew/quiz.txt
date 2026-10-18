@@ -1,0 +1,323 @@
+# Quick questions (Quiz.swift). Headings are numbered at runtime: "Step {} · {}" translates the title separately.
+Step {} · {} ⟹ שלב {} · {}
+Step {} · Maximum or minimum? ⟹ שלב {} · מקסימום או מינימום?
+Maximum or minimum? ⟹ מקסימום או מינימום?
+Choose the graph ⟹ בחרו את הגרף
+Find the parameter ⟹ מציאת פרמטר
+Area ⟹ שטח
+Limit ⟹ גבול
+Tangent line ⟹ משיק
+How many solutions ⟹ כמה פתרונות
+Sign table ⟹ טבלת סימנים
+Equation ⟹ משוואה
+f → f′ ⟹ f ← f′
+Formula → graph ⟹ נוסחה ← גרף
+f → F ⟹ f ← F
+Extreme points ⟹ נקודות קיצון
+Tangents & slopes ⟹ משיקים ושיפועים
+Asymptotes, points, areas ⟹ אסימפטוטות, נקודות, שטחים
+Under a curve ⟹ מתחת לעקומה
+Between two curves ⟹ בין שתי עקומות
+Arches & sign changes ⟹ קשתות וחילופי סימן
+0/0 by factoring ⟹ ‏0/0 בפירוק לגורמים
+x → ±∞ ⟹ x → ±∞
+Square roots (conjugate) ⟹ שורשים (צמוד)
+At an asymptote (±∞) ⟹ ליד אסימפטוטה (±∞)
+Special limits (sin, e, ln, 1^∞) ⟹ גבולות מיוחדים (sin, e, ln, 1^∞)
+L'Hôpital ⟹ לופיטל
+Exponential ⟹ מעריכית
+Logarithms ⟹ לוגריתמים
+Trigonometric ⟹ טריגונומטריות
+Square roots ⟹ שורשים
+Independent events ⟹ מאורעות בלתי תלויים
+Without replacement ⟹ בלי החזרה
+Two-way tables ⟹ טבלאות דו-ממדיות
+Binomial ⟹ בינומי
+Trees & Bayes ⟹ עצים ובייס
+Repeated tries ⟹ ניסיונות חוזרים
+Conditional binomial ⟹ בינומי מותנה
+Law of cosines ⟹ משפט הקוסינוסים
+Law of sines ⟹ משפט הסינוסים
+Find an angle ⟹ מציאת זווית
+Circle radius ⟹ רדיוס המעגל
+Medians & heights ⟹ תיכונים וגבהים
+Numbers ⟹ מספרים
+Fences & boxes ⟹ גדרות וקופסאות
+Rectangles in graphs ⟹ מלבנים בגרפים
+Shortest distance ⟹ המרחק הקצר ביותר
+Bagrut classics ⟹ קלאסיקות בגרות
+Tangent at a point ⟹ משיק בנקודה
+Normal line ⟹ אנך (נורמל)
+Tangent with a given slope ⟹ משיק עם שיפוע נתון
+Here is the graph of f. Which graph is f′? ⟹ זה הגרף של f. איזה גרף הוא f′?
+Where f rises and falls ⟹ איפה f עולה ויורדת
+f {} on {}  ⇒  f′ {} there ⟹ f {} בתחום {}  ⇒  שם f′ {}
+rises ↗ ⟹ עולה ↗
+falls ↘ ⟹ יורדת ↘
+Where f′ = 0 ⟹ איפה f′ = 0
+f never turns, so f′ never crosses the x-axis. ⟹ f אף פעם לא משנה כיוון, לכן f′ לא חותכת את ציר x.
+f turns at x = {}  ⇒  f′({}) = 0: f′ crosses the x-axis there ⟹ f משנה כיוון ב-x = {}  ⇒  f′({}) = 0: שם f′ חותכת את ציר x
+above the x-axis on {}, below it on {} ⟹ מעל ציר x בתחום {}, ומתחתיו בתחום {}
+nowhere ⟹ אף מקום
+Which graph belongs to this function? ⟹ איזה גרף שייך לפונקציה הזו?
+At the ends: f({}) ≈ {},  f({}) ≈ {} ⟹ בקצוות: f({}) ≈ {},  f({}) ≈ {}
+Easy values ⟹ ערכים קלים
+Zeros ⟹ נקודות אפס
+f is never 0 here. ⟹ f אף פעם לא 0 כאן.
+f = 0 at x = {} ⟹ f = 0 ב-x = {}
+Rises and falls (sign of f′) ⟹ עלייה וירידה (הסימן של f′)
+f′ {} on {} ⟹ f′ {} בתחום {}
+> 0: f rises ⟹ > 0: f עולה
+< 0: f falls ⟹ < 0: f יורדת
+through these values, crossing zero at {} ⟹ שעובר בערכים האלה וחותך את ציר x ב-{}
+no point ⟹ אף נקודה
+Here is the graph of f. Which graph is |f(x)|? ⟹ זה הגרף של f. איזה גרף הוא |f(x)|?
+Where f is above and below the x-axis ⟹ איפה f מעל ומתחת לציר x
+{}: f {} ⟹ {}: f {}
+> 0, so |f| = f (unchanged) ⟹ > 0, לכן |f| = f (ללא שינוי)
+< 0, so |f| = −f (flipped up) ⟹ < 0, לכן |f| = −f (משתקף למעלה)
+Where |f| touches the axis ⟹ איפה |f| נוגעת בציר
+f is never 0, so |f| never touches the x-axis. ⟹ f אף פעם לא 0, לכן |f| לא נוגעת בציר x.
+|f| = 0 exactly where f = 0: x = {} ⟹ ‏|f| = 0 בדיוק איפה ש-f = 0: x = {}
+|f| is never below the x-axis. ⟹ ‏|f| אף פעם לא מתחת לציר x.
+never below the axis, equal to f on {} and the mirror image of f on {} ⟹ שאף פעם לא מתחת לציר, שווה ל-f בתחום {} ותמונת ראי של f בתחום {}
+Here is the graph of g. Which graph could be a function F with F′ = g? ⟹ זה הגרף של g. איזה גרף יכול להיות של פונקציה F עם F′ = g?
+At x = {} g goes from {}  ⇒  F has a {} there ⟹ ב-x = {} הפונקציה g עוברת מ-{}  ⇒  ל-F יש שם {}
++ to − ⟹ + ל-−
+− to + ⟹ − ל-+
+The sign of g = F′ ⟹ הסימן של g = F′
+g {} on {} ⟹ g {} בתחום {}
+> 0: F rises ⟹ > 0: F עולה
+< 0: F falls ⟹ < 0: F יורדת
+Where g crosses zero ⟹ איפה g חותכת את האפס
+g keeps one sign, so F has no peaks or dips. ⟹ ל-g סימן קבוע, לכן ל-F אין נקודות קיצון.
+Where g peaks or dips ⟹ איפה ל-g יש קיצון
+There F is steepest: these are F's inflection points. ⟹ שם F הכי תלולה: אלה נקודות הפיתול של F.
+rising on {} and falling on {} ⟹ שעולה בתחום {} ויורדת בתחום {}
+Match the graph ⟹ התאמת הגרף
+We need a graph {}. ⟹ צריך גרף {}.
+Graph {} ⟹ גרף {}
+{} Find a. ⟹ {} מצאו את a.
+f has an extremum at x = {}. ⟹ ל-f יש נקודת קיצון ב-x = {}.
+Differentiate ⟹ גזירה
+Use the condition ⟹ שימוש בנתון
+An extremum at x = {} means f′({}) = 0: ⟹ קיצון ב-x = {} פירושו f′({}) = 0:
+Solve for a ⟹ פתרון עבור a
+Check it is really an extremum ⟹ בדיקה שזו באמת נקודת קיצון
+f′ has two different roots (0 and {}), so it changes sign at x = {} ✓ ⟹ ל-f′ שני שורשים שונים (0 ו-{}), לכן היא מחליפה סימן ב-x = {} ✓
+cubic extremum ⟹ קיצון בפולינום ממעלה 3
+Differentiate (quotient rule) ⟹ גזירה (כלל המנה)
+f′({}) = 0. The denominator ({}{})² = {} ≠ 0, so the numerator is 0: ⟹ f′({}) = 0. המכנה ({}{})² = {} ≠ 0, לכן המונה הוא 0:
+The numerator x²{}x{} has roots {} and {} (they add up to {}): different, so f′ changes sign ✓ ⟹ למונה x²{}x{} השורשים {} ו-{} (סכומם {}): שונים, לכן f′ מחליפה סימן ✓
+rational extremum ⟹ קיצון בפונקציה רציונלית
+The graph of f has the horizontal asymptote y = {}. ⟹ לגרף של f יש אסימפטוטה אופקית y = {}.
+What happens as x → ±∞ ⟹ מה קורה כש-x → ±∞
+Divide top and bottom by x:  f(x) = (a + {}/x) / (1 − {}/x) ⟹ מחלקים מונה ומכנה ב-x:  f(x) = (a + {}/x) / (1 − {}/x)
+{}/x → 0 and {}/x → 0, so f(x) → a/1 = a ⟹ ‏{}/x → 0 וגם {}/x → 0, לכן f(x) → a/1 = a
+Match the asymptote ⟹ התאמה לאסימפטוטה
+The asymptote is y = a, so a = {}. ⟹ האסימפטוטה היא y = a, לכן a = {}.
+With a = {}: {}·{} + {} = {} ≠ 0, so f is not constant and y = {} really is an asymptote ✓ ⟹ עם a = {}: {}·{} + {} = {} ≠ 0, לכן f אינה קבועה ו-y = {} באמת אסימפטוטה ✓
+horizontal asymptote ⟹ אסימפטוטה אופקית
+Domain and derivative ⟹ תחום הגדרה ונגזרת
+ln x needs x > 0. ⟹ ‏ln x מוגדר רק עבור x > 0.
+For x > 0 only x = {} is a root, and f′ goes from − to +: a minimum ✓ ⟹ עבור x > 0 השורש היחיד הוא x = {}, ו-f′ עוברת מ-− ל-+: מינימום ✓
+ln extremum ⟹ קיצון עם ln
+The tangent to f at x = 0 has slope {}. ⟹ למשיק ל-f ב-x = 0 יש שיפוע {}.
+Differentiate (chain rule) ⟹ גזירה (כלל השרשרת)
+The slope at x = 0 ⟹ השיפוע ב-x = 0
+Solve ⟹ פתרון
+The tangent's slope is f′(0), so a = {}. ⟹ שיפוע המשיק הוא f′(0), לכן a = {}.
+tangent slope ⟹ שיפוע משיק
+f″(x) = −a·sin x − cos x, and f″({}) = −1/cos({}) ≠ 0, so it is an extremum ✓ ⟹ f″(x) = −a·sin x − cos x, ו-f″({}) = −1/cos({}) ≠ 0, לכן זו נקודת קיצון ✓
+trig extremum ⟹ קיצון טריגונומטרי
+f′({}) = 0  ⇒  the numerator is 0:   a − {} = 0 ⟹ f′({}) = 0  ⇒  המונה הוא 0:   a − {} = 0
+a − x² = ({} − x)({} + x) changes sign at x = {}, and x² + {} > 0 always ✓ ⟹ a − x² = ({} − x)({} + x) מחליף סימן ב-x = {}, ו-x² + {} > 0 תמיד ✓
+f has a minimum at x = {}. ⟹ ל-f יש מינימום ב-x = {}.
+Differentiate (product rule) ⟹ גזירה (כלל המכפלה)
+eˣ > 0 always, so f′({}) = 0 means  {} − a + 1 = 0 ⟹ ‏eˣ > 0 תמיד, לכן f′({}) = 0 פירושו  {} − a + 1 = 0
+Check it is a minimum ⟹ בדיקה שזה מינימום
+f′(x) = eˣ({}): negative before x = {}, positive after ⇒ minimum ✓ ⟹ f′(x) = eˣ({}): שלילית לפני x = {}, חיובית אחרי ⇒ מינימום ✓
+exp extremum ⟹ קיצון מעריכי
+The graph of f passes through ({}, {}). ⟹ הגרף של f עובר בנקודה ({}, {}).
+Substitute the point ⟹ הצבת הנקודה
+point on graph ⟹ נקודה על הגרף
+f has an extremum at x = ln {}. ⟹ ל-f יש נקודת קיצון ב-x = ln {}.
+f′(ln {}) = 0:   a·e^(ln {}) + 1 = 0   ⇒   {}a + 1 = 0 ⟹ f′(ln {}) = 0:   a·e^(ln {}) + 1 = 0   ⇒   {}a + 1 = 0
+f′(x) = 1 − eˣ/{} changes from + to − at x = ln {}: a maximum ✓ ⟹ f′(x) = 1 − eˣ/{} עוברת מ-+ ל-− ב-x = ln {}: מקסימום ✓
+The graph of f touches the x-axis at exactly one point. ⟹ הגרף של f נוגע בציר x בנקודה אחת בדיוק.
+One point on the axis ⟹ נקודה אחת על הציר
+f(x) = 0 has exactly one solution ⇔ the discriminant is 0. ⟹ ל-f(x) = 0 פתרון אחד בדיוק ⇔ הדיסקרימיננטה היא 0.
+The discriminant ⟹ הדיסקרימיננטה
+a > 0, so a = {}; a = −{} is rejected ✗ ⟹ a > 0, לכן a = {}; את a = −{} פוסלים ✗
+x² − {}x + {} = (x − {})² touches the axis at x = {} ✓ ⟹ x² − {}x + {} = (x − {})² נוגע בציר ב-x = {} ✓
+f′(x) = (x² − {})/x² changes from − to + at x = {}: a minimum ✓ ⟹ f′(x) = (x² − {})/x² עוברת מ-− ל-+ ב-x = {}: מינימום ✓
+The area under f from x = 0 to x = {} is {}. ⟹ השטח מתחת ל-f מ-x = 0 עד x = {} הוא {}.
+Write the area as an integral ⟹ כותבים את השטח כאינטגרל
+area condition ⟹ נתון על שטח
+The tangent to f at x = {} has slope {}. ⟹ למשיק ל-f ב-x = {} יש שיפוע {}.
+The slope at x = {} ⟹ השיפוע ב-x = {}
+The tangent to f at x = {} is horizontal. ⟹ המשיק ל-f ב-x = {} אופקי.
+Domain ⟹ תחום הגדרה
+Horizontal tangent ⇔ slope 0 ⟹ משיק אופקי ⇔ שיפוע 0
+horizontal tangent ⟹ משיק אופקי
+f′({}) = 0  ⇒  the numerator is 0:   2·({}) + a = 0 ⟹ f′({}) = 0  ⇒  המונה הוא 0:   2·({}) + a = 0
+At x = {}: x² + a·x + 5 = {}{} + 5 = {} > 0, so f is defined there ✓ ⟹ ב-x = {}: x² + a·x + 5 = {}{} + 5 = {} > 0, לכן f מוגדרת שם ✓
+The numerator 2x{} changes sign at x = {} ✓ ⟹ המונה 2x{} מחליף סימן ב-x = {} ✓
+Find the area between f and the x-axis. ⟹ מצאו את השטח בין f לבין ציר x.
+Where the area starts and ends ⟹ איפה השטח מתחיל ונגמר
+Between them f ≥ 0 (e.g. f(0) = {} > 0), so no part is below the axis. ⟹ ביניהם f ≥ 0 (למשל f(0) = {} > 0), לכן אין חלק מתחת לציר.
+An antiderivative ⟹ פונקציה קדומה
+F({}) − F(−{}) ⟹ F({}) − F(−{})
+Area = {} − (−{}) ⟹ שטח = {} − (−{})
+Find the shaded area under f from x = 0 to x = {}. ⟹ מצאו את השטח המסומן מתחת ל-f מ-x = 0 עד x = {}.
+Check the sign ⟹ בדיקת הסימן
+x² + {} > 0 for every x, so the area is just the integral. ⟹ x² + {} > 0 לכל x, לכן השטח הוא פשוט האינטגרל.
+Find the area between f and the x-axis on one arch. ⟹ מצאו את השטח בין f לציר x בקשת אחת.
+Where the arch is ⟹ איפה הקשת
+sin({}x) = 0 at x = 0 and x = {}; in between it is positive. ⟹ sin({}x) = 0 ב-x = 0 וב-x = {}; ביניהם הוא חיובי.
+eˣ-type functions are always positive. ⟹ פונקציות מהסוג eˣ תמיד חיוביות.
+At x = {}: {}x = ln {}, so e^({}x) = e^(ln {}) = {} ⟹ ב-x = {}: {}x = ln {}, לכן e^({}x) = e^(ln {}) = {}
+Area = {} − {} ⟹ שטח = {} − {}
+For x ≥ 0, x + {} > 0, so f > 0. ⟹ עבור x ≥ 0, x + {} > 0, לכן f > 0.
+F(x) = ln(x + {})  (the top is the derivative of the bottom) ⟹ F(x) = ln(x + {})  (המונה הוא הנגזרת של המכנה)
+Find the area between y = {} and y = x². ⟹ מצאו את השטח בין y = {} לבין y = x².
+Where they meet ⟹ איפה הם נפגשים
+Which one is on top ⟹ מי למעלה
+At x = {}: {} = {} and x² = {}, so y = {} is on top. ⟹ ב-x = {}: {} = {} ו-x² = {}, לכן y = {} למעלה.
+Integrate top − bottom ⟹ אינטגרל של עליונה פחות תחתונה
+For x ≥ 0, 2x ≥ 0 and x² + 1 > 0, so f ≥ 0. ⟹ עבור x ≥ 0, 2x ≥ 0 ו-x² + 1 > 0, לכן f ≥ 0.
+The top is the derivative of the bottom: (x² + 1)′ = 2x ⟹ המונה הוא הנגזרת של המכנה: (x² + 1)′ = 2x
+Find the shaded area under f from x = 0 to x = 1. ⟹ מצאו את השטח המסומן מתחת ל-f מ-x = 0 עד x = 1.
+For x ≥ 0, x·e^(x²) ≥ 0. ⟹ עבור x ≥ 0, x·e^(x²) ≥ 0.
+Find the area between the line y = {} and the parabola y = {}. ⟹ מצאו את השטח בין הישר y = {} לבין הפרבולה y = {}.
+Between {} and {} the factor ({})({}) is negative, so the parabola is below the line. ⟹ בין {} ל-{} הגורם ({})({}) שלילי, לכן הפרבולה מתחת לישר.
+line − parabola = {} ⟹ ישר − פרבולה = {}
+Find the shaded area under f from x = {} to x = {}. ⟹ מצאו את השטח המסומן מתחת ל-f מ-x = {} עד x = {}.
+f stays above the x-axis between {} and {} (e.g. f({}) = {}, f({}) = {}), so the area is the integral. ⟹ f נשארת מעל ציר x בין {} ל-{} (למשל f({}) = {}, f({}) = {}), לכן השטח הוא האינטגרל.
+For x ≥ 0, {}x + {} > 0, so f > 0. ⟹ עבור x ≥ 0, {}x + {} > 0, לכן f > 0.
+Inner function {}x + {} with derivative {}:  F(x) = {}ln({}x + {}) ⟹ פונקציה פנימית {}x + {} שנגזרתה {}:  F(x) = {}ln({}x + {})
+Find the shaded area under f from x = 0 to x = {}. (Type it exactly, with e.) ⟹ מצאו את השטח המסומן מתחת ל-f מ-x = 0 עד x = {}. (הקלידו במדויק, עם e.)
+e to any power is positive. ⟹ ‏e בכל חזקה הוא חיובי.
+Find the total area between f and the x-axis from x = −{} to x = {}. ⟹ מצאו את השטח הכולל בין f לציר x מ-x = −{} עד x = {}.
+Where f changes sign ⟹ איפה f מחליפה סימן
+f(x) = x(x − {})(x + {}) = 0 at x = −{}, 0, {} ⟹ f(x) = x(x − {})(x + {}) = 0 ב-x = −{}, 0, {}
+Each part separately ⟹ כל חלק בנפרד
+Left part: F(0) − F(−{}) = 0 − ({} − {}) = {} ⟹ החלק השמאלי: F(0) − F(−{}) = 0 − ({} − {}) = {}
+Right part is below the axis: −(F({}) − F(0)) = −(−{}) = {} ⟹ החלק הימני מתחת לציר: −(F({}) − F(0)) = −(−{}) = {}
+Total = {} + {} ⟹ סה״כ = {} + {}
+Area = {} ⟹ שטח = {}
+{} → {}: f {} from {} to {}  ⇒  {} ⟹ {} → {}: f {} מ-{} עד {}  ⇒  {}
+passes {} once ⟹ עוברת את {} פעם אחת
+never reaches {} ⟹ לא מגיעה ל-{}
+How many solutions does f(x) = {} have for {} ≤ x ≤ {}? ⟹ כמה פתרונות יש ל-f(x) = {} עבור {} ≤ x ≤ {}?
+Turning points (f′ = 0) ⟹ נקודות קיצון (f′ = 0)
+x = {}: f = {} ({}) ⟹ x = {}: f = {} ({})
+The ends ⟹ הקצוות
+Count crossings of y = {} on each stretch ⟹ סופרים חיתוכים עם y = {} בכל קטע
+Between turning points f only rises or only falls, so it can pass {} at most once. ⟹ בין נקודות קיצון f רק עולה או רק יורדת, לכן היא יכולה לעבור את {} לכל היותר פעם אחת.
+{} solution{} ⟹ {1} פתרונות
+1 solution ⟹ פתרון אחד
+Tap + or − for the sign of f′(x) in each interval. ⟹ הקישו + או − לסימן של f′(x) בכל קטע.
+Solve f′(x) = 0 ⟹ פתרון f′(x) = 0
+f′(x) = 0 at x = {} ⟹ f′(x) = 0 ב-x = {}
+f′ is undefined at x = {} (an asymptote), so that splits the intervals too. ⟹ f′ לא מוגדרת ב-x = {} (אסימפטוטה), לכן גם שם מפצלים את הקטעים.
+Test one point in each interval ⟹ בודקים נקודה אחת בכל קטע
+{}:  f′({}) = {} > 0  ⇒  + ⟹ {}:  f′({}) = {} > 0  ⇒  +
+{}:  f′({}) = {} < 0  ⇒  − ⟹ {}:  f′({}) = {} < 0  ⇒  −
+f′:  {} ⟹ f′:  {}
+Solve: {} ⟹ פתרו: {}
+{}   for 0 ≤ x ≤ 2π ⟹ {}   עבור 0 ≤ x ≤ 2π
+x = {},  x = ln {} ⟹ x = {},  x = ln {}
+x = ln {} only ⟹ רק x = ln {}
+Substitute t = eˣ ⟹ הצבה t = eˣ
+e^(2x) = (eˣ)² = t², and t > 0 because eˣ is always positive. ⟹ e^(2x) = (eˣ)² = t², ו-t > 0 כי eˣ תמיד חיובי.
+Solve the quadratic ⟹ פתרון המשוואה הריבועית
+Check t > 0 ⟹ בדיקה t > 0
+Both are positive, so both are allowed ✓ ⟹ שניהם חיוביים, לכן שניהם מותרים ✓
+Back to x ⟹ חזרה ל-x
+eˣ = {}  ⇒  x = ln {} ⟹ eˣ = {}  ⇒  x = ln {}
+e quadratic ⟹ ריבועית במעריכי
+No solution ⟹ אין פתרון
+t² − {}t − {} = 0, where t = eˣ > 0 ⟹ t² − {}t − {} = 0, כאשר t = eˣ > 0
+eˣ = −{} is impossible: eˣ is always positive. Rejected ✗ ⟹ ‏eˣ = −{} בלתי אפשרי: eˣ תמיד חיובי. נפסל ✗
+eˣ = {} is fine ✓ ⟹ ‏eˣ = {} תקין ✓
+x = π/6 only ⟹ רק x = π/6
+Isolate ⟹ בידוד
+The basic angle ⟹ הזווית הבסיסית
+sin(π/6) = 1/2, so the basic angle is π/6. ⟹ sin(π/6) = 1/2, לכן הזווית הבסיסית היא π/6.
+Every angle in [0, 2π] ⟹ כל הזוויות ב-[0, 2π]
+Sine is positive in the 1st and 2nd quadrants: ⟹ סינוס חיובי ברביע הראשון והשני:
+Adding 2π would leave the interval. ⟹ הוספת 2π יוצאת מהתחום.
+x = π/3 only ⟹ רק x = π/3
+cos(π/3) = 1/2, so the basic angle is π/3. ⟹ cos(π/3) = 1/2, לכן הזווית הבסיסית היא π/3.
+Cosine is positive in the 1st and 4th quadrants: ⟹ קוסינוס חיובי ברביע הראשון והרביעי:
+sin(π/6) = 1/2, so the basic angle is π/6 (the sign tells the quadrant). ⟹ sin(π/6) = 1/2, לכן הזווית הבסיסית היא π/6 (הסימן קובע את הרביע).
+Sine is negative in the 3rd and 4th quadrants: ⟹ סינוס שלילי ברביע השלישי והרביעי:
+x = −π/6 also works, but it is outside [0, 2π] ✗ ⟹ גם x = −π/6 מתאים, אבל הוא מחוץ ל-[0, 2π] ✗
+x = π/4 only ⟹ רק x = π/4
+tan repeats every π: x = π/4 + kπ ⟹ ‏tan חוזר כל π: x = π/4 + kπ
+x = 5π/6 only ⟹ רק x = 5π/6
+cos(π/6) = √3/2, so the basic angle is π/6. ⟹ cos(π/6) = √3/2, לכן הזווית הבסיסית היא π/6.
+Cosine is negative in the 2nd and 3rd quadrants: ⟹ קוסינוס שלילי ברביע השני והשלישי:
+ln x needs x > 0 and ln(x − {}) needs x > {}. Together: x > {}. ⟹ ‏ln x דורש x > 0 ו-ln(x − {}) דורש x > {}. יחד: x > {}.
+Combine the logs ⟹ איחוד הלוגריתמים
+ln a + ln b = ln(ab):   ln(x(x − {})) = ln {} ⟹ ln a + ln b = ln(ab):   ln(x(x − {})) = ln {}
+ln is one-to-one, so x(x − {}) = {}   ⇒   x² − {}x − {} = 0 ⟹ ‏ln חד-חד-ערכית, לכן x(x − {}) = {}   ⇒   x² − {}x − {} = 0
+Check the domain ⟹ בדיקת תחום ההגדרה
+x = {} > {} ✓ ⟹ x = {} > {} ✓
+x = {} is not > {}: ln of a negative number (or 0) is undefined. Rejected ✗ ⟹ x = {} אינו > {}: ln של מספר שלילי (או 0) לא מוגדר. נפסל ✗
+Substitute u = ln x ⟹ הצבה u = ln x
+ln x = {}  ⇒  x = e{} ⟹ ln x = {}  ⇒  x = e{}
+Both are positive ✓ ⟹ שניהם חיוביים ✓
+ln quadratic ⟹ ריבועית ב-ln
+Write both sides with the same base ⟹ כותבים את שני האגפים באותו בסיס
+Equal bases ⇒ equal exponents ⟹ בסיסים שווים ⇒ מעריכים שווים
+Exponential equations like this have exactly one solution; nothing to reject. ⟹ למשוואה מעריכית כזו יש פתרון אחד בדיוק; אין מה לפסול.
+same base ⟹ אותו בסיס
+x = {} only ⟹ רק x = {}
+Write 4ˣ with base 2 ⟹ כותבים את 4ˣ בבסיס 2
+Substitute t = 2ˣ (t > 0) ⟹ הצבה t = 2ˣ (t > 0)
+base 2 ⟹ בסיס 2
+Conditions ⟹ תנאים
+Under the root: x{} ≥ 0. ⟹ מתחת לשורש: x{} ≥ 0.
+A square root is never negative, so the right side must be ≥ 0 too: x ≥ {}. ⟹ שורש ריבועי אף פעם לא שלילי, לכן גם אגף ימין חייב להיות ≥ 0: x ≥ {}.
+Square both sides ⟹ מעלים את שני האגפים בריבוע
+Check in the original equation ⟹ בדיקה במשוואה המקורית
+x = {}:  √{} = {}  and  {} − {} = {} ✓ ⟹ x = {}:  √{} = {}  וגם  {} − {} = {} ✓
+x = {}:  √{} = {}, but {} − {} = {} is negative. Rejected ✗ ⟹ x = {}:  √{} = {}, אבל {} − {} = {} שלילי. נפסל ✗
+(Squaring made −{} and {} look the same — that's where the false root came from.) ⟹ (ההעלאה בריבוע גרמה ל-−{} ול-{} להיראות אותו דבר — משם הגיע הפתרון הזר.)
+x² − {} > 0  and  x + {} > 0 ⟹ x² − {} > 0  וגם  x + {} > 0
+ln is one-to-one ⟹ ‏ln חד-חד-ערכית
+x = {}:  {} − {} = {} > 0 and {} + {} = {} > 0 ✓ ⟹ x = {}:  {} − {} = {} > 0 וגם {} + {} = {} > 0 ✓
+x = {}:  x + {} = {} ≤ 0, so ln(x + {}) is undefined. Rejected ✗ ⟹ x = {}:  x + {} = {} ≤ 0, לכן ln(x + {}) לא מוגדר. נפסל ✗
+ln domain ⟹ תחום של ln
+Substitute t = sin x ⟹ הצבה t = sin x
+Check −1 ≤ sin x ≤ 1 ⟹ בדיקה −1 ≤ sin x ≤ 1
+sin x = −2 is impossible. Rejected ✗ ⟹ ‏sin x = −2 בלתי אפשרי. נפסל ✗
+sin x = 1 ✓ ⟹ sin x = 1 ✓
+The angles ⟹ הזוויות
+sin x = 1 only at x = π/2 in [0, 2π] ⟹ ‏sin x = 1 רק ב-x = π/2 בתחום [0, 2π]
+x = π/2 only ⟹ רק x = π/2
+Both values are allowed ✓ ⟹ שני הערכים מותרים ✓
+sin x = −1/2: basic angle π/6, 3rd and 4th quadrants:  x = 7π/6, 11π/6 ⟹ sin x = −1/2: זווית בסיסית π/6, רביעים שלישי ורביעי:  x = 7π/6, 11π/6
+Substitute t = cos x ⟹ הצבה t = cos x
+Check −1 ≤ cos x ≤ 1 ⟹ בדיקה −1 ≤ cos x ≤ 1
+cos x = 1/2: 1st and 4th quadrants:  x = π/3, 5π/3 ⟹ cos x = 1/2: רביעים ראשון ורביעי:  x = π/3, 5π/3
+x = 0 only ⟹ רק x = 0
+cos x = 2 is impossible. Rejected ✗ ⟹ ‏cos x = 2 בלתי אפשרי. נפסל ✗
+cos x = 1 ✓ ⟹ cos x = 1 ✓
+cos x = −1/2 ✓ ⟹ cos x = −1/2 ✓
+cos x = 1 at x = 0 and x = 2π (both ends of the interval count) ⟹ ‏cos x = 1 ב-x = 0 וב-x = 2π (שני קצות התחום נחשבים)
+x = 2π/3 only ⟹ רק x = 2π/3
+Basic angle π/3; cosine is negative in the 2nd and 3rd quadrants: ⟹ זווית בסיסית π/3; קוסינוס שלילי ברביע השני והשלישי:
+trig quadratic ⟹ ריבועית טריגונומטרית
+trig ⟹ טריגונומטרית
+Using the sign table, type the x of the {} point{}. ⟹ בעזרת טבלת הסימנים, הקלידו את ה-x של נקודת ה{}{}.
+ (the leftmost one) ⟹  (השמאלית ביותר)
+f′(x) = 0 at x = {}. ⟹ f′(x) = 0 ב-x = {}.
+f′ changes from {} there, so it is a {}. ⟹ f′ עוברת שם מ-{}, לכן זה {}.
+x = {} or x = {} ⟹ x = {} או x = {}
+{} or {} ⟹ {} או {}
+ and  ⟹  ו-
+Check it is really an extremum ⟹ בדיקה שזו באמת נקודת קיצון
+Answer ⟹ תשובה

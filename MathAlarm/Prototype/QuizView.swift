@@ -335,7 +335,10 @@ struct QuizView: View {
 struct QuizFormula: View {
     let quiz: QuizProblem
 
-    var body: some View {
+    var body: some View { mathBody.mathDirection() }
+
+    @ViewBuilder
+    private var mathBody: some View {
         if let f = quiz.formula {
             FittedMath(sizes: [26, 22, 19, 16, 13]) { size in
                 HStack(alignment: .mathAxis, spacing: size * 0.25) {
@@ -444,7 +447,10 @@ struct QuizStepsSheet: View {
 struct TriangleView: View {
     let figure: TriangleFigure
 
-    var body: some View {
+    var body: some View { mathBody.mathDirection() }
+
+    @ViewBuilder
+    private var mathBody: some View {
         Canvas { ctx, size in
             let p = figure.points
             guard p.count == 6 else { return }
@@ -572,7 +578,10 @@ struct QuizDiagramView: View {
 
     private func label(_ i: Int) -> String { diagram.labels[safe: i] ?? "" }
 
-    var body: some View {
+    var body: some View { mathBody.mathDirection() }
+
+    @ViewBuilder
+    private var mathBody: some View {
         Canvas { ctx, size in
             let w = size.width, h = size.height
             func text(_ s: String, _ p: CGPoint, _ color: Color = .white, size: CGFloat = 15, bold: Bool = true) {

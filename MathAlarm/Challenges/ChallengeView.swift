@@ -330,7 +330,10 @@ struct ProblemFormula: View {
     let problem: CalculusProblem
     var size: CGFloat = 28
 
-    var body: some View {
+    var body: some View { mathBody.mathDirection() }
+
+    @ViewBuilder
+    private var mathBody: some View {
         let formula = ExprDisplay.row(problem.display)
         HStack(alignment: .mathAxis, spacing: size * 0.12) {
             switch problem.kind {

@@ -1,0 +1,135 @@
+# Limits and tangents (Variety.swift).
+Doesn't exist ⟹ לא קיים
+Find the limit. ⟹ מצאו את הגבול.
+Substitute ⟹ הצבה
+Top: {} at x = {} gives 0.   Bottom: 0 as well. ⟹ מונה: {} ב-x = {} נותן 0.   מכנה: גם 0.
+0/0 tells us ({}) is a factor of both. ⟹ ‏0/0 אומר ש-({}) גורם של שניהם.
+Factor ⟹ פירוק לגורמים
+Top: {} = ({})·{} ⟹ מונה: {} = ({})·{}
+Bottom: {} = ({})·{} ⟹ מכנה: {} = ({})·{}
+Cancel and substitute ⟹ צמצום והצבה
+For x ≠ {} the fraction is {} / {} ⟹ עבור x ≠ {} השבר הוא {} / {}
+At x = {}:  {} / {} ⟹ ב-x = {}:  {} / {}
+The limit is {} ⟹ הגבול הוא {}
+The form ⟹ הצורה
+Top and bottom both grow without bound: the form ∞/∞. ⟹ המונה והמכנה גדלים ללא גבול: הצורה ∞/∞.
+Divide by x{}, the highest power in the bottom ⟹ מחלקים ב-x{}, החזקה הגבוהה ביותר במכנה
+Every term with x left in a denominator → 0. ⟹ כל איבר שנשאר בו x במכנה → 0.
+The top becomes terms like {}/x{} → 0, the bottom → {} ⟹ המונה הופך לאיברים כמו {}/x{} → 0, המכנה → {}
+The limit is 0 ⟹ הגבול הוא 0
+Only the leading terms are left:  {}/{} ⟹ נשארים רק המקדמים המובילים:  {}/{}
+The fraction behaves like ({})·x{} ⟹ השבר מתנהג כמו ({})·x{}
+x{} → {} as x → {}, times {} ⟹ x{} → {} כש-x → {}, כפול {}
+√({}{}) = √{} = {}, so the top is 0; the bottom is 0 too: 0/0. ⟹ √({}{}) = √{} = {}, לכן המונה 0; גם המכנה 0: ‏0/0.
+Multiply by the conjugate ⟹ כפל בצמוד
+Multiply top and bottom by {} + {}: ⟹ כופלים מונה ומכנה ב-{} + {}:
+top × ({} + {}) = (x{}) − {} = {}{} ⟹ מונה × ({} + {}) = (x{}) − {} = {}{}
+   (times −1, because the top is {} − {}) ⟹    (כפול −1, כי המונה הוא {} − {})
+x² − {} = ({})({}), so ({}) cancels, leaving {}1 / [({})({} + {})] ⟹ x² − {} = ({})({}), לכן ({}) מצטמצם ונשאר {}1 / [({})({} + {})]
+({}) cancels, leaving {}1 / ({} + {}) ⟹ ({}) מצטמצם ונשאר {}1 / ({} + {})
+Cancel ⟹ צמצום
+Substitute again ⟹ הצבה מחדש
+Both terms → ∞: the form ∞ − ∞. ⟹ שני האיברים → ∞: הצורה ∞ − ∞.
+So the expression is ({}) / (√({}) + {}x) ⟹ לכן הביטוי הוא ({}) / (√({}) + {}x)
+Divide top and bottom by x ⟹ מחלקים מונה ומכנה ב-x
+As x → ∞ this → {} / ({} + {}) ⟹ כש-x → ∞ זה → {} / ({} + {})
+conjugate infinity ⟹ צמוד באינסוף
+conjugate ⟹ צמוד
+The top → {}{} = {} and the bottom → 0: the fraction grows without bound (±∞). ⟹ המונה → {}{} = {} והמכנה → 0: השבר גדל ללא גבול (±∞).
+Look at both sides ⟹ בודקים את שני הצדדים
+From the right, {} is a tiny positive number:  {}/(+0) → {} ⟹ מימין, {} מספר חיובי קטן מאוד:  {}/(+0) → {}
+From the left, it is a tiny negative number:  {}/(−0) → {} ⟹ משמאל, זה מספר שלילי קטן מאוד:  {}/(−0) → {}
+The two sides disagree, so the (two-sided) limit doesn't exist. ⟹ שני הצדדים שונים, לכן הגבול (הדו-צדדי) לא קיים.
+The limit doesn't exist ⟹ הגבול לא קיים
+pole two-sided ⟹ אסימפטוטה, דו-צדדי
+The sign of the bottom ⟹ הסימן של המכנה
+({})² is positive on both sides of {}. ⟹ ({})² חיובי משני הצדדים של {}.
+x → {}{} means x is a little {} than {}, so {} is a tiny {} number. ⟹ x → {}{} פירושו ש-x {} במעט מ-{}, לכן {} מספר {} קטן מאוד.
+more ⟹ גדול
+less ⟹ קטן
+The sign of the fraction ⟹ הסימן של השבר
+{} ÷ {} = {} ⟹ {} ÷ {} = {}
+pole squared ⟹ אסימפטוטה בריבוע
+pole one-sided ⟹ אסימפטוטה, חד-צדדי
+sin 0 = 0: the form 0/0. ⟹ ‏sin 0 = 0: הצורה 0/0.
+The form ⟹ הצורה
+0/0. ⟹ ‏0/0.
+∞/∞. ⟹ ∞/∞.
+Make sin u / u appear ⟹ יוצרים את sin u / u
+sin u / u → 1 as u = {}x → 0 ⟹ ‏sin u / u → 1 כאשר u = {}x → 0
+tan 0 = 0: the form 0/0. ⟹ ‏tan 0 = 0: הצורה 0/0.
+Write tan as sin/cos ⟹ כותבים tan כ-sin/cos
+The bracket → 1 and cos({}x) → 1 ⟹ הסוגריים → 1 ו-cos({}x) → 1
+Divide top and bottom by x ⟹ מחלקים מונה ומכנה ב-x
+Both brackets → 1, leaving {}/{} ⟹ שני הסוגריים → 1, ונשאר {}/{}
+1 − cos 0 = 0: the form 0/0. ⟹ ‏1 − cos 0 = 0: הצורה 0/0.
+Use 1 − cos u = 2 sin²(u/2) ⟹ משתמשים ב-1 − cos u = 2 sin²(u/2)
+The bracket → 1, leaving 2·{} ⟹ הסוגריים → 1, ונשאר 2·{}
+Square the special limit ⟹ מעלים את הגבול המיוחד בריבוע
+The bracket → 1 ⟹ הסוגריים → 1
+e⁰ − 1 = 0: the form 0/0. ⟹ ‏e⁰ − 1 = 0: הצורה 0/0.
+Use (eᵘ − 1)/u → 1 ⟹ משתמשים ב-(eᵘ − 1)/u → 1
+e special ⟹ גבול מיוחד של e
+ln 1 = 0: the form 0/0. ⟹ ‏ln 1 = 0: הצורה 0/0.
+Use ln(1 + u)/u → 1 ⟹ משתמשים ב-ln(1 + u)/u → 1
+ln special ⟹ גבול מיוחד של ln
+1 − 1 = 0: the form 0/0. ⟹ ‏1 − 1 = 0: הצורה 0/0.
+Split into two special limits ⟹ מפצלים לשני גבולות מיוחדים
+e difference ⟹ הפרש מעריכים
+Both brackets → 1 ⟹ שני הסוגריים → 1
+e over sin ⟹ ‏e חלקי sin
+1 + {}/x → 1 and the power → ∞: the form 1^∞ (not simply 1). ⟹ ‏1 + {}/x → 1 והחזקה → ∞: הצורה 1^∞ (לא פשוט 1).
+Make (1 + 1/n)ⁿ appear ⟹ יוצרים את (1 + 1/n)ⁿ
+Put n = x/{}:  (1 + {}/x)^({}x) = [(1 + 1/n)ⁿ]^({}) ⟹ מציבים n = x/{}:  (1 + {}/x)^({}x) = [(1 + 1/n)ⁿ]^({})
+(1 + 1/n)ⁿ → e ⟹ (1 + 1/n)ⁿ → e
+The limit is e^({}) ⟹ הגבול הוא e^({})
+1 + {}x → 1 and the power 1/({}x) → ±∞: the form 1^∞. ⟹ ‏1 + {}x → 1 והחזקה 1/({}x) → ±∞: הצורה 1^∞.
+Make (1 + u)^(1/u) appear ⟹ יוצרים את (1 + u)^(1/u)
+(1 + {}x)^(1/({}x)) = [(1 + u)^(1/u)]^({}) with u = {}x ⟹ (1 + {}x)^(1/({}x)) = [(1 + u)^(1/u)]^({}) כאשר u = {}x
+(1 + u)^(1/u) → e as u → 0 ⟹ (1 + u)^(1/u) → e כאשר u → 0
+1^∞ at 0 ⟹ ‏1^∞ באפס
+The base → 1 and the power → ∞: 1^∞. ⟹ הבסיס → 1 והחזקה → ∞: ‏1^∞.
+Rewrite the base ⟹ כותבים מחדש את הבסיס
+[1 + {}/(x{})]^x → e^({}), like (1 + k/x)ˣ → eᵏ ⟹ [1 + {}/(x{})]^x → e^({}), כמו (1 + k/x)ˣ → eᵏ
+1^∞ ratio ⟹ ‏1^∞ ביחס
+Both the top and the bottom are 0 at x = {}: the form 0/0. ⟹ גם המונה וגם המכנה 0 ב-x = {}: הצורה 0/0.
+L'Hôpital: differentiate top and bottom separately ⟹ לופיטל: גוזרים מונה ומכנה בנפרד
+Top: ⟹ מונה:
+Bottom: ⟹ מכנה:
+Substitute x = {} ⟹ הצבת x = {}
+l'hopital ⟹ לופיטל
+x{} → ∞ and e^(−{}x) → 0: write it as x{}/e^({}x), the form ∞/∞. ⟹ x{} → ∞ ו-e^(−{}x) → 0: כותבים x{}/e^({}x), הצורה ∞/∞.
+L'Hôpital {} time{} ⟹ לופיטל {1} פעמים
+L'Hôpital 1 time ⟹ לופיטל פעם אחת
+L'Hôpital ⟹ לופיטל
+Each step lowers the power of x by one; the bottom stays a multiple of e^({}x). ⟹ כל שלב מוריד את החזקה של x באחד; המכנה נשאר כפולה של e^({}x).
+After {} step{}: {}/({}e^({}x)) → 0 ⟹ אחרי {1} שלבים: {3}/({4}e^({5}x)) → 0
+growth exp ⟹ קצב גידול מעריכי
+(ln x)′/(x{})′ = (1/x)/({}x{}) = 1/({}x{}) ⟹ (ln x)′/(x{})′ = (1/x)/({}x{}) = 1/({}x{})
+→ 0 ⟹ → 0
+growth ln ⟹ קצב גידול של ln
+Rewrite as a fraction ⟹ כותבים כשבר
+x{}·ln x = ln x / x^(−{}): the form −∞/∞. ⟹ x{}·ln x = ln x / x^(−{}): הצורה −∞/∞.
+0·(−∞). ⟹ ‏0·(−∞).
+The top stays a multiple of e^({}x); the bottom's power drops to a constant. ⟹ המונה נשאר כפולה של e^({}x); החזקה במכנה יורדת עד קבוע.
+e^({}x) → ∞, so the fraction → +∞ ⟹ e^({}x) → ∞, לכן השבר → +∞
+The limit is +∞ ⟹ הגבול הוא +∞
+The limit is −∞ ⟹ הגבול הוא −∞
+growth exp over power ⟹ מעריכי חלקי חזקה
+Find the tangent to f that has slope {}. Type the right side of y = … ⟹ מצאו את המשיק ל-f שהשיפוע שלו {}. הקלידו את אגף ימין של y = …
+Where is the slope {}? ⟹ איפה השיפוע {}?
+The point ⟹ הנקודה
+f({}) = {}, so the point is ({}, {}) ⟹ f({}) = {}, לכן הנקודה היא ({}, {})
+The line ⟹ הישר
+Find the normal to f at x = {} (the line perpendicular to the tangent). Type the right side of y = … ⟹ מצאו את האנך (הנורמל) ל-f ב-x = {} (הישר המאונך למשיק). הקלידו את אגף ימין של y = …
+Find the tangent line to f at x = {}. Type the right side of y = … ⟹ מצאו את המשיק ל-f ב-x = {}. הקלידו את אגף ימין של y = …
+The slope of the tangent ⟹ שיפוע המשיק
+The slope of the normal ⟹ שיפוע האנך
+Perpendicular lines: m₁·m₂ = −1, so the normal's slope is −1/({}) = {} ⟹ ישרים מאונכים: m₁·m₂ = −1, לכן שיפוע האנך הוא −1/({}) = {}
+The line through the point ⟹ הישר דרך הנקודה
+Differentiate: ⟹ גזירה:
+m = f′({}) = {} ⟹ m = f′({}) = {}
+Open the brackets and move {} to the right. ⟹ פותחים סוגריים ומעבירים את {} לאגף ימין.
+factor ⟹ פירוק לגורמים
+removable ⟹ ניתן לצמצום
+infinity ⟹ אינסוף

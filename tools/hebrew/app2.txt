@@ -1,0 +1,327 @@
+Not quite — keep editing and try again. ⟹ עוד לא — המשיכו לערוך ונסו שוב.
+Your answer isn't defined on this interval. ⟹ התשובה שלכם לא מוגדרת בתחום הזה.
+Not finished yet: {} ⟹ עוד לא גמור: {}
+Correct! ⟹ נכון!
+Paste {} ⟹ הדבק {}
+After you close this, you'll get a new problem of the same kind to solve. ⟹ אחרי שתסגרו, תקבלו בעיה חדשה מאותו סוג לפתרון.
+Show the full solution? ⟹ להציג את הפתרון המלא?
+Show solution (new problem after) ⟹ הצג פתרון (ואחריו בעיה חדשה)
+Keep trying ⟹ ממשיכים לנסות
+The alarm still needs a solved problem, so you'll get a fresh one afterwards. ⟹ השעון עדיין צריך בעיה פתורה, לכן אחר כך תקבלו בעיה חדשה.
+Check answer ⟹ בדיקת תשובה
+Integrate ⟹ חשבו אינטגרל
+Differentiate ⟹ גזרו
+Steps ⟹ שלבים
+for {} ≤ x ≤ {} ⟹ עבור {} ≤ x ≤ {}
+Hint: {} ⟹ רמז: {}
+Technique: ⟹ שיטה:
+Hint: which technique? ⟹ רמז: איזו שיטה?
+Hint: first step ⟹ רמז: צעד ראשון
+Hint: more steps ⟹ רמז: עוד צעדים
+Your antiderivative ⟹ הפונקציה הקדומה שלכם
+Your derivative ⟹ הנגזרת שלכם
++ C optional · tap to move cursor ⟹ ‎+ C לא חובה · הקישו כדי להזיז את הסמן
+tap to move cursor ⟹ הקישו כדי להזיז את הסמן
+Why? ⟹ למה?
+Check your entry. ⟹ בדקו את מה שהקלדתם.
+Integrate  ⟹ אינטגרל של 
+Differentiate  ⟹ נגזרת של 
+Sketch ⟹ סקיצה
+Mix ⟹ מעורב
+Calculus ⟹ חשבון דיפרנציאלי
+Graphs ⟹ גרפים
+Functions ⟹ פונקציות
+Probability ⟹ הסתברות
+Triangles ⟹ משולשים
+Integrals and derivatives, typed as formulas ⟹ אינטגרלים ונגזרות, מוקלדים כנוסחאות
+Draw graphs, or read them: f′, sign tables, solutions ⟹ שרטוט גרפים או קריאתם: f′, טבלאות סימנים, פתרונות
+Parameters, limits, tangents, areas and equations ⟹ פרמטרים, גבולות, משיקים, שטחים ומשוואות
+Independent events, tables, binomial, trees and Bayes ⟹ מאורעות בלתי תלויים, טבלאות, בינומי, עצים ובייס
+Trigonometry in the plane: sines, cosines, areas ⟹ טריגונומטריה במישור: משפט הסינוסים, הקוסינוסים, שטחים
+Word problems: set up a function, then f′ = 0 ⟹ בעיות מילוליות: בונים פונקציה, ואז f′ = 0
+Practice · {} solved ⟹ תרגול · {} נפתרו
+Enter a share code ⟹ הזינו קוד שיתוף
+Open ⟹ פתח
+That code doesn't look right ⟹ הקוד הזה לא נראה תקין
+A friend's code opens exactly the same problem. ⟹ קוד של חבר פותח בדיוק את אותה בעיה.
+Study modes ⟹ מצבי לימוד
+Study modes, {} to review ⟹ מצבי לימוד, {} לחזרה
+Remove from favourites ⟹ הסר מהמועדפים
+Add to favourites ⟹ הוסף למועדפים
+Copied {} ⟹ הועתק {}
+Copy code {} ⟹ העתק קוד {}
+Try this Math Alarm problem: {} ⟹ נסו את הבעיה הזו ב-Math Alarm: {}
+Share… ⟹ שיתוף…
+Share this problem ⟹ שתף את הבעיה
+Whole graph (zoom) ⟹ גרף שלם (זום)
+All types ⟹ כל הסוגים
+Solution ⟹ פתרון
+Done reviewing ⟹ סיום החזרה
+New ⟹ חדש
+Review: a problem you missed earlier ⟹ חזרה: בעיה שפספסתם קודם
+Reviewed — see it again in a few days ⟹ נעשתה חזרה — תראו אותה שוב בעוד כמה ימים
+Correct! Next one… ⟹ נכון! הבאה…
+Drawing area for the graph ⟹ אזור השרטוט של הגרף
+Zoom in ⟹ התקרבות
+Zoom out ⟹ התרחקות
+Reset view ⟹ איפוס התצוגה
+After you close this, you'll get a new problem of the same kind to draw. ⟹ אחרי שתסגרו, תקבלו בעיה חדשה מאותו סוג לשרטוט.
+Show how to draw it? ⟹ להציג איך משרטטים?
+Show steps (new problem after) ⟹ הצג שלבים (ואחריהם בעיה חדשה)
+Show {} ⟹ הצג {}
+Hide {} ⟹ הסתר {}
+Remove {} ⟹ הסר {}
+Remove all ⟹ הסר הכל
+Draw ⟹ צייר
+Erase ⟹ מחק
+Move ⟹ הזז
+Undo ⟹ בטל
+Helper lines (asymptotes) ⟹ קווי עזר (אסימפטוטות)
+Clear ⟹ נקה
+How to draw it ⟹ איך משרטטים
+Submit ⟹ הגשה
+Hide graph ⟹ הסתר גרף
+Show graph ⟹ הצג גרף
+Great sketch! ⟹ שרטוט מצוין!
+Erase zone {} ⟹ מחק את אזור {}
+Hide correct graph in zone {} ⟹ הסתר את הגרף הנכון באזור {}
+Show correct graph in zone {} ⟹ הצג את הגרף הנכון באזור {}
+Draw the whole graph — pinch, Move or ± to see more ⟹ שרטטו את כל הגרף — צביטה, "הזז" או ± כדי לראות עוד
+Sketch for {} ≤ x ≤ {} ⟹ שרטטו עבור {} ≤ x ≤ {}
+where f(x) = ⟹ כאשר f(x) =
+Grey = f · draw g for {} ≤ x ≤ {} ⟹ אפור = f · שרטטו את g עבור {} ≤ x ≤ {}
+Draw g for {} ≤ x ≤ {} ⟹ שרטטו את g עבור {} ≤ x ≤ {}
+f in grey with its key points A, B, …; g in green with the moved points A′, B′, … ⟹ f באפור עם נקודות המפתח A, B, …; g בירוק עם הנקודות שהוזזו A′, B′, …
+The finished graph (green{}): ⟹ הגרף המוגמר (בירוק{}):
+; f in grey ⟹ ; f באפור
+Done ⟹ סיום
+Line ⟹ קו
+Add ⟹ הוסף
+Dashed helper lines for drawing — for example the asymptotes you found. They aren't checked. ⟹ קווי עזר מקווקווים לשרטוט — למשל האסימפטוטות שמצאתם. הם לא נבדקים.
+Your lines ⟹ הקווים שלכם
+out of view ⟹ מחוץ לתצוגה
+Helper lines ⟹ קווי עזר
+ — zoom out or move the view to see it. ⟹  — התרחקו או הזיזו את התצוגה כדי לראות אותו.
+ — you won't see it on this graph. ⟹  — לא תראו אותו בגרף הזה.
+Out of view: the box only shows x from {} to {} ⟹ מחוץ לתצוגה: המסגרת מראה רק x מ-{} עד {}
+Out of view: the box only shows y from {} to {} ⟹ מחוץ לתצוגה: המסגרת מראה רק y מ-{} עד {}
+Out of view: this line passes {} the whole box ⟹ מחוץ לתצוגה: הקו הזה עובר {} כל המסגרת
+above ⟹ מעל
+below ⟹ מתחת
+Technique: {} ⟹ שיטה: {}
+Any equivalent form of the answer is accepted. ⟹ כל צורה שקולה של התשובה מתקבלת.
+Step-by-step solution ⟹ פתרון שלב אחר שלב
+This answer is actually correct now — tap Check answer. ⟹ התשובה הזו בעצם נכונה עכשיו — הקישו "בדיקת תשובה".
+Why it's not right ⟹ למה זה לא נכון
+Back to it ⟹ חזרה לבעיה
+An antiderivative is right when its derivative equals the integrand. Here's your answer differentiated: ⟹ פונקציה קדומה נכונה כשהנגזרת שלה שווה לפונקציה שמתחת לאינטגרל. הנה התשובה שלכם אחרי גזירה:
+That should equal the integrand: ⟹ זה אמור להיות שווה לפונקציה שמתחת לאינטגרל:
+your answer′ ⟹ התשובה שלכם′
+Your answer and the true derivative give different values: ⟹ התשובה שלכם והנגזרת הנכונה נותנות ערכים שונים:
+your answer ⟹ התשובה שלכם
+Common slips: a missing inner derivative (chain rule), a sign in the quotient rule (u′v − uv′), or a power off by one. ⟹ טעויות נפוצות: נגזרת פנימית חסרה (כלל השרשרת), סימן בכלל המנה (u′v − uv′), או חזקה שגויה באחד.
+At x = {}: ⟹ ב-x = {}:
+Stop alarm ⟹ עצור שעון
+Stops a Math Alarm. It rings again until the challenge is solved. ⟹ עוצר שעון מתמטי. הוא יצלצל שוב עד שהאתגר ייפתר.
+Alarm ID ⟹ מזהה שעון
+Solve to stop ⟹ פתור כדי לעצור
+Opens Math Alarm on the challenge. ⟹ פותח את השעון המתמטי על האתגר.
+x squared ⟹ x בריבוע
+fraction, uses what you typed as the top ⟹ שבר, מה שהקלדתם יהיה המונה
+square root ⟹ שורש ריבועי
+absolute value ⟹ ערך מוחלט
+e to the power ⟹ e בחזקת
+more functions ⟹ עוד פונקציות
+move cursor left ⟹ הזז סמן שמאלה
+move cursor right ⟹ הזז סמן ימינה
+Opening bracket only ⟹ סוגר פותח בלבד
+Closing bracket only ⟹ סוגר סוגר בלבד
+Reset progress data ⟹ איפוס נתוני ההתקדמות
+Delete history, favourites, review and charts? ⟹ למחוק היסטוריה, מועדפים, חזרות וגרפים?
+Delete ⟹ מחיקה
+Bagrut countdown ⟹ ספירה לאחור לבגרות
+day left ⟹ יום נותר
+days left ⟹ ימים נותרו
+Today's plan ⟹ התוכנית להיום
+Review {} problem{} you missed ⟹ חזרה על {1} בעיות שפספסתם
+{} × Graph Sketch at Bagrut 5U ⟹ {} × סקיצת גרף ברמת בגרות 5 יח״ל
+{} × {} ⟹ {} × {}
+1 mini exam at Bagrut 5U ⟹ מבחן קצר אחד ברמת בגרות 5 יח״ל
+1 mini exam at Hard ⟹ מבחן קצר אחד ברמה קשה
+1 speed round to warm up ⟹ סבב מהירות אחד לחימום
+best speed ⟹ שיא מהירות
+Waking up ⟹ השכמה
+After your first alarm, this shows when you got up and how long the problem took. ⟹ אחרי השעון הראשון יוצג כאן מתי קמתם וכמה זמן לקחה הבעיה.
+Time to turn the alarm off (minutes) ⟹ זמן עד כיבוי השעון (דקות)
+Day ⟹ יום
+Minutes ⟹ דקות
+Time you got up ⟹ שעת הקימה
+Hour ⟹ שעה
+{} alarms · {} surrendered · average {} min {} s ⟹ {} שעונים · {} כניעות · ממוצע {} דק׳ {} שנ׳
+Accuracy by topic ⟹ דיוק לפי נושא
+Solve a few problems in Practice to see where you're strong and weak. ⟹ פתרו כמה בעיות בתרגול כדי לראות במה אתם חזקים ובמה פחות.
+Correct ⟹ נכון
+Topic ⟹ נושא
+Achievements ⟹ הישגים
+{} of {} unlocked ⟹ {} מתוך {} נפתחו
+Alarm permission ⟹ הרשאת שעונים
+Allowed ⟹ מורשה
+Not allowed — alarms can't ring. Open iPhone Settings → Math Alarm β. ⟹ לא מורשה — השעונים לא יכולים לצלצל. פתחו הגדרות → Math Alarm β.
+Volume ⟹ עוצמה
+loud enough for in-app ringing ⟹ חזקה מספיק לצלצול בתוך האפליקציה
+turn it up (the in-app sound uses media volume) ⟹ הגבירו (הצליל באפליקציה לפי עוצמת המדיה)
+{}% — {} ⟹ {}% — {}
+Install expiry ⟹ תפוגת ההתקנה
+Expires in less than a day — reinstall now ⟹ פג תוקף בעוד פחות מיום — התקינו מחדש עכשיו
+{} days left ⟹ נותרו {} ימים
+Not found (fine for non-sideloaded builds) ⟹ לא נמצא (תקין בהתקנה רגילה)
+Alarms on ⟹ שעונים פעילים
+No alarm is switched on ⟹ אף שעון לא מופעל
+{} on · next {} ⟹ {} פעילים · הבא {}
+Motion (for steps) ⟹ תנועה (לצעדים)
+Available — you'll be asked once ⟹ זמין — תתבקשו פעם אחת
+Step counting isn't available ⟹ ספירת צעדים לא זמינה
+Checks ⟹ בדיקות
+Ring a test alarm in 10 seconds ⟹ צלצול בדיקה בעוד 10 שניות
+Test set for {}. Lock the phone to check it rings on the lock screen. ⟹ הבדיקה נקבעה ל-{}. נעלו את הטלפון כדי לוודא שהוא מצלצל במסך הנעילה.
+The test uses the challenge and sound from “Timers and the 10-second test”. ⟹ הבדיקה משתמשת באתגר ובצליל מ"טיימרים וצלצול הבדיקה".
+Sketch · {} ⟹ סקיצה · {}
+Change · {} ⟹ שינוי גרף · {}
+Change: {} ⟹ שינוי גרף: {}
+First steps ⟹ צעדים ראשונים
+Solve your first problem ⟹ פתרו את הבעיה הראשונה
+Warming up ⟹ מתחממים
+Solve 10 problems ⟹ פתרו 10 בעיות
+Problem eater ⟹ אוכלי בעיות
+Solve 50 problems ⟹ פתרו 50 בעיות
+Bagrut ready ⟹ מוכנים לבגרות
+Solve 10 Bagrut 5U problems ⟹ פתרו 10 בעיות ברמת בגרות 5 יח״ל
+Quick riser ⟹ קמים מהר
+Turn off an alarm within 60 s ⟹ כבו שעון תוך 60 שניות
+No white flag ⟹ בלי דגל לבן
+10 alarms in a row without surrendering ⟹ 10 שעונים ברצף בלי כניעה
+One week ⟹ שבוע שלם
+A 7-day solving streak ⟹ רצף של 7 ימי פתרון
+One month ⟹ חודש שלם
+A 30-day solving streak ⟹ רצף של 30 ימי פתרון
+Speed demon ⟹ שד מהירות
+Finish a speed round in under 3 minutes ⟹ סיימו סבב מהירות בפחות מ-3 דקות
+Exam mode ⟹ מצב מבחן
+Finish a mini exam ⟹ סיימו מבחן קצר
+Second chance ⟹ הזדמנות שנייה
+Clear every due review problem ⟹ סיימו את כל בעיות החזרה שהגיע זמנן
+After you close this, you'll get a new question. ⟹ אחרי שתסגרו, תקבלו שאלה חדשה.
+Show the solution? ⟹ להציג את הפתרון?
+Show solution (new question after) ⟹ הצג פתרון (ואחריו שאלה חדשה)
+Your answer (a function of x) ⟹ התשובה שלכם (פונקציה של x)
+Your answer — a decimal is fine (or an exact form) ⟹ התשובה שלכם — אפשר מספר עשרוני (או צורה מדויקת)
+Your answer — exact forms like ln 3, √2, 3/10 are fine ⟹ התשובה שלכם — אפשר צורות מדויקות כמו ln 3, √2, 3/10
+f′ > 0: f increases ↗   ·   f′ < 0: f decreases ↘ ⟹ f′ > 0: f עולה ↗   ·   f′ < 0: f יורדת ↘
+Positive ⟹ חיובי
+Negative ⟹ שלילי
+Choose + or − for every interval. ⟹ בחרו + או − לכל קטע.
+Not this one — the right answer is marked. New question coming… ⟹ לא זו — התשובה הנכונה מסומנת. שאלה חדשה בדרך…
+Not this one — the right answer is marked. Tap Steps to see why. ⟹ לא זו — התשובה הנכונה מסומנת. הקישו "שלבים" כדי לראות למה.
+Not quite — the Steps button shows the method. ⟹ עוד לא — כפתור "שלבים" מראה את השיטה.
+Not quite — try again. ⟹ עוד לא — נסו שוב.
+Graph ⟹ גרף
+Answer: {} ⟹ תשובה: {}
+option {} ⟹ אפשרות {}
+Triangle diagram ⟹ שרטוט המשולש
+Total ⟹ סה״כ
+{} red · {} blue ⟹ {} אדומים · {} כחולים
+Sketch of the situation ⟹ שרטוט המצב
+Get out of bed ⟹ לקום מהמיטה
+Walk {} steps to turn the alarm off. ⟹ לכו {} צעדים כדי לכבות את השעון.
+Motion access is off (Settings → Privacy → Motion & Fitness). Use Surrender, or turn the steps setting off. ⟹ הגישה לתנועה כבויה (הגדרות → פרטיות → תנועה וכושר). השתמשו ב"כניעה" או כבו את הגדרת הצעדים.
+Still awake? ⟹ עדיין ערים?
+You solved your alarm a few minutes ago. Tap to show you didn't fall back asleep. ⟹ פתרתם את השעון לפני כמה דקות. הקישו כדי להראות שלא נרדמתם שוב.
+I'm awake ⟹ אני ער/ה
+Hold for two seconds to turn the alarm off ⟹ החזיקו שתי שניות כדי לכבות את השעון
+Turns the alarm off immediately ⟹ מכבה את השעון מייד
+Hold 2 s · your {}-day streak resets ⟹ החזיקו 2 שנ׳ · הרצף של {} ימים יתאפס
+Hold for 2 seconds ⟹ החזיקו 2 שניות
+Surrender ⟹ כניעה
+Speed round ⟹ סבב מהירות
+Close ⟹ סגור
+{} quick derivatives ⟹ {} נגזרות מהירות
+The clock runs until the last one is right. ⟹ השעון רץ עד שהאחרונה נכונה.
+Best: {} ⟹ שיא: {}
+Start ⟹ התחל
+New best time! ⟹ שיא חדש!
+{} wrong answer{} ⟹ {1} תשובות שגויות
+Again ⟹ שוב
+Sign of f′ ⟹ הסימן של f′
+Extreme point ⟹ נקודת קיצון
+Mini exam · {} ⟹ מבחן קצר · {}
+Exam complete ⟹ המבחן הושלם
+No mistakes — Bagrut ready. ⟹ בלי טעויות — מוכנים לבגרות.
+{} mistake{} along the way. ⟹ {1} טעויות בדרך.
+Another exam ⟹ עוד מבחן
+Nothing to review ⟹ אין מה לחזור עליו
+Problems you get wrong come back after 1, 3 and 7 days. ⟹ בעיות שטעיתם בהן חוזרות אחרי 1, 3 ו-7 ימים.
+Due now ⟹ לחזרה עכשיו
+Coming back later ⟹ יחזרו בהמשך
+Due {} ⟹ לחזרה {}
+Review ⟹ חזרה
+Not enough data yet ⟹ אין עדיין מספיק נתונים
+After a few problems of each type, the ones you miss most show up here. ⟹ אחרי כמה בעיות מכל סוג, אלה שאתם מפספסים הכי הרבה יופיעו כאן.
+Worst first · tap to practise that type ⟹ החלשים קודם · הקישו כדי לתרגל את הסוג
+Weak spots ⟹ נקודות חולשה
+Show ⟹ הצג
+History ⟹ היסטוריה
+Favourites ⟹ מועדפים
+No problems yet ⟹ אין עדיין בעיות
+No favourites yet ⟹ אין עדיין מועדפים
+Problems you try in Practice appear here. ⟹ בעיות שתנסו בתרגול יופיעו כאן.
+Tap the star on a problem to keep it. ⟹ הקישו על הכוכב בבעיה כדי לשמור אותה.
+Remove ⟹ הסר
+Share PDF ⟹ שתף PDF
+Make PDF ⟹ צור PDF
+Answers ⟹ תשובות
+Math Alarm · practice sheet ⟹ שעון מתמטי · דף תרגול
+Find the integral of ⟹ חשבו את האינטגרל של
+Sketch the graph of ⟹ שרטטו את הגרף של
+Given f, sketch {}, where f(x) = ⟹ בהינתן f, שרטטו {}, כאשר f(x) =
+10 derivatives, against the clock ⟹ 10 נגזרות נגד השעון
+Mini exam ⟹ מבחן קצר
+{} done ⟹ {} הושלמו
+Sign table → extreme → sketch ⟹ טבלת סימנים ← קיצון ← סקיצה
+Nothing due ⟹ אין חזרות
+{} due now ⟹ {} לחזרה עכשיו
+Weakest: {} ⟹ החלש ביותר: {}
+Needs a few attempts first ⟹ צריך קודם כמה ניסיונות
+{} problems · {} ★ ⟹ {} בעיות · {} ★
+Share code ⟹ קוד שיתוף
+Open a friend's problem ⟹ פתחו בעיה של חבר
+Daily problem ⟹ הבעיה היומית
+{} · the same for everyone today ⟹ {} · אותה בעיה לכולם היום
+Solved today ⟹ נפתרה היום
+Muted — sound returns in 1:30 ⟹ מושתק — הצליל יחזור בעוד 1:30
+New problem — you've got this ⟹ בעיה חדשה — אתם יכולים
+Solved {} of {} — next one! ⟹ נפתרו {} מתוך {} — לבאה!
+Solved! Now get up and walk ⟹ נפתר! עכשיו קומו ולכו
+3 wrong answers — one more problem added ⟹ ‏3 תשובות שגויות — נוספה עוד בעיה
+Good morning — have a great day ⟹ בוקר טוב — שיהיה יום נהדר
+Solved — alarm off ⟹ נפתר — השעון כבוי
+Surrendered — alarm off ⟹ נכנעתם — השעון כבוי
+Test alarm ⟹ שעון בדיקה
+Volume is low — press the volume-up button ⟹ העוצמה נמוכה — לחצו על כפתור הגברת העוצמה
+Mute ⟹ השתק
+Muted, {} seconds left ⟹ מושתק, נותרו {} שניות
+Mute for 90 seconds ⟹ השתקה ל-90 שניות
+Formula ⟹ נוסחה
+Both ⟹ שניהם
+Reinstall Math Alarm today ⟹ התקינו מחדש את Math Alarm היום
+Your free install stops working {}. Reinstall with iloader to keep your alarms ringing. ⟹ ההתקנה החינמית תפסיק לעבוד {}. התקינו מחדש עם iloader כדי שהשעונים ימשיכו לצלצל.
+Couldn't start the timer: {} ⟹ לא ניתן להפעיל את הטיימר: {}
+Running ⟹ פועלים
+{} min ⟹ {} דק׳
+Label (optional) ⟹ תווית (לא חובה)
+Start timer ⟹ הפעל טיימר
+When it reaches zero it rings with a {} challenge ({}). Change this in Settings. ⟹ כשהוא מגיע לאפס הוא מצלצל עם אתגר {} ({}). אפשר לשנות בהגדרות.
+{} · paused ⟹ {} · מושהה
+Easy ⟹ קל
+Medium ⟹ בינוני
+Hard ⟹ קשה
+Language ⟹ שפה

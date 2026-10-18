@@ -60,6 +60,16 @@ final class AppSettings: ObservableObject {
         }
     }
 
+    /// English or Hebrew (right to left).
+    @Published var language: AppLanguage {
+        didSet {
+            AppLanguage.current = language
+            defaults.set(language.rawValue, forKey: "appLanguage")
+            // System texts (alerts, date pickers) follow on the next launch.
+            defaults.set([language.rawValue], forKey: "AppleLanguages")
+        }
+    }
+
     // Prototype features
     /// Every 3 wrong answers add one more problem (at most 2 extra).
     @Published var escalation: Bool {
@@ -103,6 +113,7 @@ final class AppSettings: ObservableObject {
         quickDifficulty = Difficulty(rawValue: defaults.string(forKey: "quickDifficulty") ?? "") ?? .medium
         quickSound = AlarmSound(id: defaults.string(forKey: "quickSound") ?? "classic")
         expiryReminder = defaults.object(forKey: "expiryReminder") as? Bool ?? false
+        language = AppLanguage.current
         escalation = defaults.object(forKey: "escalation") as? Bool ?? true
         awakeCheckMinutes = defaults.integer(forKey: "awakeCheckMinutes")
         holdToSurrender = defaults.object(forKey: "holdToSurrender") as? Bool ?? true
